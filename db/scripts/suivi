@@ -1,0 +1,32 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+ALTER TABLE `suivi`.`entrees` 
+ADD INDEX `fk_entrees_carnets_idx` (`carnets_id` ASC) 
+, DROP INDEX `fk_entrees_carnets_idx` ;
+
+CREATE  TABLE IF NOT EXISTS `suivi`.`rights` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `uid` VARCHAR(8) NOT NULL ,
+  `read` BINARY NULL DEFAULT 0 ,
+  `write` BINARY NULL DEFAULT 0 ,
+  `carnets_id` BIGINT(20) NOT NULL ,
+  PRIMARY KEY (`id`, `carnets_id`) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  UNIQUE INDEX `uid_UNIQUE` (`uid` ASC) ,
+  INDEX `fk_rigths_carnets1_idx` (`carnets_id` ASC) ,
+  CONSTRAINT `fk_rigths_carnets1`
+    FOREIGN KEY (`carnets_id` )
+    REFERENCES `suivi`.`carnets` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+DROP TABLE IF EXISTS `suivi`.`rigths` ;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

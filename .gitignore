@@ -3,6 +3,7 @@
 .bundle
 .config
 coverage
+storages
 InstalledFiles
 lib/bundler/man
 pkg
@@ -12,7 +13,19 @@ test/tmp
 test/version_tmp
 tmp
 
+# Application specific
+stotages/*
+
 # YARD artifacts
 .yardoc
 _yardoc
 doc/
+
+# Vagrant
+vagrant
+.vagrant/
+
+# Config
+config/cas_server.rb
+config/constant.rb
+config/database.rb

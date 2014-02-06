@@ -1,4 +1,8 @@
-service-suivi-perso
-===================
+service-laclasse-startbox
+=========================
 
-Module de suivi individualisé des élèves, et suivi des élèves malades
+Bootstrap d'application laclasse.com, intégrant sinatra, omniauthCAS, et la gestion des sessions. Côté frontet-end : twitter bootstrap, et jQuery
+
+### TODO
+  - Tests du front-end
+  - Ajouter une classe ou une gem de gestion de la communication avec l'annuaire.
