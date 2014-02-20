@@ -1,13 +1,17 @@
 #coding: utf-8
 #
 # model for 'carnets' table
-# generated 2014-02-06 10:24:32 +0100 by /usr/local/bin/rake
+# generated 2014-02-20 15:33:44 +0100 by /usr/local/bin/rake
 #
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # COLUMN_NAME                   | DATA_TYPE           | NULL? | KEY | DEFAULT | EXTRA
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # id                            | bigint(20)          | false    | PRI      |            | auto_increment
 # uid                           | varchar(8)          | false    | UNI      |            | 
+# nom                           | varchar(100)        | true     |          |            | 
+# prenom                        | varchar(100)        | true     |          |            | 
+# etablissement                 | varchar(100)        | true     |          |            | 
+# classe                        | varchar(45)         | true     |          |            | 
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 #
 class Carnets < Sequel::Model(:carnets)
@@ -19,7 +23,7 @@ class Carnets < Sequel::Model(:carnets)
 
   # Referential integrity
   one_to_many :entrees
-  one_to_many :rigths
+  one_to_many :rights
 
   # Not nullable cols and unicity validation
   def validate

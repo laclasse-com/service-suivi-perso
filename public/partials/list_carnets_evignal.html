@@ -1,0 +1,14 @@
+<pre ng-controller="ListCarnetsCtrl">
+    <ul class="carnets">
+        <li ng-repeat="carnet in carnets" ng-dblclick="openCarnet(carnet)" class="carnet">
+        	<div class="carnet-title">
+            	<h3>{{carnet.title}}</h3>        		
+        	</div>
+            <div class="carnet-attributs">
+	            <p><strong>{{carnet.prenom}}</strong></p>
+	            <p><strong>{{carnet.nom}}</strong></p>
+	            <p><strong>{{carnet.college}}</strong></p>       	
+            </div>
+        </li>        
+    </ul>
+</pre>

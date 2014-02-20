@@ -48,6 +48,7 @@ module AuthenticationHelpers
   # Getter sur les infos de la session
   #
   def get_current_user
+    puts 'beatch !!!!!'
     return nil if env['rack.session'][:user].nil?
     @current_user ||= env['rack.session'][:current_user]
   end
@@ -61,6 +62,7 @@ module AuthenticationHelpers
       env['rack.session'][:extra] = env['omniauth.auth'].extra
       env['rack.session'][:authenticated] = true
     end
+    puts
     set_current_user env
   end
 

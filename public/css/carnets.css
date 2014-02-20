@@ -1,0 +1,55 @@
+
+ul {
+	list-style-type: none;
+	margin:0;
+	padding:0;
+}
+.carnets{
+	font-size: 0;
+	list-style-position: inside;
+}
+
+.carnet{
+	display: inline-block;
+	height: 230px;
+	width: 200px;
+	background-image: url('../img/carnet.png');
+	background-size:100%;
+	background-repeat:no-repeat;
+	text-align: center;
+	padding: 1px;
+	margin: 5px;
+}
+
+.carnet:active{
+	border: 1px solid;
+}
+
+.carnet:hover{
+	border: 1px solid;
+}
+
+.carnet-title{
+	font-size: 1em;
+	margin-bottom: 2em;
+}
+
+.carnet-title h3{
+	margin-top: 1em;
+	margin-left: 0.7em;
+	font-size: 23px;
+}
+
+.carnet-attributs{
+	margin-left: 50px;
+	margin-top: 100px;
+	font-size: 1em;
+	text-align: left;
+}
+
+.carnet-attributs p{
+	font-size: 14px;
+	margin: 0;
+}
+
+

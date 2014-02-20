@@ -1,7 +1,7 @@
 #coding: utf-8
 #
 # model for 'entrees' table
-# generated 2014-02-06 10:24:32 +0100 by /usr/local/bin/rake
+# generated 2014-02-20 15:33:44 +0100 by /usr/local/bin/rake
 #
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # COLUMN_NAME                   | DATA_TYPE           | NULL? | KEY | DEFAULT | EXTRA
@@ -11,7 +11,7 @@
 # code_matiere                  | varchar(10)         | false    |          |            | 
 # date                          | datetime            | true     |          |            | 
 # data                          | varchar(200)        | true     |          |            | 
-# carnets_id                    | bigint(20)          | false    | PRI      |            | 
+# carnets_id                    | bigint(20)          | false    | MUL      |            | 
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 #
 class Entrees < Sequel::Model(:entrees)
@@ -27,7 +27,7 @@ class Entrees < Sequel::Model(:entrees)
   # Not nullable cols and unicity validation
   def validate
     super
-    validates_presence [:uid, :code_matiere]
+    validates_presence [:uid, :code_matiere, :carnets_id]
     validates_unique :uid, :id
   end
 end

@@ -26,5 +26,3 @@ puts "----------> api <--------------"
 require __DIR__('api/init')
 puts "----------> controllers <------"
 require __DIR__('controller/init')
-
-SinatraApp.run! if __FILE__ == $PROGRAM_NAME

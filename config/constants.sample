@@ -1,2 +1,20 @@
 # Liste des constants de l'application
 
+URL_REQUEST_TEST = ""
+
+STORAGE_DIR = 'storages'
+
+STORAGE_ROOT = File.join(APP_ROOT, STORAGE_DIR)
+
+TEMP_DIRECTORY = File.join(STORAGE_DIR, "tmp")
+
+LANG = "fr"
+
+#Connexion avec l'annuaire ENT
+ANNUAIRE = {
+	:url => "http://www.dev.laclasse.com/api",
+	:service_user => "app/users/",
+	:service_users => "app/users/liste/",
+	:app_id => "à demander à l'admin de l'annuaire ce qui va permettre de signer la requête pour l'annuaire v3",
+	:secret => "clé permettant de signer la requête de l'annuaire v3"
+}
