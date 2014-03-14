@@ -6,7 +6,7 @@ describe 'AnnuaireTest' do
 		@bdd =BDD.new
 		@bdd.clear_db
 		@bdd.load_in_tables_of(init_data)
-		CarnetsLib.set_current_user
+		CarnetsLib.set_current_user current_user
 	end
 
 	after(:all) do
@@ -35,6 +35,12 @@ describe 'AnnuaireTest' do
 
 	it "retourne une liste de carnets d'un utilisateur e vignal" do
 		response = Annuaire.get_list_carnets_of(user_uid)
-		response.size.should == 5
+		response.size.should == 16
+	end
+
+	it "tous les carnets créé pour un regroupement" do
+		response = Annuaire.get_carnets_regroupement_of(user_uid, 1.to_s)
+		response.size.should == 3
+		response.include?(carnets2_hash).should be_true
 	end
 end

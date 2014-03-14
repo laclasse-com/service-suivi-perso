@@ -1,7 +1,7 @@
 #coding: utf-8
 #
 # model for 'carnets' table
-# generated 2014-02-20 15:33:44 +0100 by /usr/local/bin/rake
+# generated 2014-03-13 15:43:18 +0100 by /usr/local/bin/rake
 #
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # COLUMN_NAME                   | DATA_TYPE           | NULL? | KEY | DEFAULT | EXTRA
@@ -12,6 +12,7 @@
 # prenom                        | varchar(100)        | true     |          |            | 
 # etablissement                 | varchar(100)        | true     |          |            | 
 # classe                        | varchar(45)         | true     |          |            | 
+# sexe                          | char(1)             | true     |          |            | 
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 #
 class Carnets < Sequel::Model(:carnets)

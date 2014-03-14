@@ -11,8 +11,16 @@ angular.module('myApp.services', []).
 /* service authentication */
 angular.module('services.authentication', []);
 angular.module('services.authentication').factory('currentUser', function(){
-    var currentUser = {} ; 
-    return currentUser;
+    var currentUser = {}; 
+    return {
+      get_current_user: function(){
+        return currentUser;
+      },
+
+      set_current_user: function(current_user){
+        currentUser = current_user;
+      }
+    }
 });
 
 /* constant for static pages routing */
@@ -21,6 +29,7 @@ angular.module('services.constants').constant('APPLICATION_PREFIX_URL', '/app');
 angular.module('services.constants').constant('BASE_SERVICE_URL', 'http://localhost:9292/suivi/api');
 angular.module('services.constants').constant('SERVICE_ANNUAIRE', '/annuaire');
 angular.module('services.constants').constant('SERVICE_CARNETS', '/carnets');
+angular.module('services.constants').constant('EVIGNAL', 'CLG-E VIGNAL');
 /******************************************************************************************/
 /*                       Service Resources                                                */
 /******************************************************************************************/
@@ -53,3 +62,38 @@ angular.module('services.messages').factory("FlashServiceStyled", ['$rootScope',
     }
   }
 }]);
+
+angular.module('services.user', []); 
+angular.module('services.user').factory("User", ['$http', '$location', '$rootScope', function($http, $location, $rootScope) {
+  return {
+
+    verify : function(current_user, eVignal){     
+      if(current_user.info.ENTStructureNomCourant != eVignal){
+        //TODO a remettre plus tard.
+        // $location.url('/list/carnets');
+      }
+    },
+
+    init : function(base_url, service){
+      $http.get(base_url+service).success(function(data){
+        $rootScope.current_user = data;
+      })
+    }
+  }
+}]);
+angular.module('services.svg', []); 
+angular.module('services.svg').factory("Svg", function() {
+  return {
+    modifyFill : function(svgId, color){
+      console.log(svgId +" , " + color);
+      var s = document.getElementById(svgId)
+      if (s!=null) {
+        s.addEventListener("load", function() {
+          var doc = this.getSVGDocument();
+          var rect = doc.querySelector("path"); // suppose our image contains a <rect>
+          rect.setAttribute("fill", color);
+        });
+      };
+    }
+  }
+});

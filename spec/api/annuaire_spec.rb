@@ -1,7 +1,7 @@
 
 require File.expand_path '../../spec_helper.rb', __FILE__
 
-describe 'AnnuaireTest' do
+describe 'AnnuaireApiTest' do
 
 	###############################
 	# EXEMPLE POUR TESTER LES API #
@@ -23,4 +23,10 @@ describe 'AnnuaireTest' do
 		last_response.should be_ok
 		JSON.parse(last_response.body).should == USER
 	end 
+
+	it "Retourne tous les regroupements d'un utilisateur" do
+		get '/annuaire/regroupements/'+user_uid
+		last_response.should be_ok
+		JSON.parse(last_response.body).should == 
+	end
 end

@@ -23,4 +23,12 @@ class AnnuaireApi < Grape::API
     Annuaire.get_info_annuaire_of(params[:uid])
   end
 
+  desc "retourne tout les regroupements d'un utilisateurs"
+  params {
+    requires :uid, type: String, desc: "uid de l'utilisateur"
+  }
+  get '/regroupements/:uid' do
+    Annuaire.get_regroupements_of(params[:uid])
+  end
+
 end

@@ -1,0 +1,46 @@
+<div class="app" ng-controller="ListCarnetsCtrl">
+    <div class="search">
+    <br>
+        <div class="text-expl">
+                <p class="explication">Qu'est ce que le suivi ?</p>
+                <p class="explication">Petit texte explicatif et avertissement contenant le contenu des publications sur les données personnelles.
+                <br>Qui peut créer un suivi</p>
+        </div>
+        <div class="rch-elv">
+	        <p class="rch-elv">Rechercher un élève:</p>
+	        <input type="text" placeholder="entrer un nom" class="rch-elv" ng-model="search">
+	        <div class="button-search">
+                <div class="toolbar-suivi toolbar-suivi-search"></div>
+                <div class="toolbar-suivi toolbar-suivi-del" ng-click="delSearch()"></div>                
+            </div>
+        </div>
+    </div>
+    <div class="carnets" >  
+        <div class="carnet" style="background-color: {{regroupement.color}};" ng-repeat="regroupement in regroupements">
+            <div class="carnet-classe ">
+                <strong class="carnet-classe ">{{regroupement.nom}}</strong>
+            </div>
+            <div class="carnet-college">
+                <span class="carnet-college">{{regroupement.etab_nom}}</span>
+            </div>
+        </div>
+    </div>    
+</div>
+<!-- 
+<div>
+	<h3>etab 1</h3>
+	<tabset>
+	  <tab title="toto 1" template-url="/app/partials/test.html"></tab>
+	  <tab title="Tab 2" template-url="/views/tab2.html"></tab>
+	  <tab title="Tab 3" template-url="/views/tab3.html"></tab>
+	</tabset>	
+</div>
+
+<div>
+	<h3>etab 2</h3>
+	<tabset>
+	  <tab title="Tab 1" template-url="/app/partials/test.html"></tab>
+	  <tab title="Tab 2" template-url="/views/tab2.html"></tab>
+	  <tab title="Tab 3" template-url="/views/tab3.html"></tab>
+	</tabset>
+</div> -->

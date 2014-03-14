@@ -1,55 +1,274 @@
+@font-face { 	
+	font-family: "Futura Bold"; 	
+	src: url('/font/Futura TTF/FUTUB___.TTF'); 
+}
 
-ul {
-	list-style-type: none;
-	margin:0;
-	padding:0;
+@font-face { 	
+	font-family: "Futura Light"; 	
+	src: url('/font/Futura TTF/FUTUL___.TTF'); 
+}
+
+@font-face { 	
+	font-family: "Futura Medium"; 	
+	src: url('/font/Futura TTF/FUTUH___.TTF'); 
+}
+
+@font-face { 	
+	font-family: "Futura book"; 	
+	src: url('/font/Futura TTF/FUTURA__.TTF'); 
+}
+
+body, html{
+	width: 100%;
+	height: 100%;
+	padding-top: 0;
+}
+
+.app{
+	width: 100%;
+	height: 100%;
+}
+
+.banniere{
+	font-size: 0;
+	width: 100%;
+	height: 4%;
+}
+.img_laclasse{
+	display: inline-block;
+	float: left;
+	width: 2.5%;
+	height: 100%;
+	background-color: #505050;
+}
+object.img_laclasse{
+	width: 100%;
+	height: 100%;
+}
+.laclasse{
+	display: inline-block;
+	float: left;
+	font-size: initial;
+	width: 15%;
+	height: 100%;
+	font-family: Futura Bold;
+	background-color: #8E8E8E;
+}
+span.laclasse{
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	color: white;
+}
+strong.laclasse{
+	font-size: 90%;
+	width: 100%;
+	height: 100%;
+	padding-top: 2.5%;
+
+}
+.suivi-title{
+	display: inline-block;
+	float: left;
+	font-size: initial;
+	width: 65.8%;
+	height: 100%;
+	font-family: Futura Bold;
+	background-color: #1AA1CC;
+}
+span.suivi-title{
+	width: 100%;
+	height: 100%;
+	text-align: left;
+	color: white;
+
+}
+strong.suivi-title{
+	font-size: 90%;
+	width: 100%;
+	height: 100%;
+	padding-left: 2%;
+	padding-top: 0.5%;
+}
+.nom-util{
+	display: inline-block;
+	float: left;
+	font-size: initial;
+	width: 16.7%;
+	height: 100%;
+	padding-top: 0.3%;
+	background-color: #323232;
+}
+span.profil{
+	font-size: 90%;
+	width: 40%;
+	height: 100%;
+	padding-left: 2%;
+	font-family: Futura Light;
+	text-align: center;
+	color: #B2B2B2;
+	overflow: hidden;
+	white-space: nowrap;
+}
+span.nom{
+	font-size: 90%;
+	width: 60%;
+	height: 100%;
+	font-family: Futura Bold;
+	text-align: center;
+	color: white;
+}
+strong.nom{
+	width: 100%;
+	height: 100%;
+}
+.app{
+	height: 100%;
+	width: 100%;
+	font-size: 0;
+}
+.search{
+	display: inline-block;
+	float: left;
+	font-size: initial;
+	width: 33%;
+	height: 100%;
+	padding-left: 3%;
+	padding-right: 3%;	
+}
+.text-expl{
+	width: 100%;
+	height: 25%;
+}
+p.explication{
+	font-size: 140%;
+	padding-top: 3%;
+	font-family: Futura book;
+	color: #1AA1CC;
+
+}
+.rch-elv{
+	width: 100%;
+	height: 25%;
+	color: #323232;
+	font-family: Futura Book;
+
+}
+p.rch-elv{
+	width: 100%;
+	padding-top: 10%;
+	font-size: 80%;
+}
+input.rch-elv{
+	font-size: 80%;
+	width: 57%;
+	height: 100%;
+	padding-left: 2%;
+	padding-top: 2%;
+	padding-bottom: 2%;
+	border: none;
+	background-color: rgba(178,178,178, 0.6);
+	outline: none;
+}
+input::-webkit-input-placeholder {
+	color: #323232;
+	font-family: Futura Book;
+}
+.toolbar-suivi{
+	display:block;
+	width:16px;
+	height:16px;
+	background: url('/img/toolbar_suivi.png') 0 0 no-repeat;
+}
+.toolbar-suivi-search{
+	display: inline-block;
+	background-position: 0 -48px;
+}
+.toolbar-suivi-del{
+	display: inline-block;
+	margin-left: 2%;
+	background-position: 0 -64px;
+}
+.button-search{
+	display: inline-block;
+	width: 30%;
+	margin-left: 2%;
+	vertical-align: middle;
 }
 .carnets{
-	font-size: 0;
-	list-style-position: inside;
+	display: inline-block;
+	float: left;
+	font-size:0;
+	width: 67%;
+	height: 96%;
+	border-left: 1px solid #8E8E8E;
 }
-
 .carnet{
 	display: inline-block;
-	height: 230px;
-	width: 200px;
-	background-image: url('../img/carnet.png');
-	background-size:100%;
-	background-repeat:no-repeat;
-	text-align: center;
-	padding: 1px;
-	margin: 5px;
+	font-size: initial;
+	width: 25%;
+	height: 25%;
+	opacity: 0.9;
 }
-
-.carnet:active{
-	border: 1px solid;
+.carnet-vide{
+	opacity: 0.2;
 }
+/*.carnet:hover{
+	opacity: 1;
+}*/
 
-.carnet:hover{
-	border: 1px solid;
-}
-
-.carnet-title{
-	font-size: 1em;
-	margin-bottom: 2em;
-}
-
-.carnet-title h3{
-	margin-top: 1em;
-	margin-left: 0.7em;
-	font-size: 23px;
-}
-
-.carnet-attributs{
-	margin-left: 50px;
-	margin-top: 100px;
-	font-size: 1em;
-	text-align: left;
-}
-
-.carnet-attributs p{
-	font-size: 14px;
+.carnet-classe{
+	font-size: 200%;
+	width: 170px;
+	height: 60%;
+	padding-top: 16%;
+	padding-left: 30%;
 	margin: 0;
+	text-align: center;
+	color: white;
+	font-family: Futura Bold;
+	white-space: nowrap;
+	overflow: hidden;
+}
+strong.carnet-classe{
+	height: 100%;
+	max-width: 100px;
+	padding-left: 0;
 }
 
+.carnet-college{
+	font-size: 100%;
+	width: 100%;
+	height: 40%;
+	padding-bottom: 24%;
+	text-align: center;
+	color: white;
+	font-family: Futura Book;
+}
 
+.carnet-eleve{
+	position: relative;
+	font-size: 120%;
+	width: 100%;
+	text-align: left;
+	color: white;
+	font-family: Futura Bold;
+}
+svg.carnet-eleve{
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+span.carnet-eleve-nom{
+	font-size: 120%;
+	position: absolute;
+	top: 84%;
+	left: 5%;
+}
+span.carnet-eleve-prenom{
+	font-size: 120%;
+	position: absolute;
+	top: 73%;
+	left: 5%;
+}

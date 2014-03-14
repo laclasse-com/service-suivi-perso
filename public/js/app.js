@@ -1,13 +1,14 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('myApp', ['services.authentication', 'services.constants' , 'services.messages', 'services.resources',
+angular.module('myApp', ['services.authentication', 'services.constants' , 'services.messages', 'services.resources', 'services.user', 'services.svg',
   'myApp.filters',
   'myApp.services',
   'myApp.directives',
+  'directives.bootstrap.tabset',
   'myApp.controllers'
 ]).
-config(['$routeProvider', function($routeProvider) {
+config(['$routeProvider', function($routeProvider, currentUser) {
 
   $routeProvider.when('/list/carnets/evignal', {templateUrl: '/app/partials/list_carnets_evignal.html', controller: 'ListCarnetsEVignalCtrl'});
   $routeProvider.when('/list/carnets', {templateUrl: '/app/partials/list_carnets.html', controller: 'ListCarnetsCtrl'});

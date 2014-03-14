@@ -90,6 +90,7 @@ ANNUAIRE = {
   :service_test => "annuaire/test/",
   :service_user => "annuaire/user/",
   :service_users => "annuaire/users/",
+  :service_regroupement => "app/regroupements/",
   :app_id => "test",
   :secret => "keytest"
 }
@@ -175,6 +176,11 @@ module Annuaire
     if service == ANNUAIRE[:service_users] + uid_eleve_of_user.join(";")
       response = response_service_users
     end
+
+    if service == ANNUAIRE[:service_regroupement] + "1"
+      response = response_service_regroupement
+    end
+
     response
   end
 end
@@ -192,21 +198,74 @@ def response_service_user (expand)
   response
 end
 
-def response_service_users ()
+def response_service_users 
   response = [
-    {"id_ent" => "VAA99001","nom" => "NOM1","prenom" =>"Prenom1","full_name" => "Nom1 Prenom1", "etablissement_nom" =>"CLG-VAL D'ARGENT", "classe_libelle" =>"3C"},
-    {"id_ent" => "VAA99002","nom" => "NOM2","prenom" => "Prenom2","full_name" => "Nom2 Prenom2", "etablissement_nom" =>"CLG-VAL D'ARGENT", "classe_libelle" =>"3C"},
-    {"id_ent" => "VAA99003","nom" => "NOM3","prenom" => "Prenom3","full_name" => "Nom3 Prenom3", "etablissement_nom" =>"CLG-VAL D'ARGENT", "classe_libelle" =>"6B"},
-    {"id_ent" => "VAA99004","nom" => "NOM4","prenom" => "Prenom4","full_name" => "Nom4 Prenom4", "etablissement_nom" =>"CLG-VAL D'ARGENT", "classe_libelle" =>"6B"},
-    {"id_ent" => "VAA99005","nom" => "NOM5","prenom" => "Prenom5","full_name" => "Nom5 Prenom5", "etablissement_nom" =>"CLG-VAL D'ARGENT", "classe_libelle" =>"5D"},
-    {"id_ent" => "VAA99006","nom" => "NOM6","prenom" => "Prenom6","full_name" => "Nom6 Prenom6", "etablissement_nom" =>"CLG-VAL D'ARGENT", "classe_libelle" =>"5D"},
-    {"id_ent" => "VAA99007","nom" => "NOM7","prenom" => "Prenom7","full_name" => "Nom7 Prenom7", "etablissement_nom" =>"CLG-VAL D'ARGENT", "classe_libelle" =>"4E"},
-    {"id_ent" => "VAA99008","nom" => "NOM8","prenom" => "Prenom8","full_name" => "Nom8 Prenom8", "etablissement_nom" =>"CLG-VAL D'ARGENT", "classe_libelle" =>"4E"},
-    {"id_ent" => "VAA99009","nom" => "NOM9","prenom" => "Prenom9","full_name" => "Nom9 Prenom9", "etablissement_nom" =>"CLG-TOTO", "classe_libelle" =>"4E"},
-    {"id_ent" => "VAA99010","nom" => "NOM10","prenom" => "Prenom10","full_name" => "Nom10 Prenom10", "etablissement_nom" =>"CLG-TOTO", "classe_libelle" =>"4E"}
+    {"id_ent" => "VAA99001","nom" => "NOM1","prenom" =>"Prenom1","full_name" => "Nom1 Prenom1", "etablissement_nom" =>"CLG-TEST1", "classe_libelle" =>"6A"},
+    {"id_ent" => "VAA99002","nom" => "NOM2","prenom" => "Prenom2","full_name" => "Nom2 Prenom2", "etablissement_nom" =>"CLG-TEST1", "classe_libelle" =>"6A"},
+    {"id_ent" => "VAA99003","nom" => "NOM3","prenom" => "Prenom3","full_name" => "Nom3 Prenom3", "etablissement_nom" =>"CLG-TEST1", "classe_libelle" =>"6A"},
+    {"id_ent" => "VAA99004","nom" => "NOM4","prenom" => "Prenom4","full_name" => "Nom4 Prenom4", "etablissement_nom" =>"CLG-TEST1", "classe_libelle" =>"4C"},
+    {"id_ent" => "VAA99005","nom" => "NOM5","prenom" => "Prenom5","full_name" => "Nom5 Prenom5", "etablissement_nom" =>"CLG-TEST2", "classe_libelle" =>"6B"},
+    {"id_ent" => "VAA99006","nom" => "NOM6","prenom" => "Prenom6","full_name" => "Nom6 Prenom6", "etablissement_nom" =>"CLG-TEST1", "classe_libelle" =>"5D"},
+    {"id_ent" => "VAA99007","nom" => "NOM7","prenom" => "Prenom7","full_name" => "Nom7 Prenom7", "etablissement_nom" =>"CLG-TEST1", "classe_libelle" =>"4E"},
+    {"id_ent" => "VAA99008","nom" => "NOM8","prenom" => "Prenom8","full_name" => "Nom8 Prenom8", "etablissement_nom" =>"CLG-TEST1 ", "classe_libelle" =>"4E"},
+    {"id_ent" => "VAA99009","nom" => "NOM9","prenom" => "Prenom9","full_name" => "Nom9 Prenom9", "etablissement_nom" =>"CLG-TEST2", "classe_libelle" =>"4E"},
+    {"id_ent" => "VAA99010","nom" => "NOM10","prenom" => "Prenom10","full_name" => "Nom10 Prenom10", "etablissement_nom" =>"CLG-TEST2", "classe_libelle" =>"4E"}
   ]
 end
 
+def response_service_regroupement
+  {
+   "id" => 1,
+   "etablissement_id" => 9999,
+   "libelle" => nil,
+   "libelle_aaf" => "6A",
+   "type_regroupement_id" => "CLS",
+   "niveau" => "6EME BILANGUE",
+   "profs" => [
+      {
+         "user_id" => 999,
+         "id_ent" => "VAA99999",
+         "id_jointure_aaf" => 663390,
+         "nom" => "QUENIN",
+         "prenom" => "Homer",
+         "prof_principal" => "N",
+         "matieres" => [
+            {
+               "id" => "999999",
+               "libelle_court" => nil,
+               "libelle_long" => "Maths"
+            }
+         ]
+      }
+   ],
+   "eleves" => [
+      {
+         "id" => 1,
+         "id_sconet" => 1151659,
+         "id_ent" => "VAA99001",
+         "id_jointure_aaf" => 2696836,
+         "nom" => "NOM1",
+         "prenom" => "Prenom1"
+      },
+      {
+         "id" => 6,
+         "id_sconet" => 1151661,
+         "id_ent" => "VAA99002",
+         "id_jointure_aaf" => 2696837,
+         "nom" => "NOM2",
+         "prenom" => "Prenom2"
+      },
+      {
+         "id" => 6,
+         "id_sconet" => 1151661,
+         "id_ent" => "VAA99003",
+         "id_jointure_aaf" => 2696837,
+         "nom" => "NOM3",
+         "prenom" => "Prenom3"
+      }
+    ]
+  }
+end
 ################################################
 # DONNEES DE TEST POUR LA LIBRAIRIE HASH_DEBUG #
 ################################################
@@ -276,6 +335,7 @@ class BDD
     carnet.prenom = opt[:prenom]
     carnet.etablissement = opt[:etablissement]
     carnet.classe = opt[:classe]
+    carnet.sexe = opt[:sexe]
 
     carnet.save
     Carnets[:uid => opt[:uid]]
@@ -317,35 +377,40 @@ def init_data
         :nom => "Nom1",
         :prenom => "Prenom1",
         :etablissement => "CGL_TEST1",
-        :classe => "6A"
+        :classe => "6A",
+        :sexe => "F"
       },
       {
         :uid => "VAA99002",
         :nom => "Nom2",
         :prenom => "Prenom2",
         :etablissement => "CGL_TEST1",
-        :classe => "6A"
+        :classe => "6A",
+        :sexe => "F"
       },
       {
         :uid => "VAA99003",
         :nom => "Nom3",
         :prenom => "Prenom3",
         :etablissement => "CGL_TEST1",
-        :classe => "6A"
+        :classe => "6A",
+        :sexe => "F"
       },
       {
         :uid => "VAA99004",
         :nom => "Nom4",
         :prenom => "Prenom4",
         :etablissement => "CGL_TEST1",
-        :classe => "4C"
+        :classe => "4C",
+        :sexe => "M"
       },
       {
         :uid => "VAA99005",
         :nom => "Nom5",
         :prenom => "Prenom5",
         :etablissement => "CGL_TEST2",
-        :classe => "6B"
+        :classe => "6B",
+        :sexe => "M"
       }
     ],
     :rights => [
@@ -401,18 +466,47 @@ def carnets1
   Carnets[:uid => "VAA99001"]
 end
 
+def carnets1_hash
+  {:color =>'', :avatar => '', :uid => carnets1.uid, :nom => carnets1.nom, :prenom => carnets1.prenom, :etablissement => carnets1.etablissement, :classe => carnets1.classe, :sexe => SVG_AVATAR_F}
+end
+
 def carnets2
   Carnets[:uid => "VAA99002"]
+end
+
+def carnets2_hash
+  {:color =>'', :avatar => '', :uid => carnets2.uid, :nom => carnets2.nom, :prenom => carnets2.prenom, :etablissement => carnets2.etablissement, :classe => carnets2.classe, :sexe => SVG_AVATAR_F}
 end
 
 def carnets3
   Carnets[:uid => "VAA99003"]
 end
 
+def carnets3_hash
+  {:color =>'', :avatar => '', :uid => carnets3.uid, :nom => carnets3.nom, :prenom => carnets3.prenom, :etablissement => carnets3.etablissement, :classe => carnets3.classe, :sexe => SVG_AVATAR_F}
+end
+
 def carnets4
   Carnets[:uid => "VAA99004"]
+end
+
+def carnets4_hash
+  {:color =>'', :avatar => '', :uid => carnets4.uid, :nom => carnets4.nom, :prenom => carnets4.prenom, :etablissement => carnets4.etablissement, :classe => carnets4.classe, :sexe => SVG_AVATAR_M}
 end
 
 def carnets5
   Carnets[:uid => "VAA99005"]
 end
+
+def carnets5_hash
+  {:color =>'', :avatar => '', :uid => carnets5.uid, :nom => carnets5.nom, :prenom => carnets5.prenom, :etablissement => carnets5.etablissement, :classe => carnets5.classe, :sexe => SVG_AVATAR_M}
+end
+
+
+#####################################
+# LES REGROUPEMENT DE L'UTILISATEUR #
+#####################################
+
+# def regroupements_user 
+#   { 
+#      }

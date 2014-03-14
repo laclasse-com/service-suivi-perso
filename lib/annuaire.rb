@@ -64,6 +64,25 @@ module Annuaire
     return send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_users] + list_uid, {})
   end
 
+  #récupère tous les regroupements pour un utilisateurs
+  def get_regroupements_of(uid)
+    response = get_info_annuaire_of uid
+    etablissements = []
+    classes =[]
+    groupes = []
+    response["etablissements"].each do |etab|
+      etablissements.push(hash_regroupement(etab["id"],etab["nom"], nil)) if !etablissements.include?(hash_regroupement(etab["id"],etab["nom"], nil))
+    end
+    response["classes"].each do |classe|
+      classes.push hash_regroupement(classe["classe_id"], classe["classe_libelle"], classe["etablissement_id"]) if !classes.include?(hash_regroupement(classe["classe_id"], classe["classe_libelle"], classe["etablissement_id"]))
+    end
+    response["groupes_eleves"].each do |groupe|
+      groupes.push hash_regroupement(groupe["groupe_id"], groupe["groupe_libelle"], groupe["etablissement_id"]) if !groupes.include?(hash_regroupement(groupe["groupe_id"], groupe["groupe_libelle"], groupe["etablissement_id"]))
+    end
+    regroupements = liste_regroupements etablissements, classes, groupes 
+    CarnetsLib.couleurs_carnets regroupements
+  end
+
   #récupère tous les carnets lié à un utilisateur dans la base
   def get_list_carnets_of(uid)
     carnetsIds = []
@@ -71,5 +90,55 @@ module Annuaire
       carnetsIds.push right.carnets_id
     end
     CarnetsLib.list_carnets(carnetsIds)
+  end
+
+  #recherche tous les carnets créé pour un regroupement
+  def get_carnets_regroupement_of(uid, id_rgrp)
+    carnets = []
+    regroupement = send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_regroupement] + id_rgrp.to_s, {"expand" => "true"})
+    if !regroupement.nil?
+      eleves = regroupement["eleves"]
+      eleves.each do |eleve|
+        puts regroupement.inspect
+        if CarnetsLib.rights_on(eleve["id_ent"], uid)
+          carnets.push CarnetsLib.get_carnet_of(Carnets[:uid => eleve["id_ent"]].id)
+        end
+      end
+    end
+    carnets
+  end
+
+  #retourne un hash d'un regroupements avec son id et son nom
+  def hash_regroupement(id, nom, etab_id)
+    {
+      :id => id,
+      :nom => nom,
+      :etab_id => etab_id
+    }
+  end
+
+  #retourne un etablissement avec ses classes et ses groupes
+  def regroupements_with_etabName(etab, rgrpnt)
+    regroupement = {}
+    regroupement[:id] = rgrpnt[:id]
+    regroupement[:nom] = rgrpnt[:nom]
+    regroupement[:etab_nom] = etab[:nom]
+    regroupement[:etab_id] = etab[:id]
+    regroupement[:color] =''
+    regroupement
+  end
+
+  #retourne une liste d'établissement avec ses classe et ses groupes
+  def liste_regroupements(etabs, classes, groupes)
+    regroupements = []
+    etabs.each do |etab|
+      classes.each do |classe|
+        regroupements.push regroupements_with_etabName(etab, classe) if classe[:etab_id] == etab[:id]
+      end
+      groupes.each do |groupe|
+        regroupements.push regroupements_with_etabName(etab, groupe) if groupe[:etab_id] == etab[:id]
+      end
+    end
+    regroupements
   end
 end
