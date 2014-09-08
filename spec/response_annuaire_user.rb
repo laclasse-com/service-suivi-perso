@@ -143,7 +143,16 @@ USER = {
 
    ],
    "groupes_eleves" => [
-      
+      {
+         "etablissement_code" => "0690079K",
+         "groupe_libelle" => "4E_LV1",
+         "etablissement_nom" => "CLG-TOTO",
+         "matiere_enseignee_id" => "999998",
+         "matiere_libelle" => "ANGLAIS",
+         "groupe_id" => 19,
+         "etablissement_id" => 9998,
+         "prof_principal" => "N"
+      }
    ],
    "groupes_libres" => [
 

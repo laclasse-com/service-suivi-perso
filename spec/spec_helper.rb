@@ -507,6 +507,57 @@ end
 # LES REGROUPEMENT DE L'UTILISATEUR #
 #####################################
 
-# def regroupements_user 
-#   { 
-#      }
+def regroupements_user 
+  [
+    hash_regroupement({:id => 1, :nom => "6B", :nom_etab => "CLG-VAL D'ARGENT", :id_etab => 9999, :color => PANEL_COLOR[0]}),
+    hash_regroupement({:id => 2, :nom => "5D", :nom_etab => "CLG-VAL D'ARGENT", :id_etab => 9999, :color => PANEL_COLOR[1]}),
+    hash_regroupement({:id => 3, :nom => "4E", :nom_etab => "CLG-VAL D'ARGENT", :id_etab => 9999, :color => PANEL_COLOR[2]}),
+    hash_regroupement({:id => 4, :nom => "3C", :nom_etab => "CLG-VAL D'ARGENT", :id_etab => 9999, :color => PANEL_COLOR[3]}),
+    hash_regroupement({:id => 7, :nom => "4E", :nom_etab => "CLG-TOTO", :id_etab => 9998, :color => PANEL_COLOR[4]}),
+    hash_regroupement({:id => 19, :nom => "4E_LV1", :nom_etab => "CLG-TOTO", :id_etab => 9998, :color => PANEL_COLOR[5]})
+  ]
+end
+
+def hash_regroupement(opt ={})
+  regroupement = {}
+  regroupement[:id] = opt[:id]
+  regroupement[:nom] = opt[:nom]
+  regroupement[:etab_nom] = opt[:nom_etab]
+  regroupement[:etab_id] = opt[:id_etab]
+  regroupement[:color] = opt[:color]
+  regroupement
+end
+
+def hash_etabs 
+  [{
+    :id => 9999,
+    :nom => "CLG-VAL D'ARGENT",
+    :etab_id => nil
+  },
+  {
+    :id => 9998,
+    :nom => "CLG-TOTO",
+    :etab_id => nil
+  }]
+end
+
+def hash_classes
+  [{
+    :id => 1,
+    :nom => "6B",
+    :etab_id => 9999
+  },
+  {
+    :id => 7,
+    :nom => "4E",
+    :etab_id => 9998
+  }]
+end
+
+def hash_groupes
+  [{
+    :id => 19,
+    :nom => "4E_LV1",
+    :etab_id => 9998
+  }]
+end

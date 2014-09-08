@@ -24,7 +24,7 @@ module CarnetsLib
 	  		end
 	  	end
 	  	#on rempli les couleur des carnets
-	  	couleurs_carnets carnets
+	  	couleurs_carnets(carnets, true)
 	end
 
 	#retourne le carnet de l'id_carnet en paramètre dans une hash map 
@@ -70,21 +70,18 @@ module CarnetsLib
 		response
 	end
 
-	#ajoute les couleurs des carnets et de leur avatar par défaut
-	def couleurs_carnets(carnets)
+	#ajoute les couleurs des carnets et de leur avatar par défaut si besoin
+	def couleurs_carnets(carnets, need_avatar)
 		color = 0
 		carnets.each do |carnet|
 			carnet[:color] = PANEL_COLOR[color]
-			if carnet[:nom] == ' '
+			if carnet[:nom] == ' ' && need_avatar
 				carnet[:avatar] = PANEL_COLOR[color]
 			else
-				carnet[:avatar] = couleur_avatar PANEL_COLOR[color]
+				carnet[:avatar] = couleur_avatar PANEL_COLOR[color] if need_avatar
 			end
-			if color == 15 
-				color = 0
-			else
-				color+= 1
-			end
+			color += 1
+			color = 0 if color == 16
 		end
 		carnets
 	end
@@ -105,5 +102,10 @@ module CarnetsLib
 			avatar = colors[prng.rand(0..1)]
 		end
 		avatar
+	end
+
+	#créé un carnet dans la base de Donnée
+	def create(uid)
+		Annuaire.checkAdmin uid, 3
 	end
 end

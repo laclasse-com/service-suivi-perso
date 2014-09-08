@@ -67,6 +67,7 @@ module Annuaire
   #récupère tous les regroupements pour un utilisateurs
   def get_regroupements_of(uid)
     response = get_info_annuaire_of uid
+    response = {"etablissements" => [], "classes" => [], "groupes_eleves" => []} if response.nil?
     etablissements = []
     classes =[]
     groupes = []
@@ -80,7 +81,7 @@ module Annuaire
       groupes.push hash_regroupement(groupe["groupe_id"], groupe["groupe_libelle"], groupe["etablissement_id"]) if !groupes.include?(hash_regroupement(groupe["groupe_id"], groupe["groupe_libelle"], groupe["etablissement_id"]))
     end
     regroupements = liste_regroupements etablissements, classes, groupes 
-    CarnetsLib.couleurs_carnets regroupements
+    CarnetsLib.couleurs_carnets(regroupements, false)
   end
 
   #récupère tous les carnets lié à un utilisateur dans la base
@@ -99,7 +100,6 @@ module Annuaire
     if !regroupement.nil?
       eleves = regroupement["eleves"]
       eleves.each do |eleve|
-        puts regroupement.inspect
         if CarnetsLib.rights_on(eleve["id_ent"], uid)
           carnets.push CarnetsLib.get_carnet_of(Carnets[:uid => eleve["id_ent"]].id)
         end
@@ -140,5 +140,30 @@ module Annuaire
       end
     end
     regroupements
+  end
+
+  #TODO
+  #vérifie si l'uid est un administrateur
+  def checkAdmin(uid, id_etab)
+    response = get_info_annuaire_of uid
+    check = false
+    if !response.nil?
+      profiles = modify_PROFIL
+      response["roles"].each do |role|
+        if role["etablissement_id"] == id_etab && profiles[role["role_id"]] >= "3"
+          check = true
+        end
+      end
+    end
+    check
+  end
+
+  #transforme la constante PROFILE pour une recherche par valeur
+  def modify_PROFIL
+    profiles = {}
+    PROFIL.values.each do |profil|
+      profiles[profil[:value]]=profil[:coeff]
+    end
+    profiles
   end
 end

@@ -27,6 +27,6 @@ describe 'AnnuaireApiTest' do
 	it "Retourne tous les regroupements d'un utilisateur" do
 		get '/annuaire/regroupements/'+user_uid
 		last_response.should be_ok
-		JSON.parse(last_response.body).should == 
+		last_response.body.should == regroupements_user.to_json
 	end
 end

@@ -1,0 +1,192 @@
+.tab-editable{
+	border: none;
+	padding: 10px 15px;
+}
+
+.nav-tabs{
+	box-shadow: 0px 15px 20px -10px #8E8E8E;
+	padding: 0 20px;
+	margin-top: 10px;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{
+	box-shadow: 0px 10px 40px 10px white;
+}
+
+.form-control{
+	border-radius: 0;
+	border-color: #8E8E8E;
+}
+
+.ta-scroll-window > .ta-bind{
+	min-height: 100px;
+}
+
+.ta-scroll-window.form-control {
+	min-height: 100px;
+	max-height: 210px;
+}
+
+/*modifier la scrollbar du div elevator*/
+::-webkit-scrollbar { 
+  width: 10px; /*largeur de la scrollbar verticale*/
+  height: 10px; /*hauteur de la scrollbar horizontale*/
+  background-color: #505050;
+	text-align: center;
+}
+
+::-webkit-scrollbar-track { 
+  background-color: #CCC;
+}
+::-webkit-scrollbar-thumb { /*la petite bande qui monte/descend*/
+  background-color: #505050; /*couleur de l'ascenseur*/
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  width: 1px;
+  height: 10px;
+}
+
+.tab-content{
+	height: 93%;
+	overflow: auto;
+	/*box-shadow: inset 0px -15px 20px -10px #8E8E8E;*/
+}
+
+.ta-root.focussed .ta-scroll-window.form-control {
+	border-color: #8E8E8E;
+	box-shadow: none;
+	outline: none;
+	min-height: 100px; 
+}
+
+.laclasse-toolbar-text-angular{
+	display: table;
+	width: 100%;
+	background-color: #ccc; 
+	border: 1px solid #8E8E8E;
+	vertical-align: middle;
+	padding: 5px;
+}
+
+.text-angular-content{
+	font-family: "Futura Light";
+}
+
+.laclasse-toolbar-text-angular .toolbar{
+	display: table-cell;
+}
+.publier{
+	vertical-align: middle;
+	width: 10%;
+	padding: 2px;
+	font-family: "Futura Light";
+	color: #505050;
+	display: table-cell;
+	border: 1px solid #8E8E8E;
+}
+
+.publier:hover{
+	cursor: pointer;
+}
+
+.publier i{
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.publier span{
+	height: 100%;
+	margin-right: 5px;
+}
+
+.toolbar-suivi-add{
+	background-position: 0 -32px;
+	vertical-align: middle;
+	margin-top: 0;
+}
+
+.toolbar-suivi-del-carnet{
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin-top: 0;
+	cursor: pointer;
+}
+
+.entree{
+	margin: 20px;
+	height: 100px;
+	max-height: 100px;
+	display: table;
+}
+
+.entree .avatar{
+	display: table-cell;
+	width: 15%;
+	position: relative;	
+}
+
+.entree .avatar img{
+	vertical-align: bottom;
+}
+
+.entree .message{
+	display: table-cell;
+	width: 85%;
+	padding-left: 5px;
+	vertical-align: top;
+}
+
+.message-info{
+	border-spacing: 5px;
+	border-collapse: separate;
+	width: 100%;
+	display: table;
+	padding: 5px;
+	border-bottom: 2px solid white;
+}
+
+.toolbar-suivi-corbeille{
+	background-position: 0 0px;
+	margin-top: 0;
+}
+
+.toolbar-suivi-edit{
+	background-position: 0 -96px;
+	margin-top: 0;
+}
+
+.message-text{
+	min-height: 90px;
+	max-height: 90px;
+	overflow: auto;
+	font-family: "Futura Light";
+	padding: 5px;
+}
+
+.message-corbeille, .message-edit{
+	border: 1px solid #8E8E8E;
+	background-color:#fff;
+	padding:3px;
+	width: 25px;
+	cursor: pointer;
+	display: table-cell;
+}
+
+.message-info-profil{
+	vertical-align: bottom;
+	display: table-cell;
+	font-family: "Futura Bold";
+	font-weight: bold;
+	font-size: 13px;
+}
+
+.message-info-date{
+	vertical-align: top;
+	display: table-cell;
+	padding-right: 20px;
+	text-align: right;
+	font-family: "Futura Light";
+	font-size: 13px;
+}

@@ -25,4 +25,12 @@ class CarnetsApi < Grape::API
       uids = Annuaire.get_carnets_regroupement_of(params[:uid], params[:id_rgrp])
     end
 
+    desc "Créé un carnet dans la base de donnée"
+    params {
+      # requires :uid, type: String, desc: "uid d'un utilisateur"
+      # requires :id_rgrp, type: String, desc: "id d'un regroupement"
+    }
+    get '/add/:uid' do #/:id_rgrp' do
+      uids = CarnetsLib.create(params[:uid])
+    end
 end

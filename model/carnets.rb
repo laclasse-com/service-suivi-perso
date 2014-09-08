@@ -1,18 +1,21 @@
 #coding: utf-8
 #
 # model for 'carnets' table
-# generated 2014-03-13 15:43:18 +0100 by /usr/local/bin/rake
+# generated 2014-08-29 12:29:18 +0200 by /usr/local/bin/rake
 #
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # COLUMN_NAME                   | DATA_TYPE           | NULL? | KEY | DEFAULT | EXTRA
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # id                            | bigint(20)          | false    | PRI      |            | auto_increment
-# uid                           | varchar(8)          | false    | UNI      |            | 
-# nom                           | varchar(100)        | true     |          |            | 
-# prenom                        | varchar(100)        | true     |          |            | 
-# etablissement                 | varchar(100)        | true     |          |            | 
-# classe                        | varchar(45)         | true     |          |            | 
-# sexe                          | char(1)             | true     |          |            | 
+# uid_elv                       | varchar(8)          | false    | UNI      |            | 
+# uid_adm                       | varchar(8)          | false    |          |            | 
+# uai                           | varchar(8)          | false    |          |            | 
+# cls_id                        | bigint(20)          | false    |          |            | 
+# url_publique                  | varchar(2000)       | true     |          |            | 
+# date_creation                 | timestamp           | true     |          |            | 
+# droits_pre                    | int(11)             | true     |          | 0          | 
+# droits_elv                    | int(11)             | true     |          | 0          | 
+# droits_pen                    | int(11)             | true     |          | 0          | 
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 #
 class Carnets < Sequel::Model(:carnets)
@@ -23,13 +26,14 @@ class Carnets < Sequel::Model(:carnets)
   plugin :composition
 
   # Referential integrity
-  one_to_many :entrees
-  one_to_many :rights
+  one_to_many :carnets_onglets
+  one_to_many :droits_specifiques
+  one_to_many :saisies
 
   # Not nullable cols and unicity validation
   def validate
     super
-    validates_presence [:uid]
-    validates_unique :uid
+    validates_presence [:uid_elv, :uid_adm, :uai, :cls_id]
+    validates_unique :uid_elv
   end
 end

@@ -10,13 +10,24 @@
 
     <title>Laclasse Suivi Perso</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href='<%= APP_PATH %>/css/bootstrap.min.css' rel='stylesheet' />
+    <link href="<%= APP_PATH %>/app/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Custom styles for this template -->
-    <link href="<%= APP_PATH %>/css/navbar.css" rel="stylesheet">
+    <link href="<%= APP_PATH %>/app/bower_components/angular-carousel/dist/angular-carousel.min.css"  rel="stylesheet" type="text/css" >
 
-    <link href="<%= APP_PATH %>/css/carnets.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="<%= APP_PATH %>/app/styles/navbar.css" rel="stylesheet"> -->
+
+    <link href="<%= APP_PATH %>/app/styles/asides/aside-lists.css" rel="stylesheet">
+    <link href="<%= APP_PATH %>/app/styles/asides/aside-carnet-eleve.css" rel="stylesheet">
+    <link href="<%= APP_PATH %>/app/styles/mains/main-damier.css" rel="stylesheet">
+    <link href="<%= APP_PATH %>/app/styles/mains/main-classes.css" rel="stylesheet">
+    <link href="<%= APP_PATH %>/app/styles/mains/main-carnets.css" rel="stylesheet">
+    <link href="<%= APP_PATH %>/app/styles/mains/main-carnet-eleve.css" rel="stylesheet">
+    <link href="<%= APP_PATH %>/app/styles/mains/main-rights-carnet-eleve.css" rel="stylesheet">
+    <link href="<%= APP_PATH %>/app/bower_components/charte-graphique-laclasse-com/css/main.css"  rel="stylesheet" type="text/css" >
+    <link href="<%= APP_PATH %>/app/bower_components/font-awesome/css/font-awesome.min.css"  rel="stylesheet" type="text/css" >
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -27,36 +38,13 @@
 
   <body>
 
-    <!-- <div class="container"> -->
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="container-fluid" style="height:100%">
 
-      <!-- Static navbar -->
-      <!-- <div  role="navigation">
-        <div > -->
-          <!--button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button-->
-          <!-- <a href="#">Laclasse.com -&gt; Suivi Personnel</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <% unless is_logged? %>
-            <li>
-            <a href='<%= APP_PATH %>/login' title='Connexion avec Laclasse.com'>Connexion</a><br>
-            </li>
-            <% else %>
-            <li>
-            <a href='<%= APP_PATH %>/logout' title='Déconnexion de Laclasse.com'>Déconnexion</a>
-            </li>
-            <% end %>
-          </ul> -->
-        <!-- </div>/.nav-collapse  -->
-      <!-- </div> -->
+      <div id="flash"></div>
 
       <!-- Main component for a primary marketing message or call to action -->
-      <div class="app">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0; height:100%">
         <%= yield %>
       </div>
 
@@ -66,9 +54,29 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="<%= APP_PATH %>/js/jquery-1.10.2.js"></script>
-    <script src="<%= APP_PATH %>/js/jquery-ui-1.10.4.custom.min.js"></script>
-    <script src "<%= APP_PATH %>/js/bootstrap.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/jquery/dist/jquery.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular/angular.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-i18n/angular-locale_fr-fr.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-cookies/angular-cookies.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-touch/angular-touch.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-loader/angular-loader.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-carousel/dist/angular-carousel.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/textAngular/dist/textAngular-sanitize.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/textAngular/dist/textAngular.min.js"></script>
+    <script src="<%= APP_PATH %>/app/bower_components/angular-ui-sortable/sortable.min.js"></script>
+
+    <script src="<%= APP_PATH %>/app/scripts/directives/directives.js"></script>
+    <script src="<%= APP_PATH %>/app/scripts/services/services.js"></script>
+    <script src="<%= APP_PATH %>/app/scripts/filters/filters.js"></script>
+    <script src="<%= APP_PATH %>/app/scripts/controllers/controllers.js"></script>
+    <script src="<%= APP_PATH %>/app/scripts/app.js"></script>
+    <!--<script src "<%= APP_PATH %>/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>-->
     
   </body>
 </html>

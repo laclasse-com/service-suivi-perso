@@ -5,7 +5,7 @@ require 'bundler'
 require "sinatra/reloader"
 require_relative 'config/env'
 
-Bundler.require( :default, ENV['RACK_ENV'].to_sym )     # require tout les gems définis dans Gemfile
+Bundler.require(:default, :development)     # require tout les gems définis dans Gemfile
 
 # DIR Method
 def __DIR__(*args)

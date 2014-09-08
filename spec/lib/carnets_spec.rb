@@ -40,7 +40,7 @@ describe 'CarnetsLibTest' do
 	end
 
 	it "ajoute les couleurs pour les carnets en paramètre" do
-		carnets = CarnetsLib.couleurs_carnets([carnets1_hash, carnets2_hash])
+		carnets = CarnetsLib.couleurs_carnets([carnets1_hash, carnets2_hash], true)
 		carnets[0][:color].should == PANEL_COLOR[0]
 	end
 

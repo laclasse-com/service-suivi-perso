@@ -2,28 +2,28 @@
 
 URL_REQUEST_TEST = ""
 
-STORAGE_DIR = 'storages'
+# STORAGE_DIR = 'storages'
 
-STORAGE_ROOT = File.join(APP_ROOT, STORAGE_DIR)
+# STORAGE_ROOT = File.join(APP_ROOT, STORAGE_DIR)
 
 # répertoire de stockage des vignettes de l'utilisateur, dans sont cartable.
 # Ce répertoire est invisible depuis le client.
 # Un même répertoire est créé à la racine de l'espace de partage.
-THUMBNAILS_DIR = '.tmb'
+# THUMBNAILS_DIR = '.tmb'
 
-TEMP_DIRECTORY = File.join(STORAGE_DIR, "tmp")
+# TEMP_DIRECTORY = File.join(STORAGE_DIR, "tmp")
 
-LANG = "fr"
+# LANG = "fr"
 
 # Connexion avec l'annuaire ENT
-ANNUAIRE = {
-	:url => "http://www.dev.laclasse.com/api",
-	:service_user => "app/users/",
-	:service_users => "app/users/liste/",
-	:service_regroupement => "app/regroupements/",
-	:app_id => "SUIVIELV",
-	:secret => "COGJDRZ9ZG4Apkz0GgDWFaLG+yKl/SKIXRHkwkL9OrU="
-}
+# ANNUAIRE = {
+# 	:url => "http://www.dev.laclasse.com/api",
+# 	:service_user => "app/users/",
+# 	:service_users => "app/users/liste/",
+# 	:service_regroupement => "app/regroupements/",
+# 	:app_id => "SUIVIELV",
+# 	:secret => "2b9r1HHkatMfvW3MljCtNZOWvBBbODigewZrPw5P6U8="
+# }
 
 #les couleurs du panel de l'interface
 COLOR = {

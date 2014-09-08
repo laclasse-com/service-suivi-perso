@@ -1,0 +1,42 @@
+@font-face { 	
+	font-family: "Futura Bold"; 	
+	src: url('/app/styles/font/Futura TTF/FUTUB___.TTF'); 
+}
+
+@font-face { 	
+	font-family: "Futura Light"; 	
+	src: url('/app/styles/font/Futura TTF/FUTUL___.TTF'); 
+}
+
+@font-face { 	
+	font-family: "Futura Medium"; 	
+	src: url('/app/styles/font/Futura TTF/FUTUH___.TTF'); 
+}
+
+@font-face { 	
+	font-family: "Futura book"; 	
+	src: url('/app/styles/font/Futura TTF/FUTURA__.TTF'); 
+}
+
+
+.classe-name, .college-name {
+	position: absolute;
+   	width: 100%;
+    text-align: center;
+}
+
+.college-name{
+	top:7em;
+	left: 0;
+	font-family: "Futura Light";
+	font-size:1.2em;
+	font-weight: bold;
+}
+
+.classe-name{
+	top: 0.5em;
+	left: 0;
+	font-family: "Futura Bold";
+	font-size:5em;
+	font-weight: bold;
+}

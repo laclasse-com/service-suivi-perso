@@ -1,12 +1,12 @@
-<div ng-app="myApp" class="app">
+<!-- <div ng-app="myApp" class="app">
     <div  ng-controller="RootCtrl">
         <span ng-init= "initCurrentUser()"></span>
-    </div>
+    </div> -->
   
     <!-- <div id="flashMessage" ng-class="flashStyle" ng-show="flashMessage">
         {{flashMessage}}
     </div> -->
-    <div class="banniere" ng-controller="RootCtrl">
+    <!-- <div class="banniere" ng-controller="RootCtrl">
         <div class="img_laclasse">
            <object id="logolaclasse" type="image/svg+xml" data="img/logolaclasse.svg" class="img_laclasse"></object>
         </div>
@@ -22,21 +22,16 @@
                 <strong class="nom">{{current_user.info.LaclassePrenom}}  {{current_user.info.LaclasseNom}} </strong>
             </span>
         </div>    
-    </div>
-    <div class="row-fluid">
-        <div ng-view></div>
+    </div> -->
+<!--     <div class="row-fluid">
+        <div ui-view></div>
     </div>    
 
-    <script src="<%= APP_PATH %>/js/lib/angular/angular.min.js"></script>
-    <script src="<%= APP_PATH %>/js/lib/angular/angular-resource.min.js"></script>
-    <script src="<%= APP_PATH %>/js/lib/angular/angular-cookies.min.js"></script>
-    <script src="<%= APP_PATH %>/js/lib/angular/angular-loader.min.js"></script>
-    <script src="<%= APP_PATH %>/js/lib/angular/angular-sanitize.min.js"></script>
-    <script src="<%= APP_PATH %>/js/directives.js"></script>
-    <script src="<%= APP_PATH %>/js/services.js"></script>
-    <script src="<%= APP_PATH %>/js/filters.js"></script>
-    <script src="<%= APP_PATH %>/js/controllers.js"></script>
-    <script src="<%= APP_PATH %>/js/app.js"></script>
-    <script src "<%= APP_PATH %>/js/ui-bootstrap.min.js"></script>
-    <script src "<%= APP_PATH %>/js/ui-bootstrap-tpls.min.js"></script>
+
+</div> -->
+
+<div data-ng-app="myApp" style="height:100%">
+  <div class="row-fluid" style="height:100%">
+    <div style="height:100%" ui-view=></div>
+  </div>
 </div>

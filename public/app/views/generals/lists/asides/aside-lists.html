@@ -1,0 +1,29 @@
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="row explicatif">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<span>Qu'est ce que le suivi ?</span>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top:1.5em">
+				<span>Petit texte explicatif et avertissement concernant le contenu des publications sur les données personnelles.</span>		
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<span>Qui peut créer un suivi</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="row recherche">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<span>Rechercher un élève :</span>
+			</div>
+			<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+				<input class="form-control input-sm" type="text" placeholder="entrer un nom" ng-model="nameElv">
+			</div>
+			<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 toolbar-suivi toolbar-suivi-search" ng-click="search({{nameElv}})">
+			</div>
+			<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 toolbar-suivi toolbar-suivi-del" ng-click="delSearch()">
+			</div>
+		</div>
+	</div>
+</div>

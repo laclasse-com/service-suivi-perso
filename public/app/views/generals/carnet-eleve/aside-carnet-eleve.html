@@ -1,0 +1,225 @@
+<div class="row carnet-eleve-contener">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+		<div class="row " style="display: table-row">
+			<div class="col-xs-1 col-sm-1 col-md-5 col-lg-5 avatar-carnet">
+				<div class="rouge">
+					<img src="/app/bower_components/charte-graphique-laclasse-com/images/avatar_feminin.svg" alt="">					
+				</div>
+			</div>
+			<div class="col-xs-1 col-sm-1 col-md-7 col-lg-7 eleve-info">
+				<div class="eleve-info-firstname">
+					<span >Sophie</span>					
+				</div>
+				<div class="eleve-info-lastname">
+					<span >Delaville</span>
+				</div>
+				<div>
+					<span>5°4 - Collège Charpak</span>
+				</div>
+				<div>
+					<span>née le 27/10/2011</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 infos-detaillees">
+		<accordion close-others="true">
+			<accordion-group is-open="familleOpen">
+				<accordion-heading>
+					<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': familleOpen, 'toolbar-suivi-arrow-right': !familleOpen}"></i>
+					Contacts Famille
+				</accordion-heading>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">					
+						<div class="carnet-checkbox">
+							<input type="checkbox" value="1" id="carnetCheckbox" ng-model="chk1" name="" />
+			  				<label for="carnetCheckbox"></label>					
+						</div>
+						<div class="prefix-infos">
+							adresse email de l'élève:
+						</div>
+						<div class="infos-famille">
+							sdelaville456@laclasse.com
+						</div>
+					</div>					
+				</div>
+				<div class="row" style="margin-top:15px">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="carnet-checkbox">
+							<input type="checkbox" value="1" id="carnetCheckbox2" ng-model="chk2" name="" />
+			  				<label for="carnetCheckbox2"></label>					
+						</div>
+						<div class="prefix-infos">
+							parent 1 :
+						</div>
+						<div class="infos-famille">
+							Marc Delaville
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="prefix-infos">
+							adresse du domicile :
+						</div>
+						<div class="infos-famille">
+							 Rue des Capucins, Brindas
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="prefix-infos">
+							téléphone :
+						</div>
+						<div class="infos-famille">
+							 04 78 74 52 34
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="prefix-infos">
+							téléphone portable :
+						</div>
+						<div class="infos-famille">
+							 06 23 34 12 05
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="prefix-infos">
+							adresse email :
+						</div>
+						<div class="infos-famille">
+							 mdelaville67@laclasse.com
+						</div>
+					</div>
+				</div>
+				<div class="row" style="margin-top:15px">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="carnet-checkbox">
+							<input type="checkbox" value="1" id="carnetCheckbox3" ng-model="chk3" name="" />
+			  				<label for="carnetCheckbox3"></label>					
+						</div>
+						<div class="prefix-infos">
+							parent 2 :
+						</div>
+						<div class="infos-famille">
+							Florence Delaville
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="prefix-infos">
+							adresse du domicile :
+						</div>
+						<div class="infos-famille">
+							 Rue des Capucins, Brindas
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="prefix-infos">
+							téléphone :
+						</div>
+						<div class="infos-famille">
+							 04 78 74 52 34
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="prefix-infos">
+							téléphone portable :
+						</div>
+						<div class="infos-famille">
+							 06 12 56 78 23
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="prefix-infos">
+							adresse email :
+						</div>
+						<div class="infos-famille">
+							 fdelaville37@laclasse.com
+						</div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top:15px">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="infos-famille" style="text-decoration: underline" ng-show="chk1||chk2||chk3">
+							envoyer un message aux personnes cochées
+						</div>
+					</div>
+				</div>
+
+			</accordion-group>
+
+			<accordion-group is-open="collegeOpen">
+				<accordion-heading>
+					<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': collegeOpen, 'toolbar-suivi-arrow-right': !collegeOpen}"></i>
+					Contacts Collège
+				</accordion-heading>
+
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">					
+						<div class="carnet-checkbox">
+							<input type="checkbox" value="1" id="carnetCheckbox4" ng-model="masterchk" name="" />
+			  				<label for="carnetCheckbox4"></label>					
+						</div>
+						<div class="prefix-infos">
+							tout cocher / décocher
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">					
+						<div class="carnet-checkbox">
+							<input type="checkbox" value="1" id="carnetCheckbox5" ng-model="chk4" ng-checked="masterchk" name="" />
+			  				<label for="carnetCheckbox5"></label>					
+						</div>
+						<div class="prefix-infos">
+							professeur principal :
+						</div>
+						<div class="infos-famille">
+							 Annie Chandon
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">					
+						<div class="carnet-checkbox">
+							<input type="checkbox" value="1" id="carnetCheckbox6" ng-model="chk5" ng-checked="masterchk"name="" />
+			  				<label for="carnetCheckbox6"></label>					
+						</div>
+						<div class="prefix-infos">
+							anglais :
+						</div>
+						<div class="infos-famille">
+							 Nathalie Bonjour
+						</div>
+					</div>					
+				</div>
+
+				<div class="row" style="margin-top:15px">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="infos-famille" style="text-decoration: underline" ng-show="masterchk||chk4||chk5">
+							envoyer un message aux personnes cochées
+						</div>
+					</div>
+				</div>
+			</accordion-group>
+
+			<accordion-group is-open="actionOpen">
+				<accordion-heading>
+					<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': actionOpen, 'toolbar-suivi-arrow-right': !actionOpen}"></i>
+					Action
+				</accordion-heading>
+			</accordion-group>
+		</accordion>
+		<div class="end-border"></div>
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="button-right" ng-click="rights()">
+			<div class="toolbar-suivi toolbar-suivi-carnet toolbar-suivi-right"></div>
+		</div>
+		<div class="div-right" ng-click="rights()">
+			<span>Gérer les droits</span>			
+		</div>
+	</div>
+
+	<div class="exit-carnet">
+		<div class="exit-carnet-button" ng-click="return()">
+			<span>quitter le carnet de suivi</span>
+		</div>
+	</div>
+</div>
