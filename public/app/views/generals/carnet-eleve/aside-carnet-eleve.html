@@ -3,21 +3,21 @@
 		<div class="row " style="display: table-row">
 			<div class="col-xs-1 col-sm-1 col-md-5 col-lg-5 avatar-carnet">
 				<div class="rouge">
-					<img src="/app/bower_components/charte-graphique-laclasse-com/images/avatar_feminin.svg" alt="">					
+					<img src="{{user.sexe == 'F' ? avatar_f : avatar_m}}" alt="">					
 				</div>
 			</div>
 			<div class="col-xs-1 col-sm-1 col-md-7 col-lg-7 eleve-info">
 				<div class="eleve-info-firstname">
-					<span >Sophie</span>					
+					<span >{{user.prenom}}</span>					
 				</div>
 				<div class="eleve-info-lastname">
-					<span >Delaville</span>
+					<span >{{user.nom}}</span>
 				</div>
 				<div>
-					<span>5°4 - Collège Charpak</span>
+					<span>{{user.classe.libelle}} - {{user.classe.nom_etablissement}}</span>
 				</div>
 				<div>
-					<span>née le 27/10/2011</span>
+					<span>{{user.sexe == "F" ? "née le " : "né le "}}{{user.date_naissance|date:'dd/MM/yyyy'}}</span>
 				</div>
 			</div>
 		</div>
@@ -33,28 +33,28 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">					
 						<div class="carnet-checkbox">
-							<input type="checkbox" value="1" id="carnetCheckbox" ng-model="chk1" name="" />
-			  				<label for="carnetCheckbox"></label>					
+							<input type="checkbox" value="1" id="familleCheckbox0" ng-model="user.done" ng-disabled="user.email=='Non renseigné'"/>
+			  				<label for="familleCheckbox0"></label>					
 						</div>
 						<div class="prefix-infos">
 							adresse email de l'élève:
 						</div>
 						<div class="infos-famille">
-							sdelaville456@laclasse.com
+							{{user.email}}
 						</div>
 					</div>					
 				</div>
-				<div class="row" style="margin-top:15px">
+				<div class="row" style="margin-top:15px" ng-repeat="parent in parents">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="carnet-checkbox">
-							<input type="checkbox" value="1" id="carnetCheckbox2" ng-model="chk2" name="" />
-			  				<label for="carnetCheckbox2"></label>					
+							<input type="checkbox" value="1" id="{{'familleCheckbox'+$index+1}}" ng-model="parent.done" ng-disabled="parent.email=='Non renseigné'"/>
+			  				<label for="{{'familleCheckbox'+$index+1}}"></label>					
 						</div>
 						<div class="prefix-infos">
-							parent 1 :
+							parent {{$index + 1}} :
 						</div>
 						<div class="infos-famille">
-							Marc Delaville
+							{{parent.fullname}}
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -62,69 +62,31 @@
 							adresse du domicile :
 						</div>
 						<div class="infos-famille">
-							 Rue des Capucins, Brindas
+							{{parent.adresse | lowercase}}
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="prefix-infos">
-							téléphone :
+							ville du domicile :
 						</div>
 						<div class="infos-famille">
-							 04 78 74 52 34
+							{{parent.ville | lowercase}}
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="prefix-infos">
-							téléphone portable :
+							téléphone : 
 						</div>
 						<div class="infos-famille">
-							 06 23 34 12 05
+							 {{parent.telephones.tel_dom}}
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="prefix-infos">
-							adresse email :
+							téléphone portable : 
 						</div>
 						<div class="infos-famille">
-							 mdelaville67@laclasse.com
-						</div>
-					</div>
-				</div>
-				<div class="row" style="margin-top:15px">
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<div class="carnet-checkbox">
-							<input type="checkbox" value="1" id="carnetCheckbox3" ng-model="chk3" name="" />
-			  				<label for="carnetCheckbox3"></label>					
-						</div>
-						<div class="prefix-infos">
-							parent 2 :
-						</div>
-						<div class="infos-famille">
-							Florence Delaville
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<div class="prefix-infos">
-							adresse du domicile :
-						</div>
-						<div class="infos-famille">
-							 Rue des Capucins, Brindas
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<div class="prefix-infos">
-							téléphone :
-						</div>
-						<div class="infos-famille">
-							 04 78 74 52 34
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<div class="prefix-infos">
-							téléphone portable :
-						</div>
-						<div class="infos-famille">
-							 06 12 56 78 23
+							 {{parent.telephones.tel_port}}
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -132,14 +94,14 @@
 							adresse email :
 						</div>
 						<div class="infos-famille">
-							 fdelaville37@laclasse.com
+							 {{parent.email}}
 						</div>
 					</div>
 				</div>
 
 				<div class="row" style="margin-top:15px">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<div class="infos-famille" style="text-decoration: underline" ng-show="chk1||chk2||chk3">
+						<div class="infos-famille" style="text-decoration: underline" ng-show="oneNeedsMet(user.parents)||user.done">
 							envoyer un message aux personnes cochées
 						</div>
 					</div>
@@ -156,53 +118,34 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">					
 						<div class="carnet-checkbox">
-							<input type="checkbox" value="1" id="carnetCheckbox4" ng-model="masterchk" name="" />
-			  				<label for="carnetCheckbox4"></label>					
+							<input type="checkbox" value="1" id="collegeCheckbox0"  ng-checked="allNeedsMet()" ng-click="allNeedsClicked()"/>
+			  				<label for="collegeCheckbox0"></label>					
 						</div>
 						<div class="prefix-infos">
 							tout cocher / décocher
 						</div>
 					</div>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">					
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="contact in contactCollege">					
 						<div class="carnet-checkbox">
-							<input type="checkbox" value="1" id="carnetCheckbox5" ng-model="chk4" ng-checked="masterchk" name="" />
-			  				<label for="carnetCheckbox5"></label>					
+							<input type="checkbox" value="false" id="{{'collegeCheckbox'+$index+1}}" ng-model="contact.done"/>
+			  				<label for="{{'collegeCheckbox'+$index+1}}"></label>					
 						</div>
 						<div class="prefix-infos">
-							professeur principal :
+							{{contact.matiere}} :
 						</div>
 						<div class="infos-famille">
-							 Annie Chandon
+							{{contact.fullname}}
 						</div>
-					</div>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">					
-						<div class="carnet-checkbox">
-							<input type="checkbox" value="1" id="carnetCheckbox6" ng-model="chk5" ng-checked="masterchk"name="" />
-			  				<label for="carnetCheckbox6"></label>					
-						</div>
-						<div class="prefix-infos">
-							anglais :
-						</div>
-						<div class="infos-famille">
-							 Nathalie Bonjour
-						</div>
-					</div>					
+					</div>			
 				</div>
 
 				<div class="row" style="margin-top:15px">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<div class="infos-famille" style="text-decoration: underline" ng-show="masterchk||chk4||chk5">
+						<div class="infos-famille" style="text-decoration: underline" ng-show="oneNeedsMet(contactCollege)">
 							envoyer un message aux personnes cochées
 						</div>
 					</div>
 				</div>
-			</accordion-group>
-
-			<accordion-group is-open="actionOpen">
-				<accordion-heading>
-					<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': actionOpen, 'toolbar-suivi-arrow-right': !actionOpen}"></i>
-					Action
-				</accordion-heading>
 			</accordion-group>
 		</accordion>
 		<div class="end-border"></div>

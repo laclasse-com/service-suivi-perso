@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-puts "loading config/env"
-require __DIR__('env')
-
 puts "loading config/database"
 require __DIR__('database')
 

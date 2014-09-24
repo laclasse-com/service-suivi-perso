@@ -1,10 +1,10 @@
 <div class="row" style="height:100%">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="height:100%; padding:0">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="min-height:100%; padding:0">
 			<ul ui-sortable class="nav nav-tabs ">
 	      <li  ng-repeat="tab in tabs" ng-class="{active: tab.active}">
-	        <a ng-click="activeTab(tab)" ng-dblclick="changeNameTab(tab)" ng-show="!tab.editable">{{tab.name}} <i ng-click="removeTab(tab)" class="toolbar-suivi toolbar-suivi-del toolbar-suivi-del-carnet"></i> </a>
+	        <a ng-click="activeTab(tab)" ng-dblclick="tab.editable=true" ng-show="!tab.editable">{{tab.nom}} <i ng-click="removeTab(tab)" class="toolbar-suivi toolbar-suivi-del toolbar-suivi-del-carnet"></i> </a>
 	        
-	        <input type="text" class="tab-editable" ng-show="tab.editable" ng-model="tab.name" ng-blur="changeNameTab(tab)" autofocus>	   	      	
+	        <input type="text" class="tab-editable" ng-show="tab.editable" ng-model="tab.nom" ng-blur="changeNameTab(tab)" autofocus>	   	      	
 	      </li>
 	      <li ng-class="{active: false}">
 	        <a ng-click="addTab()"><strong>+</strong></a>
@@ -16,25 +16,25 @@
 			    <div text-angular ta-target-toolbars="{{tab.id}}" ng-model="tab.htmlcontent" class="text-angular-content" placeholder="publier un nouveau message dans le suivi de Sophie Delaville"></div>
 			    <div class="laclasse-toolbar-text-angular">
 						<div text-angular-toolbar class="toolbar" name="{{tab.id}}" ta-toolbar="[['h1','h6'],['bold','italics','underline'],['justifyLeft','justifyCenter','justifyRight'],['insertLink']]"></div>
-						<div class="publier" ng-click="addEntree(tab.id)" ><i class="toolbar-suivi toolbar-suivi-add"></i><span>PUBLIER</span></div>
+						<div class="publier" ng-click="addEntree(tab)" ><i class="toolbar-suivi toolbar-suivi-add"></i><span>PUBLIER</span></div>
 			    </div>
 	  		</div>
     		<div class="entree" style="border: 2px solid #E8C254" ng-repeat="entree in tab.entrees">
 					<div class="avatar rouge" style="border-right: 2px solid #E8C254" >
-						<img src="/app/bower_components/charte-graphique-laclasse-com/images/avatar_feminin.svg" alt="">					
+						<img src="{{entree.owner.avatar}}" alt="">					
 					</div>
 					<div class="message" style="background-color: rgba(232, 194, 84, 0.3)" >
 						<div class="message-info">
 							<div class="message-info-profil">
-								<span style="vertica" ><strong>Annie Chandon-Français-Collège Charpak</strong></span> 								
+								<span style="vertica" ><strong>{{entree.owner.infos}}</strong></span> 								
 							</div>
 							<div class="message-info-date">
 								<span>{{entree.date|date:'EEEE d MMMM yyyy - H:mm'}}</span>								
 							</div>
-							<div class="message-edit"><i ng-click="editEntree(tab.id, entree)" class="toolbar-suivi toolbar-suivi-edit"></i></div> 
-							<div class="message-corbeille"><i ng-click="removedEntree(tab.id, entree)" class="toolbar-suivi toolbar-suivi-corbeille"></i></div>
+							<div class="message-edit"><i ng-click="editEntree(tab, entree)" class="toolbar-suivi toolbar-suivi-edit"></i></div> 
+							<div class="message-corbeille"><i ng-click="removedEntree(tab, entree)" class="toolbar-suivi toolbar-suivi-corbeille"></i></div>
 						</div>
-						<div ta-bind ng-model="entree.message" class="message-text"></div>
+						<div ta-bind ng-model="entree.contenu" class="message-text"></div>
 					</div>
     		</div>
     	</div>

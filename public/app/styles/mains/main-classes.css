@@ -31,6 +31,7 @@
 	font-family: "Futura Light";
 	font-size:1.2em;
 	font-weight: bold;
+	text-transform: capitalize;
 }
 
 .classe-name{

@@ -23,21 +23,21 @@ class SinatraApp < Sinatra::Base
   # Routes nécessitant une authentification
   ['/?', '/login' ].each { |route| 
     before APP_PATH + route do 
-      # login! env['REQUEST_PATH'] unless is_logged?
+      login! env['REQUEST_PATH'] unless is_logged?
     end
   }
 
   get APP_PATH + '/' do
-    # if is_logged?
+    if is_logged?
       erb :app
-    # else
-    #   erb "<div class='jumbotron'>
-    #         <h1>Public page</h1>
-    #         <p class='lead'>This starter app is an example of Omniauth-cas and sinatra integration based on rack system.<br />
-    #         Please try to connect with CAS sso...
-    #         </p>
-    #         </div>"
-    # end  
+    else
+      erb "<div class='jumbotron'>
+            <h1>Public page</h1>
+            <p class='lead'>This starter app is an example of Omniauth-cas and sinatra integration based on rack system.<br />
+            Please try to connect with CAS sso...
+            </p>
+            </div>"
+    end  
   end
 
   get APP_PATH + '/auth/:provider/callback' do

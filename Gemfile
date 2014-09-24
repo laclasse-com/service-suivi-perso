@@ -18,6 +18,7 @@ gem 'rest-client'
 gem 'savon'
 gem 'nokogiri'
 gem 'rack-rewrite'
+gem 'annuaire', :git => 'git@github.com:laclasse-com/gem_annuaire.git'
 
 group :development do
   gem 'sinatra-contrib'

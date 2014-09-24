@@ -50,14 +50,15 @@ end
 # Configuration du service d'annuaire de l'ENT
 #
 ANNUAIRE = { 
-  url: 'http://www.dev.laclasse.com',
+  url: 'http://www.dev.laclasse.com/api',
   app_id: 'SUIVIELV',
-  api_key: 'geQsB9QTsVLACVjdjTGMIWavrK/4KKpzUoNzSmZ8+QY=',
+  api_key: '2b9r1HHkatMfvW3MljCtNZOWvBBbODigewZrPw5P6U8=',
   #api_mode: 'v2', 
   api_mode: 'v3', 
   # service_annuaire_user: '/pls/public/!ajax_server.service?serviceName=serviceApiUser&uid=' pour l'annuaire v2
-  service_annuaire_user: '/api/app/users/',
-  service_annuaire_user_liste: '/api/app/users/liste/'
+  service_annuaire_user: 'app/users/',
+  service_annuaire_user_liste: 'app/users/liste/',
+  service_annuaire_regroupements: '/app/regroupements/'
 }
 
 #

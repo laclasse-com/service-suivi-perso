@@ -3,7 +3,7 @@
 /* Directives */
 
 
-angular.module('myApp.directives', ['ui.sortable']).
+angular.module('suiviApp', ['ui.sortable']).
   directive('appVersion', ['version', function(version) {
     return function(scope, elm, attrs) {
       elm.text(version);
