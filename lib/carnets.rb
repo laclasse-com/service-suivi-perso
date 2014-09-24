@@ -7,7 +7,7 @@ module CarnetsLib
   def search_carnets_of response_annuaire
   	carnets = []
   	response_annuaire.each do |reponse|
-      reponse['sexe'].nil? ? avatar = AVATAR[:M] : avatar = AVATAR[reponse['sexe'].to_sym]
+      reponse['sexe'].nil? ? avatar = APP_PATH + AVATAR[:M] : avatar = APP_PATH + AVATAR[reponse['sexe'].to_sym]
   		carnet = Carnet.new(nil, reponse['id_ent'])
   		if carnet.exist?
   			carnet.read
@@ -41,7 +41,7 @@ module CarnetsLib
   	}
   	carnets.push(classe)
   	response_annuaire['eleves'].each do |reponse|
-      reponse['sexe'].nil? ? avatar = AVATAR[:M] : avatar = AVATAR[reponse['sexe'].to_sym]
+      reponse['sexe'].nil? ? avatar = APP_PATH + AVATAR[:M] : avatar = APP_PATH + AVATAR[reponse['sexe'].to_sym]
   		carnet = Carnet.new(nil, reponse['id_ent'])
   		if carnet.exist?
   			carnet.read
