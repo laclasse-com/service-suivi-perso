@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:laclasse-com/gem_annuaire.git
+  remote: https://github.com/laclasse-com/gem_annuaire.git
   revision: 1ed105e05ec4a2f5d774c0da3f8333f624377a40
   specs:
     annuaire (0.0.1)
