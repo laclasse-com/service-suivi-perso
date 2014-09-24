@@ -31,3 +31,4 @@ config/options.rb
 config/rights_constants.rb
 
 public/node_modules
+public/app/scripts/constants.js

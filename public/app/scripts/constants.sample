@@ -1,0 +1,4 @@
+'use strict';
+
+angular.module('suiviApp')
+.constant('APP_PATH', 'http://localhost:9292/v3/suivi');
