@@ -15,7 +15,7 @@ namespace :db do
     end
   end
 
-  desc 'Dumps the schema to db/schema/sequel_schema.db'
+  desc 'Dumps the schema to db/schema/sequel_schema.rb'
   task schemadump: :load_config do
     require './config/database'
     DB.extension :schema_dumper

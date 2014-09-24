@@ -4,7 +4,6 @@ require 'rubygems'
 require 'bundler'
 require "sinatra/reloader"
 require 'annuaire'
-require_relative 'config/env'
 
 Bundler.require(:default, :development)     # require tout les gems définis dans Gemfile
 
