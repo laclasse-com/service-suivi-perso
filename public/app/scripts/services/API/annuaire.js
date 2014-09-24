@@ -99,6 +99,9 @@ angular.module('suiviApp')
 				classe_lib = classe.classe_libelle;
 			};
 		});
+		if (matiere.length > 20) {
+			matiere = matiere.substr(0, 20) + "...";
+		};
 		switch ( user.profil_id ) {
 			case 'DIR':
 	            infos = user.prenom + " " + user.nom.toLowerCase() + " - directeur - " + etab;
@@ -111,9 +114,9 @@ angular.module('suiviApp')
 				break;
 			case 'ENS':
 				if (prof_p == 'O') {
-					infos = user.prenom + " " + user.nom.toLowerCase() + " - " + matiere + " - professeur principal - " + etab;
+					infos = user.prenom + " " + user.nom.toLowerCase() + " - " + matiere + " - professeur principal";
 				} else {
-					infos = user.prenom + " " + user.nom.toLowerCase() + " - " + matiere + " - " + etab;
+					infos = user.prenom + " " + user.nom.toLowerCase() + " - " + matiere + " - professeur";
 				};
 				break;
 			case 'DOC':
