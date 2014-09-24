@@ -131,6 +131,7 @@ angular.module('suiviApp')
           _.each($scope.tabs, function(t){
             if (t.id == tab.id) {
               entree.id = reponse.id;
+              entree.owner.avatar = APP_PATH + entree.owner.avatar
               t.entrees.push(entree);
               t.htmlcontent = "";
             };
