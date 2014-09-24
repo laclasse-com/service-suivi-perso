@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('CarnetCtrl', ['$scope', '$stateParams', 'Onglets', 'Entrees', 'Annuaire', 'CurrentUser', 'AVATAR_M', 'AVATAR_F', function($scope, $stateParams, Onglets, Entrees, Annuaire, CurrentUser, AVATAR_M, AVATAR_F) {
+.controller('CarnetCtrl', ['$scope', '$stateParams', 'Onglets', 'Entrees', 'Annuaire', 'CurrentUser', 'AVATAR_M', 'AVATAR_F', 'APP_PATH' function($scope, $stateParams, Onglets, Entrees, Annuaire, CurrentUser, AVATAR_M, AVATAR_F, APP_PATH) {
 
   Onglets.get({uid: $stateParams.id}, function(reponse){
     console.log(reponse);
@@ -11,6 +11,7 @@ angular.module('suiviApp')
       _.each(reponse.onglets, function(tab){
         _.each(tab.entrees, function(entree){
           entree.date = new Date(entree.date);
+          entree.owner.avatar = APP_PATH + entree.owner.avatar;
         });
       });
       $scope.tabs = reponse.onglets;      

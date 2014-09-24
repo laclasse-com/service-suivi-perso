@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('AsideCarnetCtrl', ['$scope', '$state', '$stateParams', 'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', function($scope, $state, $stateParams, CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement) {
+.controller('AsideCarnetCtrl', ['$scope', '$state', '$stateParams', 'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', function($scope, $state, $stateParams, CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH) {
   
   $scope.contactCollege = [];
   $scope.parents = [];
@@ -21,8 +21,8 @@ angular.module('suiviApp')
     $scope.contactCollege = Annuaire.get_contact_college(reponse.profs);
   });
 
-  $scope.avatar_m = AVATAR_M;
-  $scope.avatar_f = AVATAR_F;
+  $scope.avatar_m = APP_PATH + AVATAR_M;
+  $scope.avatar_f = APP_PATH + AVATAR_F;
 
   $scope.allNeedsClicked = function () {
     var newValue = !$scope.allNeedsMet();

@@ -59,7 +59,7 @@
 	display:block;
 	width:16px;
 	height:16px;
-	background: url('/app/images/toolbar_suivi.png') 0 0 no-repeat;
+	background: url('../../images/toolbar_suivi.png') 0 0 no-repeat;
 }
 .toolbar-suivi-search{
 	background-position: 0 -48px;
