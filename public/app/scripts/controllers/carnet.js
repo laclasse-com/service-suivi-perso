@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('CarnetCtrl', ['$scope', '$stateParams', 'Onglets', 'Entrees', 'Annuaire', 'CurrentUser', 'AVATAR_M', 'AVATAR_F', 'APP_PATH', function($scope, $stateParams, Onglets, Entrees, Annuaire, CurrentUser, AVATAR_M, AVATAR_F, APP_PATH) {
+.controller('CarnetCtrl', ['$scope', '$stateParams', '$modal', 'Onglets', 'Entrees', 'Annuaire', 'CurrentUser', 'AVATAR_M', 'AVATAR_F', 'APP_PATH', function($scope, $stateParams, $modal, Onglets, Entrees, Annuaire, CurrentUser, AVATAR_M, AVATAR_F, APP_PATH) {
 
   Onglets.get({uid: $stateParams.id}, function(reponse){
     console.log(reponse);
@@ -19,33 +19,7 @@ angular.module('suiviApp')
       alert(reponse[0].error);
     };
   });
-  // $scope.tabs = [
-  //   {
-  //     id: 0,
-  //     name: "Maths",
-  //     editable: false,
-  //     active: true,
-  //     htmlcontent: "",
-  //     modifEntree: null,
-  //     entrees: [
-  //                 {
-  //                   id: 0,
-  //                   message: "je suis sophie",
-  //                   date: Date.now()
-  //                 }
-  //               ]
-  //   },
-  //   {
-  //     id: 1,
-  //     name: "Anglais",
-  //     editable: false,
-  //     active: false,
-  //     htmlcontent: "",
-  //     modifEntree: null,
-  //     entrees: []
-  //   }
-  // ];
-
+  
   $scope.activeTab = function(tab){
     _.each($scope.tabs, function(t){
       if (t.id == tab.id) {
@@ -73,7 +47,7 @@ angular.module('suiviApp')
   $scope.addTab = function(){
     var newTab = {
       id: null,
-      id_carnet: null,
+      carnet_id: null,
       ordre: null,
       nom: "Nouvel onglet",
       editable: true,
@@ -85,7 +59,7 @@ angular.module('suiviApp')
     Onglets.post({uid: $stateParams.id, nom: newTab.nom}).$promise.then(function(reponse){
       if (reponse.error == undefined) {
         newTab.id = reponse.id;
-        newTab.id_carnet = reponse.id_carnet
+        newTab.carnet_id = reponse.carnet_id
         newTab.ordre = reponse.ordre
         $scope.activeTab(newTab);
         $scope.tabs.push(newTab);            
@@ -124,7 +98,7 @@ angular.module('suiviApp')
         date: Date.now()
       };
       console.log(tab);
-      Entrees.post({id_onglet: tab.id, id_carnet: tab.carnet_id, uid: entree.owner.uid, avatar: entree.owner.avatar, infos: entree.owner.infos, contenu: entree.contenu}).$promise.then(function(reponse){
+      Entrees.post({id_onglet: tab.id, carnet_id: tab.carnet_id, uid: entree.owner.uid, avatar: entree.owner.avatar, infos: entree.owner.infos, contenu: entree.contenu}).$promise.then(function(reponse){
         if (reponse.error != undefined && reponse.error != null) {
           alert(reponse.error);
         } else{
@@ -153,22 +127,6 @@ angular.module('suiviApp')
         });
       });
     };
-    // for (var i = 0; i < $scope.tabs.length; i++) {
-    //   if ($scope.tabs[i].id == tabId) {
-    //     if ($scope.tabs[i].htmlcontent.trim()=="") {return false;};
-    //     if ( $scope.tabs[i].modifEntree != null){
-    //       for (var j = 0; j < $scope.tabs[i].entrees.length; j++) {
-    //         if ($scope.tabs[i].entrees[j].id == $scope.tabs[i].modifEntree) {
-    //           $scope.tabs[i].entrees[j].message = $scope.tabs[i].htmlcontent;
-    //           $scope.tabs[i].modifEntree = null;
-    //         };
-    //       };
-    //     } else {
-           
-    //     }
-    //     $scope.tabs[i].htmlcontent = "";
-    //   };
-    // };
   };
 
   $scope.editEntree = function(tab, entree){
@@ -193,6 +151,37 @@ angular.module('suiviApp')
           }
         });
       };
+    });
+  };
+
+  $scope.modalInstanceCtrl = function ($scope, $modalInstance) {
+
+    $scope.ok = function () {
+      $modalInstance.close();
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
+  $scope.open = function (tab, entree, type) {
+
+    var modalInstance = $modal.open({
+      templateUrl: 'myModalContent.html',
+      controller: $scope.modalInstanceCtrl,
+      size: 'sm'
+    });
+
+    modalInstance.result.then(function () {
+      switch(type){
+        case 'entree':
+          $scope.removedEntree(tab, entree);
+          break;
+        case 'tab':
+        $scope.removeTab(tab);
+        break;
+      }
     });
   };
 }]);

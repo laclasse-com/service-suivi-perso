@@ -189,3 +189,12 @@
 	font-family: "Futura Light";
 	font-size: 13px;
 }
+
+.modal-header{
+	font-family: "Futura Bold";
+	font-weight: bold;
+}
+
+.modal-body{
+	font-family: "Futura Light";
+}

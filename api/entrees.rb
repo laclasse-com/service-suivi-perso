@@ -23,7 +23,7 @@ class EntreesApi < Grape::API
     desc "création d'une entrées pour un onglet"
     params {
         requires :id_onglet, type: Integer, desc: "id de l'onglet"
-        requires :id_carnet, type: Integer, desc: "id du carnet"
+        requires :carnet_id, type: Integer, desc: "id du carnet"
         requires :infos, type: String, desc: 'infos sur le proprietaire de l\'entrée'
         requires :avatar, type: String, desc: 'url de l\'avatar du proprietaire'
         requires :uid, type: String, desc: 'uid du proprietaire'
@@ -33,7 +33,7 @@ class EntreesApi < Grape::API
         onglet = Onglet.new(params[:id_onglet])
         begin
             onglet.read
-            entree = Entree.new(nil, onglet.id, params[:id_carnet], params[:uid], params[:avatar], params[:infos], params[:contenu])
+            entree = Entree.new(nil, onglet.id, params[:carnet_id], params[:uid], params[:avatar], params[:infos], params[:contenu])
             entree.create
             {id: entree.id}
         rescue Exception => e

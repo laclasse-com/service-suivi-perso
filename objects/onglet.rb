@@ -92,6 +92,7 @@ class Onglet
     onglet = Onglets[:id => @id]
     requires({:onglet => onglet}, :onglet)
     begin
+      delete_entrees
       delie_carnet
       onglet.delete
     rescue Exception => e
@@ -130,5 +131,20 @@ class Onglet
     end
     p entrees.inspect
     entrees
+  end
+
+  def delete_entrees
+    requires({:id => @id}, :id)
+    entrees_bdd = EntreesOnglets.where(:onglets_id => @id)
+    begin
+      entrees_bdd.each do |e|
+        entree = Entree.new(e.saisies_id)
+        entree.read
+        entree.delete
+      end
+    rescue Exception => e
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "delete_entrees").sub("$2", "Onglet").sub("$3", "la suppression des entrées d'un onglet")
+      raise MSG[LANG.to_sym][:error][crud].sub("$1", "delete_entrees").sub("$2", "Onglet").sub("$3", "la suppression des entrées d'un onglet")
+    end
   end
 end

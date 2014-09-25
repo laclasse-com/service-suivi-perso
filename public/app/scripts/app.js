@@ -6,7 +6,9 @@ angular.module('suiviApp', [
   'ngResource', 
   'services.messages',
   'ui.bootstrap',
+  'ui.sortable',
   'angular-carousel',
+  'angular-loading-bar',
   'textAngular'
 ]).run(['$rootScope', 'FlashServiceStyled', '$location', 'CurrentUser', function($rootScope, FlashServiceStyled, $location, CurrentUser) {
   $rootScope.$on('$stateChangeStart', function($location){

@@ -1,6 +1,7 @@
 angular.module('suiviApp')
-.config(['$stateProvider', '$urlRouterProvider', 'APP_PATH', function($stateProvider, $urlRouterProvider, APP_PATH) {
+.config(['$stateProvider', '$urlRouterProvider', 'APP_PATH', 'cfpLoadingBarProvider', function($stateProvider, $urlRouterProvider, APP_PATH, cfpLoadingBarProvider) {
   
+  cfpLoadingBarProvider.includeBar = false;
   $stateProvider
           .state('404', {
              url: '/404',

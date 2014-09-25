@@ -21,7 +21,7 @@ angular.module('suiviApp')
 	return $resource( APP_PATH + '/api/entrees/', {id_onglet: '@id_onglet'}, {
 		'get':    {method:'GET'},
 		'post':   {method:'POST', 
-				params: {id_onglet: '@id_onglet', id_carnet: '@id_carnet', uid: '@uid', avatar: '@avatar', infos: '@infos', contenu: '@contenu'}},
+				params: {id_onglet: '@id_onglet', carnet_id: '@carnet_id', uid: '@uid', avatar: '@avatar', infos: '@infos', contenu: '@contenu'}},
 		'query':  {method:'GET', isArray:true},
 		'update': {method:'PUT', url: APP_PATH + '/api/entrees/:id', params: {id: '@id', contenu: '@contenu'}},
 		'delete': {method:'DELETE', url: APP_PATH + '/api/entrees/:id', params: {id: '@id'}}
