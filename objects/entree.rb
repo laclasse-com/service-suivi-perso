@@ -7,14 +7,16 @@ class Entree
 
   attr_accessor :contenu, :date_modification
 
-  attr_reader :id, :id_onglet, :id_carnet, :uid, :infos_owner, :avatar, :date_creation
+  attr_reader :id, :id_onglet, :id_carnet, :uid, :infos_owner, :avatar, :avatar_color, :back_color, :date_creation
 
-  def initialize id=nil, id_onglet=nil, id_carnet=nil, uid=nil, avatar=AVATAR[:M], infos_owner="", contenu=""
+  def initialize id=nil, id_onglet=nil, id_carnet=nil, uid=nil, avatar=AVATAR[:M], avatar_color="rgba(235,84,84,0.7)", back_color="rgba(232,194,84,0.3)", infos_owner="", contenu=""
     @id = id
     @id_onglet =id_onglet
     @id_carnet = id_carnet
     @uid = uid
     @avatar = avatar
+    @avatar_color = avatar_color
+    @back_color = back_color
     @infos_owner = infos_owner
     @contenu = contenu
     p Time.now.utc.inspect
@@ -36,6 +38,8 @@ class Entree
       new_input.uid = @uid
       new_input.carnets_id = @id_carnet
       new_input.avatar = @avatar
+      new_input.avatar_color = @avatar_color
+      new_input.back_color = @back_color
       new_input.infos_owner = @infos_owner
       new_input.contenu = @contenu
       new_input.date_creation = @date_creation
@@ -73,6 +77,8 @@ class Entree
       @id_carnet = entree.carnets_id
       @uid = entree.uid
       @avatar = entree.avatar
+      @avatar_color = entree.avatar_color
+      @back_color = entree.back_color
       @infos_owner = entree.infos_owner
       @contenu = entree.contenu
       @date_creation = entree.date_creation

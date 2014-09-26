@@ -1,7 +1,7 @@
 #coding: utf-8
 #
 # model for 'saisies' table
-# generated 2014-09-22 16:21:16 +0200 by /usr/local/bin/rake
+# generated 2014-09-25 14:32:04 +0200 by /usr/local/bin/rake
 #
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # COLUMN_NAME                   | DATA_TYPE           | NULL? | KEY | DEFAULT | EXTRA
@@ -14,6 +14,8 @@
 # date_modification             | datetime            | true     |          |            | 
 # infos_owner                   | varchar(250)        | false    |          |            | 
 # avatar                        | varchar(200)        | false    |          |            | 
+# avatar_color                  | varchar(200)        | false    |          |            | 
+# back_color                    | varchar(200)        | false    |          |            | 
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 #
 class Saisies < Sequel::Model(:saisies)
@@ -30,7 +32,7 @@ class Saisies < Sequel::Model(:saisies)
   # Not nullable cols and unicity validation
   def validate
     super
-    validates_presence [:uid, :carnets_id, :infos_owner, :avatar]
+    validates_presence [:uid, :carnets_id, :infos_owner, :avatar, :avatar_color, :back_color]
     validates_unique :id
   end
 end

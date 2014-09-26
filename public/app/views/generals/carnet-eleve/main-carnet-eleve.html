@@ -1,6 +1,6 @@
 <div class="row" style="height:100%">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="min-height:100%; padding:0">
-			<ul ui-sortable class="nav nav-tabs ">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="height:100%; padding:0">
+			<ul ui-sortable="sortableOptions" class="nav nav-tabs " ng-model="tabs">
 	      <li  ng-repeat="tab in tabs" ng-class="{active: tab.active}">
 	        <a ng-click="activeTab(tab)" ng-dblclick="tab.editable=true" ng-show="!tab.editable">{{tab.nom}} <i ng-click="open(tab, '', 'tab')" class="toolbar-suivi toolbar-suivi-del toolbar-suivi-del-carnet"></i> </a>
 	        
@@ -19,11 +19,11 @@
 						<div class="publier" ng-click="addEntree(tab)" ><i class="toolbar-suivi toolbar-suivi-add"></i><span>PUBLIER</span></div>
 			    </div>
 	  		</div>
-    		<div class="entree" style="border: 2px solid #E8C254" ng-repeat="entree in tab.entrees">
-					<div class="avatar rouge" style="border-right: 2px solid #E8C254" >
-						<img src="{{entree.owner.avatar}}" alt="">					
+    		<div class="entree" ng-repeat="entree in tab.entrees">
+					<div class="avatar">
+						<img src="{{entree.owner.avatar}}" alt="" style="background-color: {{entree.owner.avatar_color}}">					
 					</div>
-					<div class="message" style="background-color: rgba(232, 194, 84, 0.3)" >
+					<div class="message" style="background-color: {{entree.owner.back_color}}" >
 						<div class="message-info">
 							<div class="message-info-profil">
 								<span style="vertica" ><strong>{{entree.owner.infos}}</strong></span> 								

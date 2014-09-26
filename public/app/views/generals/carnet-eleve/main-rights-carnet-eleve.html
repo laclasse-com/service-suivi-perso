@@ -19,8 +19,8 @@
 					<tr ng-repeat="user in right.users | orderBy:predicate:reverse">
 						<td class="td-img"><i class="toolbar-suivi toolbar-suivi-del-user" ng-click="delUser(user)"></i></td><td><span>{{user.fullname}}</span></td>
 						<td><span>{{user.profil}}</span></td>
-						<td><input type="checkbox" ng-checked="user.r"></td>
-						<td><input type="checkbox" ng-checked="user.w"></td>
+						<td><input type="checkbox" ng-checked="user.r || user.w" ng-model="user.r"></td>
+						<td><input type="checkbox" ng-checked="user.w" ng-model="user.w"></td>
 					</tr>
 				</tbody>
 			</table>

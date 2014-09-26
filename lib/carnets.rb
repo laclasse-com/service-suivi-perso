@@ -68,20 +68,20 @@ module CarnetsLib
     carnet.read
     carnet.get_onglets.each do |tab|
       entrees = []
-      if tab.ordre == 1
-        tab.get_entrees.each do |e|
-          p e.inspect
-          entrees.push ({
-            id: e.id,
-            owner: {
-              uid: e.uid,
-              infos: e.infos_owner,
-              avatar: e.avatar
-            },
-            contenu: e.contenu,
-            date: e.date_modification
-          })
-        end
+      tab.get_entrees.each do |e|
+        p e.inspect
+        entrees.push ({
+          id: e.id,
+          owner: {
+            uid: e.uid,
+            infos: e.infos_owner,
+            avatar: e.avatar,
+            avatar_color: e.avatar_color,
+            back_color: e.back_color
+          },
+          contenu: e.contenu,
+          date: e.date_modification
+        })
       end
       onglets.push ({
         id: tab.id,

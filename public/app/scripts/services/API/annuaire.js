@@ -32,6 +32,7 @@ angular.module('suiviApp')
 	};
 
 	this.get_user = function(reponse){
+		console.log(reponse);
 		return {
 			nom: reponse.nom,
 			prenom: reponse.prenom,
@@ -87,6 +88,8 @@ angular.module('suiviApp')
 	this.get_infos_of = function(user, classe_id){
 		console.log(user);
 		var infos = "";
+		var avatarColor = "rgba(235,84,84,0.7)";
+		var backColor = "rgba(232,194,84,0.9)";
 		var etab = "";
 		var matiere = "";
 		var prof_p = "N";
@@ -94,7 +97,7 @@ angular.module('suiviApp')
 		_.each(user.classes, function(classe){
 			if (classe_id == classe.classe_id) {
 				etab = classe.etablissement_nom.toLowerCase();
-				matiere = classe.matiere_libelle.toLowerCase();
+				if (classe.matiere_libelle != undefined) {matiere = classe.matiere_libelle.toLowerCase();};
 				prof_p = classe.prof_principal;
 				classe_lib = classe.classe_libelle;
 			};
@@ -105,31 +108,50 @@ angular.module('suiviApp')
 		switch ( user.profil_id ) {
 			case 'DIR':
 	            infos = user.prenom + " " + user.nom.toLowerCase() + " - directeur - " + etab;
+	            avatarColor = "rgba(128,186,102,0.7)";
+	            backColor = "rgba(235,84,84,0.3)";
 	            break;
 			case 'ETA':
 				infos = user.prenom + " " + user.nom.toLowerCase() + " - administrateur - " + etab;
+				avatarColor = "rgba(128,186,102,0.7)";
+	            backColor = "rgba(235,84,84,0.3)";
 				break;
 			case 'EVS':
 				infos = user.prenom + " " + user.nom.toLowerCase() + " - vie scolaire - " + etab;
+				avatarColor = "rgba(128,186,102,0.7)";
+	            backColor = "rgba(235,84,84,0.3)";
+				break;
+			case 'CPE':
+				infos = user.prenom + " " + user.nom.toLowerCase() + " - cpe - " + etab;
+				avatarColor = "rgba(128,186,102,0.7)";
+	            backColor = "rgba(235,84,84,0.3)";
 				break;
 			case 'ENS':
 				if (prof_p == 'O') {
 					infos = user.prenom + " " + user.nom.toLowerCase() + " - " + matiere + " - professeur principal";
+					avatarColor = "rgba(156,117,171,0.7)";
+	            	backColor = "rgba(26,161,204,0.3)";
 				} else {
 					infos = user.prenom + " " + user.nom.toLowerCase() + " - " + matiere + " - professeur";
+					avatarColor = "rgba(26,161,204,0.7)";
+	            	backColor = "rgba(156,117,171,0.3)";
 				};
 				break;
 			case 'DOC':
 				infos = user.prenom + " " + user.nom.toLowerCase() + " - documentaliste - " + etab;
+				avatarColor = "rgba(128,186,102,0.7)";
+	            backColor = "rgba(235,84,84,0.3)";
 				break;
 			case 'ELV':
 				infos = user.prenom + " " + user.nom.toLowerCase() + " - " + classe_lib + " - " + etab;
 				break;
 			case 'TUT':
 				infos = user.prenom + " " + user.nom.toLowerCase() + " - parent";
+				avatarColor = "rgba(156,117,171,0.9)";
+	            backColor = "rgba(128,186,102,0.3)";
 				break;
 		}
-		return infos;
+		return {infos: infos, avatar_color: avatarColor, back_color: backColor};
 	};
 
 }]);

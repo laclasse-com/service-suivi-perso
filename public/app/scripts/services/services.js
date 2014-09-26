@@ -22,6 +22,7 @@ angular.module('suiviApp')
       if (allowed_types.length === 0 || allowed_types.indexOf(currentUser.profil_id) === -1) {
         var stateName = '404';
         var params = $state.params
+        console.log(currentUser);
         switch ( currentUser.profil_id ) {
           case 'DIR':
             stateName = 'suivi.classes';
@@ -32,6 +33,9 @@ angular.module('suiviApp')
           case 'EVS':
             stateName = 'suivi.classes';
             break;
+          case 'CPE':
+            stateName = 'suivi.classes';
+            break;
           case 'ENS':
             stateName = 'suivi.classes';
             break;
@@ -40,10 +44,11 @@ angular.module('suiviApp')
             break;
           case 'ELV':
             stateName = 'suivi.carnet';
-            params = {id_classe: 3, id: 2}
+            params = {classe_id: currentUser.classes[0].classe_id, id: currentUser.id_ent}
             break;
           case 'TUT':
             stateName = 'suivi.carnet';
+            params = {classe_id: currentUser.enfants[0].classes[0].classe_id, id: currentUser.enfants[0].enfant.id_ent}
             break;
          }
         $state.go( stateName, params, { reload: true, inherit: true, notify: true } );

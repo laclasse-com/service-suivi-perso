@@ -12,7 +12,7 @@ angular.module('suiviApp')
             templateUrl:APP_PATH + '/app/views/generals/index.html'})
 
           .state( 'suivi.classes',{
-            resolve: { auth: function( Profil ) { Profil.redirection( ['ENS', 'DIR', 'ETA', 'EVS', 'DOC'] ); } },
+            resolve: { auth: function( Profil ) { Profil.redirection( ['ENS', 'DIR', 'ETA', 'EVS', 'CPE', 'DOC'] ); } },
             parent: 'suivi',
             url: '/classes',
             views: {
@@ -29,7 +29,7 @@ angular.module('suiviApp')
 
           .state( 'suivi.carnets',{
             parent: 'suivi',
-            resolve: { auth: function( Profil ) { Profil.redirection( ['ENS', 'DIR', 'ETA', 'EVS', 'DOC'] ); } },
+            resolve: { auth: function( Profil ) { Profil.redirection( ['ENS', 'DIR', 'ETA', 'EVS', 'CPE', 'DOC'] ); } },
             url: '/classes/:classe_id/carnets',
             views: {
               'aside': {
@@ -60,7 +60,7 @@ angular.module('suiviApp')
 
            .state( 'suivi.carnet',
              { url: '/classes/:classe_id/carnets/:id',
-              resolve: { auth: function( Profil ) { Profil.redirection( ['ENS', 'DIR', 'ETA', 'EVS', 'DOC', 'ELV', 'TUT'] ); } },
+              resolve: { auth: function( Profil ) { Profil.redirection( ['ENS', 'DIR', 'ETA', 'EVS', 'CPE', 'DOC', 'ELV', 'TUT'] ); } },
                views: {
                    'aside': {
                  templateUrl:APP_PATH + '/app/views/generals/carnet-eleve/aside-carnet-eleve.html',

@@ -23,7 +23,9 @@ class AnnuaireApi < Grape::API
         sexe: response["sexe"],
         nom: response["nom"],
         prenom: response["prenom"],
-        classes: response["classes"]
+        classes: response["classes"],
+        enfants: response["enfants"],
+        avatar: response["avatar"]
       }
     else 
       response["error"]

@@ -31,6 +31,10 @@ angular.module('suiviApp')
   };
 
   $scope.changeNameTab = function(tab){
+    if (tab.owner != CurrentUser.get().id_ent) {
+      alert("vous ne pouvez pas editer les onglets qui ne vous appartiennent pas !")
+      return false;
+    }
     Onglets.update({id: tab.id, nom: tab.nom, ordre: tab.ordre}).$promise.then(function(reponse){
       if (reponse.error != undefined && reponse.error != null) {
         alert(reponse.error);
@@ -49,6 +53,7 @@ angular.module('suiviApp')
       id: null,
       carnet_id: null,
       ordre: null,
+      owner: "",
       nom: "Nouvel onglet",
       editable: true,
       active: true,
@@ -59,8 +64,9 @@ angular.module('suiviApp')
     Onglets.post({uid: $stateParams.id, nom: newTab.nom}).$promise.then(function(reponse){
       if (reponse.error == undefined) {
         newTab.id = reponse.id;
-        newTab.carnet_id = reponse.carnet_id
-        newTab.ordre = reponse.ordre
+        newTab.carnet_id = reponse.carnet_id;
+        newTab.ordre = reponse.ordre;
+        newTab.owner = reponse.owner;
         $scope.activeTab(newTab);
         $scope.tabs.push(newTab);            
       } else {
@@ -70,6 +76,10 @@ angular.module('suiviApp')
   };
 
   $scope.removeTab = function(tab){
+    if (tab.owner != CurrentUser.get().id_ent) {
+      alert("vous ne pouvez pas supprimer les onglets qui ne vous appartiennent pas !")
+      return false;
+    }
     Onglets.delete({id: tab.id}).$promise.then(function(reponse){
       if (reponse.error != undefined && reponse.error != null) {
         alert(reponse.error);
@@ -85,20 +95,22 @@ angular.module('suiviApp')
     if (tab.htmlcontent.trim()=="") {return false;};
     if (tab.modifEntree == null) {
       var avatar = AVATAR_M
-      var infos = Annuaire.get_infos_of(CurrentUser.get(), $stateParams.classe_id);
-      if (CurrentUser.get().sexe ==  'f') { avatar = AVATAR_F}; 
+      var owner = Annuaire.get_infos_of(CurrentUser.get(), $stateParams.classe_id);
+      if (CurrentUser.get().sexe ==  'F') { avatar = AVATAR_F}; 
       var entree = {
         id: null,
         owner: {
           uid: CurrentUser.get().id_ent,
-          infos: infos,
+          infos: owner.infos,
           avatar: avatar,
+          back_color: owner.back_color,
+          avatar_color: owner.avatar_color
         },
         contenu: tab.htmlcontent,
         date: Date.now()
       };
       console.log(tab);
-      Entrees.post({id_onglet: tab.id, carnet_id: tab.carnet_id, uid: entree.owner.uid, avatar: entree.owner.avatar, infos: entree.owner.infos, contenu: entree.contenu}).$promise.then(function(reponse){
+      Entrees.post({id_onglet: tab.id, carnet_id: tab.carnet_id, uid: entree.owner.uid, avatar: entree.owner.avatar, avatar_color: entree.owner.avatar_color, back_color: entree.owner.back_color, infos: entree.owner.infos, contenu: entree.contenu}).$promise.then(function(reponse){
         if (reponse.error != undefined && reponse.error != null) {
           alert(reponse.error);
         } else{
@@ -130,6 +142,10 @@ angular.module('suiviApp')
   };
 
   $scope.editEntree = function(tab, entree){
+    if (entree.owner.uid != CurrentUser.get().id_ent) {
+      alert("vous ne pouvez pas editer les entrées qui ne vous appartiennent pas !")
+      return false;
+    }
     _.each($scope.tabs, function(t){
       if (t.id == tab.id) {
         t.htmlcontent = entree.contenu;
@@ -139,6 +155,10 @@ angular.module('suiviApp')
   }
 
   $scope.removedEntree = function(tab, entree){
+    if (entree.owner.uid != CurrentUser.get().id_ent) {
+      alert("vous ne pouvez pas supprimer les entrées qui ne vous appartiennent pas !")
+      return false;
+    }
     Entrees.delete({id: entree.id}).$promise.then(function(reponse){
       if (reponse.error != undefined && reponse.error != null) {
         alert(reponse.error);
@@ -152,6 +172,15 @@ angular.module('suiviApp')
         });
       };
     });
+  };
+
+  $scope.sortableOptions = {
+    stop: function(e, ui) {
+      for (var index in $scope.tabs) {
+        $scope.tabs[index].ordre = index + 1;
+        $scope.changeNameTab($scope.tabs[index]);
+      }
+    }
   };
 
   $scope.modalInstanceCtrl = function ($scope, $modalInstance) {

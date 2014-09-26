@@ -99,6 +99,8 @@ CREATE  TABLE IF NOT EXISTS `suivi`.`saisies` (
   `date_modification` DATETIME NULL DEFAULT NULL ,
   `infos_owner` VARCHAR(250) NOT NULL ,
   `avatar` VARCHAR(200) NOT NULL ,
+  `avatar_color` VARCHAR(200) NOT NULL ,
+  `back_color` VARCHAR(200) NOT NULL ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   INDEX `fk_entrees_carnets_idx` (`carnets_id` ASC) ,
