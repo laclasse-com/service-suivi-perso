@@ -108,4 +108,21 @@ class Carnet
     end
     entrees
   end
+
+  def get_rights
+    requires({:id => @id}, :id)
+    rights = []
+    rights_bdd = DroitsSpecifiques.where(:carnets_id => @id)
+    begin
+      rights_bdd.each do |r|
+        right = Right.new(r.id)
+        right.select
+        rights.push right          
+      end   
+    rescue Exception => e
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "get_rights").sub("$2", "Carnet").sub("$3", "récupération des droits d'un carnet")
+      raise MSG[LANG.to_sym][:error][crud].sub("$1", "get_rights").sub("$2", "Carnet").sub("$3", "récupération des droits d'un carnet")
+    end
+    rights
+  end
 end

@@ -7,7 +7,7 @@
 		<div class="table-responsive">
 			<table>
 				<tr class="en-tete">
-					<td colspan="2" style="cursor:pointer" ng-click="predicate = 'fullname'; reverse=!reverse">Prénom Nom</td>
+					<td colspan="2" style="cursor:pointer" ng-click="predicate = 'full_name'; reverse=!reverse">Prénom Nom</td>
 					<td style="cursor:pointer" ng-click="predicate = 'profil';reverse=!reverse">Profil</td >
 					<td class="td-img"><i class="toolbar-suivi toolbar-suivi-read"></i></td>
 					<td class="td-img"><i class="toolbar-suivi toolbar-suivi-write"></i></td>
@@ -17,10 +17,10 @@
 						<td colspan="5">{{right.type}}</td>
 					</tr>
 					<tr ng-repeat="user in right.users | orderBy:predicate:reverse">
-						<td class="td-img"><i class="toolbar-suivi toolbar-suivi-del-user" ng-click="delUser(user)"></i></td><td><span>{{user.fullname}}</span></td>
+						<td class="td-img"><i class="toolbar-suivi toolbar-suivi-del-user" ng-click="delUser(user)"></i></td><td><span style="text-transform: capitalize">{{user.full_name}}</span></td>
 						<td><span>{{user.profil}}</span></td>
-						<td><input type="checkbox" ng-checked="user.r || user.w" ng-model="user.r"></td>
-						<td><input type="checkbox" ng-checked="user.w" ng-model="user.w"></td>
+						<td><input type="checkbox" ng-checked="user.r || user.w" ng-model="user.r" ng-change="update(user)"></td>
+						<td><input type="checkbox" ng-checked="user.w" ng-model="user.w" ng-change="update(user)"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -31,7 +31,7 @@
 		<div class="row rights-search-users">
 			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 ">
 				<span>Ajouter une personne au carnet:</span>
-				<input class="form-control input-sm" type="text" placeholder="entrer un nom" ng-model="search.fullname">
+				<input class="form-control input-sm" type="text" placeholder="entrer un nom" ng-model="search.full_name">
 			</div>
 			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 accordion-rights">
 				<accordion close-others="true">
@@ -40,7 +40,7 @@
 							<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': list.open, 'toolbar-suivi-arrow-right': !list.open}"></i>
 							{{list.type}}
 						</accordion-heading>
-						<div class="add-user" ng-repeat="user in list.users | filter:search | orderBy:'fullname':false"><i class="toolbar-suivi toolbar-suivi-add-user" ng-click="addUser(list.type, user)"></i><span>{{user.fullname}}</span></div>
+						<div class="add-user" ng-repeat="user in list.users | filter:search | orderBy:'fullname':false"><i class="toolbar-suivi toolbar-suivi-add-user" ng-click="addUser(list.type, user)"></i><span style="text-transform: capitalize">{{user.full_name}}</span></div>
 					</accordion-group>
 				</accordion>
 			</div>

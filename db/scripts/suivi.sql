@@ -74,6 +74,8 @@ CREATE  TABLE IF NOT EXISTS `suivi`.`droits_specifiques` (
   `write` INT(11) NULL DEFAULT '0' ,
   `carnets_id` BIGINT(20) NOT NULL ,
   `date_creation` TIMESTAMP NULL DEFAULT NULL ,
+  `full_name` VARCHAR(200) NOT NULL ,
+  `profil` VARCHAR(45) NOT NULL ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   INDEX `fk_droits_specifiques_carnets1_idx` (`carnets_id` ASC) ,

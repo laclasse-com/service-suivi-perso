@@ -27,13 +27,21 @@ class CarnetsApi < Grape::API
     desc "création d'un carnet"
     params{
         requires :uid_elv, type: String
+        requires :full_name_elv, type: String
         requires :etablissement_code, type: String
         requires :classe_id, type: Integer
+        requires :uid_adm, type: String
+        requires :full_name_adm, type: String
+        requires :profil_adm, type: String
     }
     post '/'do
-        carnet = Carnet.new(nil, params[:uid_elv], $current_user[:info].uid.to_s, params[:etablissement_code], params[:classe_id])
+        carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id])
         begin
             carnet.create
+            right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1)
+            right_adm.create
+            right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0)
+            right_elv.create
             {carnet_id: carnet.id}            
         rescue
             {error: "erreur lors de la création du carnet"}

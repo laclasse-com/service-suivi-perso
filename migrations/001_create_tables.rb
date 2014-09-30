@@ -41,6 +41,8 @@ Sequel.migration do
     create_table(:droits_specifiques, :ignore_index_errors=>true) do
       primary_key :id, :type=>Bignum
       String :uid, :size=>8, :null=>false
+      String :full_name, :size=>200, :null=>false
+      String :profil, :size=>45, :null=>false
       Integer :read, :size=>11, :default=>'0', :null=>true
       Integer :write, :size=>11, :default=>'0', :null=>true
       Bignum :carnets_id, :null=>false

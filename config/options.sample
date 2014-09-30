@@ -58,7 +58,8 @@ ANNUAIRE = {
   # service_annuaire_user: '/pls/public/!ajax_server.service?serviceName=serviceApiUser&uid=' pour l'annuaire v2
   service_annuaire_user: '/api/app/users/',
   service_annuaire_user_liste: '/api/app/users/liste/',
-  service_annuaire_regroupements: '/api/app/regroupements/'
+  service_annuaire_regroupements: '/api/app/regroupements/',
+  service_annuaire_etablissements: '/api/app/etablissements/'
 }
 
 #

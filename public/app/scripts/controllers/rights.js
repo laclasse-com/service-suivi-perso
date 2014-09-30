@@ -3,198 +3,162 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('RightsCtrl', ['$scope', '$rootScope', '$state', '$stateParams', function($scope, $rootScope, $state, $stateParams) {
+.controller('RightsCtrl', ['$scope', '$state', '$stateParams', 'CurrentUser', 'GetPersonnelsEtablissements', 'Annuaire', 'Rights', function($scope, $state, $stateParams, CurrentUser, GetPersonnelsEtablissements, Annuaire, Rights) {
+  CurrentUser.get().$promise.then(function(reponse){
+    _.each(reponse.classes, function(classe){
+      if (classe.classe_id == $stateParams.classe_id) {
+        GetPersonnelsEtablissements.query({uai: classe.etablissement_code, uid_elv: $stateParams.id}).$promise.then(function(users){
+          $scope.listUsersTypes = Annuaire.get_personnels(users);
+        });
+      };
+    });
+  });
+
+  $scope.usersChanged = [];
 
   $scope.rights = [
     {
       type: "ELEVE ET FAMILLE",
       background: "rgba(232,194,84,0.3)",
       text: "#e8c254",
-      users: [
-        {
-          id:"VAA60001",
-          fullname: "Sophie Delaville",
-          profil: "élève",
-          r: true,
-          w: false
-        },
-        {
-          id:"VAA60002",
-          fullname: "Marc Delaville",
-          profil: "parent",
-          r: true,
-          w: false
-        },
-        {
-          id:"VAA60003",
-          fullname: "Florence Delaville",
-          profil: "parent",
-          r: true,
-          w: false
-        }
-      ]
+      users: []
     },
     {
       type: "COLLEGE",
       background: "rgba(26,161,204,0.3)",
       text: "#1aa1cc",
-      users: [
-        {
-          id:"VAA60004",
-          fullname: "Annie Chandon",
-          profil: "prof",
-          r: true,
-          w: true
-        },
-        {
-          id:"VAA60005",
-          fullname: "Nathalie Bonjour",
-          profil: "prof",
-          r: true,
-          w: true
-        },
-        {
-          id:"VAA60006",
-          fullname: "Jérôme Dumoulin",
-          profil: "prof",
-          r: true,
-          w: false
-        }
-      ]
+      users: []
     }
   ];
 
-  $scope.listUsersTypes=[
-    {
-      type: "Profs",
-      open: true,
-      users: [
-        {
-          id:"VAA60007",
-          fullname: "Sonia Orange",
-          profil: "prof",
-          r: true,
-          w: false
-        },
-        {
-          id:"VAA60008",
-          fullname: "Stéphanie Citron",
-          profil: "prof",
-          r: true,
-          w: false
-        },
-        {
-          id:"VAA60009",
-          fullname: "Maxime Chocolat",
-          profil: "prof",
-          r: true,
-          w: false
-        }
-      ]
-    },
-    {
-      type: "Autres",
-      open: false,
-      users: [
-        {
-          id:"VAA60010",
-          fullname: "Thomas Vert",
-          profil: "Psycologue",
-          r: true,
-          w: false
-        },
-        {
-          id:"VAA60011",
-          fullname: "Noé Pourpre",
-          profil: "documentaliste",
-          r: true,
-          w: false
-        }
-      ]
-    },
-    {
-      type: "CPE",
-      open: false,
-      users: [
-        {
-          id:"VAA60012",
-          fullname: "Stéphane Marron",
-          profil: "cpe",
-          r: true,
-          w: false
-        },
-        {
-          id:"VAA60013",
-          fullname: "Corinne Bleuet",
-          profil: "cpe",
-          r: true,
-          w: false
-        },
-        {
-          id:"VAA60014",
-          fullname: "Sandrine Mauve",
-          profil: "cpe",
-          r: true,
-          w: false
-        },
-        {
-          id:"VAA60015",
-          fullname: "Eric Grenat",
-          profil: "cpe",
-          r: true,
-          w: false
-        },
-        {
-          id:"VAA60016",
-          fullname: "Dominique Blanchet",
-          profil: "cpe",
-          r: true,
-          w: false
-        }
-      ]
-    }
-  ];
+  Rights.carnets({uid_elv: $stateParams.id}).$promise.then(function(reponse){
+    if (reponse.error != undefined) {alert(reponse.error); return false;};
+    _.each(reponse.data, function(right){
+      if (right.profil == 'élève' || right.profil == 'parent') {
+        $scope.rights[0].users.push({
+          id:right.id,
+          id_right: right.id_right,
+          full_name: right.full_name,
+          profil: right.profil,
+          r: right.r,
+          w: right.w,
+          action: []
+        });
+      }else{
+        $scope.rights[1].users.push({
+          id:right.id,
+          id_right: right.id_right,
+          full_name: right.full_name,
+          profil: right.profil,
+          r: right.r,
+          w: right.w,
+          action: []
+        });
+      };
+    });
+  });
+
+  $scope.update = function(user){
+    if (user.w && !user.r) {user.r=true;};
+    if (_.last(user.action) != 'add' && _.last(user.action) != 'update') {
+      user.action.push('update');
+      $scope.addUserChanged(user);
+    };
+  }
+
+  $scope.addUserChanged = function(user){
+    var find = false;
+    _.each($scope.usersChanged, function(u){
+      if (u.id == user.id) {
+        u.action = user.action;
+        find = true;
+      };
+    });
+    if (!find) {
+      $scope.usersChanged.push(user);
+    };
+  }
 
   $scope.addUser=function(type, user){
-    for (var i = 0; i < $scope.listUsersTypes.length; i++) {
-      if($scope.listUsersTypes[i].type == type){
-        for (var j = 0; j < $scope.listUsersTypes[i].users.length; j++) {
-          if($scope.listUsersTypes[i].users[j].id == user.id){
-            if(user.profil == "parent" || user.profil == "élève"){
-              $scope.rights[0].users.push(user);
-            } else {
-              $scope.rights[1].users.push(user);
-            };
-            $scope.listUsersTypes[i].users.splice(j,1);
-          };
-        };
-      };
+    if (_.last(user.action) == 'delete') {user.action = _.initial(user.action);} else {user.action.push('add');};
+    $scope.addUserChanged(user);
+    if(user.profil == "parent" || user.profil == "élève"){
+      $scope.rights[0].users.push(user);
+    } else {
+      $scope.rights[1].users.push(user);
+    };
+    switch(user.profil) {
+      case "prof":
+        $scope.listUsersTypes[1].users = _.reject($scope.listUsersTypes[1].users, function(u){
+          return u.id == user.id;
+        });
+        break;
+      case "cpe":
+        $scope.listUsersTypes[2].users = _.reject($scope.listUsersTypes[2].users, function(u){
+          return u.id == user.id;
+        });
+        break;
+      case "admin":
+        $scope.listUsersTypes[0].users = _.reject($scope.listUsersTypes[0].users, function(u){
+          return u.id == user.id;
+        });
+        break;
+      case "parent":
+        $scope.listUsersTypes[3].users = _.reject($scope.listUsersTypes[3].users, function(u){
+          return u.id == user.id;
+        });
+        break;
+      case "élève":
+        $scope.listUsersTypes[3].users = _.reject($scope.listUsersTypes[3].users, function(u){
+          return u.id == user.id;
+        });
+        break;
+      default:
+        $scope.listUsersTypes[4].users = _.reject($scope.listUsersTypes[4].users, function(u){
+          return u.id == user.id;
+        });
     };
   };
 
   $scope.delUser=function(user){
-    for (var i = 0; i < $scope.rights.length; i++) {
-      for (var j = 0; j < $scope.rights[i].users.length; j++) {
-        if($scope.rights[i].users[j].id == user.id){
-          switch(user.profil) {
-            case "prof":
-                $scope.listUsersTypes[0].users.push(user);
-                break;
-            case "cpe":
-                $scope.listUsersTypes[2].users.push(user);
-                break;
-            default:
-                $scope.listUsersTypes[1].users.push(user);
-          };
-          $scope.rights[i].users.splice(j,1);
-        };
-      };
+    if (_.last(user.action) == 'add') {user.action = _.initial(user.action);} else {user.action.push('delete');};
+    $scope.addUserChanged(user);
+    switch(user.profil) {
+      case "prof":
+        $scope.listUsersTypes[1].users.push(user);
+        break;
+      case "cpe":
+        $scope.listUsersTypes[2].users.push(user);
+        break;
+      case "admin":
+        $scope.listUsersTypes[0].users.push(user);
+        break;
+      case "parent":
+        $scope.listUsersTypes[3].users.push(user);
+        break;
+      case "élève":
+        $scope.listUsersTypes[3].users.push(user);
+        break;
+      default:
+        $scope.listUsersTypes[4].users.push(user);
+    };
+    if(user.profil == "parent" || user.profil == "élève"){
+      $scope.rights[0].users = _.reject($scope.rights[0].users, function(r){
+        return r.id == user.id;
+      });
+    } else {
+      $scope.rights[1].users = _.reject($scope.rights[1].users, function(r){
+        return r.id == user.id;
+      });
     };
   };
 
   $scope.save = function(){
     // enregistrer en base
-    $state.go( 'suivi.carnet', $state.params, { reload: true, inherit: true, notify: true } );
+    Rights.cud({uid_elv: $stateParams.id, users: $scope.usersChanged}).$promise.then(function(reponse){
+      if (reponse.error != undefined) {alert(reponse.error); return false;};
+      $state.go( 'suivi.carnet', $state.params, { reload: true, inherit: true, notify: true } );      
+    });
   }
 
   $scope.cancel = function(){

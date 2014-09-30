@@ -7,3 +7,6 @@ require __DIR__('onglet')
 
 puts "loading objects/carnet"
 require __DIR__('carnet')
+
+puts "loading objects/right"
+require __DIR__('right')

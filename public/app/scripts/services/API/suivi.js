@@ -6,7 +6,7 @@ angular.module('suiviApp')
 	return $resource( APP_PATH + '/api/carnets/classes/:id', {id: '@id'});
 }])
 .factory('Create', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
-	return $resource( APP_PATH + '/api/carnets/', {uid_elv: '@uid_elv', etablissement_code: '@etablissement_code', classe_id: '@classe_id'}, {'post': {method: 'POST'}});
+	return $resource( APP_PATH + '/api/carnets/', {uid_elv: '@uid_elv', full_name_elv: '@full_name_elv', etablissement_code: '@etablissement_code', classe_id: '@classe_id', uid_adm: '@uid_adm', full_name_adm: '@full_name_adm', profil_adm: '@profil_adm'}, {'post': {method: 'POST'}});
 }])
 .factory('Onglets', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
 	return $resource( APP_PATH + '/api/onglets/', {uid: '@uid'}, {
@@ -26,11 +26,23 @@ angular.module('suiviApp')
 		'update': {method:'PUT', url: APP_PATH + '/api/entrees/:id', params: {id: '@id', contenu: '@contenu'}},
 		'delete': {method:'DELETE', url: APP_PATH + '/api/entrees/:id', params: {id: '@id'}}
 	});
+}])
+.factory('Rights', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
+	return $resource( APP_PATH + '/api/rights/', {id: '@id'}, {
+		'get':    {method:'GET'},
+		'post':   {method:'POST', 
+				params: {uid: '@uid', uid_elv: '@uid_elv', full_name: '@full_name', profil: '@profil', read: '@read', write: '@write'}},
+		'cud':   {method:'POST', url: APP_PATH + '/api/rights/cud/', params: {uid_elv: '@uid_elv', users: '@users'}},
+		'query':  {method:'GET', isArray:true},
+		'carnets':  {method:'GET', isArray:false, url: APP_PATH + '/api/rights/carnets/:uid_elv', params: {uid_elv: '@uid_elv'}},
+		'update': {method:'PUT', url: APP_PATH + '/api/rights/:id', params: {id: '@id', read: '@read', write: '@write'}},
+		'delete': {method:'DELETE', url: APP_PATH + '/api/rights/:id', params: {id: '@id'}}
+	});
 }]);
 
 
 angular.module('suiviApp')
-.service('Carnets',['GRID_COLOR', 'Create', '$rootScope', function(GRID_COLOR, Create, $rootScope ){
+.service('Carnets',['GRID_COLOR', 'Create', 'CurrentUser', function(GRID_COLOR, Create, CurrentUser){
 	this.get_by_name = function(reponse){
 		var carnets = [];
 		var i = 0;
@@ -69,7 +81,19 @@ angular.module('suiviApp')
 	};
 
 	this.create = function(carnet){
-		return Create.post({uid_elv: carnet.uid_elv, etablissement_code: carnet.etablissement_code, classe_id: carnet.classe_id});
+		var currentUser = CurrentUser.get();
+		console.log(currentUser);
+		var full_name_adm = currentUser.prenom + " " + currentUser.nom.toLowerCase(); 
+		var profil = "admin";
+		switch(currentUser.profil_id){
+			case 'DIR':
+				profil = 'directeur';
+				break;
+			case 'ENS':
+				profil = 'prof';
+				break;
+		};
+		// return Create.post({uid_elv: carnet.uid_elv, full_name_elv: carnet.firstName + " " + carnet.lastName.toLowerCase(), etablissement_code: carnet.etablissement_code, classe_id: carnet.classe_id, uid_adm: currentUser.id_ent, full_name_adm: full_name_adm, profil_adm: profil});
 	};
 }]);
 /**

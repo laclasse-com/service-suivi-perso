@@ -33,9 +33,6 @@ angular.module('suiviApp')
           case 'EVS':
             stateName = 'suivi.classes';
             break;
-          case 'CPE':
-            stateName = 'suivi.classes';
-            break;
           case 'ENS':
             stateName = 'suivi.classes';
             break;

@@ -12,6 +12,9 @@ angular.module('suiviApp')
 }])
 .factory('GetRegroupement', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
 	return $resource( APP_PATH + '/api/annuaire/regroupements/:id', {id: '@id'});
+}])
+.factory('GetPersonnelsEtablissements', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
+	return $resource( APP_PATH + '/api/annuaire/etablissements/:uai/personnels', {uai: '@uai', uid_elv: '@uid_elv'});
 }]);
 
 angular.module('suiviApp')
@@ -32,7 +35,6 @@ angular.module('suiviApp')
 	};
 
 	this.get_user = function(reponse){
-		console.log(reponse);
 		return {
 			nom: reponse.nom,
 			prenom: reponse.prenom,
@@ -86,7 +88,6 @@ angular.module('suiviApp')
 	};
 
 	this.get_infos_of = function(user, classe_id){
-		console.log(user);
 		var infos = "";
 		var avatarColor = "rgba(235,84,84,0.7)";
 		var backColor = "rgba(232,194,84,0.9)";
@@ -117,15 +118,15 @@ angular.module('suiviApp')
 	            backColor = "rgba(235,84,84,0.3)";
 				break;
 			case 'EVS':
-				infos = user.prenom + " " + user.nom.toLowerCase() + " - vie scolaire - " + etab;
-				avatarColor = "rgba(128,186,102,0.7)";
-	            backColor = "rgba(235,84,84,0.3)";
-				break;
-			case 'CPE':
 				infos = user.prenom + " " + user.nom.toLowerCase() + " - cpe - " + etab;
 				avatarColor = "rgba(128,186,102,0.7)";
 	            backColor = "rgba(235,84,84,0.3)";
 				break;
+			// case 'CPE':
+			// 	infos = user.prenom + " " + user.nom.toLowerCase() + " - cpe - " + etab;
+			// 	avatarColor = "rgba(128,186,102,0.7)";
+	  //           backColor = "rgba(235,84,84,0.3)";
+			// 	break;
 			case 'ENS':
 				if (prof_p == 'O') {
 					infos = user.prenom + " " + user.nom.toLowerCase() + " - " + matiere + " - professeur principal";
@@ -153,5 +154,131 @@ angular.module('suiviApp')
 		}
 		return {infos: infos, avatar_color: avatarColor, back_color: backColor};
 	};
+
+	this.get_personnels = function(users){
+		var list = [
+			{
+				type: "Administrateurs",
+				open: true,
+				users: []
+			},
+			{
+				type: "Profs",
+				open: false,
+				users: []
+			},
+			{
+				type: "CPE",
+				open: false,
+				users: []
+			},
+			{
+				type: "Famille",
+				open: false,
+				users: []
+			},
+			{
+				type: "Autres",
+				open: false,
+				users: []
+			}
+		];
+
+		_.each(users, function(u){
+			switch(u.profil_id){
+				case 'DIR':
+					list[4].users.push({
+						id:u.id_ent,
+						id_right: null,
+						full_name: u.prenom + " " + u.nom.toLowerCase(),
+						profil: "directeur",
+						r: true,
+						w: false,
+						action: []
+					});
+					break;
+				case 'ETA':
+					list[0].users.push({
+						id:u.id_ent,
+						id_right: null,
+						full_name: u.prenom + " " + u.nom.toLowerCase(),
+						profil: "admin",
+						r: true,
+						w: false,
+						action: []
+					});
+					break;
+				case 'EVS':
+					list[2].users.push({
+						id:u.id_ent,
+						id_right: null,
+						full_name: u.prenom + " " + u.nom.toLowerCase(),
+						profil: "cpe",
+						r: true,
+						w: false,
+						action: []
+					});
+					break;
+				case 'ENS':
+					list[1].users.push({
+						id:u.id_ent,
+						id_right: null,
+						full_name: u.prenom + " " + u.nom.toLowerCase(),
+						profil: "prof",
+						r: true,
+						w: false,
+						action: []
+					});
+					break;
+				case 'DOC':
+					list[4].users.push({
+						id:u.id_ent,
+						id_right: null,
+						full_name: u.prenom + " " + u.nom.toLowerCase(),
+						profil: "documentaliste",
+						r: true,
+						w: false,
+						action: []
+					});
+					break;
+				case 'DOC':
+					list[4].users.push({
+						id:u.id_ent,
+						id_right: null,
+						full_name: u.prenom + " " + u.nom.toLowerCase(),
+						profil: "documentaliste",
+						r: true,
+						w: false,
+						action: []
+					});
+					break;
+				case 'ELV':
+					list[3].users.push({
+						id:u.id_ent,
+						id_right: null,
+						full_name: u.prenom + " " + u.nom.toLowerCase(),
+						profil: "élève",
+						r: true,
+						w: false,
+						action: []
+					});
+					break;
+				case 'TUT':
+					list[3].users.push({
+						id:u.id_ent,
+						id_right: null,
+						full_name: u.prenom + " " + u.nom.toLowerCase(),
+						profil: "parent",
+						r: true,
+						w: false,
+						action: []
+					});
+					break;
+				default:
+					break;
+			}
+		});
+	return list;
+	}; 
 
 }]);

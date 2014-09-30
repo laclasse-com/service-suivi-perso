@@ -63,4 +63,37 @@ class AnnuaireApi < Grape::API
         response = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_regroupements] + params[:rgp_id].to_s, {'expand' => 'true'})
         response
     end
+
+  desc 'récupère les utilisateur d\'un etablissement'
+  params{
+      requires :uai, type: String
+      requires :uid_elv, type: String
+  }
+  get '/etablissements/:uai/personnels' do
+      allUsers = []
+      users=[]
+      personnels = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_etablissements] + params[:uai].to_s + '/personnel', {})
+      allUsers.concat(personnels) if personnels.class == Array
+      eleve = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_user] + params[:uid_elv].to_s, {"expand" => "true"})
+      eleve["profil_id"] = 'ELV'
+      allUsers.concat([eleve]) if eleve["error"].nil?
+      parents = []
+      eleve["parents"].each do |p|
+        parent = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_user] + p["id_ent"].to_s, {"expand" => "true"})
+        parent["profil_id"] = 'TUT'
+        parents.concat([parent]) if parent["error"].nil?
+      end
+      allUsers.concat(parents);
+      allUsers.each do |user|
+        begin
+          carnet = Carnet.new(nil, params[:uid_elv])
+          carnet.read
+          right = Right.new(nil, user["id_ent"], nil, nil, carnet.id)
+          right.select
+        rescue Exception => e
+          users.push user
+        end
+      end
+      users
+  end
 end

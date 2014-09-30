@@ -15,6 +15,7 @@ resource(:annuaire) { mount AnnuaireApi }
 resource(:carnets) { mount CarnetsApi }
 resource(:onglets) { mount OngletsApi }
 resource(:entrees) { mount EntreesApi }
+resource(:rights) { mount RightsApi }
 
 add_swagger_documentation 
 end
