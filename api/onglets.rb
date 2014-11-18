@@ -19,6 +19,24 @@ class OngletsApi < Grape::API
       end
     end
 
+    desc "retourne juste le nom et l'id des onglets du carnet"
+    params {
+        requires :uid, type: String, desc: "uid de l'élève"
+    }
+    get '/tabs' do
+        carnet = Carnet.new(nil,params[:uid])
+        begin
+            onglets = []
+            carnet.read
+            carnet.get_onglets.each do |onglet|
+                onglets.push({id: onglet.id, nom: onglet.nom, check: false})
+            end
+            {onglets: onglets}
+        rescue Exception => e
+            {error: 'Impossible de retourner les onglets'}
+        end
+    end
+
     desc "création d'un onglet pour un carnet"
     params {
         requires :uid, type: String, desc: "uid de l'élève"

@@ -6,7 +6,7 @@ angular.module('suiviApp')
 .controller('AddCarnetsCtrl', ['$scope', '$state', '$stateParams', 'Carnets', 'SearchByName', 'CurrentUser', function($scope, $state, $stateParams, Carnets, SearchByName, CurrentUser) {
 
   SearchByName.query({name: $stateParams.name}).$promise.then(function(reponse){
-    $scope.carnets = Carnets.get_by_name(reponse);    
+    $scope.carnets = Carnets.get_by_name(reponse); 
   });
 
   $scope.open = function(carnet){

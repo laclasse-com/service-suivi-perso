@@ -11,16 +11,18 @@
 					<td style="cursor:pointer" ng-click="predicate = 'profil';reverse=!reverse">Profil</td >
 					<td class="td-img"><i class="toolbar-suivi toolbar-suivi-read"></i></td>
 					<td class="td-img"><i class="toolbar-suivi toolbar-suivi-write"></i></td>
+					<td class="td-img">Admin</td >
 				</tr>
 				<tbody ng-repeat="right in rights">
 					<tr class="categorie" style="background-color:{{right.background}}; color: {{right.text}}">
-						<td colspan="5">{{right.type}}</td>
+						<td colspan="6">{{right.type}}</td>
 					</tr>
 					<tr ng-repeat="user in right.users | orderBy:predicate:reverse">
 						<td class="td-img"><i class="toolbar-suivi toolbar-suivi-del-user" ng-click="delUser(user)"></i></td><td><span style="text-transform: capitalize">{{user.full_name}}</span></td>
 						<td><span>{{user.profil}}</span></td>
-						<td><input type="checkbox" ng-checked="user.r || user.w" ng-model="user.r" ng-change="update(user)"></td>
-						<td><input type="checkbox" ng-checked="user.w" ng-model="user.w" ng-change="update(user)"></td>
+						<td><input type="checkbox" ng-checked="user.r || user.w" ng-model="user.r" ng-change="update(user)"ng-disabled="user.profil == 'admin'"></td>
+						<td><input type="checkbox" ng-checked="user.w" ng-model="user.w" ng-change="update(user)" ng-disabled="user.profil == 'admin'"></td>
+						<td style="text-align: center"><input type="checkbox" ng-checked="user.admin" ng-model="user.admin" ng-disabled="user.profil == 'admin' || user.profil == 'élève' || user.profil == 'parent'" ng-change="update(user)"></td>
 					</tr>
 				</tbody>
 			</table>

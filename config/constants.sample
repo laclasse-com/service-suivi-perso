@@ -24,3 +24,6 @@ AVATAR = {
   :F => "/app/bower_components/charte-graphique-laclasse-com/images/avatar_feminin.svg",
   :M => "/app/bower_components/charte-graphique-laclasse-com/images/avatar_masculin.svg"
 }
+
+MAIL_DOMAINE = "@laclasse.com"
+

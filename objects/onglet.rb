@@ -129,7 +129,6 @@ class Onglet
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "get_entrees").sub("$2", "Onglet").sub("$3", "récupération des entrées d'un onglet")
       raise MSG[LANG.to_sym][:error][crud].sub("$1", "get_entrees").sub("$2", "Onglet").sub("$3", "récupération des entrées d'un onglet")
     end
-    p entrees.inspect
     entrees
   end
 

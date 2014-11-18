@@ -13,12 +13,20 @@ class AnnuaireApi < Grape::API
   desc "retourne le profile actif de l'utilisateur courant"
   get '/currentuser' do
     response = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_user] + $current_user[:info].uid.to_s, {"expand" => "true"})
+    hight_role = ""
+    response["roles"].each do |role|
+      if COEFF[hight_role] < COEFF[role["role_id"]]
+        hight_role = role["role_id"]
+      end
+    end
     if response["error"].nil?
       {
         id_ent: response["id_ent"],
         actif: response["profil_actif"]["actif"],
         etablissement_id: response["profil_actif"]["etablissement_id"],
         profil_id: response["profil_actif"]["profil_id"],
+        roles: response["roles"],
+        hight_role: hight_role,
         user_id: response["profil_actif"]["user_id"],
         sexe: response["sexe"],
         nom: response["nom"],
@@ -39,6 +47,7 @@ class AnnuaireApi < Grape::API
   get '/users/:id' do
     response = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_user] + params[:id], {"expand" => "true"})
     if response["error"].nil?
+      response['avatar'] = ANNUAIRE[:url] + response['avatar']
       response
     else 
       response["error"]
@@ -73,14 +82,25 @@ class AnnuaireApi < Grape::API
       allUsers = []
       users=[]
       personnels = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_etablissements] + params[:uai].to_s + '/personnel', {})
-      allUsers.concat(personnels) if personnels.class == Array
+      if personnels.class == Array
+        personnels.each do |personnel|
+          role_id = ""
+          personnel["roles"].each do |role|
+            if COEFF[role["role_id"]] > COEFF[role_id] && role["role_id"] != ROLES[:super_admin]
+              role_id = role["role_id"]
+            end
+          end
+          personnel["role_id"] = role_id
+        end
+        allUsers.concat(personnels)
+      end
       eleve = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_user] + params[:uid_elv].to_s, {"expand" => "true"})
-      eleve["profil_id"] = 'ELV'
+      eleve["role_id"] = ROLES[:eleve]
       allUsers.concat([eleve]) if eleve["error"].nil?
       parents = []
       eleve["parents"].each do |p|
         parent = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_user] + p["id_ent"].to_s, {"expand" => "true"})
-        parent["profil_id"] = 'TUT'
+        parent["role_id"] = ROLES[:parents]
         parents.concat([parent]) if parent["error"].nil?
       end
       allUsers.concat(parents);

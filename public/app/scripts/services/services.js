@@ -2,8 +2,9 @@
 
 /* Services */
 angular.module('suiviApp')
-.service('CurrentUser', ['Annuaire', function( Annuaire ) {
+.service('CurrentUser', ['Annuaire', 'Rights', '$state', function( Annuaire, Rights, $state) {
   var currentUser = null;
+  var rights = null;
   this.set = function(user){
     currentUser = user;
   }
@@ -13,46 +14,133 @@ angular.module('suiviApp')
   this.getRequest = function(){
     return Annuaire.get_current_user();
   }
+  this.setRights = function(right){
+    rights = right;
+  }
+  this.getRights = function(){
+    return rights;
+  }
+  this.verifRights = function(carnet, uid_elv, right){
+    if (currentUser == null) {$state.go( 'erreur', {code: '404', message: "Utilisateur courant non trouvé"}, { reload: true, inherit: true, notify: true } );}
+    else if (currentUser.error != undefined) {$state.go( 'erreur', {code: '404', message: currentUser.error}, { reload: true, inherit: true, notify: true } );};
+    if (carnet.error != undefined) {$state.go( 'erreur', {code: '404', message: carnet.error}, { reload: true, inherit: true, notify: true } );};
+    var priority = 1
+    _.each(currentUser.roles, function(role){
+      if (role.etablissement_code_uai == carnet.uai && role.priority > priority){
+        priority = role.priority;
+      }
+    })
+    if (priority <= 1) {
+       if (rights == null) {$state.go( 'erreur', {code: '404', message: "Aucun droits trouvé pour l'utilisateur courant"}, { reload: true, inherit: true, notify: true } );}
+      else if (rights.error != undefined) {$state.go( 'erreur', {code: '404', message: rights.error}, { reload: true, inherit: true, notify: true } );};
+      switch(right){
+        case 'read':
+          if (rights.read != 1) {$state.go( 'erreur', {code: '401', message: null}, { reload: true, inherit: true, notify: true } );};
+          break;
+        case 'write':
+          if (rights.write != 1) {$state.go( 'erreur', {code: '401', message: null}, { reload: true, inherit: true, notify: true } );};
+          break;
+        case 'admin':
+          if (rights.admin != 1) {$state.go( 'erreur', {code: '401', message: null}, { reload: true, inherit: true, notify: true } );};
+          break;
+      }
+    } else{
+      rights.read = 1;
+      rights.write = 1;
+      rights.admin = 1;
+    };
+    return true;
+  }
+  this.getRightsRequest = function(uid_elv){
+    return Rights.users({uid: currentUser.id_ent, uid_elv: uid_elv, carnet_id: null});
+  }
+}])
+.service('Erreur', [function() {
+  this.message = function(code, messagePerso){
+    if (messagePerso == null) {
+      var message = "Une erreur s'est produite !";
+      switch (code) {
+        case '404':
+          message = "Circulez, il n'y a rien à voir !!";
+          break;
+        case '401':
+          message = "Vous n'êtes pas autorisé !!";
+          break;
+      }
+    } else {
+      message = messagePerso;
+    };
+    return message;
+  };
 }])
 
-.service('Profil', ['CurrentUser', '$state', function( CurrentUser, $state ) {
+.service('Profil', ['CurrentUser', '$state', 'Carnets', '$q', function( CurrentUser, $state, Carnets,$q ) {
   this.redirection = function(allowed_types){
     CurrentUser.getRequest().$promise.then(function(currentUser){
+      console.log(currentUser);
       CurrentUser.set(currentUser);
-      if (allowed_types.length === 0 || allowed_types.indexOf(currentUser.profil_id) === -1) {
-        var stateName = '404';
-        var params = $state.params
-        console.log(currentUser);
-        switch ( currentUser.profil_id ) {
-          case 'DIR':
+      var stateName = 'erreur';
+      var params = {code: '404', message: null}
+      var uid_elv = "";
+      var right = false;
+      if (allowed_types.length === 0 || allowed_types.indexOf(currentUser.hight_role) === -1) {
+        switch ( currentUser.hight_role ) {
+          case 'TECH':
             stateName = 'suivi.classes';
             break;
-          case 'ETA':
+          case 'DIR_ETB':
             stateName = 'suivi.classes';
             break;
-          case 'EVS':
+          case 'ADM_ETB':
             stateName = 'suivi.classes';
             break;
-          case 'ENS':
+          case 'AVS_ETB':
             stateName = 'suivi.classes';
             break;
-          case 'DOC':
+          case 'PROF_ETB':
             stateName = 'suivi.classes';
             break;
-          case 'ELV':
+          case 'CPE_ETB':
+            stateName = 'suivi.classes';
+            break;
+          case 'ELV_ETB':
             stateName = 'suivi.carnet';
-            params = {classe_id: currentUser.classes[0].classe_id, id: currentUser.id_ent}
-            break;
-          case 'TUT':
+            params = {classe_id: currentUser.classes[0].classe_id, id: currentUser.id_ent};           
+            break;                            
+          case 'PAR_ETB':
             stateName = 'suivi.carnet';
-            params = {classe_id: currentUser.enfants[0].classes[0].classe_id, id: currentUser.enfants[0].enfant.id_ent}
+            params = {classe_id: currentUser.enfants[0].classes[0].classe_id, id: currentUser.enfants[0].enfant.id_ent};
             break;
-         }
-        $state.go( stateName, params, { reload: true, inherit: true, notify: true } );
-        
+        }
+        $state.go( stateName, params, { reload: true, inherit: true, notify: true } ); 
       };
     });
-  }
+  };
+  this.initRights = function(uid_elv){
+    var deferred = $q.defer();
+    var currentUser = CurrentUser.get();
+    if (currentUser == null) {
+      CurrentUser.getRequest().$promise.then(function(cu){
+        CurrentUser.set(cu);
+        Carnets.get({uid_elv: uid_elv, id: null}).$promise.then(function(carnet){
+          CurrentUser.getRightsRequest(uid_elv).$promise.then(function(right){
+            CurrentUser.setRights(right);
+            deferred.resolve(CurrentUser.verifRights(carnet, uid_elv, "read"));
+            // return CurrentUser.getRights();
+          });
+        });
+      });
+    } else {
+      Carnets.get({uid_elv: uid_elv, id: null}).$promise.then(function(carnet){
+        CurrentUser.getRightsRequest(uid_elv).$promise.then(function(right){
+          CurrentUser.setRights(right);
+          deferred.resolve(CurrentUser.verifRights(carnet, uid_elv, "read"));
+          // return CurrentUser.getRights();
+        });
+      });
+    };
+    return deferred;
+  };
 }])
 
 .service('Donnee', [function() {

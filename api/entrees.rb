@@ -46,13 +46,29 @@ class EntreesApi < Grape::API
     desc "Modif du contenu d'une entrée pour un onglet"
     params {
         requires :id, type: Integer, desc: "id de l'entrée"
-        optional :contenu, type: String
+        requires :contenu, type: String
+        requires :avatar, type: String
     }
     put '/:id' do
         begin
             entree = Entree.new(params[:id])
             entree.read
-            entree.update params[:contenu]
+            entree.update params[:contenu], params[:avatar]
+        rescue Exception => e
+            {error: "erreur lors de la modification de l'entrée"}
+        end
+    end
+
+    desc "Modification de l'url de l'avatar des entrées de l'utilisateur"
+    params {
+        requires :uid, type: String, desc: "uid de l'utilisateur"
+        requires :avatar, type: String
+    }
+    put '/:uid/avatar' do
+        begin
+            entree = Entree.new(nil,nil,nil, params[:uid])
+            entree.update_avatar params[:avatar]
+            {good: "mise à jour effectuée"}
         rescue Exception => e
             {error: "erreur lors de la modification de l'entrée"}
         end

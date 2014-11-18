@@ -13,15 +13,21 @@
     <div class="tab-content">
     	<div ng-show="tab.active"ng-repeat="tab in tabs">
 	  		<div style="margin:20px">
-			    <div text-angular ta-target-toolbars="{{tab.id}}" ng-model="tab.htmlcontent" class="text-angular-content" placeholder="publier un nouveau message dans le suivi de Sophie Delaville"></div>
+			    <div text-angular ta-target-toolbars="{{tab.id}}" ng-model="tab.htmlcontent" class="text-angular-content" placeholder="publier un nouveau message dans le suivi de {{nameUser}}"></div>
 			    <div class="laclasse-toolbar-text-angular">
 						<div text-angular-toolbar class="toolbar" name="{{tab.id}}" ta-toolbar="[['h1','h6'],['bold','italics','underline'],['justifyLeft','justifyCenter','justifyRight'],['insertLink']]"></div>
 						<div class="publier" ng-click="addEntree(tab)" ><i class="toolbar-suivi toolbar-suivi-add"></i><span>PUBLIER</span></div>
 			    </div>
 	  		</div>
-    		<div class="entree" ng-repeat="entree in tab.entrees">
+	  		<div class="exit-carnet-button but-violet" style="margin:0px 20px" ng-click="predicate = 'date'; reverse=!reverse">
+	  			<span>trier par date</span>
+	  		</div>
+	  		<div class="exit-carnet-button but-jaune" style="margin:0px 0px" ng-click="actualiserAvatar()">
+	  			<span>Actualiser votre avatar</span>
+	  		</div>
+    		<div class="entree" ng-repeat="entree in tab.entrees | orderBy:predicate:reverse">
 					<div class="avatar">
-						<img src="{{entree.owner.avatar}}" alt="" style="background-color: {{entree.owner.avatar_color}}">					
+						<img ng-src="{{entree.owner.avatar}}" no-image style="width: 100%;background-color: {{entree.owner.avatar_color}}">					
 					</div>
 					<div class="message" style="background-color: {{entree.owner.back_color}}" >
 						<div class="message-info">

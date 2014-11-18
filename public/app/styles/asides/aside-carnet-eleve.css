@@ -151,6 +151,10 @@ body {
 	background-position: 0 -128px;
 }
 
+.toolbar-suivi-download{
+	background-position: 0 -160px;
+}
+
 .carnet-checkbox input[type=checkbox] {
 	visibility: hidden;
 }
@@ -247,7 +251,7 @@ body {
 	width: 100%;
 }
 
-.exit-carnet-button{
+.exit-carnet-button, .exit-carnet-button-pdf{
 	display: inline-block;
 	padding: 3px 10px;
 	text-align: center;
@@ -256,4 +260,18 @@ body {
 	font-size: 14px;
 	color: #323232;
 	cursor: pointer;
+}
+
+.exit-carnet-button-pdf{
+	margin-right: 10px;
+	margin-bottom: 10px;
+	background-color: #fff;
+}
+
+.exit-carnet-button-pdf.active{
+	background-color: rgba(178,178,178,0.9);
+}
+
+.exit-carnet-button-pdf:focus {
+    outline: none;
 }

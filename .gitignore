@@ -29,6 +29,7 @@ config/constants.rb
 config/database.rb
 config/options.rb
 config/rights_constants.rb
+config/thin.yml
 
 public/node_modules
 public/app/scripts/constants.js

@@ -14,7 +14,7 @@ class RightsApi < Grape::API
       begin
         right = Right.new(params[:id])
         right.select
-        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write}
+        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: right.admin}
       rescue Exception => e
         {error: 'Impossible de retourner le droit'}
       end
@@ -22,13 +22,17 @@ class RightsApi < Grape::API
 
     desc "retourne un droit d'un utilisateur"
     params {
-        requires :iud, type: Integer, desc: "uid d'un utilisateur"
+        requires :uid, type: String, desc: "uid d'un utilisateur"
+        optional :uid_elv, type: String
+        optional :carnet_id, type: Integer
     }
     get '/users/:uid' do
       begin
-        right = Right.new(nil, params[:uid])
+        carnet = Carnet.new(params[:carnet_id], params[:uid_elv])
+        carnet.read
+        right = Right.new(nil, params[:uid], nil, nil, carnet.id)
         right.select
-        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write}
+        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: right.admin}
       rescue Exception => e
         {error: 'Impossible de retourner le droit pour un utilisateur'}
       end
@@ -50,7 +54,8 @@ class RightsApi < Grape::API
             full_name: right.full_name,
             profil: right.profil,
             r: right.read == 1 ? true : false,
-            w: right.write == 1 ? true : false
+            w: right.write == 1 ? true : false,
+            admin: right.admin == 1 ? true : false
           })
         end
         {data: rights}
@@ -74,9 +79,10 @@ class RightsApi < Grape::API
         carnet.read
         r = params[:read] ? 1 : 0
         w = params[:write] ? 1 : 0
-        right = Right.new(nil, params[:uid], params[:full_name], params[:profil], carnet.id, r, w)
+        admin = user.admin ? 1 : 0
+        right = Right.new(nil, params[:uid], params[:full_name], params[:profil], carnet.id, r, w, admin)
         right.create
-        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write}
+        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: admin}
       rescue Exception => e
         {error: 'Impossible de créer le droit'}
       end
@@ -94,17 +100,18 @@ class RightsApi < Grape::API
         params[:users].each do |user|
           r = user.r ? 1 : 0
           w = user.w ? 1 : 0
+          admin = user.admin ? 1 : 0
           case user.action.last
           when 'add'
             if user.id_right.nil?
-              right = Right.new(nil, user.id, user.full_name, user.profil, carnet.id, r, w)
+              right = Right.new(nil, user.id, user.full_name, user.profil, carnet.id, r, w, admin)
               right.create
             end
           when 'update'
             if !user.id_right.nil?
               right = Right.new(user.id_right)
               right.select
-              right.update r, w
+              right.update r, w, admin
             end
           when 'delete'
             if !user.id_right.nil?

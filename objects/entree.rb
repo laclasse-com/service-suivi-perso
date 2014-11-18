@@ -5,9 +5,9 @@ class Entree
 
   include Outils
 
-  attr_accessor :contenu, :date_modification
+  attr_accessor :contenu, :date_modification, :avatar
 
-  attr_reader :id, :id_onglet, :id_carnet, :uid, :infos_owner, :avatar, :avatar_color, :back_color, :date_creation
+  attr_reader :id, :id_onglet, :id_carnet, :uid, :infos_owner, :avatar_color, :back_color, :date_creation
 
   def initialize id=nil, id_onglet=nil, id_carnet=nil, uid=nil, avatar=AVATAR[:M], avatar_color="rgba(235,84,84,0.7)", back_color="rgba(232,194,84,0.3)", infos_owner="", contenu=""
     @id = id
@@ -19,7 +19,6 @@ class Entree
     @back_color = back_color
     @infos_owner = infos_owner
     @contenu = contenu
-    p Time.now.utc.inspect
     @date_modification = Time.now
     @date_creation = nil
     @logger = Logger.new(STDOUT)
@@ -89,7 +88,7 @@ class Entree
     end
   end
 
-  def update contenu=nil
+  def update contenu=nil, avatar=nil
     requires({:id => @id}, :id)
     entree = Saisies[:id => @id]
     requires({:entree => entree}, :entree)
@@ -97,8 +96,12 @@ class Entree
       if !contenu.nil?
         entree.update(:contenu => contenu, :date_modification => Time.now)
         @contenu = contenu
-        @date_modification = Time.now
       end
+      if !avatar.nil?
+        entree.update(:avatar => avatar, :date_modification => Time.now)
+        @avatar = avatar
+      end
+      @date_modification = Time.now if !avatar.nil? || !contenu.nil?
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Entree").sub("$3", "la mise à jour d'une entrée")
       raise MSG[LANG.to_sym][:error][crud].sub("$1", "update").sub("$2", "Entree").sub("$3", "la mise à jour d'une entrée")
@@ -128,6 +131,19 @@ class Entree
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "delie_carnet").sub("$2", "Entree").sub("$3", "delier une entrée à un onglet")
       raise MSG[LANG.to_sym][:error][crud].sub("$1", "delie_carnet").sub("$2", "Entree").sub("$3", "delier une entrée à un onglet")
+    end
+  end
+
+  def update_avatar avatar
+    requires({:uid => @uid}, :uid)
+    requires({:avatar => avatar}, :avatar)
+    begin
+      Saisies.where(:uid => @uid).each do |entree|
+        entree.update(:avatar => avatar)
+      end
+    rescue Exception => e
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update_avatar").sub("$2", "Entree").sub("$3", "mise à jour de tous de l'avatar")
+      raise MSG[LANG.to_sym][:error][crud].sub("$1", "update_avatar").sub("$2", "Entree").sub("$3", "mise à jour de tous de l'avatar")
     end
   end
 end

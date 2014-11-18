@@ -1,9 +1,7 @@
 'use strict';
 
 /* Controllers */
-function RootCtrl($scope, $rootScope, FlashServiceStyled, $stateParams){
-  console.log("root");
-  console.log($stateParams.id);
+function RootCtrl($scope, $rootScope, FlashServiceStyled){
 
   // $rootScope.racine_images = '/bower_components/charte-graphique-laclasse-com/images/';
 
@@ -27,4 +25,4 @@ function RootCtrl($scope, $rootScope, FlashServiceStyled, $stateParams){
   // }
   // Svg.modifyFill("logolaclasse", "white");
 };
-RootCtrl.$inject=['$scope', '$rootScope', 'FlashServiceStyled', '$stateParams'];
+RootCtrl.$inject=['$scope', '$rootScope', 'FlashServiceStyled'];

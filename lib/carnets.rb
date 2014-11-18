@@ -6,12 +6,14 @@ module CarnetsLib
 
   def search_carnets_of response_annuaire
   	carnets = []
+    uids = ""
   	response_annuaire.each do |reponse|
       reponse['sexe'].nil? ? avatar = APP_PATH + AVATAR[:M] : avatar = APP_PATH + AVATAR[reponse['sexe'].to_sym]
   		carnet = Carnet.new(nil, reponse['id_ent'])
   		if carnet.exist?
   			carnet.read
   		end
+      uids +=
   		carnets.push({
   			id: carnet.id,
   			couleur: nil,
@@ -29,6 +31,7 @@ module CarnetsLib
   end
 
   def get_carnets_by_classe_of response_annuaire
+    puts response_annuaire.inspect
   	carnets = []
   	# info sur la classe
   	classe = {
@@ -53,7 +56,7 @@ module CarnetsLib
 	  			lastName: reponse['nom'],
 	  			classe: response_annuaire['libelle_aaf'],
 	  			classe_id: response_annuaire['id'],
-	  			etablissement_code: response_annuaire['etablissement_code'],
+	  			etablissement_code: response_annuaire["etablissement"]['code_uai'],
 	  			avatar: avatar,
 	  			active: !carnet.id.nil?
 	  		})
@@ -62,40 +65,40 @@ module CarnetsLib
   	carnets
   end
 
-  def get_tabs uid_elv
+  def get_tabs uid_elv, id_onglets=nil
     onglets = []
     carnet = Carnet.new(nil, uid_elv)
     carnet.read
     carnet.get_onglets.each do |tab|
-      entrees = []
-      tab.get_entrees.each do |e|
-        p e.inspect
-        entrees.push ({
-          id: e.id,
-          owner: {
-            uid: e.uid,
-            infos: e.infos_owner,
-            avatar: e.avatar,
-            avatar_color: e.avatar_color,
-            back_color: e.back_color
-          },
-          contenu: e.contenu,
-          date: e.date_modification
+      if id_onglets.nil? || id_onglets.include?(tab.id) 
+        entrees = []
+        tab.get_entrees.each do |e|
+          entrees.push ({
+            id: e.id,
+            owner: {
+              uid: e.uid,
+              infos: e.infos_owner,
+              avatar: e.avatar,
+              avatar_color: e.avatar_color,
+              back_color: e.back_color
+            },
+            contenu: e.contenu,
+            date: e.date_modification
+          })
+        end
+        onglets.push ({
+          id: tab.id,
+          carnet_id: tab.id_carnet,
+          nom: tab.nom,
+          owner: tab.uid_own,
+          ordre: tab.ordre,
+          editable: false,
+          active: tab.ordre == 1,
+          htmlcontent: "",
+          modifEntree: nil,
+          entrees: entrees
         })
       end
-      onglets.push ({
-        id: tab.id,
-        carnet_id: tab.id_carnet,
-        nom: tab.nom,
-        owner: tab.uid_own,
-        ordre: tab.ordre,
-        editable: false,
-        active: tab.ordre == 1,
-        htmlcontent: "",
-        modifEntree: nil,
-        entrees: entrees
-      })
-      p onglets.inspect
     end
     onglets.sort_by {|o| o[:ordre]}
   end

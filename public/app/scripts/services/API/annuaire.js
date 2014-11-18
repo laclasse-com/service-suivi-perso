@@ -35,23 +35,29 @@ angular.module('suiviApp')
 	};
 
 	this.get_user = function(reponse){
+		console.log(reponse);
 		return {
+			id_ent: reponse.id_ent,
+			fullname: reponse.prenom + " " + reponse.nom.toLowerCase(),
 			nom: reponse.nom,
 			prenom: reponse.prenom,
 			done: false,
 			classe: {
 				libelle: reponse.classes[0].classe_libelle,
-				nom_etablissement: reponse.classes[0].etablissement_nom
+				nom_etablissement: reponse.classes[0].etablissement_nom,
+				etablissement_code: reponse.classes[0].etablissement_code
 			},
 			date_naissance: reponse.date_naissance,
 			sexe: reponse.sexe,
 			email: Donnee.tri_emails(reponse.emails),
-			parents: reponse.parents
+			parents: reponse.parents,
+			avatar: reponse.avatar
 		};
 	};
 
 	this.get_parent = function(reponse){
 		return {
+			id_ent: reponse.id_ent,
 			fullname: reponse.prenom + " " + reponse.nom.toLowerCase(),
 			adresse: reponse.adresse,
 			ville: reponse.ville,
@@ -185,8 +191,8 @@ angular.module('suiviApp')
 		];
 
 		_.each(users, function(u){
-			switch(u.profil_id){
-				case 'DIR':
+			switch(u.role_id){
+				case 'DIR_ETB':
 					list[4].users.push({
 						id:u.id_ent,
 						id_right: null,
@@ -194,21 +200,23 @@ angular.module('suiviApp')
 						profil: "directeur",
 						r: true,
 						w: false,
+						admin: false,
 						action: []
 					});
 					break;
-				case 'ETA':
+				case 'ADM_ETB':
 					list[0].users.push({
 						id:u.id_ent,
 						id_right: null,
 						full_name: u.prenom + " " + u.nom.toLowerCase(),
 						profil: "admin",
 						r: true,
-						w: false,
+						w: true,
+						admin: true,
 						action: []
 					});
 					break;
-				case 'EVS':
+				case 'CPE_ETB':
 					list[2].users.push({
 						id:u.id_ent,
 						id_right: null,
@@ -216,10 +224,11 @@ angular.module('suiviApp')
 						profil: "cpe",
 						r: true,
 						w: false,
+						admin: false,
 						action: []
 					});
 					break;
-				case 'ENS':
+				case 'PROF_ETB':
 					list[1].users.push({
 						id:u.id_ent,
 						id_right: null,
@@ -227,32 +236,23 @@ angular.module('suiviApp')
 						profil: "prof",
 						r: true,
 						w: false,
+						admin: false,
 						action: []
 					});
 					break;
-				case 'DOC':
+				case 'AVS_ETB':
 					list[4].users.push({
 						id:u.id_ent,
 						id_right: null,
 						full_name: u.prenom + " " + u.nom.toLowerCase(),
-						profil: "documentaliste",
+						profil: "avs",
 						r: true,
 						w: false,
+						admin: false,
 						action: []
 					});
 					break;
-				case 'DOC':
-					list[4].users.push({
-						id:u.id_ent,
-						id_right: null,
-						full_name: u.prenom + " " + u.nom.toLowerCase(),
-						profil: "documentaliste",
-						r: true,
-						w: false,
-						action: []
-					});
-					break;
-				case 'ELV':
+				case 'ELV_ETB':
 					list[3].users.push({
 						id:u.id_ent,
 						id_right: null,
@@ -260,10 +260,11 @@ angular.module('suiviApp')
 						profil: "élève",
 						r: true,
 						w: false,
+						admin: false,
 						action: []
 					});
 					break;
-				case 'TUT':
+				case 'PAR_ETB':
 					list[3].users.push({
 						id:u.id_ent,
 						id_right: null,
@@ -271,6 +272,7 @@ angular.module('suiviApp')
 						profil: "parent",
 						r: true,
 						w: false,
+						admin: false,
 						action: []
 					});
 					break;

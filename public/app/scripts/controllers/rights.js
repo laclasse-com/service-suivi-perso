@@ -42,6 +42,7 @@ angular.module('suiviApp')
           profil: right.profil,
           r: right.r,
           w: right.w,
+          admin: right.admin,
           action: []
         });
       }else{
@@ -52,6 +53,7 @@ angular.module('suiviApp')
           profil: right.profil,
           r: right.r,
           w: right.w,
+          admin: right.admin,
           action: []
         });
       };
@@ -59,6 +61,8 @@ angular.module('suiviApp')
   });
 
   $scope.update = function(user){
+    console.log(user);
+    if (user.admin && !user.w) {user.w=true;};
     if (user.w && !user.r) {user.r=true;};
     if (_.last(user.action) != 'add' && _.last(user.action) != 'update') {
       user.action.push('update');
@@ -70,6 +74,9 @@ angular.module('suiviApp')
     var find = false;
     _.each($scope.usersChanged, function(u){
       if (u.id == user.id) {
+        u.read = user.read;
+        u.write = user.write;
+        u.admin = user.admin;
         u.action = user.action;
         find = true;
       };

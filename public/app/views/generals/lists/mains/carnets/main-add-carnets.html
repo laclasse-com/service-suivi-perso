@@ -1,5 +1,5 @@
 <div class="row">
-	<div class="col-xs-1 col-sm-2 col-md-3 col-lg-3 damier {{carnet.couleur}}" ng-repeat="carnet in carnets" ng-class="{'hide-damier': carnet.firstName == '', 'damier-add': !carnet.active}" ng-click="open(carnet)">
+	<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 damier {{carnet.couleur}}" ng-repeat="carnet in carnets" ng-class="{'hide-damier': carnet.firstName == '', 'damier-add': !carnet.active}" ng-click="open(carnet)">
 		<img src="{{carnet.avatar}}" alt="" ng-hide="carnet.avatar==''" class="avatar"/>
 		<div class="avatar contener-ajout" ng-hide="carnet.avatar=='' || carnet.active">
 			<svg version="1.1" id="ajout" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"

@@ -1,7 +1,7 @@
 #coding: utf-8
 #
 # model for 'droits_specifiques' table
-# generated 2014-09-29 11:52:49 +0200 by /usr/local/bin/rake
+# generated 2014-10-01 09:36:43 +0200 by /usr/local/bin/rake
 #
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # COLUMN_NAME                   | DATA_TYPE           | NULL? | KEY | DEFAULT | EXTRA
@@ -14,6 +14,7 @@
 # date_creation                 | timestamp           | true     |          |            | 
 # full_name                     | varchar(200)        | false    |          |            | 
 # profil                        | varchar(45)         | false    |          |            | 
+# admin                         | int(11)             | true     |          | 0          | 
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 #
 class DroitsSpecifiques < Sequel::Model(:droits_specifiques)

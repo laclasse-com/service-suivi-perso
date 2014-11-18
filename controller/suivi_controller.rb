@@ -10,6 +10,7 @@ class SinatraApp < Sinatra::Base
   set :public_folder, Proc.new { File.join(root, "public") }
   set :inline_templates, true
   set :protection, true
+  set :lock, true
   end
 
   configure :development do

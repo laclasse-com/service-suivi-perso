@@ -198,3 +198,10 @@
 .modal-body{
 	font-family: "Futura Light";
 }
+
+.but-violet{
+	background-color: rgba(156, 117, 171, 0.5);
+}
+.but-jaune{
+	background-color: rgba(232, 194, 84, 0.5);
+}
