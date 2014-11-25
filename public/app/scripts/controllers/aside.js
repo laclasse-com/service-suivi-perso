@@ -7,6 +7,11 @@ angular.module('suiviApp')
 
   $scope.nameElv = $stateParams.name;
   $scope.erreur = "";
+  $scope.accueil = "classes"
+
+  $scope.return = function(){
+    $state.go( 'suivi.classes', {}, { reload: true, inherit: true, notify: true } );
+  };
 
   $scope.search = function(name){
     if(name != null && name != "" && name.length > 2){
