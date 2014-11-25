@@ -25,11 +25,14 @@ angular.module('suiviApp')
     else if (currentUser.error != undefined) {$state.go( 'erreur', {code: '404', message: currentUser.error}, { reload: true, inherit: true, notify: true } );};
     if (carnet.error != undefined) {$state.go( 'erreur', {code: '404', message: carnet.error}, { reload: true, inherit: true, notify: true } );};
     var priority = 1
-    _.each(currentUser.roles, function(role){
-      if ((role.etablissement_code_uai == carnet.uai || role.etablissement_code_uai == UAI_EVIGNAL) && role.priority > priority){
-        priority = role.priority;
-      }
-    })
+    console.log(currentUser.profil_actif.etablissement_code_uai);
+    console.log(carnet.uai);
+    console.log(currentUser.role_max_priority);
+    console.log(priority);
+    if ((currentUser.profil_actif.etablissement_code_uai == carnet.uai || currentUser.profil_actif.etablissement_code_uai == UAI_EVIGNAL || currentUser.role_max_priority >= 3) && currentUser.role_max_priority > priority){
+      priority = currentUser.role_max_priority;
+    }
+    console.log(priority);
     if (priority <= 1) {
        if (rights == null) {$state.go( 'erreur', {code: '404', message: "Aucun droits trouvé pour l'utilisateur courant"}, { reload: true, inherit: true, notify: true } );}
       else if (rights.error != undefined) {$state.go( 'erreur', {code: '404', message: rights.error}, { reload: true, inherit: true, notify: true } );};
@@ -49,6 +52,7 @@ angular.module('suiviApp')
       rights.write = 1;
       rights.admin = 1;
     };
+    console.log(rights);
     return true;
   }
   this.getRightsRequest = function(uid_elv){
@@ -79,7 +83,6 @@ angular.module('suiviApp')
     CurrentUser.getRequest().$promise.then(function(currentUser){
       console.log(currentUser);
       var profil_actif_evignal = (currentUser.profil_actif.etablissement_code_uai == UAI_EVIGNAL);
-      console.log(profil_actif_evignal);
       CurrentUser.set(currentUser);
       var stateName = 'erreur';
       var params = {code: '404', message: null}

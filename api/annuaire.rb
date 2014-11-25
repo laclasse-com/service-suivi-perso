@@ -15,7 +15,7 @@ class AnnuaireApi < Grape::API
     response = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
     hight_role = ""
     response["roles"].each do |role|
-      if COEFF[hight_role] < COEFF[role["role_id"]]
+      if role["etablissement_code_uai"] == response["profil_actif"]["etablissement_code_uai"] && COEFF[hight_role] < COEFF[role["role_id"]]
         hight_role = role["role_id"]
       end
     end
@@ -24,6 +24,7 @@ class AnnuaireApi < Grape::API
         id_ent: response["id_ent"],
         profil_actif: response["profil_actif"],
         actif: response["profil_actif"]["actif"],
+        role_max_priority: response["roles_max_priority_etab_actif"],
         etablissement_id: response["profil_actif"]["etablissement_id"],
         profil_id: response["profil_actif"]["profil_id"],
         roles: response["roles"],

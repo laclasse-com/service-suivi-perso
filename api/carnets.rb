@@ -67,6 +67,8 @@ class CarnetsApi < Grape::API
     }
     get '/eleves/:name' do
         response = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s + '/eleves', {'nom' => params[:name], 'expand' => 'true'})
+        #TODO: a remplacer 
+        # response = Annuaire.send_request_signed(:service_annuaire_suivi_perso, $current_user[:info].uid.to_s + '/eleves/' + params[:name], {})
         CarnetsLib.search_carnets_of response
     end
 
