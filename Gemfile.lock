@@ -1,12 +1,11 @@
 GIT
   remote: https://github.com/laclasse-com/gem_annuaire.git
-  revision: 1ed105e05ec4a2f5d774c0da3f8333f624377a40
+  revision: d65947b7e5ba4e71a999498d7a8cc3a21f818805
   specs:
-    annuaire (0.0.1)
+    annuaire (0.1.1)
 
 GEM
   remote: https://rubygems.org/
-  remote: http://gems.erasme.org/
   specs:
     activesupport (4.1.6)
       i18n (~> 0.6, >= 0.6.9)

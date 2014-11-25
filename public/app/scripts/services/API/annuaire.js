@@ -15,6 +15,9 @@ angular.module('suiviApp')
 }])
 .factory('GetPersonnelsEtablissements', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
 	return $resource( APP_PATH + '/api/annuaire/etablissements/:uai/personnels', {uai: '@uai', uid_elv: '@uid_elv'});
+}])
+.factory('GetPersonnelsEvignal', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
+	return $resource( APP_PATH + '/api/annuaire/evignal/:uai/personnels', {uai: '@uai', uid_elv: '@uid_elv'});
 }]);
 
 angular.module('suiviApp')
@@ -85,6 +88,37 @@ angular.module('suiviApp')
 					done: false
 				});
 			}
+		});
+		return contacts;
+	}
+
+	this.get_contact_hopital = function(reponse){
+		var contacts = [];
+		angular.forEach(reponse, function (prof) {
+			var profil = ""
+			switch(prof.profil){
+				case 'directeur':
+					profil = "directeur";
+					break;
+				case 'admin':
+					profil = "administrateur";
+					break;
+				case 'cpe':
+					profil = "conseiller principal d'éducation";
+					break;
+				case 'avs':
+					profil = "assistante de vie scolaire";
+					break;
+				case 'prof':
+					profil = "enseignant";
+					break;
+			}
+			contacts.push({
+				id_ent: prof.id_ent,
+				matiere: profil,
+				fullname: prof.fullname.toLowerCase(),
+				done: false
+			});
 		});
 		return contacts;
 	}
@@ -201,6 +235,8 @@ angular.module('suiviApp')
 						r: true,
 						w: false,
 						admin: false,
+						hopital: false,
+						evignal: false,
 						action: []
 					});
 					break;
@@ -213,6 +249,8 @@ angular.module('suiviApp')
 						r: true,
 						w: true,
 						admin: true,
+						hopital: false,
+						evignal: false,
 						action: []
 					});
 					break;
@@ -225,6 +263,8 @@ angular.module('suiviApp')
 						r: true,
 						w: false,
 						admin: false,
+						hopital: false,
+						evignal: false,
 						action: []
 					});
 					break;
@@ -237,6 +277,8 @@ angular.module('suiviApp')
 						r: true,
 						w: false,
 						admin: false,
+						hopital: false,
+						evignal: false,
 						action: []
 					});
 					break;
@@ -249,6 +291,8 @@ angular.module('suiviApp')
 						r: true,
 						w: false,
 						admin: false,
+						hopital: false,
+						evignal: false,
 						action: []
 					});
 					break;
@@ -261,6 +305,8 @@ angular.module('suiviApp')
 						r: true,
 						w: false,
 						admin: false,
+						hopital: false,
+						evignal: false,
 						action: []
 					});
 					break;
@@ -273,6 +319,8 @@ angular.module('suiviApp')
 						r: true,
 						w: false,
 						admin: false,
+						hopital: false,
+						evignal: false,
 						action: []
 					});
 					break;

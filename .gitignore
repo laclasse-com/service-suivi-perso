@@ -25,7 +25,6 @@ vagrant
 .vagrant/
 
 # Config
-config/constants.rb
 config/database.rb
 config/options.rb
 config/rights_constants.rb

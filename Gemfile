@@ -1,7 +1,6 @@
 # -*- coding: utf-8; mode: ruby -*-
 
 source 'https://rubygems.org'
-source 'http://gems.erasme.org'
 
 gem 'grape'
 gem 'grape-swagger'

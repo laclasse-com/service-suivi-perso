@@ -28,8 +28,37 @@ class CarnetsApi < Grape::API
         requires :classe_id, type: Integer
     }
     get '/classes/:classe_id' do
-        response = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_regroupements] + params[:classe_id].to_s, {'expand' => 'true'})
+        response = Annuaire.send_request_signed(:service_annuaire_regroupement, params[:classe_id].to_s, {'expand' => 'true'})
         CarnetsLib.get_carnets_by_classe_of response
+    end
+
+    desc 'récupère les carnets d\'e Vignal'
+    get '/evignal' do
+        begin
+            CarnetsLib.get_evignal_carnets            
+        rescue Exception => e
+            [{error: "Impossible de récupérer les carnets"}]
+        end
+    end
+
+    desc 'récupère le personnel à l\'hopital d\'Evignal'
+    params {
+        requires :uid_elv, type: String
+        requires :hopital, type: Boolean
+    }
+    get '/evignal/personnels' do
+        personnels = []
+        begin
+            carnet = Carnet.new(nil, params[:uid_elv])
+            carnet.read 
+            pers = carnet.get_pers_evignal_or_hopital true, params[:hopital]
+            pers.each do |p|
+                personnels.push({id_ent: p.uid, profil: p.profil, fullname: p.full_name})
+            end
+            {personnels: personnels}
+        rescue Exception => e
+            {error: "Impossible de récupérer le personnel à l'hôpital"}
+        end
     end
 
     desc "recherche des élèves d'un utilisateur par nom"
@@ -37,8 +66,21 @@ class CarnetsApi < Grape::API
         requires :name, type: String, desc: "nom de l'élève"
     }
     get '/eleves/:name' do
-        response = Annuaire.send_request_signed(ANNUAIRE[:url], ANNUAIRE[:service_annuaire_user] + $current_user[:info].uid.to_s + '/eleves', {'nom' => params[:name], 'expand' => 'true'})
+        response = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s + '/eleves', {'nom' => params[:name], 'expand' => 'true'})
         CarnetsLib.search_carnets_of response
+    end
+
+    desc "recherche des élèves dans tous les etabs d'un utilisateur par nom"
+    params {
+        requires :name, type: String, desc: "nom de l'élève"
+    }
+    get '/evignal/eleves/:name' do
+        profil_actif_current_user = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})["profil_actif"]["etablissement_code_uai"]
+        if profil_actif_current_user != UAI_EVIGNAL
+            error!('Ressource non trouvee', 404)
+        end
+        response = Annuaire.send_request_signed(:service_annuaire_suivi_perso, ANNUAIRE_URL[:suivi_perso_search] + params[:name], {})
+        CarnetsLib.search_carnets_of response, true
     end
 
     desc "création d'un carnet"
@@ -55,10 +97,39 @@ class CarnetsApi < Grape::API
         carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id])
         begin
             carnet.create
-            right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1)
+            right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1, 0, 1)
             right_adm.create
-            right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0)
+            right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0, 0, 1)
             right_elv.create
+            {carnet_id: carnet.id}            
+        rescue
+            {error: "erreur lors de la création du carnet"}
+        end
+    end
+
+    desc "création ou mise a jour d'un carnet evignal"
+    params{
+        requires :uid_elv, type: String
+        requires :full_name_elv, type: String
+        requires :etablissement_code, type: String
+        requires :classe_id, type: Integer
+        requires :uid_adm, type: String
+        requires :full_name_adm, type: String
+        requires :profil_adm, type: String
+    }
+    post '/evignal'do
+        carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id], nil, true)
+        begin
+            if carnet.exist?
+                carnet.read
+                carnet.update true
+            else
+                carnet.create
+                right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1)
+                right_adm.create
+                right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0)
+                right_elv.create
+            end
             {carnet_id: carnet.id}            
         rescue
             {error: "erreur lors de la création du carnet"}
@@ -67,7 +138,6 @@ class CarnetsApi < Grape::API
 
     desc "création d'un pdf du carnet"
     params{
-        requires :mail_infos, type: String
         requires :nom, type: String
         requires :prenom, type: String
         requires :classe, type: String

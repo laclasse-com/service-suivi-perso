@@ -56,7 +56,7 @@
 #ajout{
 	width: 40%;
 	height: 100%;
-	fill:white;
+	fill:#505050;
 }
 
 @media (max-width: 768px) {

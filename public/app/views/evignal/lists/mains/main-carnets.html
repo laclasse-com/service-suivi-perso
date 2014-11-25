@@ -1,0 +1,8 @@
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 damier {{carnet.couleur}}" ng-repeat="carnet in carnets" ng-class="{'hide-damier': carnet.firstName == ''}">
+		<img no-image ng-src="carnet.avatar" ng-hide="carnet.avatar==''" class="avatar" ng-click="open(carnet)"/>	  
+		<span class="carnet-first-name">{{carnet.firstName}}</span>
+		<span class="carnet-last-name">{{carnet.lastName}}</span>
+		<span class="carnet-classe">{{carnet.classe}}</span>
+	</div>
+</div>

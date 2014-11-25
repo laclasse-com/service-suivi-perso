@@ -41,13 +41,15 @@ class RightsApi < Grape::API
     desc "retourne les droits pour un carnet"
     params {
         requires :uid_elv, type: String, desc: "uid du carnet"
+        optional :evignal, type: Integer
     }
     get '/carnets/:uid_elv' do
       carnet = Carnet.new(nil, params[:uid_elv])
+      !params[:evignal].nil? ? evignal = params[:evignal] : evignal = 0
       begin
         carnet.read
         rights = []
-        carnet.get_rights.each do |right|
+        carnet.get_rights(evignal).each do |right|
           rights.push({
             id: right.uid,
             id_right: right.id,
@@ -55,7 +57,9 @@ class RightsApi < Grape::API
             profil: right.profil,
             r: right.read == 1 ? true : false,
             w: right.write == 1 ? true : false,
-            admin: right.admin == 1 ? true : false
+            admin: right.admin == 1 ? true : false,
+            hopital: right.hopital,
+            evignal: right.evignal
           })
         end
         {data: rights}
@@ -74,15 +78,19 @@ class RightsApi < Grape::API
         requires :write, type: Boolean, desc: "droit d'ecriture"
     }
     post '/' do
-        carnet = Carnet.new(nil, params[:uid_elv])
+      !params[:hopital].nil? ? hopital = params[:hopital] : hopital = 0
+      !params[:evignal].nil? ? evignal = params[:evignal] : evignal = 0
+      carnet = Carnet.new(nil, params[:uid_elv])
       begin
         carnet.read
         r = params[:read] ? 1 : 0
         w = params[:write] ? 1 : 0
-        admin = user.admin ? 1 : 0
-        right = Right.new(nil, params[:uid], params[:full_name], params[:profil], carnet.id, r, w, admin)
+        admin = 0
+        hopital = 0
+        evignal = 0
+        right = Right.new(nil, params[:uid], params[:full_name], params[:profil], carnet.id, r, w, admin, hopital, evignal)
         right.create
-        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: admin}
+        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: admin, hopital: hopital, evignal: evignal}
       rescue Exception => e
         {error: 'Impossible de créer le droit'}
       end
@@ -101,10 +109,12 @@ class RightsApi < Grape::API
           r = user.r ? 1 : 0
           w = user.w ? 1 : 0
           admin = user.admin ? 1 : 0
+          hopital = user.hopital ? 1 : 0
+          evignal = user.evignal ? 1 : 0
           case user.action.last
           when 'add'
             if user.id_right.nil?
-              right = Right.new(nil, user.id, user.full_name, user.profil, carnet.id, r, w, admin)
+              right = Right.new(nil, user.id, user.full_name, user.profil, carnet.id, r, w, admin, hopital, evignal)
               right.create
             end
           when 'update'

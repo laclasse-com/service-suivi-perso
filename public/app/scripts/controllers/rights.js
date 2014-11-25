@@ -31,7 +31,7 @@ angular.module('suiviApp')
     }
   ];
 
-  Rights.carnets({uid_elv: $stateParams.id}).$promise.then(function(reponse){
+  Rights.carnets({uid_elv: $stateParams.id, evignal: null}).$promise.then(function(reponse){
     if (reponse.error != undefined) {alert(reponse.error); return false;};
     _.each(reponse.data, function(right){
       if (right.profil == 'élève' || right.profil == 'parent') {

@@ -3,15 +3,25 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('AsideCarnetCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', 'Rights', 'Profil', 'CarnetPdf', '$http', 'Onglets', '$modal', '$window', '$upload', 'UPLOAD_SIZE', function($rootScope, $scope, $state, $stateParams, CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH, Rights, Profil, CarnetPdf, $http, Onglets, $modal, $window, $upload, UPLOAD_SIZE) {
+.controller('AsideCarnetEvignalCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', 'Rights', 'Profil', 'CarnetPdf', '$http', 'Onglets', '$modal', '$window', '$upload', 'UPLOAD_SIZE', 'UAI_EVIGNAL', 'GetPersonnelsEvignal', 'CarnetPersonnelsEvignal', function($rootScope, $scope, $state, $stateParams, CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH, Rights, Profil, CarnetPdf, $http, Onglets, $modal, $window, $upload, UPLOAD_SIZE, UAI_EVIGNAL, GetPersonnelsEvignal, CarnetPersonnelsEvignal) {
 
   Profil.initRights($stateParams.id).promise.then(function(){
   
     $scope.contactCollege = [];
     $scope.parents = [];
-
+    $scope.disableCollegeEvignal = false;
+    $scope.contactCollegeTitle = "Contacts Collège de l'élève"
     GetUser.get({id: $stateParams.id}).$promise.then(function(reponse){
       $scope.user = Annuaire.get_user(reponse);
+      if ($scope.user.classe.etablissement_code == UAI_EVIGNAL) {
+        $scope.disableCollegeEvignal=true; 
+        $scope.contactCollegeTitle = "Contacts Collège"
+        $window.sessionStorage.setItem("evignal", true);
+        $window.sessionStorage.setItem("uai_etab_elv", $scope.user.classe.etablissement_code);
+      } else {
+        $window.sessionStorage.setItem("evignal", false);
+        $window.sessionStorage.setItem("uai_etab_elv", $scope.user.classe.etablissement_code);
+      };
       $window.sessionStorage.setItem("nom", $scope.user.nom);
       $window.sessionStorage.setItem("prenom", $scope.user.prenom);
       if (CurrentUser.getRights().admin == 1) {
@@ -28,24 +38,74 @@ angular.module('suiviApp')
       $scope.contactCollege = Annuaire.get_contact_college(reponse.profs);
     });
 
+    CarnetPersonnelsEvignal.get({uid_elv: $stateParams.id, hopital: true}).$promise.then(function(reponse){
+      if (reponse.error != undefined) {
+       alert(reponse.error);
+      }else{
+        $scope.contactHopital = Annuaire.get_contact_hopital(reponse.personnels);
+      };
+    });
+
+    CarnetPersonnelsEvignal.get({uid_elv: $stateParams.id, hopital: false}).$promise.then(function(reponse){
+      if (reponse.error != undefined) {
+       alert(reponse.error);
+      }else{
+        $scope.contactEvignal = Annuaire.get_contact_hopital(reponse.personnels);
+      };
+    });
+
+    $scope.contactEvignal = [];
+    $scope.contactHopital = [];
+    $scope.contactCollege = [];
     $scope.avatar_m = APP_PATH + AVATAR_M;
     $scope.avatar_f = APP_PATH + AVATAR_F;
 
-    $scope.allNeedsClicked = function () {
-      var newValue = !$scope.allNeedsMet();
+    $scope.allNeedsClicked = function (type) {
+      var list = [];
+      switch(type){
+        case "eleve":
+          list = $scope.contactCollege;
+          break;
+        case "evignal":
+          list = $scope.contactEvignal;
+          break;
+        case "hopital":
+          list = $scope.contactHopital;
+          break;
+        default:
+          list = [];
+          break;
+      }
+
+      var newValue = !$scope.allNeedsMet(type);
       
-      _.each($scope.contactCollege, function (contact) {
+      _.each(list, function (contact) {
         contact.done = newValue;
       });
     };
     
     // Returns true if and only if all contacts are done.
-    $scope.allNeedsMet = function () {
-      var needsMet = _.reduce($scope.contactCollege, function (memo, contact) {
+    $scope.allNeedsMet = function (type) {
+      var list = [];
+      switch(type){
+        case "eleve":
+          list = $scope.contactCollege;
+          break;
+        case "evignal":
+          list = $scope.contactEvignal; // TODO: a remplacer
+          break;
+        case "hopital":
+          list = $scope.contactHopital;
+          break;
+        default:
+          list = [];
+          break;
+      }
+      var needsMet = _.reduce(list, function (memo, contact) {
         return memo + (contact.done ? 1 : 0);
       }, 0);
 
-      return (needsMet === $scope.contactCollege.length);
+      return (needsMet === list.length);
     };
 
     $scope.oneNeedsMet = function(datas){
@@ -54,14 +114,14 @@ angular.module('suiviApp')
     }
 
     $scope.return = function(){
-      $state.go( 'suivi.classes', {}, { reload: true, inherit: true, notify: true } );
+      $state.go( 'suivi.evignal_carnets', {}, { reload: true, inherit: true, notify: true } );
     }
 
     $scope.show = false;
 
     
     $scope.rights = function(){
-      $state.go( 'suivi.rights', $state.params, { reload: true, inherit: true, notify: true } );  
+      $state.go( 'suivi.evignal_rights', $state.params, { reload: true, inherit: true, notify: true } );  
     }
 
     $rootScope.pdf = function(tabs){
@@ -146,7 +206,7 @@ angular.module('suiviApp')
 
     modalInstance.result.then(function () {
       var generateTabs = _.filter($rootScope.tabs, function(tab){ return tab.check == true; });
-      console.log(generateTabs);
+      // console.log(generateTabs);
       $rootScope.pdf(generateTabs);        
     });
   };
@@ -186,6 +246,7 @@ angular.module('suiviApp')
   };
 
   $scope.sendMail = function (contacts) {
+    // console.log(contacts);
     $rootScope.mail = _.reduce(contacts, function(memo, contact){
       if (contact.done == true) {memo.destinataires.concatener += contact.fullname + "; "; memo.destinataires.list.push({uid: contact.id_ent, fullname: contact.fullname});};
       return memo;
@@ -214,7 +275,7 @@ angular.module('suiviApp')
         //formDataAppender: function(formData, key, val){}
       }).success(function(data, status, headers, config) {
         // file is uploaded successfully
-        console.log(data);
+        // console.log(data);
         if (data['envoye'] != undefined && !_.isEmpty(data['envoye'])) {
           $rootScope.resultats.success = data['envoye']
         };

@@ -2,7 +2,7 @@
 
 /* Services */
 angular.module('suiviApp')
-.service('CurrentUser', ['Annuaire', 'Rights', '$state', function( Annuaire, Rights, $state) {
+.service('CurrentUser', ['Annuaire', 'Rights', '$state', 'UAI_EVIGNAL', function( Annuaire, Rights, $state, UAI_EVIGNAL) {
   var currentUser = null;
   var rights = null;
   this.set = function(user){
@@ -26,7 +26,7 @@ angular.module('suiviApp')
     if (carnet.error != undefined) {$state.go( 'erreur', {code: '404', message: carnet.error}, { reload: true, inherit: true, notify: true } );};
     var priority = 1
     _.each(currentUser.roles, function(role){
-      if (role.etablissement_code_uai == carnet.uai && role.priority > priority){
+      if ((role.etablissement_code_uai == carnet.uai || role.etablissement_code_uai == UAI_EVIGNAL) && role.priority > priority){
         priority = role.priority;
       }
     })
@@ -74,43 +74,76 @@ angular.module('suiviApp')
   };
 }])
 
-.service('Profil', ['CurrentUser', '$state', 'Carnets', '$q', function( CurrentUser, $state, Carnets,$q ) {
-  this.redirection = function(allowed_types){
+.service('Profil', ['CurrentUser', '$state', 'Carnets', '$q', 'UAI_EVIGNAL', function( CurrentUser, $state, Carnets,$q, UAI_EVIGNAL ) {
+  this.redirection = function(allowed_types, evignal){
     CurrentUser.getRequest().$promise.then(function(currentUser){
       console.log(currentUser);
+      var profil_actif_evignal = (currentUser.profil_actif.etablissement_code_uai == UAI_EVIGNAL);
+      console.log(profil_actif_evignal);
       CurrentUser.set(currentUser);
       var stateName = 'erreur';
       var params = {code: '404', message: null}
       var uid_elv = "";
       var right = false;
-      if (allowed_types.length === 0 || allowed_types.indexOf(currentUser.hight_role) === -1) {
-        switch ( currentUser.hight_role ) {
-          case 'TECH':
-            stateName = 'suivi.classes';
-            break;
-          case 'DIR_ETB':
-            stateName = 'suivi.classes';
-            break;
-          case 'ADM_ETB':
-            stateName = 'suivi.classes';
-            break;
-          case 'AVS_ETB':
-            stateName = 'suivi.classes';
-            break;
-          case 'PROF_ETB':
-            stateName = 'suivi.classes';
-            break;
-          case 'CPE_ETB':
-            stateName = 'suivi.classes';
-            break;
-          case 'ELV_ETB':
-            stateName = 'suivi.carnet';
-            params = {classe_id: currentUser.classes[0].classe_id, id: currentUser.id_ent};           
-            break;                            
-          case 'PAR_ETB':
-            stateName = 'suivi.carnet';
-            params = {classe_id: currentUser.enfants[0].classes[0].classe_id, id: currentUser.enfants[0].enfant.id_ent};
-            break;
+      if (allowed_types.length === 0 || allowed_types.indexOf(currentUser.hight_role) === -1 || profil_actif_evignal != evignal) {
+        if (profil_actif_evignal ==  true){ 
+          switch ( currentUser.hight_role ) {
+            case 'TECH':
+              stateName = 'suivi.evignal_carnets';
+              break;
+            case 'DIR_ETB':
+              stateName = 'suivi.evignal_carnets';
+              break;
+            case 'ADM_ETB':
+              stateName = 'suivi.evignal_carnets';
+              break;
+            case 'AVS_ETB':
+              stateName = 'suivi.evignal_carnets';
+              break;
+            case 'PROF_ETB':
+              stateName = 'suivi.evignal_carnets';
+              break;
+            case 'CPE_ETB':
+              stateName = 'suivi.evignal_carnets';
+              break;
+            case 'ELV_ETB':
+              stateName = 'suivi.evignal_carnet';
+              params = {classe_id: currentUser.classes[0].classe_id, id: currentUser.id_ent};           
+              break;                            
+            case 'PAR_ETB':
+              stateName = 'suivi.evignal_carnet';
+              params = {classe_id: currentUser.enfants[0].classes[0].classe_id, id: currentUser.enfants[0].enfant.id_ent};
+              break;
+          }
+        } else {
+          switch ( currentUser.hight_role ) {
+            case 'TECH':
+              stateName = 'suivi.classes';
+              break;
+            case 'DIR_ETB':
+              stateName = 'suivi.classes';
+              break;
+            case 'ADM_ETB':
+              stateName = 'suivi.classes';
+              break;
+            case 'AVS_ETB':
+              stateName = 'suivi.classes';
+              break;
+            case 'PROF_ETB':
+              stateName = 'suivi.classes';
+              break;
+            case 'CPE_ETB':
+              stateName = 'suivi.classes';
+              break;
+            case 'ELV_ETB':
+              stateName = 'suivi.carnet';
+              params = {classe_id: currentUser.classes[0].classe_id, id: currentUser.id_ent};           
+              break;                            
+            case 'PAR_ETB':
+              stateName = 'suivi.carnet';
+              params = {classe_id: currentUser.enfants[0].classes[0].classe_id, id: currentUser.enfants[0].enfant.id_ent};
+              break;
+          }          
         }
         $state.go( stateName, params, { reload: true, inherit: true, notify: true } ); 
       };

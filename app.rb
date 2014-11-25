@@ -3,7 +3,6 @@
 require 'rubygems'
 require 'bundler'
 require "sinatra/reloader"
-require 'annuaire'
 
 Bundler.require(:default, :development)     # require tout les gems définis dans Gemfile
 
@@ -30,7 +29,3 @@ require __DIR__('api/init')
 puts "----------> controllers <------"
 require __DIR__('controller/init')
 
-Annuaire.configure do |config|
-    config.app_id = ANNUAIRE[:app_id]
-    config.secret = ANNUAIRE[:api_key]
-end

@@ -4,16 +4,21 @@ module CarnetsLib
 
   include AuthenticationHelpers
 
-  def search_carnets_of response_annuaire
-  	carnets = []
-    uids = ""
-  	response_annuaire.each do |reponse|
-      reponse['sexe'].nil? ? avatar = APP_PATH + AVATAR[:M] : avatar = APP_PATH + AVATAR[reponse['sexe'].to_sym]
-  		carnet = Carnet.new(nil, reponse['id_ent'])
-  		if carnet.exist?
-  			carnet.read
-  		end
-      uids +=
+  def search_carnets_of response_annuaire, evignal=false
+      
+    carnets = []
+    response_annuaire.each do |reponse|
+      carnet = Carnet.new(nil, reponse['id_ent'])
+      if carnet.exist?
+        carnet.read
+      end
+      if evignal
+        avatar = reponse["avatar"]
+        !carnet.id.nil? && carnet.evignal == true ? active = true : active = false
+      else
+        reponse['sexe'].nil? ? avatar = APP_PATH + AVATAR[:M] : avatar = APP_PATH + AVATAR[reponse['sexe'].to_sym]
+        !carnet.id.nil? ? active = true : active = false
+      end
   		carnets.push({
   			id: carnet.id,
   			couleur: nil,
@@ -24,14 +29,13 @@ module CarnetsLib
   			classe_id: reponse['classes'][0]['classe_id'],
   			etablissement_code: reponse['classes'][0]['etablissement_code'],
   			avatar: avatar,
-  			active: !carnet.id.nil?
+  			active: active
   			})
   	end
   	carnets
   end
 
   def get_carnets_by_classe_of response_annuaire
-    puts response_annuaire.inspect
   	carnets = []
   	# info sur la classe
   	classe = {
@@ -63,6 +67,35 @@ module CarnetsLib
   		end
   	end
   	carnets
+  end
+
+  def get_evignal_carnets
+    carnets = []
+    uids = []
+    Carnets.where(:evignal => true).each do |carnet|
+      uids.push carnet.uid_elv
+      carnets.push({
+        id: carnet.id,
+        couleur: nil,
+        uid_elv: carnet.uid_elv,
+        firstName: nil,
+        lastName: nil,
+        classe: nil,
+        classe_id: carnet.cls_id,
+        etablissement_code: carnet.uai,
+        avatar: nil,
+      })
+    end
+    response = Annuaire.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join(";").to_s, {'expand' => 'true'}) if !uids.empty?
+    response.each do |user|
+      carnets.each do |carnet|
+        if carnet[:uid_elv] == user["id_ent"]
+          carnet[:firstName] = user["prenom"]
+          carnet[:lastName] = user["nom"]
+        end
+      end
+    end
+    carnets
   end
 
   def get_tabs uid_elv, id_onglets=nil
