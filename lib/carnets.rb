@@ -13,9 +13,11 @@ module CarnetsLib
         carnet.read
       end
       if evignal
+        etablissement_nom = reponse['classes'][0]['etablissement_nom']
         avatar = reponse["avatar"]
         !carnet.id.nil? && carnet.evignal == true ? active = true : active = false
       else
+        etablissement_nom = nil
         reponse['sexe'].nil? ? avatar = APP_PATH + AVATAR[:M] : avatar = APP_PATH + AVATAR[reponse['sexe'].to_sym]
         !carnet.id.nil? ? active = true : active = false
       end
@@ -28,6 +30,7 @@ module CarnetsLib
   			classe: reponse['classes'][0]['classe_libelle'],
   			classe_id: reponse['classes'][0]['classe_id'],
   			etablissement_code: reponse['classes'][0]['etablissement_code'],
+        etablissement_nom: etablissement_nom,
   			avatar: avatar,
   			active: active
   			})

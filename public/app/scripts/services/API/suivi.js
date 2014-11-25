@@ -83,7 +83,7 @@ angular.module('suiviApp')
 			i++;
 		});
 		while (i < 16 || i % 4 != 0){
-			carnets.push({id: null, couleur: GRID_COLOR[i%GRID_COLOR.length], uid_elv: null, firstName: '', lastName: '', classe: '', classe_id: null, etablissement_code: null, avatar: '', active: false});
+			carnets.push({id: null, couleur: GRID_COLOR[i%GRID_COLOR.length], uid_elv: null, firstName: '', lastName: '', classe: '', classe_id: null, etablissement_code: null, etablissement_nom: null, avatar: '', active: false});
 			i++;
 		}
 		return carnets;

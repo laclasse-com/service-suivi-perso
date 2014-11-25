@@ -18,7 +18,7 @@
 	src: url('../font/Futura TTF/FUTURA__.TTF'); 
 }
 
-.carnet-first-name, .carnet-last-name, .carnet-classe{
+.carnet-first-name, .carnet-last-name, .carnet-classe, .carnet-etab{
 	position: absolute;
    	font-family: "Futura Bold";
    	font-weight: bold;
@@ -39,6 +39,13 @@
 .carnet-classe{
 	top: 1em;
 	right: 0.8em;
+}
+
+.carnet-etab{
+	max-width: 50%;
+	font-size:1em;
+	top: 1em;
+	left: 0.8em;
 }
 
 .avatar{
