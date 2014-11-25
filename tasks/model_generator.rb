@@ -92,6 +92,7 @@ models_to_create.each do |m|
   model.puts("# COLUMN_NAME" << " " * 19 << "| DATA_TYPE" << " " * 11 << "| NULL? | KEY | DEFAULT | EXTRA")
   model.puts(line)
   DB.schema(m).each do |c|
+  
       col = c[1]
       tab = 30 - c[0].to_s.size
       data_type = col[:db_type].to_s

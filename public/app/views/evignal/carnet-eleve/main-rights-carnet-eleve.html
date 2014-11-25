@@ -1,0 +1,88 @@
+<div class="row rights-carnet" style="height:100%">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<h4 class="title-rights">Gérer les droits du carnet de suivi</h4>
+	</div>
+
+	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="overflow:auto">
+		<div class="table-responsive">
+			<table>
+				<tr class="en-tete">
+					<td colspan="2" style="cursor:pointer" ng-click="predicate = 'full_name'; reverse=!reverse">Prénom Nom</td>
+					<td style="cursor:pointer" ng-click="predicate = 'profil';reverse=!reverse">Profil</td >
+					<td class="td-img"><i class="toolbar-suivi toolbar-suivi-read"></i></td>
+					<td class="td-img"><i class="toolbar-suivi toolbar-suivi-write"></i></td>
+					<td class="td-img">Admin</td >
+				</tr>
+				<tbody ng-repeat="right in rights">
+					<tr class="categorie" style="background-color:{{right.background}}; color: {{right.text}}">
+						<td colspan="6">{{right.type}}</td>
+					</tr>
+					<tr ng-repeat="user in right.users | orderBy:predicate:reverse">
+						<td class="td-img"><i class="toolbar-suivi toolbar-suivi-del-user" ng-click="delUser(user)"></i></td><td><span style="text-transform: capitalize">{{user.full_name}}</span></td>
+						<td><span>{{user.profil}}</span></td>
+						<td><input type="checkbox" ng-checked="user.r || user.w" ng-model="user.r" ng-change="update(user)"ng-disabled="user.profil == 'admin'"></td>
+						<td><input type="checkbox" ng-checked="user.w" ng-model="user.w" ng-change="update(user)" ng-disabled="user.profil == 'admin'"></td>
+						<td style="text-align: center"><input type="checkbox" ng-checked="user.admin" ng-model="user.admin" ng-disabled="user.profil == 'admin' || user.profil == 'élève' || user.profil == 'parent'" ng-change="update(user)"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 ">
+		<div class="row rights-search-users">
+			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 ">
+				<span>Ajouter une personne au carnet:</span>
+				<input class="form-control input-sm" type="text" placeholder="entrer un nom" ng-model="search.full_name">
+			</div>
+			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 accordion-rights">
+				<span ng-hide="isEvignal" style="width: 100%; background-color:rgba(26,161,204,0.3); color:#1aa1cc">Collège de l'élève</span>
+				<accordion close-others="true">
+					<accordion-group is-open="list.open" ng-repeat="list in listUsersTypes">
+						<accordion-heading>
+							<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': list.open, 'toolbar-suivi-arrow-right': !list.open}"></i>
+							{{list.type}}
+						</accordion-heading>
+						<div class="add-user" ng-repeat="user in list.users | filter:search | orderBy:'fullname':false"><i class="toolbar-suivi toolbar-suivi-add-user" ng-click="addUser(user)"></i><span style="text-transform: capitalize">{{user.full_name}}</span></div>
+					</accordion-group>
+				</accordion>
+			</div>
+			<div ng-hide="isEvignal" class="col-xs-9 col-sm-9 col-md-9 col-lg-9 accordion-rights">
+				<span style="width: 100%; background-color:rgba(128, 186, 102, 0.3); color:#80ba66">Collège Elie Vignal</span>
+				<accordion close-others="true">
+					<accordion-group is-open="listEvignal.open" ng-repeat="listEvignal in listUsersEvignalTypes">
+						<accordion-heading>
+							<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': listEvignal.open, 'toolbar-suivi-arrow-right': !listEvignal.open}"></i>
+							{{listEvignal.type}}
+						</accordion-heading>
+						<div class="add-user" ng-repeat="user in listEvignal.users | filter:search | orderBy:'fullname':false"><i class="toolbar-suivi toolbar-suivi-add-user" ng-click="openAdd(user)"></i><span style="text-transform: capitalize">{{user.full_name}}</span></div>
+					</accordion-group>
+				</accordion>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="button-rights">
+			<div class="exit-carnet-button" ng-click="cancel()">
+				<span>annuler</span>
+			</div>
+			<div class="exit-carnet-button" ng-click="save()">
+				<span>enregistrer les modifications</span>
+			</div>			
+		</div>
+	</div>
+
+	<script type="text/ng-template" id="myModalRightsContent.html">
+        <div class="modal-header">
+            <h3>Ajouter dans :</h3>
+        </div>
+        <div class="modal-body">
+            <div class="exit-carnet-button" style="border: none;background-color:rgba(128, 186, 102, 0.3); color:#80ba66" ng-click="add('evignal')">
+				<span>COLLEGE ELIE VIGNAL</span>
+			</div>
+			<div class="exit-carnet-button" style="border: none;background-color:rgba(156, 117, 171, 0.3); color:#9c75ab" ng-click="add('hopital')">
+				<span>HÔPITAL</span>
+			</div>
+        </div>
+    </script>
+</div>

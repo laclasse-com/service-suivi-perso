@@ -1,21 +1,21 @@
 @font-face { 	
 	font-family: "Futura Bold"; 	
-	src: url('/app/styles/font/Futura TTF/FUTUB___.TTF'); 
+	src: url('../font/Futura TTF/FUTUB___.TTF'); 
 }
 
 @font-face { 	
 	font-family: "Futura Light"; 	
-	src: url('/app/styles/font/Futura TTF/FUTUL___.TTF'); 
+	src: url('../font/Futura TTF/FUTUL___.TTF'); 
 }
 
 @font-face { 	
 	font-family: "Futura Medium"; 	
-	src: url('/app/styles/font/Futura TTF/FUTUH___.TTF'); 
+	src: url('../font/Futura TTF/FUTUH___.TTF'); 
 }
 
 @font-face { 	
 	font-family: "Futura book"; 	
-	src: url('/app/styles/font/Futura TTF/FUTURA__.TTF'); 
+	src: url('../font/Futura TTF/FUTURA__.TTF'); 
 }
 html { 
     height:100%;
@@ -27,7 +27,7 @@ body {
 }
 
 .carnet-eleve-contener{
-	height:100%;
+	min-height:100%;
 	background-color: rgba(178,178,178,0.3);
 	margin-right: -30px;
 	margin-left: -30px;
@@ -151,6 +151,10 @@ body {
 	background-position: 0 -128px;
 }
 
+.toolbar-suivi-download{
+	background-position: 0 -160px;
+}
+
 .carnet-checkbox input[type=checkbox] {
 	visibility: hidden;
 }
@@ -214,6 +218,7 @@ body {
 
 .infos-famille{
 	color: #505050;
+	text-transform: capitalize;
 }
 
 .button-right, .div-right{
@@ -246,7 +251,7 @@ body {
 	width: 100%;
 }
 
-.exit-carnet-button{
+.exit-carnet-button, .exit-carnet-button-pdf{
 	display: inline-block;
 	padding: 3px 10px;
 	text-align: center;
@@ -255,4 +260,18 @@ body {
 	font-size: 14px;
 	color: #323232;
 	cursor: pointer;
+}
+
+.exit-carnet-button-pdf{
+	margin-right: 10px;
+	margin-bottom: 10px;
+	background-color: #fff;
+}
+
+.exit-carnet-button-pdf.active{
+	background-color: rgba(178,178,178,0.9);
+}
+
+.exit-carnet-button-pdf:focus {
+    outline: none;
 }

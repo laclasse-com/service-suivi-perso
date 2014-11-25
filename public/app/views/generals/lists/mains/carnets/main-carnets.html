@@ -1,10 +1,10 @@
 <div class="row">
-	<div class="col-xs-1 col-sm-2 col-md-3 col-lg-3 damier jaune" ng-click="return()">
-		<span class="classe-name">{{classe.name}}</span>
-		<span class="college-name">{{classe.college}}</span>
+	<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 damier {{classe_carnets.classe.couleur}}" ng-click="return()">
+		<span class="classe-name">{{classe_carnets.classe.name}}</span>
+		<span class="college-name">{{classe_carnets.classe.college}}</span>
 	</div>
-	<div class="col-xs-1 col-sm-2 col-md-3 col-lg-3 damier {{carnet.couleur}}" ng-repeat="carnet in carnets" ng-class="{'hide-damier': carnet.firstName == ''}">
-		<img src="{{carnet.avatar}}" alt="" ng-hide="carnet.avatar==''" class="avatar" ng-click="open({{carnet}})"/>	  
+	<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 damier {{carnet.couleur}}" ng-repeat="carnet in classe_carnets.carnets" ng-class="{'hide-damier': carnet.firstName == ''}">
+		<img src="{{carnet.avatar}}" alt="" ng-hide="carnet.avatar==''" class="avatar" ng-click="open(carnet)"/>	  
 		<span class="carnet-first-name">{{carnet.firstName}}</span>
 		<span class="carnet-last-name">{{carnet.lastName}}</span>
 		<span class="carnet-classe">{{carnet.classe}}</span>

@@ -14,7 +14,6 @@ test/version_tmp
 tmp
 
 # Application specific
-stotages/*
 
 # YARD artifacts
 .yardoc
@@ -26,6 +25,10 @@ vagrant
 .vagrant/
 
 # Config
-config/cas_server.rb
-config/constant.rb
 config/database.rb
+config/options.rb
+config/rights_constants.rb
+config/thin.yml
+
+public/node_modules
+public/app/scripts/constants.js

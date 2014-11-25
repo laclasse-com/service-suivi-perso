@@ -1,21 +1,21 @@
 @font-face { 	
 	font-family: "Futura Bold"; 	
-	src: url('/app/styles/font/Futura TTF/FUTUB___.TTF'); 
+	src: url('../font/Futura TTF/FUTUB___.TTF'); 
 }
 
 @font-face { 	
 	font-family: "Futura Light"; 	
-	src: url('/app/styles/font/Futura TTF/FUTUL___.TTF'); 
+	src: url('../font/Futura TTF/FUTUL___.TTF'); 
 }
 
 @font-face { 	
 	font-family: "Futura Medium"; 	
-	src: url('/app/styles/font/Futura TTF/FUTUH___.TTF'); 
+	src: url('../font/Futura TTF/FUTUH___.TTF'); 
 }
 
 @font-face { 	
 	font-family: "Futura book"; 	
-	src: url('/app/styles/font/Futura TTF/FUTURA__.TTF'); 
+	src: url('../font/Futura TTF/FUTURA__.TTF'); 
 }
 
 .carnet-first-name, .carnet-last-name, .carnet-classe{
@@ -37,7 +37,7 @@
 }
 
 .carnet-classe{
-	top: 6em;
+	top: 1em;
 	right: 0.8em;
 }
 
@@ -56,5 +56,16 @@
 #ajout{
 	width: 40%;
 	height: 100%;
-	fill:white;
+	fill:#505050;
+}
+
+@media (max-width: 768px) {
+	.carnet-first-name, .carnet-last-name{
+		font-size:1.2em;
+	}
+}
+@media (min-width: 768px) and (max-width: 992px) { 
+	.carnet-first-name, .carnet-last-name{
+		font-size:1.2em;
+	}
 }

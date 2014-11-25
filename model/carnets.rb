@@ -1,7 +1,7 @@
 #coding: utf-8
 #
 # model for 'carnets' table
-# generated 2014-08-29 12:29:18 +0200 by /usr/local/bin/rake
+# generated 2014-11-18 12:57:57 +0100 by /usr/local/bin/rake
 #
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # COLUMN_NAME                   | DATA_TYPE           | NULL? | KEY | DEFAULT | EXTRA
@@ -11,6 +11,7 @@
 # uid_adm                       | varchar(8)          | false    |          |            | 
 # uai                           | varchar(8)          | false    |          |            | 
 # cls_id                        | bigint(20)          | false    |          |            | 
+# evignal                       | tinyint(1)          | false    |          | 0          | 
 # url_publique                  | varchar(2000)       | true     |          |            | 
 # date_creation                 | timestamp           | true     |          |            | 
 # droits_pre                    | int(11)             | true     |          | 0          | 

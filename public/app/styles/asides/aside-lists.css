@@ -1,21 +1,21 @@
 @font-face { 	
 	font-family: "Futura Bold"; 	
-	src: url('/app/styles/font/Futura TTF/FUTUB___.TTF'); 
+	src: url('../font/Futura TTF/FUTUB___.TTF'); 
 }
 
 @font-face { 	
 	font-family: "Futura Light"; 	
-	src: url('/app/styles/font/Futura TTF/FUTUL___.TTF'); 
+	src: url('../font/Futura TTF/FUTUL___.TTF'); 
 }
 
 @font-face { 	
 	font-family: "Futura Medium"; 	
-	src: url('/app/styles/font/Futura TTF/FUTUH___.TTF'); 
+	src: url('../font/Futura TTF/FUTUH___.TTF'); 
 }
 
 @font-face { 	
 	font-family: "Futura book"; 	
-	src: url('/app/styles/font/Futura TTF/FUTURA__.TTF'); 
+	src: url('../font/Futura TTF/FUTURA__.TTF'); 
 }
 
 .aside-contener{
@@ -59,11 +59,28 @@
 	display:block;
 	width:16px;
 	height:16px;
-	background: url('/app/images/toolbar_suivi.png') 0 0 no-repeat;
+	background: url('../../images/toolbar_suivi.png') 0 0 no-repeat;
 }
 .toolbar-suivi-search{
 	background-position: 0 -48px;
 }
 .toolbar-suivi-del{
 	background-position: 0 -64px;
+}
+
+.search-erreur{
+	font-family: "Futura Light";
+	color: red;
+	font-weight: bold;
+}
+
+@media (max-width: 768px) {
+	.explicatif{
+		font-size:1em; 
+	}
+}
+@media (min-width: 768px) and (max-width: 992px) { 
+	.explicatif{
+		font-size:1em; 
+	}
 }
