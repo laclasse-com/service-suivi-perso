@@ -20,7 +20,7 @@ angular.module('suiviApp')
         $scope.tabs = reponse.onglets;
         $scope.nameUser = $window.sessionStorage.getItem("prenom") + " " + $window.sessionStorage.getItem("nom"); 
       } else{
-        alert(reponse[0].error);
+        alert(reponse.error);
       };
     });
     

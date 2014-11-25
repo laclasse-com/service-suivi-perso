@@ -6,6 +6,7 @@ Sequel.migration do
 
      alter_table(:droits_specifiques) do
       add_column :hopital, Boolean, :default=>false, :null=>false
+      add_column :evignal, Boolean, :default=>false, :null=>false
     end
   end
 end

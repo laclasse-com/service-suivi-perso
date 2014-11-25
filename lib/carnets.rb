@@ -86,6 +86,7 @@ module CarnetsLib
         avatar: nil,
       })
     end
+    response = []
     response = Annuaire.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join(";").to_s, {'expand' => 'true'}) if !uids.empty?
     response.each do |user|
       carnets.each do |carnet|

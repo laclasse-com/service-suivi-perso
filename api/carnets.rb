@@ -97,9 +97,9 @@ class CarnetsApi < Grape::API
         carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id])
         begin
             carnet.create
-            right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1, 0, 1)
+            right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1)
             right_adm.create
-            right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0, 0, 1)
+            right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0)
             right_elv.create
             {carnet_id: carnet.id}            
         rescue
@@ -125,9 +125,9 @@ class CarnetsApi < Grape::API
                 carnet.update true
             else
                 carnet.create
-                right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1)
+                right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1, 0, 1)
                 right_adm.create
-                right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0)
+                right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0, 0, 1)
                 right_elv.create
             end
             {carnet_id: carnet.id}            
