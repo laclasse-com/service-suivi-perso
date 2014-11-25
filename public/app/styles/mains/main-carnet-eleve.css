@@ -80,7 +80,8 @@
 	vertical-align: middle;
 	width: 10%;
 	padding: 2px;
-	font-family: "Futura Light";
+	background-color: #fff;
+	font-family: "Futura Medium";
 	color: #505050;
 	display: table-cell;
 	border: 1px solid #8E8E8E;
@@ -96,7 +97,6 @@
 }
 
 .publier span{
-	height: 100%;
 	margin-right: 5px;
 }
 
