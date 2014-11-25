@@ -19,8 +19,8 @@
 						<div class="publier" ng-click="addEntree(tab)" ><i class="toolbar-suivi toolbar-suivi-add"></i><span>PUBLIER</span></div>
 			    </div>
 	  		</div>
-	  		<div class="exit-carnet-button but-violet" style="margin:0px 20px" ng-click="predicate = 'date'; reverse=!reverse">
-	  			<span>trier par date</span>
+	  		<div class="exit-carnet-button but-violet"  style="margin:0px 20px" ng-click="predicate = 'date'; reverse=!reverse">
+	  			<span style="margin-right:10px" tooltip-popup-delay='1000' tooltip-placement="right" tooltip="Triez les messages par ordre antéchronologique/chronologique" >Trier par date</span><span style="margin-bottom:3px" class="glyphicon glyphicon-th-list"></span><span class="glyphicon" ng-class="{'glyphicon-arrow-down' : !reverse, 'glyphicon-arrow-up' : reverse}" style="margin-bottom:4px"></span>
 	  		</div>
 	  		<div class="exit-carnet-button but-jaune" style="margin:0px 0px" ng-click="actualiserAvatar()">
 	  			<span>Actualiser votre avatar</span>
