@@ -26,7 +26,7 @@ angular.module('suiviApp')
 }])
 .factory('CarnetPdf', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
 	return $resource( APP_PATH + '/api/carnets/:uid_elv/pdf', {uid_elv: '@uid_elv'}, {
-		'post':    {method:'POST', responseType :'blob', params: {nom: '@nom', prenom: '@prenom', classe: '@classe', college: '@college', sexe: '@sexe', id_onglets: '@id_onglets'}}
+		'post':    {method:'POST', responseType :'blob', params: {nom: '@nom', prenom: '@prenom', avatar: '@avatar', classe: '@classe', college: '@college', sexe: '@sexe', id_onglets: '@id_onglets'}}
 	});
 }])
 .factory('CarnetPersonnelsEvignal', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {

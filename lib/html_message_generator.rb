@@ -2,13 +2,13 @@
 require 'htmlentities'
 
 module HtmlMessageGenerator
-	def HtmlMessageGenerator.generateHtmlCover nom, prenom, sexe, classe, college
+	def HtmlMessageGenerator.generateHtmlCover nom, prenom, sexe, classe, avatar, college
     page = ""
-    # avatar = "<img src='http://127.0.0.1:9292/v3/suivi/app/images/yeoman.png' style='width:100px; height:100px'/>"
+    avatar = "<img src='"+URL_ENT+avatar+"' style='width:100px; height:100px'/>"
     info = "<div class='eleve-info'><div><span>"+prenom+" "+nom+"</span></div><div><span>"+classe+"</span></div><div><span>"+college+"</span></div></div>"
     titre = "<h1 class='titre'>Suivi de l'année scolaire "+Outils::annee_scolaire_string+"</h1>"
 
-    page = info + titre
+    page = avatar + info + titre
 		html = HTMLEntities.new.decode page
   	document = Nokogiri::HTML(html)
   	document
