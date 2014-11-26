@@ -14,11 +14,9 @@ module CarnetsLib
       end
       if evignal
         etablissement_nom = reponse['classes'][0]['etablissement_nom']
-        avatar = reponse["avatar"]
         !carnet.id.nil? && carnet.evignal == true ? active = true : active = false
       else
         etablissement_nom = nil
-        reponse['sexe'].nil? ? avatar = APP_PATH + AVATAR[:M] : avatar = APP_PATH + AVATAR[reponse['sexe'].to_sym]
         !carnet.id.nil? ? active = true : active = false
       end
   		carnets.push({
@@ -31,7 +29,7 @@ module CarnetsLib
   			classe_id: reponse['classes'][0]['classe_id'],
   			etablissement_code: reponse['classes'][0]['etablissement_code'],
         etablissement_nom: etablissement_nom,
-  			avatar: avatar,
+  			avatar: reponse["avatar"],
   			active: active
   			})
   	end
@@ -51,7 +49,7 @@ module CarnetsLib
   	}
   	carnets.push(classe)
   	response_annuaire['eleves'].each do |reponse|
-      reponse['sexe'].nil? ? avatar = APP_PATH + AVATAR[:M] : avatar = APP_PATH + AVATAR[reponse['sexe'].to_sym]
+      puts reponse['avatar'].inspect
   		carnet = Carnet.new(nil, reponse['id_ent'])
   		if carnet.exist?
   			carnet.read
@@ -64,7 +62,7 @@ module CarnetsLib
 	  			classe: response_annuaire['libelle_aaf'],
 	  			classe_id: response_annuaire['id'],
 	  			etablissement_code: response_annuaire["etablissement"]['code_uai'],
-	  			avatar: avatar,
+	  			avatar: reponse['avatar'],
 	  			active: !carnet.id.nil?
 	  		})
   		end
@@ -96,6 +94,7 @@ module CarnetsLib
         if carnet[:uid_elv] == user["id_ent"]
           carnet[:firstName] = user["prenom"]
           carnet[:lastName] = user["nom"]
+          carnet[:avatar] = user["avatar"]
         end
       end
     end

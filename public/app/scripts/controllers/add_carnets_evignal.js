@@ -4,10 +4,8 @@
 
 angular.module('suiviApp')
 .controller('AddCarnetsEvignalCtrl', ['$scope', '$state', '$stateParams', 'Carnets', 'EvignalSearchByName', 'CurrentUser', function($scope, $state, $stateParams, Carnets, EvignalSearchByName, CurrentUser) {
-  $scope.carnets = [{id: null, couleur: null, uid_elv: null, firstName: '', lastName: '', classe: '', classe_id: null, etablissement_code: null, avatar: '', active: false}];
   EvignalSearchByName.query({name: $stateParams.name}).$promise.then(function(reponse){
     $scope.carnets = Carnets.get_by_name(reponse); 
-    // console.log($scope.carnets);
   });
 
   $scope.open = function(carnet){

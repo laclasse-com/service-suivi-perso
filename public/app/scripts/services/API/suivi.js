@@ -97,6 +97,7 @@ angular.module('suiviApp')
 		var i = 0;
 		angular.forEach(reponse, function (carnet) {
 			carnet.couleur = GRID_COLOR[i%GRID_COLOR.length];
+			carnet.avatar = LACLASSE_PATH + '/' + carnet.avatar;
 			if (i == 0) {
 				classe_carnets.classe = carnet;
 			} else {
