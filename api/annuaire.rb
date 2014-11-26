@@ -155,4 +155,26 @@ class AnnuaireApi < Grape::API
     end
     users
   end
+
+  desc 'récupère les avatars des proprietaire des messages'
+  params{
+      requires :uids, type: Array
+  }
+  post '/avatars' do
+    begin
+      uids = params[:uids]
+      users = []
+      avatars = {}
+      while uids.size > 50
+        users.concat(Annuaire.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.pop(50).join(';').to_s, {'expand' => 'true'}))
+      end
+      users.concat(Annuaire.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join(';').to_s, {'expand' => 'true'})) if !uids.empty?
+      users.each do |user|
+        avatars[user["id_ent"]] = user["avatar"]
+      end
+      avatars      
+    rescue Exception => e
+      {error: "Impossible de retourner les avatars"}
+    end
+  end
 end

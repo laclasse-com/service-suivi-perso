@@ -18,11 +18,16 @@ angular.module('suiviApp')
 }])
 .factory('GetPersonnelsEvignal', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
 	return $resource( APP_PATH + '/api/annuaire/evignal/:uai/personnels', {uai: '@uai', uid_elv: '@uid_elv'});
+}])
+.factory('GetAvatars', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
+	return $resource( APP_PATH + '/api/annuaire/avatars', {}, {
+		'post':    {method:'POST', params: {uids: '@uids'}}
+	});
 }]);
 
 angular.module('suiviApp')
-.service('Annuaire',[ 'GetCurrentUser', 'GRID_COLOR', 'Donnee',
-	function(GetCurrentUser, GRID_COLOR, Donnee){
+.service('Annuaire',[ 'GetCurrentUser', 'GRID_COLOR', 'Donnee', 'GetAvatars',
+	function(GetCurrentUser, GRID_COLOR, Donnee, GetAvatars){
 	this.get_classes = function (response) {
 		var classes = [];
 		var i = 0;
@@ -38,7 +43,6 @@ angular.module('suiviApp')
 	};
 
 	this.get_user = function(reponse){
-		console.log(reponse);
 		return {
 			id_ent: reponse.id_ent,
 			fullname: reponse.prenom + " " + reponse.nom.toLowerCase(),
@@ -330,5 +334,14 @@ angular.module('suiviApp')
 		});
 	return list;
 	}; 
-
+	this.avatars = function(entrees){
+		var entreesUniq = _.uniq(entrees, false, function(entree){
+          return entree.owner.uid;
+        });
+        var uids = [];
+        _.each(entreesUniq, function(entree){
+        	uids.push(entree.owner.uid);
+        });
+        return GetAvatars.post({uids: uids});
+	};
 }]);

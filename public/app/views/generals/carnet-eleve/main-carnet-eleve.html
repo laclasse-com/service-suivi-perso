@@ -22,9 +22,6 @@
 	  		<div class="exit-carnet-button but-violet"  style="margin:0px 20px" ng-click="predicate = 'date'; reverse=!reverse">
 	  			<span style="margin-right:10px" tooltip-popup-delay='1000' tooltip-placement="right" tooltip="Triez les messages par ordre antéchronologique/chronologique" >Trier par date</span><span style="margin-bottom:3px" class="glyphicon glyphicon-th-list"></span><span class="glyphicon" ng-class="{'glyphicon-arrow-down' : !reverse, 'glyphicon-arrow-up' : reverse}" style="margin-bottom:4px"></span>
 	  		</div>
-	  		<div class="exit-carnet-button but-jaune" style="margin:0px 0px" ng-click="actualiserAvatar()">
-	  			<span>Actualiser votre avatar</span>
-	  		</div>
     		<div class="entree" ng-repeat="entree in tab.entrees | orderBy:predicate:reverse">
 					<div class="avatar">
 						<img no-image ng-src="{{entree.owner.avatar}}" no-image style="width: 100%;background-color: {{entree.owner.avatar_color}}">					

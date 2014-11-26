@@ -11,33 +11,37 @@ angular.module('suiviApp')
 
     Onglets.get({uid: $stateParams.id}, function(reponse){
       if (reponse.error == undefined) {
+        var avatars = Annuaire.avatars(reponse.onglets[0].entrees);
         _.each(reponse.onglets, function(tab){
           _.each(tab.entrees, function(entree){
             entree.date = new Date(entree.date);
-            entree.owner.avatar = LACLASSE_PATH + entree.owner.avatar;
+            entree.owner.avatar = LACLASSE_PATH + '/' + avatars[entree.owner.uid];
           });
         });
         $scope.tabs = reponse.onglets;
+        avatars.$promise.then(function(reponse){
+          _.each($scope.tabs, function(tab){
+            _.each(tab.entrees, function(entree){
+              entree.owner.avatar = LACLASSE_PATH + '/' + reponse[entree.owner.uid];
+            });
+          });
+        });
         $scope.nameUser = $window.sessionStorage.getItem("prenom") + " " + $window.sessionStorage.getItem("nom"); 
       } else{
         alert(reponse.error);
       };
     });
-    
-    $scope.actualiserAvatar = function(){
-      Entrees.update_avatar({uid: CurrentUser.get().id_ent, avatar: CurrentUser.get().avatar}).$promise.then(function(reponse){
-        if (reponse.error != undefined && reponse.error != null) {
-          alert(reponse.error);          
-        } else {
-          $state.go($state.current, {}, {reload: true});
-        };
-      });
-    };
 
     $scope.activeTab = function(tab){
       _.each($scope.tabs, function(t){
         if (t.id == tab.id) {
           t.active = true;
+          var avatars = Annuaire.avatars(tab.entrees);
+         avatars.$promise.then(function(reponse){
+          _.each(tab.entrees, function(entree){
+            entree.owner.avatar = LACLASSE_PATH + '/' + reponse[entree.owner.uid];
+          });
+        });
         } else{
           t.active = false;
         };
@@ -136,7 +140,7 @@ angular.module('suiviApp')
             _.each($scope.tabs, function(t){
               if (t.id == tab.id) {
                 entree.id = reponse.id;
-                entree.owner.avatar = LACLASSE_PATH + entree.owner.avatar
+                entree.owner.avatar = LACLASSE_PATH + '/' + entree.owner.avatar
                 t.entrees.push(entree);
                 t.htmlcontent = "";
               };
