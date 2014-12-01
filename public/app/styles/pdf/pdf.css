@@ -27,18 +27,35 @@
 	margin-top: 100px;
 }
 
+.entree{
+	margin: 20px;
+	height: 100px;
+	max-height: 100px;
+	display: table;
+}
+
+.entree .avatar{
+	display: table-cell;
+	width: 15%;
+	position: relative;	
+}
+
+.entree .avatar img{
+	vertical-align: bottom;
+}
+
+.entree .message{
+	display: table-cell;
+	width: 85%;
+	padding-left: 5px;
+	vertical-align: top;
+}
+
 .eleve-info{
 	margin-top: 50px;
 	font-size: 25px;
 	/*font-family: "Futura Light";*/
 	/*font-weight: bold;*/
-}
-
-.message{
-	display: table;
-	width: 85%;
-	padding-left: 5px;
-	vertical-align: top;
 }
 
 .message-info{

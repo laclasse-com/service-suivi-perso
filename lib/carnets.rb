@@ -139,6 +139,16 @@ module CarnetsLib
     onglets.sort_by {|o| o[:ordre]}
   end
 
+  def last_carnet_model old_carnet, new_carnet
+    #récupérer ses onglets
+    old_onglets = old_carnet.get_onglets
+    #créer les nouveaux onglets par rapport a ceux du dernier carnet
+    old_onglets.each do |old_onglet|
+      new_onglet = Onglet.new(nil, new_carnet.id, old_onglet.nom, new_carnet.uid_adm, old_onglet.ordre)
+      new_onglet.create
+    end
+  end
+
 
  #  #initialise le current_user s'il ne l'est pas 
  #  def set_current_user(current_user)

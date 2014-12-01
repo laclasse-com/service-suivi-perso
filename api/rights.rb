@@ -32,7 +32,7 @@ class RightsApi < Grape::API
         carnet.read
         right = Right.new(nil, params[:uid], nil, nil, carnet.id)
         right.select
-        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: right.admin}
+        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: right.admin, url_pub: carnet.url_pub}
       rescue Exception => e
         {error: 'Impossible de retourner le droit pour un utilisateur'}
       end

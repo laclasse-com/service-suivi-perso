@@ -32,7 +32,7 @@ class Entree
     requires({:infos_owner => @infos_owner}, :infos_owner, :empty)
     requires({:contenu => @contenu}, :contenu)
     begin
-      @date_creation = Time.now.to_i
+      @date_creation = Time.now
       new_input = Saisies.new
       new_input.uid = @uid
       new_input.carnets_id = @id_carnet

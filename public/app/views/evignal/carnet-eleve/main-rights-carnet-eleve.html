@@ -1,4 +1,15 @@
 <div class="row rights-carnet" style="height:100%">
+	<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+		<h4 class="title-rights">Adresse URL publique du carnet</h4>
+	</div>
+	<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="margin: 40px 0">
+		<div ng-if="publique==null" class="exit-carnet-button" ng-click="cancel()">
+			<span>Générer l'URL</span>
+		</div>
+		<div ng-if="publique" class="exit-carnet-button" ng-click="cancel()">
+			<span>Copier l'URL</span>
+		</div>
+	</div>
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<h4 class="title-rights">Gérer les droits du carnet de suivi</h4>
 	</div>

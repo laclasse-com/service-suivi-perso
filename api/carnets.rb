@@ -94,11 +94,18 @@ class CarnetsApi < Grape::API
         requires :uid_adm, type: String
         requires :full_name_adm, type: String
         requires :profil_adm, type: String
+        requires :with_model, type: Boolean
     }
     post '/'do
         carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id])
         begin
+            last_carnet_bdd = Carnets.where(:uid_adm => params[:uid_adm]).order(:date_creation).last if params[:with_model]==true
+            if !last_carnet_bdd.nil?
+                last_carnet = Carnet.new(last_carnet_bdd.id)
+                last_carnet.read
+            end
             carnet.create
+            CarnetsLib.last_carnet_model last_carnet, carnet if !last_carnet.nil? && last_carnet.id != carnet.id
             right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1)
             right_adm.create
             right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0)
@@ -118,6 +125,7 @@ class CarnetsApi < Grape::API
         requires :uid_adm, type: String
         requires :full_name_adm, type: String
         requires :profil_adm, type: String
+        requires :with_model, type: Boolean
     }
     post '/evignal'do
         carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id], nil, true)
@@ -126,10 +134,17 @@ class CarnetsApi < Grape::API
                 carnet.read
                 carnet.update true
             else
+                last_carnet_bdd = Carnets.where(:uid_adm => params[:uid_adm]).order(:date_creation).last if params[:with_model]==true
+                if !last_carnet_bdd.nil?
+                    last_carnet = Carnet.new(last_carnet_bdd.id)
+                    last_carnet.read
+                end
+                params[:etablissement_code] == UAI_EVIGNAL ? evignal = 1 : evignal = 0
                 carnet.create
+                CarnetsLib.last_carnet_model last_carnet, carnet if !last_carnet.nil? && last_carnet.id != carnet.id
                 right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1, 0, 1)
                 right_adm.create
-                right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0, 0, 1)
+                right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], "élève", carnet.id, 0, 0, 0, 0, evignal)
                 right_elv.create
             end
             {carnet_id: carnet.id}            

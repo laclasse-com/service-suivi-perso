@@ -11,7 +11,9 @@ angular.module('suiviApp')
 
     Onglets.get({uid: $stateParams.id}, function(reponse){
       if (reponse.error == undefined) {
-        var avatars = Annuaire.avatars(reponse.onglets[0].entrees);
+        var entrees = []
+        if (reponse.onglets[0]!=undefined) {entrees = reponse.onglets[0].entrees};
+        var avatars = Annuaire.avatars(entrees);
         _.each(reponse.onglets, function(tab){
           _.each(tab.entrees, function(entree){
             entree.date = new Date(entree.date);

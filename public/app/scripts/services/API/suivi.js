@@ -9,10 +9,10 @@ angular.module('suiviApp')
 	return $resource( APP_PATH + '/api/carnets/classes/:id', {id: '@id'});
 }])
 .factory('Create', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
-	return $resource( APP_PATH + '/api/carnets/', {uid_elv: '@uid_elv', full_name_elv: '@full_name_elv', etablissement_code: '@etablissement_code', classe_id: '@classe_id', uid_adm: '@uid_adm', full_name_adm: '@full_name_adm', profil_adm: '@profil_adm'}, {'post': {method: 'POST'}});
+	return $resource( APP_PATH + '/api/carnets/', {uid_elv: '@uid_elv', full_name_elv: '@full_name_elv', etablissement_code: '@etablissement_code', classe_id: '@classe_id', uid_adm: '@uid_adm', full_name_adm: '@full_name_adm', profil_adm: '@profil_adm', with_model: '@with_model'}, {'post': {method: 'POST'}});
 }])
 .factory('CreateEvignal', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
-	return $resource( APP_PATH + '/api/carnets/evignal', {uid_elv: '@uid_elv', full_name_elv: '@full_name_elv', etablissement_code: '@etablissement_code', classe_id: '@classe_id', uid_adm: '@uid_adm', full_name_adm: '@full_name_adm', profil_adm: '@profil_adm'}, {'post': {method: 'POST'}});
+	return $resource( APP_PATH + '/api/carnets/evignal', {uid_elv: '@uid_elv', full_name_elv: '@full_name_elv', etablissement_code: '@etablissement_code', classe_id: '@classe_id', uid_adm: '@uid_adm', full_name_adm: '@full_name_adm', profil_adm: '@profil_adm', with_model: '@with_model'}, {'post': {method: 'POST'}});
 }])
 .factory('CarnetsFact', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
 	return $resource( APP_PATH + '/api/carnets/', {uid_elv: '@uid_elv', id: '@id'}, {
@@ -112,7 +112,7 @@ angular.module('suiviApp')
         return classe_carnets;
 	};
 
-	this.create = function(carnet){
+	this.create = function(carnet, with_model){
 		var currentUser = CurrentUser.get();
 		var roleUser = {name: 'ELV_ETB', priority: 0};
 		_.each(currentUser.roles, function(role){
@@ -131,10 +131,10 @@ angular.module('suiviApp')
 				profil = 'prof';
 				break;
 		};
-		return Create.post({uid_elv: carnet.uid_elv, full_name_elv: carnet.firstName + " " + carnet.lastName.toLowerCase(), etablissement_code: carnet.etablissement_code, classe_id: carnet.classe_id, uid_adm: currentUser.id_ent, full_name_adm: full_name_adm, profil_adm: profil});
+		return Create.post({uid_elv: carnet.uid_elv, full_name_elv: carnet.firstName + " " + carnet.lastName.toLowerCase(), etablissement_code: carnet.etablissement_code, classe_id: carnet.classe_id, uid_adm: currentUser.id_ent, full_name_adm: full_name_adm, profil_adm: profil, with_model: with_model});
 	};
 
-	this.createEvignal = function(carnet){
+	this.createEvignal = function(carnet, with_model){
 		var currentUser = CurrentUser.get();
 		var roleUser = {name: 'ELV_ETB', priority: 0};
 		_.each(currentUser.roles, function(role){
@@ -152,8 +152,7 @@ angular.module('suiviApp')
 				profil = 'prof';
 				break;
 		};
-		console.log({uid_elv: carnet.uid_elv, full_name_elv: carnet.firstName + " " + carnet.lastName.toLowerCase(), etablissement_code: carnet.etablissement_code, classe_id: carnet.classe_id, uid_adm: currentUser.id_ent, full_name_adm: full_name_adm, profil_adm: profil});
-		return CreateEvignal.post({uid_elv: carnet.uid_elv, full_name_elv: carnet.firstName + " " + carnet.lastName.toLowerCase(), etablissement_code: carnet.etablissement_code, classe_id: carnet.classe_id, uid_adm: currentUser.id_ent, full_name_adm: full_name_adm, profil_adm: profil});
+		return CreateEvignal.post({uid_elv: carnet.uid_elv, full_name_elv: carnet.firstName + " " + carnet.lastName.toLowerCase(), etablissement_code: carnet.etablissement_code, classe_id: carnet.classe_id, uid_adm: currentUser.id_ent, full_name_adm: full_name_adm, profil_adm: profil, with_model: with_model});
 	};
 }]);
 /**

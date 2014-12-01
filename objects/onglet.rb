@@ -23,7 +23,7 @@ class Onglet
     requires({:nom => @nom}, :nom)
     requires({:uid_own => @uid_own}, :uid_own)
     begin
-      @date_creation = Time.now.to_i
+      @date_creation = Time.now
       new_tabs = Onglets.new
       new_tabs.nom = @nom
       new_tabs.uid_own = @uid_own

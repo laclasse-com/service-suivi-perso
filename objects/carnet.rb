@@ -27,7 +27,7 @@ class Carnet
     requires({:uai => @uai}, :uai)
     requires({:id_classe => @id_classe}, :id_classe)
     begin
-      @date_creation = Time.now.to_i
+      @date_creation = Time.now
       new_carnet = Carnets.new
       new_carnet.uid_elv = @uid_elv
       new_carnet.uid_adm = @uid_adm
