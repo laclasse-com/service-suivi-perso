@@ -2,7 +2,7 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-CREATE SCHEMA IF NOT EXISTS `suivi` DEFAULT CHARACTER SET latin1 ;
+CREATE SCHEMA IF NOT EXISTS `suivi` DEFAULT CHARACTER SET utf8 ;
 USE `suivi` ;
 
 -- -----------------------------------------------------
@@ -138,6 +138,26 @@ CREATE  TABLE IF NOT EXISTS `suivi`.`entrees_onglets` (
   CONSTRAINT `fk_entrees_has_onglets_onglets1`
     FOREIGN KEY (`onglets_id` )
     REFERENCES `suivi`.`onglets` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `suivi`.`docs`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `suivi`.`docs` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `nom` VARCHAR(250) NOT NULL ,
+  `url` VARCHAR(2000) NOT NULL ,
+  `saisies_id` BIGINT(20) NOT NULL ,
+  PRIMARY KEY (`id`, `saisies_id`) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  INDEX `fk_docs_saisies1_idx` (`saisies_id` ASC) ,
+  CONSTRAINT `fk_docs_saisies1`
+    FOREIGN KEY (`saisies_id` )
+    REFERENCES `suivi`.`saisies` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
