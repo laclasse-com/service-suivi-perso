@@ -1,6 +1,7 @@
 #coding: utf-8
 require 'logger'
 require 'date'
+require 'digest'
 
 module Outils
 
@@ -44,5 +45,11 @@ module Outils
       annee_scolaire = (Date.today.year-1).to_s + "-" + Date.today.year.to_s
     end
     annee_scolaire
+  end
+
+  def Outils::md5_encode message
+    md5 = Digest::MD5.new
+    md5 << message
+    md5.hexdigest
   end
 end

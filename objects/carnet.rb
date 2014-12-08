@@ -48,6 +48,7 @@ class Carnet
   def read
     carnet = Carnets[:id => @id] if !@id.nil?
     carnet = Carnets[:uid_elv => @uid_elv] if !@uid_elv.nil? && @id.nil?
+    carnet = Carnets[:url_publique => @url_pub] if !@url_pub.nil? && carnet.nil?
     requires({:carnet => carnet}, :carnet)
     begin
       @id = carnet.id
@@ -64,13 +65,15 @@ class Carnet
     end
   end
 
-  def update evignal
+  def update evignal=nil, url_pub=nil
     carnet = Carnets[:id => @id] if !@id.nil?
     carnet = Carnets[:uid_elv => @uid_elv] if !@uid_elv.nil? && @id.nil?
     requires({:carnet => carnet}, :carnet)
     begin
       carnet.update(:evignal => evignal) if !evignal.nil?
       @evignal = evignal if !evignal.nil?
+      carnet.update(:url_publique => url_pub) if !url_pub.nil?
+      @url_pub = url_pub if !url_pub.nil?
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Carnet").sub("$3", "la mise à jour")
       raise MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Carnet").sub("$3", "la mise à jour")
@@ -78,7 +81,17 @@ class Carnet
     # UPDATE CLASSE POUR LES ANNEES SUIVANTES
   end
 
-  def delete
+  def deleteUrl
+    carnet = Carnets[:id => @id] if !@id.nil?
+    carnet = Carnets[:uid_elv => @uid_elv] if !@uid_elv.nil? && @id.nil?
+    requires({:carnet => carnet}, :carnet)
+    begin
+      carnet.update(:url_publique => nil)
+      @url_pub = nil
+    rescue Exception => e
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "deleteUrl").sub("$2", "Carnet").sub("$3", "la suppression de l'url")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "deleteUrl").sub("$2", "Carnet").sub("$3", "la suppression de l'url")
+    end
     #VOIR SI POSIBILITE DE DELETE LE CARNET
   end
 

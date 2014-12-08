@@ -10,6 +10,7 @@ angular.module('suiviApp', [
   'angular-carousel',
   'angular-loading-bar',
   'angularFileUpload',
+  'ngClipboard',
   'textAngular'
 ]).run(['$rootScope', 'FlashServiceStyled', '$location', 'CurrentUser', function($rootScope, FlashServiceStyled, $location, CurrentUser) {
   $rootScope.$on('$stateChangeStart', function($location){

@@ -5,17 +5,18 @@ class Onglet
 
   include Outils
 
-  attr_accessor :nom, :ordre
+  attr_accessor :nom, :ordre, :url_pub
 
   attr_reader :id, :id_carnet, :uid_own, :date_creation
 
-  def initialize id=nil, id_carnet=nil, nom=nil, uid_own=nil, ordre=1
+  def initialize id=nil, id_carnet=nil, nom=nil, uid_own=nil, ordre=1, url_pub=nil
     @id = id
     @id_carnet = id_carnet
     @nom = nom
     @uid_own = uid_own
     @date_creation = nil
     @ordre = ordre
+    @url_pub = url_pub
     @logger = Logger.new(STDOUT)
   end
 
@@ -28,6 +29,7 @@ class Onglet
       new_tabs.nom = @nom
       new_tabs.uid_own = @uid_own
       new_tabs.date_creation = @date_creation
+      new_tabs.url_publique = @url_pub
       new_tabs = new_tabs.save
       @id = new_tabs.id
       lie_carnet
@@ -64,21 +66,24 @@ class Onglet
       @uid_own = onglet.uid_own
       @date_creation = onglet.date_creation
       @ordre = liaison.ordre if !liaison.nil?
+      @url_pub = onglet.url_publique
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "read").sub("$2", "Onglet").sub("$3", "la récupération d'un onglet")
       raise MSG[LANG.to_sym][:error][crud].sub("$1", "read").sub("$2", "Onglet").sub("$3", "la récupération d'un onglet")
     end 
   end
 
-  def update nom=nil, ordre=nil
+  def update nom=nil, ordre=nil, url_pub=nil
     requires({:id => @id}, :id)
     requires({:id_carnet => @id_carnet}, :id_carnet)
     onglet = Onglets[:id => @id]
     requires({:onglet => onglet}, :onglet)
     begin
       onglet.update(:nom => nom) if !nom.nil?
+      onglet.update(:url_publique => url_pub) if !url_pub.nil?
       CarnetsOnglets[:carnets_id => @id_carnet, :onglets_id => @id].update(:ordre => ordre) if !ordre.nil?
       @ordre = ordre if !ordre.nil?
+      @url_pub = url_pub if !url_pub.nil?
       @nom = nom if !nom.nil?
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Onglet").sub("$3", "la mise à jour d'un onglet")
@@ -100,6 +105,19 @@ class Onglet
       create if Onglets[:id => @id].nil?
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "delete").sub("$2", "Onglet").sub("$3", "la suppression d'un onglet")
       raise MSG[LANG.to_sym][:error][crud].sub("$1", "delete").sub("$2", "Onglet").sub("$3", "la suppression d'un onglet")
+    end
+  end
+
+  def deleteUrl
+    requires({:id => @id}, :id)
+    requires({:id_carnet => @id_carnet}, :id_carnet)
+    onglet = Onglets[:id => @id]
+    requires({:onglet => onglet}, :onglet)
+    begin
+      onglet.update(:url_publique => nil)
+    rescue Exception => e
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "deleteUrl").sub("$2", "Onglet").sub("$3", "la suppression de l'url publique")
+      raise MSG[LANG.to_sym][:error][crud].sub("$1", "deleteUrl").sub("$2", "Onglet").sub("$3", "la suppression de l'url publique")
     end
   end
 

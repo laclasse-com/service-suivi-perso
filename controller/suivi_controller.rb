@@ -20,6 +20,7 @@ class SinatraApp < Sinatra::Base
   end
 
   helpers AuthenticationHelpers
+  include CarnetsLib
 
   # Routes nécessitant une authentification
   ['/?', '/login' ].each { |route| 
@@ -39,6 +40,27 @@ class SinatraApp < Sinatra::Base
             </p>
             </div>"
     end  
+  end
+
+  get APP_PATH + '/public/:url' do
+    begin
+      carnet = Carnet.new(nil, nil, nil, nil, nil, params[:url])
+      carnet.read
+      tabs = get_tabs carnet.uid_elv, nil, params[:url]
+      puts tabs.inspect
+      response = Annuaire.send_request_signed(:service_annuaire_user, carnet.uid_elv, {"expand" => "true"})
+      erb"<div class='row-fluid' style='height: 100%'>"+
+          "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 aside-contener' style='height:100%'>"+
+              "<div style='height:100%'>"+(HtmlMessageGenerator.aside_public_carnet response)+"</div>"+
+          "</div>"+
+          "<div class='col-xs-6 col-sm-6 col-md-8 col-lg-8 main-contener' style='height:100%; overflow:auto'>"+
+              "<div style='height:100%'>"+(HtmlMessageGenerator.main_public_carnet tabs)+"</div>"+
+          "</div>"+
+        "</div>"
+    rescue Exception => e
+      status 404
+      erb"Error 404 Not Found !"
+    end
   end
 
   get APP_PATH + '/auth/:provider/callback' do

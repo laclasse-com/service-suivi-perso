@@ -65,6 +65,13 @@ angular.module('suiviApp')
 		'update': {method:'PUT', url: APP_PATH + '/api/rights/:id', params: {id: '@id', read: '@read', write: '@write', admin: '@admin'}},
 		'delete': {method:'DELETE', url: APP_PATH + '/api/rights/:id', params: {id: '@id'}}
 	});
+}])
+.factory('Public', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
+	return $resource( APP_PATH + '/api/public/', {id: '@url_pub'}, {
+		'get':    {method:'GET'},
+		'post': {method:'POST', url: APP_PATH + '/api/public/carnets/:uid_elv', params: {uid_elv: '@uid_elv', id_onglets: '@id_onglets'}},
+		'delete': {method:'DELETE', url: APP_PATH + '/api/public/carnets/:uid_elv', params: {uid_elv: '@uid_elv'}},
+	});
 }]);
 
 

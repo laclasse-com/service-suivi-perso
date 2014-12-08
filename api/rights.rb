@@ -28,11 +28,20 @@ class RightsApi < Grape::API
     }
     get '/users/:uid' do
       begin
+        response = Annuaire.send_request_signed(:service_annuaire_user, params[:uid], {"expand" => "true"})
         carnet = Carnet.new(params[:carnet_id], params[:uid_elv])
         carnet.read
         right = Right.new(nil, params[:uid], nil, nil, carnet.id)
-        right.select
-        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: right.admin, url_pub: carnet.url_pub}
+        begin
+          right.select          
+        rescue Exception => e
+          response["profil_actif"]["etablissement_code_uai"] == UAI_EVIGNAL ? evignal = 1 : evignal = 0
+          if (response["profil_actif"]["etablissement_code_uai"] == carnet.uai || evignal == 1) && response["roles_max_priority_etab_actif"] > 1
+            right = Right.new nil, params[:uid], response["prenom"]+" "+response["nom"], "admin", carnet.id, 1, 1, 1, 0, evignal
+          end
+        end
+        URL_ENT.split('').last == '/' ? prefix_url = URL_ENT.chomp('/') : prefix_url = URL_ENT
+        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: right.admin, url_pub: 'http://localhost:9292' + APP_PATH + '/public/' + carnet.url_pub} #TODO remettre prefix pour prod
       rescue Exception => e
         {error: 'Impossible de retourner le droit pour un utilisateur'}
       end

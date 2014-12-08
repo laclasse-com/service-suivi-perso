@@ -101,12 +101,12 @@ module CarnetsLib
     carnets
   end
 
-  def get_tabs uid_elv, id_onglets=nil
+  def get_tabs uid_elv, id_onglets=nil, url_pub=nil
     onglets = []
     carnet = Carnet.new(nil, uid_elv)
     carnet.read
     carnet.get_onglets.each do |tab|
-      if id_onglets.nil? || id_onglets.include?(tab.id) 
+      if (id_onglets.nil? || id_onglets.include?(tab.id)) && (url_pub.nil? || url_pub == tab.url_pub) 
         entrees = []
         tab.get_entrees.each do |e|
           entrees.push ({

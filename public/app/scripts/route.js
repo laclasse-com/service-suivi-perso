@@ -1,6 +1,6 @@
 angular.module('suiviApp')
-.config(['$stateProvider', '$urlRouterProvider', 'APP_PATH', 'cfpLoadingBarProvider', function($stateProvider, $urlRouterProvider, APP_PATH, cfpLoadingBarProvider) {
-  
+.config(['$stateProvider', '$urlRouterProvider', 'APP_PATH', 'cfpLoadingBarProvider', 'ngClipProvider', function($stateProvider, $urlRouterProvider, APP_PATH, cfpLoadingBarProvider, ngClipProvider) {
+  ngClipProvider.setPath(APP_PATH + "/app/bower_components/zeroclipboard/dist/ZeroClipboard.swf")
   cfpLoadingBarProvider.includeBar = false;
   $stateProvider
           .state('erreur', {

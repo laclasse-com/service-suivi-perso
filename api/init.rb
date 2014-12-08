@@ -13,5 +13,8 @@ require __DIR__('entrees')
 puts "loading api/rights"
 require __DIR__('rights')
 
+puts "loading api/public_url"
+require __DIR__('public_url')
+
 puts "loading api/api"
 require __DIR__('api')

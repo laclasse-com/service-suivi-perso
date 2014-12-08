@@ -1,7 +1,7 @@
 #coding: utf-8
 #
 # model for 'onglets' table
-# generated 2014-09-22 11:38:22 +0200 by /usr/local/bin/rake
+# generated 2014-12-05 14:02:40 +0100 by /usr/local/bin/rake
 #
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # COLUMN_NAME                   | DATA_TYPE           | NULL? | KEY | DEFAULT | EXTRA
@@ -10,6 +10,7 @@
 # nom                           | varchar(45)         | false    |          |            | 
 # uid_own                       | varchar(8)          | false    |          |            | 
 # date_creation                 | timestamp           | true     |          |            | 
+# url_publique                  | varchar(2000)       | true     |          |            | 
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 #
 class Onglets < Sequel::Model(:onglets)

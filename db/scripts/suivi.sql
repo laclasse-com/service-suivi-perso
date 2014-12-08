@@ -34,8 +34,10 @@ CREATE  TABLE IF NOT EXISTS `suivi`.`onglets` (
   `nom` VARCHAR(45) NOT NULL ,
   `uid_own` VARCHAR(8) NOT NULL COMMENT 'uid de l\'utilisateur ayant créé cet onglet' ,
   `date_creation` TIMESTAMP NULL DEFAULT NULL ,
+  `url_publique` VARCHAR(2000) NULL ,
   PRIMARY KEY (`id`) ,
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) )
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  INDEX `url_publique_idx` (`url_publique` ASC) )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COMMENT = 'Table des onglets des carnets de suivi. Ces onglets permettent de regrouper les saisies.';

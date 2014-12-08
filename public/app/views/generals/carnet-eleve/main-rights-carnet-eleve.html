@@ -1,20 +1,28 @@
 <div class="row rights-carnet" style="height:100%">
 	<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-		<h4 class="title-rights">Adresse URL publique du carnet</h4>
+		<h4 class="title-rights" style="margin-bottom:20px">Adresse URL publique du carnet</h4>
 	</div>
-	<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="margin: 40px 0">
-		<div ng-if="publique==null" class="exit-carnet-button" ng-click="cancel()">
+	<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5" style="margin: 40px 0 20px 0; overflow: hidden">
+		<div ng-if="publique==null" class="exit-carnet-button" ng-click="open()">
 			<span>Générer l'URL</span>
 		</div>
-		<div ng-if="publique" class="exit-carnet-button" ng-click="cancel()">
+		<strong><span ng-if="publique"> {{publique}}</span></strong>
+	</div>
+	<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="margin: 40px 0 20px 0">
+		<div ng-if="publique" class="exit-carnet-button" clip-copy="publique">
 			<span>Copier l'URL</span>
 		</div>
 	</div>
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<div class="col-xs-2 col-sm-2 col-md-2 col-md-offset-10 col-lg-2 col-lg-offset-10">
+		<div ng-if="publique" class="exit-carnet-button" ng-click="deleteUrl()">
+			<span>Supprimer l'URL</span>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
 		<h4 class="title-rights">Gérer les droits du carnet de suivi</h4>
 	</div>
 
-	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="overflow:auto">
+	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="overflow:auto" >
 		<div class="table-responsive">
 			<table>
 				<tr class="en-tete">
@@ -69,4 +77,32 @@
 			</div>			
 		</div>
 	</div>
+
+	<script type="text/ng-template" id="myModalUrlContent.html">
+		<div class="modal-header">
+	            <h3 class="modal-title">Génération de l'URL publique du suivi</h3>
+	        </div>
+	        <div class="modal-body">
+	        	<h4> Choisissez les onglets que vous souhaitez rendre publique </h4>
+	            <div class="exit-carnet">
+	            	<button type="button" class="exit-carnet-button-pdf" ng-class="{active: allChecked()}" ng-click="checkAllOrNot()" btn-checkbox >
+				        tout sélectionner/désélectionner
+				    </button>
+	            	<button type="button" ng-repeat="tab in tabs" class="exit-carnet-button-pdf" ng-model="tab.check" btn-checkbox >
+				        {{tab.nom}}
+				    </button>
+	            </div>
+	        </div>
+	        <div class="modal-footer">
+		        <div>
+					<div popover="Il faut au moins un onglet selectionné pour générer un pdf" popover-placement="bottom" popover-trigger="click" class="exit-carnet-button" ng-click="ok()">
+						<span>Générer l'URL</span>
+					</div>
+					<div class="exit-carnet-button" ng-click="cancel()">
+						<span>Annuler</span>
+					</div>			
+				</div>
+	        </div>
+	    </div>
+	</script>
 </div>

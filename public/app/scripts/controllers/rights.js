@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('RightsCtrl', ['$scope', '$state', '$stateParams', 'CurrentUser', 'GetPersonnelsEtablissements', 'Annuaire', 'Rights', 'Profil', function($scope, $state, $stateParams, CurrentUser, GetPersonnelsEtablissements, Annuaire, Rights, Profil) {
+.controller('RightsCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'GetPersonnelsEtablissements', 'Annuaire', 'Rights', 'Profil', 'Public', '$modal', 'Onglets', function($rootScope, $scope, $state, $stateParams, CurrentUser, GetPersonnelsEtablissements, Annuaire, Rights, Profil, Public, $modal, Onglets) {
   Profil.initRights($stateParams.id).promise.then(function(){
     CurrentUser.get().$promise.then(function(reponse){
       _.each(reponse.classes, function(classe){
@@ -163,6 +163,26 @@ angular.module('suiviApp')
       };
     };
 
+    $scope.generateUrl = function(tabs){
+      Public.post({uid_elv: $stateParams.id, id_onglets: tabs}).$promise.then(function(reponse){
+        if (reponse.error != undefined) {alert(reponse.error); return false;};
+        $scope.publique = reponse.url_pub;
+        var rights = CurrentUser.getRights();
+        rights.url_pub = reponse.url_pub;
+        CurrentUser.setRights(rights);
+      });
+    };
+
+    $scope.deleteUrl = function(){
+      Public.delete({uid_elv: $stateParams.id}).$promise.then(function(reponse){
+        if (reponse.error != undefined) {alert(reponse.error); return false;};
+        $scope.publique = null;
+        var rights = CurrentUser.getRights();
+        rights.url_pub = null;
+        CurrentUser.setRights(rights);
+      });
+    };
+
     $scope.save = function(){
       // enregistrer en base
       Rights.cud({uid_elv: $stateParams.id, users: $scope.usersChanged}).$promise.then(function(reponse){
@@ -174,5 +194,68 @@ angular.module('suiviApp')
     $scope.cancel = function(){
       $state.go( 'suivi.carnet', $state.params, { reload: true, inherit: true, notify: true } );
     }
+
+    $scope.modalInstanceCtrl = function ($rootScope, $scope, $modalInstance) {
+      $rootScope.tabs = [];
+
+      Onglets.tabs({uid: $stateParams.id}, function(reponse){
+        if (reponse.error == undefined) {
+          $rootScope.tabs = reponse.onglets;  
+        } else{
+          alert(reponse[0].error);
+        };
+      });
+      $scope.ok = function () {
+        if ($scope.oneNeedsMet()) {
+          $modalInstance.close();        
+        };
+        return false;
+      };
+
+      $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+      };
+
+      $scope.allChecked = function(){
+        var needsMet = _.reduce($rootScope.tabs, function (memo, tab) {
+          return memo + (tab.check ? 1 : 0);
+        }, 0);
+
+        return (needsMet === $rootScope.tabs.length);
+      };
+
+      $scope.checkAllOrNot = function(){
+        if ($scope.allChecked()) {
+          _.each($rootScope.tabs, function (tab) {
+            tab.check = false;
+          });
+        } else {
+          _.each($rootScope.tabs, function (tab) {
+            tab.check = true;
+          });
+        };
+        return false;
+      };
+
+      $scope.oneNeedsMet = function(){
+        var needsMet = _.filter($rootScope.tabs, function(tab){ return tab.check == true; });
+        return (needsMet.length > 0);
+      }
+    };
+
+    $scope.open = function () {
+
+      var modalInstance = $modal.open({
+        templateUrl: 'myModalUrlContent.html',
+        controller: $scope.modalInstanceCtrl,
+        size: 'sm'
+      });
+
+      modalInstance.result.then(function () {
+        var generateTabs = _.filter($rootScope.tabs, function(tab){ return tab.check == true; });
+        console.log(generateTabs);
+        $scope.generateUrl(generateTabs)       
+      });
+    };
   });
 }]);
