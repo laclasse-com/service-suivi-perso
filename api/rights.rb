@@ -41,8 +41,12 @@ class RightsApi < Grape::API
           end
         end
         URL_ENT.split('').last == '/' ? prefix_url = URL_ENT.chomp('/') : prefix_url = URL_ENT
-        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: right.admin, url_pub: prefix_url + APP_PATH + '/public/' + carnet.url_pub} #TODO remettre prefix pour prod
+        prefix_url= 'http://localhost:9292' #TODO a remplacer
+        url_pub = prefix_url + APP_PATH + '/public/' + carnet.url_pub if !carnet.url_pub.nil?
+        {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: right.admin, url_pub: url_pub} #TODO remettre prefix pour prod
       rescue Exception => e
+        puts e.message
+        puts e.backtrace[0..10].inspect
         {error: 'Impossible de retourner le droit pour un utilisateur'}
       end
     end

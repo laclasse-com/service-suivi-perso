@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h3 class="modal-title">Insérer un Fichier</h3>
+</div>
+<div class="modal-body">
+    <div>
+		<div class="exit-carnet-button" ng-click="uploadFile()">
+			<span>Insérer un fichier</span>
+		</div>
+		<div class="exit-carnet-button" ng-click="UploadCartable()">
+			<span>Insérer un fichier de mon cartable</span>
+		</div>			
+	</div>
+	<div cartable
+	     class="treecontrol-container"
+	     data-racine="cartable.files"
+	     data-target="devoir"
+	     data-regroupement="selected_regroupement"
+	     data-add-callback="consume_Documents_response_callback">
+	</div>
+</div>
+<div class="modal-footer">
+    <div class="exit-carnet-button" ng-click="ok()">
+		<span>Valider</span>
+	</div>
+</div>
