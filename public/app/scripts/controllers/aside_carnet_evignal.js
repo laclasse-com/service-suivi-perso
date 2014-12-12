@@ -127,7 +127,6 @@ angular.module('suiviApp')
     $rootScope.pdf = function(tabs){
       $http.post(APP_PATH + '/api/carnets/'+$stateParams.id+'/pdf', {'nom': $scope.user.nom, 'prenom': $scope.user.prenom, 'sexe': $scope.user.sexe, 'college': $scope.user.classe.nom_etablissement, 'avatar': $scope.user.avatar, 'classe': $scope.user.classe.libelle, 'id_onglets': tabs}, {'responseType' :'blob'}).success(function(data, status) {
             var blob= new Blob([data], {type:'application/pdf'});
-            console.log(blob);
             var link=document.createElement('a');
             link.href=window.URL.createObjectURL(blob);
             link.download="Carnet_Suivi_"+$scope.user.prenom+"_"+$scope.user.nom+".pdf";

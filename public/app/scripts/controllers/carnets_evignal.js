@@ -9,7 +9,7 @@ angular.module('suiviApp')
 			alert(response[0].error);
 		} else {
 			$scope.carnets = Carnets.get_by_name(response);
-			console.log($scope.carnets);			
+			// console.log($scope.carnets);			
 		}
 	});
 
