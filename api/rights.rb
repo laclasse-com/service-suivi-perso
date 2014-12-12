@@ -41,7 +41,7 @@ class RightsApi < Grape::API
           end
         end
         URL_ENT.split('').last == '/' ? prefix_url = URL_ENT.chomp('/') : prefix_url = URL_ENT
-        # prefix_url = 'http://localhost:9292' #TODO a enlever pour la prod
+        prefix_url = 'http://localhost:9292' #TODO a enlever pour la
         url_pub = prefix_url + APP_PATH + '/public/' + carnet.url_pub if !carnet.url_pub.nil?
         {id: right.id, uid: right.uid, full_name: right.full_name, profil: right.profil, read: right.read, write: right.write, admin: right.admin, url_pub: url_pub} #TODO remettre prefix pour prod
       rescue Exception => e

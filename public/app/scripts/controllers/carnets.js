@@ -9,9 +9,9 @@ angular.module('suiviApp')
 		console.log($scope.classe_carnets);
 	});
 
-	$scope.return = function(){
-		$state.go( 'suivi.classes', {}, { reload: true, inherit: true, notify: true } );
-	}
+	// $scope.return = function(){
+	// 	$state.go( 'suivi.classes', {}, { reload: true, inherit: true, notify: true } );
+	// }
 
 	$scope.open = function(carnet){
 		CurrentUser.getRightsRequest(carnet.uid_elv).$promise.then(function(right){

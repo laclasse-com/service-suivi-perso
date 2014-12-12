@@ -257,5 +257,4 @@ angular.module('suiviApp')
         $scope.generateUrl(generateTabs)       
       });
     };
-  });
 }]);
