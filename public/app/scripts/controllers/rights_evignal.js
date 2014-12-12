@@ -170,7 +170,7 @@ angular.module('suiviApp')
     
 
     $scope.update = function(user){
-      console.log(user);
+      // console.log(user);
       if (user.admin && !user.w) {user.w=true;};
       if (user.w && !user.r) {user.r=true;};
       if (_.last(user.action) != 'add' && _.last(user.action) != 'update') {
@@ -239,7 +239,7 @@ angular.module('suiviApp')
     };
 
     $scope.addUserEvignal=function(user, type){
-      console.log(type);
+      // console.log(type);
       if (_.last(user.action) == 'delete') {user.action = _.initial(user.action);} else {user.action.push('add');};
       $scope.addUserChanged(user);
       if(type == "evignal"){
@@ -447,7 +447,7 @@ angular.module('suiviApp')
 
       modalInstance.result.then(function () {
         var generateTabs = _.filter($rootScope.tabs, function(tab){ return tab.check == true; });
-        console.log(generateTabs);
+        // console.log(generateTabs);
         $scope.generateUrl(generateTabs)          
       });
     };
