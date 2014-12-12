@@ -1,0 +1,92 @@
+/*@font-face { 	
+	font-family: "Futura Bold"; 	
+	src: url('../font/Futura TTF/FUTUB___.TTF'); 
+}*/
+
+/*@font-face { 	
+	font-family: "Futura Light"; 	
+	src: url('../font/Futura TTF/FUTUL___.TTF'); 
+}*/
+
+/*@font-face { 	
+	font-family: "Futura Medium"; 	
+	src: url('../font/Futura TTF/FUTUH___.TTF'); 
+}
+
+@font-face { 	
+	font-family: "Futura book"; 	
+	src: url('../font/Futura TTF/FUTURA__.TTF'); 
+}*/
+
+.titre, .eleve-info{
+	color: #1AA1CC;
+	text-align: center;
+}
+
+.titre{
+	margin-top: 100px;
+}
+
+.entree{
+	margin: 20px;
+	height: 100px;
+	max-height: 100px;
+	display: table;
+}
+
+.entree .avatar{
+	display: table-cell;
+	width: 15%;
+	position: relative;	
+}
+
+.entree .avatar img{
+	vertical-align: bottom;
+}
+
+.entree .message{
+	display: table-cell;
+	width: 85%;
+	padding-left: 5px;
+	vertical-align: top;
+}
+
+.eleve-info{
+	margin-top: 50px;
+	font-size: 25px;
+	/*font-family: "Futura Light";*/
+	/*font-weight: bold;*/
+}
+
+.message-info{
+	border-spacing: 5px;
+	border-collapse: separate;
+	width: 100%;
+	display: table;
+	border-bottom: 2px solid white;
+}
+
+.message-info-profil{
+	vertical-align: bottom;
+	display: table-cell;
+	font-weight: bold;
+	font-size: 13px;
+}
+
+.message-info-date{
+	vertical-align: top;
+	display: table-cell;
+	padding-right: 20px;
+	text-align: right;
+	font-size: 13px;
+}
+
+.message-text{
+	min-height: 90px;
+	padding: 5px;
+}
+/*
+.avatar{
+	height: 100%;
+	width: 100%;
+}*/

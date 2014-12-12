@@ -1,0 +1,86 @@
+@font-face { 	
+	font-family: "Futura Bold"; 	
+	src: url('../font/Futura TTF/FUTUB___.TTF'); 
+}
+
+@font-face { 	
+	font-family: "Futura Light"; 	
+	src: url('../font/Futura TTF/FUTUL___.TTF'); 
+}
+
+@font-face { 	
+	font-family: "Futura Medium"; 	
+	src: url('../font/Futura TTF/FUTUH___.TTF'); 
+}
+
+@font-face { 	
+	font-family: "Futura book"; 	
+	src: url('../font/Futura TTF/FUTURA__.TTF'); 
+}
+
+.aside-contener{
+	background-color: white;
+	padding-right: 2em;
+	padding-left: 2em;
+}
+
+.explicatif{
+	margin-top: 1em;
+	color:#1aa1cc;
+	font-family: "Futura Light";
+	font-size:1.5em; 
+	font-weight: bold;
+}
+
+.recherche{
+	margin-top: 4em;
+	font-family: "Futura Light";
+	color: #323232;
+	font-weight: bold;
+	font-size: 0.9em;
+}
+
+.input-sm{
+	margin-top: 0.2em;
+	color: #323232;
+	font-weight: bold;
+	border: none;
+	border-radius: 0;
+	background-color: #ccc;
+}
+
+.input-sm::-webkit-input-placeholder { color: #323232;}
+.input-sm:-moz-placeholder { color: #323232;}
+.input-sm::-moz-placeholder { color: #323232;}
+.input-sm::-ms-input-placeholder { color: #323232;}
+
+.toolbar-suivi{
+	margin-top:0.6em;
+	display:block;
+	width:16px;
+	height:16px;
+	background: url('../../images/toolbar_suivi.png') 0 0 no-repeat;
+}
+.toolbar-suivi-search{
+	background-position: 0 -48px;
+}
+.toolbar-suivi-del{
+	background-position: 0 -64px;
+}
+
+.search-erreur{
+	font-family: "Futura Light";
+	color: red;
+	font-weight: bold;
+}
+
+@media (max-width: 768px) {
+	.explicatif{
+		font-size:1em; 
+	}
+}
+@media (min-width: 768px) and (max-width: 992px) { 
+	.explicatif{
+		font-size:1em; 
+	}
+}

@@ -1,0 +1,37 @@
+@font-face { 	
+	font-family: "Futura Bold"; 	
+	src: url('./font/Futura TTF/FUTUB___.TTF'); 
+}
+.contener-404{
+	height: 100%;
+	width: 100%;
+}
+
+#logoLaClasse{
+	fill: #fff;
+}
+
+.text-404 h1, .text-404 h2{
+	font-family: 'Futura Bold';
+	font-weight: bold;
+	color: #fff;
+	width: 100%;
+	position: absolute;
+	left: 20%;
+}
+
+.text-404 h1{
+	bottom: 50px;
+}
+
+.text-404 h2{
+	bottom: 0;
+}
+
+.text-404{
+	height: 60%;
+}
+
+.text-404 h1{
+	font-size: 15em;
+}

@@ -1,0 +1,34 @@
+language: ruby
+rvm:
+  - 1.9.3
+
+before_install:
+  - gem update --system
+  - gem --version
+
+before_script:
+  - cp ./config/constants.sample ./config/constants.rb
+  - cp ./config/cas_server.sample ./config/cas_server.rb
+  - cp ./config/database.sample ./config/database.rb
+
+  - rake install
+  - mysql -e 'create database suivi;'
+  - mysql < ./db/scripts/suivi.sql
+  
+script: "bundle exec rake spec"
+
+gemfile:
+  - Gemfile
+  
+services: 
+  - mysql
+
+branches:
+  only:   
+    - master
+    - develop
+
+notifications:
+  email:
+    recepients:
+      - pgl@erasme.org

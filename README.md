@@ -1,8 +1,10 @@
-service-laclasse-startbox
-=========================
+# service-suivi-perso
 
-Bootstrap d'application laclasse.com, intégrant sinatra, omniauthCAS, et la gestion des sessions. Côté frontet-end : twitter bootstrap, et jQuery
+[![Build Status](https://travis-ci.org/laclasse-com/service-suivi-perso.png?branch=develop)](https://travis-ci.org/laclasse-com/service-suivi-perso) [![Coverage Status](https://coveralls.io/repos/laclasse-com/service-suivi-perso/badge.png?branch=develop)](https://coveralls.io/r/laclasse-com/service-suivi-perso?branch=develop) [![Code Climate](https://codeclimate.com/github/laclasse-com/service-suivi-perso.png)](https://codeclimate.com/github/laclasse-com/service-suivi-perso)
 
-### TODO
-  - Tests du front-end
-  - Ajouter une classe ou une gem de gestion de la communication avec l'annuaire.
+
+Widget venant de [http://tutorialzine.com/2013/05/mini-ajax-file-upload-form/](http://tutorialzine.com/2013/05/mini-ajax-file-upload-form/)
+
+## Licence GPL v3
+
+See LICENSE file for more informations.

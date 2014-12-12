@@ -1,0 +1,14 @@
+#coding: utf-8
+user: hadrien
+group: hadrien
+pid: /var/run/service-suivi-perso/thin.pid
+log: /var/log/service-suivi-perso/thin.log
+timeout: 60
+max_conns: 1024
+port: 9292
+max_persistent_conns: 512
+environment: development
+adapter: rack
+servers: 1 
+daemonize: true
+tag: service-suivi-perso

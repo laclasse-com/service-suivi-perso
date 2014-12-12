@@ -1,0 +1,113 @@
+<div class="row rights-carnet" style="height:100%">
+	<div ng-class="{'col-xs-6 col-sm-6 col-md-6 col-lg-6': publique==null, 'col-xs-5 col-sm-5 col-md-5 col-lg-5': publique!=null}">
+		<h4 class="title-rights" style="margin-bottom:20px">Adresse URL publique du carnet</h4>
+	</div>
+	<div ng-class="{'col-xs-6 col-sm-6 col-md-6 col-lg-6': publique==null, 'col-xs-5 col-sm-5 col-md-5 col-lg-5': publique!=null}" style="margin-top: 40px; margin-bottom:20px; overflow: hidden">
+		<div class="row" style="margin-left:40px">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<div ng-if="publique==null" class="exit-carnet-button" ng-click="open()" title="Cliquez ici pour générer une URL publique permettant de visionner les onglets choisis publiquement">
+					<span>Générer l'URL</span>
+				</div>							
+			</div>
+		</div>
+		<strong><span ng-if="publique"> {{publique}}</span></strong>
+	</div>
+	<div ng-if="publique" class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="margin: 40px 0 20px 0">
+		<div class="exit-carnet-button" clip-copy="publique" title="Cliquez ici pour copier l'URL dans votre presse papier">
+			<span>Copier l'URL</span>
+		</div>
+	</div>
+	<div ng-if="publique" class="col-xs-2 col-sm-2 col-md-2 col-md-offset-10 col-lg-2 col-lg-offset-10">
+		<div class="exit-carnet-button" ng-click="deleteUrl()" title="Cliquez ici pour supprimer l'URL publique de ce carnet de suivi">
+			<span>Supprimer l'URL</span>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+		<h4 class="title-rights">Gérer les droits du carnet de suivi</h4>
+	</div>
+
+	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="overflow:auto" >
+		<div class="table-responsive">
+			<table>
+				<tr class="en-tete">
+					<td colspan="2" style="cursor:pointer" ng-click="predicate = 'full_name'; reverse=!reverse">Prénom Nom</td>
+					<td style="cursor:pointer" ng-click="predicate = 'profil';reverse=!reverse">Profil</td >
+					<td class="td-img"><i class="toolbar-suivi toolbar-suivi-read"></i></td>
+					<td class="td-img"><i class="toolbar-suivi toolbar-suivi-write"></i></td>
+					<td class="td-img">Admin</td >
+				</tr>
+				<tbody ng-repeat="right in rights">
+					<tr class="categorie" style="background-color:{{right.background}}; color: {{right.text}}">
+						<td colspan="6">{{right.type}}</td>
+					</tr>
+					<tr ng-repeat="user in right.users | orderBy:predicate:reverse">
+						<td class="td-img"><i class="toolbar-suivi toolbar-suivi-del-user" ng-click="delUser(user)"></i></td><td><span style="text-transform: capitalize">{{user.full_name}}</span></td>
+						<td><span>{{user.profil}}</span></td>
+						<td><input type="checkbox" ng-checked="user.r || user.w" ng-model="user.r" ng-change="update(user)"ng-disabled="user.profil == 'admin'"></td>
+						<td><input type="checkbox" ng-checked="user.w" ng-model="user.w" ng-change="update(user)" ng-disabled="user.profil == 'admin'"></td>
+						<td style="text-align: center"><input type="checkbox" ng-checked="user.admin" ng-model="user.admin" ng-disabled="user.profil == 'admin' || user.profil == 'élève' || user.profil == 'parent'" ng-change="update(user)"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 ">
+		<div class="row rights-search-users">
+			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 ">
+				<span>Ajouter une personne au carnet:</span>
+				<input class="form-control input-sm" type="text" placeholder="entrer un nom" ng-model="search.full_name">
+			</div>
+			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 accordion-rights">
+				<accordion close-others="false">
+					<accordion-group is-open="list.open" ng-repeat="list in listUsersTypes">
+						<accordion-heading>
+							<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': list.open, 'toolbar-suivi-arrow-right': !list.open}"></i>
+							{{list.type}}
+						</accordion-heading>
+						<div class="add-user" ng-repeat="user in list.users | filter:search | orderBy:'fullname':false"><i class="toolbar-suivi toolbar-suivi-add-user" ng-click="addUser(list.type, user)"></i><span style="text-transform: capitalize">{{user.full_name}}</span></div>
+					</accordion-group>
+				</accordion>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="button-rights">
+			<div class="exit-carnet-button" ng-click="cancel()" title="Cliquez ici pour annuler la modification des droits du carnet et revenir au carnet de suivi">
+				<span>Revenir au carnet</span>
+			</div>
+			<div class="exit-carnet-button" ng-click="save()" title="Cliquez ici pour enregistrer la modification des droits du carnet et revenir au carnet de suivi">
+				<span>enregistrer les modifications</span>
+			</div>			
+		</div>
+	</div>
+
+	<script type="text/ng-template" id="myModalUrlContent.html">
+		<div class="modal-header">
+	            <h3 class="modal-title">Génération de l'URL publique du suivi</h3>
+	        </div>
+	        <div class="modal-body">
+	        	<div class="text-danger"><strong>Un adresse publique pour ce carnet permet de voir les données du carnet, pour les onglets choisis, sans authentification. Veuillez à bien choisir ce que vous souhaitez montrer sur ce carnet de suivi.</strong></div>
+	        	<h4> Choisissez les onglets que vous souhaitez rendre public </h4>
+	            <div class="exit-carnet">
+	            	<button type="button" class="exit-carnet-button-pdf" ng-class="{active: allChecked()}" ng-click="checkAllOrNot()" btn-checkbox title="Cliquez ici pour sélectionner ou désélectionner tous les onglets du carnet de suivi">
+				        tout sélectionner/désélectionner
+				    </button>
+	            	<button type="button" ng-repeat="tab in tabs" class="exit-carnet-button-pdf" ng-model="tab.check" btn-checkbox title="Cliquez ici pour ajouter l'onglet '{{tab.nom}}' dans la génération de l'URL publique">
+				        {{tab.nom}}
+				    </button>
+	            </div>
+	        </div>
+	        <div class="modal-footer">
+		        <div>
+					<div popover="Il faut au moins un onglet selectionné pour générer l'URL publique" popover-placement="bottom" popover-trigger="click" class="exit-carnet-button" ng-click="ok()" title="Cliquez ici pour générer l'URL publique de ce carnet de suivi">
+						<span>Générer l'URL</span>
+					</div>
+					<div class="exit-carnet-button" ng-click="cancel()" title="Cliquez ici pour ne pas générer l'URL publique et revenir à la gestion des droits">
+						<span>Annuler</span>
+					</div>			
+				</div>
+	        </div>
+	    </div>
+	</script>
+</div>

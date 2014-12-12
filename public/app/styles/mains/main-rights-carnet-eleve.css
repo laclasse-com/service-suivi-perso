@@ -1,0 +1,171 @@
+.rights-carnet{
+	font-family: "Futura Book";
+	font-size: 14px;
+	color: #323232;
+}
+
+.title-rights{
+	font-family: "Futura Bold";
+	font-weight: bold;
+	color: #8E8E8E;
+	margin: 40px 10px;
+}
+
+table {
+	width: 100%;
+	margin: 0 10px;
+}
+
+td{
+	border: 1px solid #b2b2b2;
+	height: 25px;
+	padding-left: 5px;
+}
+
+.en-tete{
+	background-color: rgba(178,178,178,0.3);
+	text-align: center;
+	color: #8e8e8e;
+}
+
+.categorie{
+	text-align: center;
+}
+
+.td-img{
+	width: 18px;
+	padding: 3px 5px;
+}
+
+.toolbar-suivi-read{
+	background-position: 0 -80px;
+	margin: 0;
+}
+
+.toolbar-suivi-write{
+	background-position: 0 -96px;
+	margin: 0;
+}
+
+.toolbar-suivi-del-user{
+	background-position: 0 -16px;
+	margin: 0;
+	cursor: pointer;
+}
+
+.toolbar-suivi-add-user{
+	background-position: 0 -32px;
+	margin: 0;
+	cursor: pointer;
+}
+
+.checkbox-rights{
+	border: none;
+	background: transparent;
+}
+
+.rights-search-users{
+	margin: 0 40px;
+}
+
+.rights-search-users .input-sm{
+	font-weight: normal;
+}
+
+.accordion-rights {
+	margin-top: 20px;
+}
+
+.accordion-rights .panel-title{
+	font-family: "Futura Book";
+	font-size: 14px;
+	color: #323232;
+}
+
+.accordion-rights .panel{
+	background-color: #ccc;
+	border: none;
+	box-shadow: none;
+}
+
+.accordion-rights .panel-group{
+	background-color: #ccc;
+	padding: 15px;
+}
+
+.accordion-rights .panel-default>.panel-heading{
+	background-color: #ccc;
+	border: none;
+}
+
+.accordion-rights .panel-group .panel{
+	background-color: #ccc;
+	border-radius: 0;
+	border: none;
+	border-bottom: 2px solid #fff;
+}
+
+.accordion-rights .panel-group .panel+.panel{
+	margin: 0;
+}
+
+.accordion-rights .panel-heading{
+	border: none;
+	padding-left: 0;
+}
+
+.accordion-rights .panel-group .panel-heading+.panel-collapse .panel-body{
+	border: none;
+}
+
+.accordion-rights .panel-title>a{
+	vertical-align: middle;	
+}
+
+.accordion-rights .panel-title>a:hover{
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.accordion-rights .panel-body{
+	padding-left: 15px;
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-right: 15px;
+}
+
+.accordion-rights .add-user{
+	padding: 2px;
+}
+
+.accordion-rights .add-user i,span{
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.accordion-rights .add-user span{
+	margin-left: 5px;
+}
+
+.button-rights{
+	width: 100%;
+	margin-top: 80px;
+	text-align: center;
+}
+
+.button-rights .exit-carnet-button{
+	margin: 5px;
+	font-weight: normal;
+}
+
+html {
+	-moz-user-select: -moz-text;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -o-user-select: text;
+    user-select: text;
+}
+
+::selection { background: #1aa1cc; color:white; }
+::-moz-selection { background: #1aa1cc; color:white; }
+ 
