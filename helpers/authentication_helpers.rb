@@ -65,8 +65,10 @@ module AuthenticationHelpers
   # Initialisation de la session après l'authentification
   #
   def init_session( env )
+    puts "------------------------- init sesison-------------------------"
     if env['rack.session']
       env['rack.session'][:user] = env['omniauth.auth'].extra.user
+      puts (env['omniauth.auth'].extra).inspect
       env['rack.session'][:extra] = env['omniauth.auth'].extra
       session[:authenticated] = true
       session[:ep_sessions] = {}

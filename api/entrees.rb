@@ -87,4 +87,28 @@ class EntreesApi < Grape::API
             {error: "erreur lors de la suppression de l'onglet"}
         end
     end
+
+
+    desc "Upload document pour un message de suivi"
+    params {
+        requires :id_carnet, type: Integer
+        requires :file, type: Object
+    }
+    post '/upload' do
+        begin
+            new_filename = params[:file][:tempfile].path+"_"+params[:file][:filename]
+            File.rename params[:file][:tempfile], new_filename
+
+            # # Annuaire.post_raw_request_signed( :service_annuaire_user, "#{uid}/upload/avatar",
+            #                                 {},
+            #                                 image: File.open( new_filename ) )
+
+            File.delete new_filename
+            {nom: params[:file][:filename], md5:"dhdsqkjfkie54564ds6f4ds"}            
+        rescue Exception => e
+            puts e.message
+            puts e.backtrace[0..10].inspect
+            error!("Impossible d'uploader le document", 404)
+        end
+    end
 end

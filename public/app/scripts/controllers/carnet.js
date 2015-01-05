@@ -3,16 +3,23 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('CarnetCtrl', ['$scope', '$stateParams', '$modal', 'Onglets', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser', 'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'LACLASSE_PATH','Rights', '$state', 'Profil', '$window', function($scope, $stateParams, $modal, Onglets, Entrees, Carnets, Annuaire, CurrentUser, AVATAR_DEFAULT, AVATAR_M, AVATAR_F, LACLASSE_PATH, Rights, $state, Profil, $window) {
+.controller('CarnetCtrl', ['$rootScope', '$scope', '$stateParams', '$modal', 'Onglets', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser', 'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'LACLASSE_PATH','Rights', '$state', 'Profil', '$window', function($rootScope, $scope, $stateParams, $modal, Onglets, Entrees, Carnets, Annuaire, CurrentUser, AVATAR_DEFAULT, AVATAR_M, AVATAR_F, LACLASSE_PATH, Rights, $state, Profil, $window) {
 
   
   Profil.initRights($stateParams.id).promise.then(function(){
+    $rootScope.docs=[];
 
+    $scope.deleteDoc = function(doc){
+      $rootScope.docs = _.reject($rootScope.docs, function(d){
+        return doc.md5 == d.md5;
+      });
+    }
 
     Onglets.get({uid: $stateParams.id}, function(reponse){
+      console.log(reponse);
       if (reponse.error == undefined) {
         var entrees = []
-        if (reponse.onglets[0]!=undefined) {entrees = reponse.onglets[0].entrees};
+        if (reponse.onglets[0]!=undefined) {entrees = reponse.onglets[0].entrees; $window.sessionStorage.setItem("id", reponse.onglets[0].carnet_id);};
         var avatars = Annuaire.avatars(entrees);
         _.each(reponse.onglets, function(tab){
           _.each(tab.entrees, function(entree){
@@ -92,7 +99,8 @@ angular.module('suiviApp')
           newTab.ordre = reponse.ordre;
           newTab.owner = reponse.owner;
           $scope.activeTab(newTab);
-          $scope.tabs.push(newTab);            
+          $scope.tabs.push(newTab);
+          $window.sessionStorage.setItem("id", reponse.carnet_id);            
         } else {
           alert(reponse.error);
         };
@@ -120,7 +128,7 @@ angular.module('suiviApp')
         alert("vous n'êtes pas autorisé à ajouter une entrée !")
         return false;
       }
-      if (tab.htmlcontent.trim()=="") {return false;};
+      if (tab.htmlcontent.trim()=="") {alert("Vous devez obligatoirement avoir du texte dans votre message !");return false;};
       if (tab.modifEntree == null) {
         var owner = Annuaire.get_infos_of(CurrentUser.get(), $stateParams.classe_id);
         var entree = {
@@ -133,6 +141,7 @@ angular.module('suiviApp')
             avatar_color: owner.avatar_color
           },
           contenu: tab.htmlcontent,
+          docs: $rootScope.docs,
           date: Date.now()
         };
         Entrees.post({id_onglet: tab.id, carnet_id: tab.carnet_id, uid: entree.owner.uid, avatar: entree.owner.avatar, avatar_color: entree.owner.avatar_color, back_color: entree.owner.back_color, infos: entree.owner.infos, contenu: entree.contenu}).$promise.then(function(reponse){
@@ -147,6 +156,7 @@ angular.module('suiviApp')
                 t.htmlcontent = "";
               };
             });
+            $rootScope.docs = [];
           }
         });
       } else {
@@ -156,9 +166,11 @@ angular.module('suiviApp')
               _.each(t.entrees, function(e){
                 if (e.id == t.modifEntree) {
                   e.contenu = t.htmlcontent;
-                  e.owner.avatar = LACLASSE_PATH + CurrentUser.get().avatar;
+                  e.owner.avatar = LACLASSE_PATH + '/' + CurrentUser.get().avatar;
+                  e.docs = $rootScope.docs;
                   t.modifEntree = null;
                   t.htmlcontent = "";
+                  $rootScope.docs = [];
                 };
               });
             };
@@ -176,6 +188,7 @@ angular.module('suiviApp')
         if (t.id == tab.id) {
           t.htmlcontent = entree.contenu;
           t.modifEntree = entree.id;
+          $rootScope.docs = entree.docs;
         };
       });
     }

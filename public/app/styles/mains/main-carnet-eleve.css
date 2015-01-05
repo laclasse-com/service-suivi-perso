@@ -18,6 +18,26 @@
 	border-color: #8E8E8E;
 }
 
+.docs-form{
+	border-left: 1px solid #8E8E8E;
+	border-right: 1px solid #8E8E8E;
+	background-color: #ccc;
+	text-align: right;
+	padding: 10px;
+}
+
+.doc-form{
+	margin: 10px 5px;
+	display: inline;
+}
+
+.doc-form i{
+	display: inline-block;
+	vertical-align: middle;
+	margin-top: 0;
+	cursor: pointer;
+}
+
 .ta-scroll-window > .ta-bind{
 	min-height: 100px;
 }

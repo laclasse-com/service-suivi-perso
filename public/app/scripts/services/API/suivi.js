@@ -72,6 +72,12 @@ angular.module('suiviApp')
 		'post': {method:'POST', url: APP_PATH + '/api/public/carnets/:uid_elv', params: {uid_elv: '@uid_elv', id_onglets: '@id_onglets'}},
 		'delete': {method:'DELETE', url: APP_PATH + '/api/public/carnets/:uid_elv', params: {uid_elv: '@uid_elv'}},
 	});
+}])
+.factory('Docs', ['$resource', 'DOCS_URL', function( $resource, DOCS_URL ) {
+	return $resource( DOCS_URL	 + '/api/suivi/', {id_carnet: '@id_carnet', md5: '@md5', nom: '@nom'}, {
+		'get':    {method:'GET'},
+		'post': {method:'POST',  params: {id_carnet: '@id_carnet', upload: '@upload'}},
+	});
 }]);
 
 

@@ -14,7 +14,6 @@ use Rack::Session::Cookie, :key => 'rack.session',
                            :path => APP_PATH,
                            :expire_after => 3600, # In seconds
                            :secret => SESSION_KEY
-
                            
 use OmniAuth::Builder do
   configure do |config|

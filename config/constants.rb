@@ -2,7 +2,6 @@
 
 URL_REQUEST_TEST = ""
 
-LANG = "fr"
 COLOR = {
 	:rouge => "#EB5454",
 	:bleu => "#1AA1CC",

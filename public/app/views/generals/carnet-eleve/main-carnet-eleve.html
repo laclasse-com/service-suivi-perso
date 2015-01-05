@@ -14,6 +14,7 @@
     	<div ng-show="tab.active"ng-repeat="tab in tabs">
 	  		<div style="margin:20px">
 			    <div text-angular ta-target-toolbars="{{tab.id}}" ng-model="tab.htmlcontent" class="text-angular-content" placeholder="publier un nouveau message dans le suivi de {{nameUser}}"></div>
+			    <div class="docs-form" ng-show="docs != null && docs.length > 0"><div ng-repeat="doc in docs" class="doc-form"><i title="Supprimer le document" class="toolbar-suivi toolbar-suivi-del" ng-click="deleteDoc(doc)"></i><strong>{{doc.nom}}</strong></div></div>
 			    <div class="laclasse-toolbar-text-angular">
 						<div text-angular-toolbar class="toolbar" name="{{tab.id}}" ta-toolbar="[['h1','h6'],['bold','italics','underline'],['justifyLeft','justifyCenter','justifyRight'],['insertLink'], ['upload']]"></div>
 						<div class="publier" ng-click="addEntree(tab)" ><i class="toolbar-suivi toolbar-suivi-add"></i><span>PUBLIER</span></div>
@@ -38,6 +39,7 @@
 							<div class="message-corbeille"><i ng-click="open(tab, entree, 'entree')" class="toolbar-suivi toolbar-suivi-corbeille"></i></div>
 						</div>
 						<div ta-bind ng-model="entree.contenu" class="message-text"></div>
+						<div class="docs-form" style ="background-color:transparent; border:none; padding-right:0;" ng-show="entree.docs != null && entree.docs.length > 0"><div ng-repeat="doc in entree.docs" class="doc-form violet" style="padding:10px; margin:0;"><strong>{{doc.nom}}</strong></div></div>
 					</div>
 	    		</div>
 	    	</div>

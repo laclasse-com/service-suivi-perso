@@ -163,6 +163,7 @@ angular.module('suiviApp')
     };
 
     $scope.onFileSelect = function($files){
+      console.log($files[0]);
       if ($files[0].size <= UPLOAD_SIZE) {
         $rootScope.mail.file = $files[0];
         $scope.joindreFile.normal=$files[0].name;

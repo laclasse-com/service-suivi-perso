@@ -4,7 +4,7 @@
 <div class="modal-body">
     <div>
 		<div class="exit-carnet-button" ng-click="uploadFile()">
-			<span>Insérer un fichier</span>
+			<input type="file" id="inputFile" ng-file-select="upload($files)" ng-hide="false">
 		</div>
 		<div class="exit-carnet-button" ng-click="UploadCartable()">
 			<span>Insérer un fichier de mon cartable</span>
@@ -19,7 +19,7 @@
 	</div>
 </div>
 <div class="modal-footer">
-    <div class="exit-carnet-button" ng-click="ok()">
+    <div class="exit-carnet-button" ng-click="valider()">
 		<span>Valider</span>
 	</div>
 </div>
