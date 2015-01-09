@@ -33,12 +33,14 @@ class EntreesApi < Grape::API
     }
     post '/' do
         onglet = Onglet.new(params[:id_onglet])
+        docs = []
         begin
             onglet.read
             entree = Entree.new(nil, onglet.id, params[:carnet_id], params[:uid], params[:avatar], params[:avatar_color], params[:back_color], params[:infos], params[:contenu])
             entree.create
             {id: entree.id}
         rescue Exception => e
+            LOGGER.error e.message
             {error: "erreur lors de la création de l'entrée"}
         end
     end
@@ -93,22 +95,38 @@ class EntreesApi < Grape::API
     params {
         requires :id_carnet, type: Integer
         requires :file, type: Object
+        requires :id_entree, type: Integer
     }
     post '/upload' do
         begin
-            new_filename = params[:file][:tempfile].path+"_"+params[:file][:filename]
-            File.rename params[:file][:tempfile], new_filename
+            # new_filename = params[:file][:tempfile].path+"_"+params[:file][:filename]
+            # File.rename params[:file][:tempfile], new_filename
 
-            # # Annuaire.post_raw_request_signed( :service_annuaire_user, "#{uid}/upload/avatar",
-            #                                 {},
-            #                                 image: File.open( new_filename ) )
+            # # # Annuaire.post_raw_request_signed( :service_annuaire_user, "#{uid}/upload/avatar",
+            # #                                 {},
+            # #                                 image: File.open( new_filename ) )
 
-            File.delete new_filename
-            {nom: params[:file][:filename], md5:"dhdsqkjfkie54564ds6f4ds"}            
+            # File.delete new_filename
+            doc = Doc.new nil, params[:file][:filename], "dhdsqkjfkie54564ds6f4ds", params[:id_entree]
+            doc.create
+            {docs:[{id: doc.id, nom: doc.nom, md5: doc.url}]}            
         rescue Exception => e
-            puts e.message
-            puts e.backtrace[0..10].inspect
+            LOGGER.error e.message
+            LOGGER.error e.backtrace[0..10].to_s
             error!("Impossible d'uploader le document", 404)
+        end
+    end
+    desc "suppression d'un document d'une entrée"
+    params {
+        requires :id, type: Integer, desc: "id du document"
+    }
+    delete '/delete/docs/:id' do
+        begin
+            doc = Doc.new(params[:id])
+            doc.read
+            doc.delete
+        rescue Exception => e
+            {error: "erreur lors de la suppression du document"}
         end
     end
 end

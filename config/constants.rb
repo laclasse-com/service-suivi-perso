@@ -1,6 +1,8 @@
 # Liste des constants de l'application
-
+require 'logger'
 URL_REQUEST_TEST = ""
+
+LOGGER = Logger.new(STDOUT)
 
 COLOR = {
 	:rouge => "#EB5454",

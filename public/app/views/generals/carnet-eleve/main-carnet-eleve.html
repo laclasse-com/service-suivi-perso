@@ -39,7 +39,7 @@
 							<div class="message-corbeille"><i ng-click="open(tab, entree, 'entree')" class="toolbar-suivi toolbar-suivi-corbeille"></i></div>
 						</div>
 						<div ta-bind ng-model="entree.contenu" class="message-text"></div>
-						<div class="docs-form" style ="background-color:transparent; border:none; padding-right:0;" ng-show="entree.docs != null && entree.docs.length > 0"><div ng-repeat="doc in entree.docs" class="doc-form violet" style="padding:10px; margin:0;"><strong>{{doc.nom}}</strong></div></div>
+						<div class="docs-form" style ="background-color:transparent; border:none; padding-right:0;" ng-show="entree.docs != null && entree.docs.length > 0"><div ng-repeat="docEntree in entree.docs" class="doc-form violet" style="padding:10px; margin:0;"><strong><a style="color:inherit; cursor: pointer" title="Cliquez pour télécherger le document">{{docEntree.nom}}</a></strong></div></div>
 					</div>
 	    		</div>
 	    	</div>

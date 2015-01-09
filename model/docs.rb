@@ -1,7 +1,7 @@
 #coding: utf-8
 #
 # model for 'docs' table
-# generated 2014-12-08 12:23:13 +0100 by /usr/local/bin/rake
+# generated 2015-01-08 14:04:17 +0100 by /usr/local/bin/rake
 #
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 # COLUMN_NAME                   | DATA_TYPE           | NULL? | KEY | DEFAULT | EXTRA
@@ -9,7 +9,7 @@
 # id                            | bigint(20)          | false    | PRI      |            | auto_increment
 # nom                           | varchar(250)        | false    |          |            | 
 # url                           | varchar(2000)       | false    |          |            | 
-# saisies_id                    | bigint(20)          | false    | PRI      |            | 
+# saisies_id                    | bigint(20)          | false    | MUL      |            | 
 # ------------------------------+---------------------+----------+----------+------------+--------------------
 #
 class Docs < Sequel::Model(:docs)
@@ -25,7 +25,7 @@ class Docs < Sequel::Model(:docs)
   # Not nullable cols and unicity validation
   def validate
     super
-    validates_presence [:nom, :url]
+    validates_presence [:nom, :url, :saisies_id]
     validates_unique :id
   end
 end

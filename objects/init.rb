@@ -10,3 +10,6 @@ require __DIR__('carnet')
 
 puts "loading objects/right"
 require __DIR__('right')
+
+puts "loading objects/doc"
+require __DIR__('doc')

@@ -119,6 +119,7 @@ module CarnetsLib
               back_color: e.back_color
             },
             contenu: e.contenu,
+            docs: e.get_docs,
             date: e.date_modification
           })
         end

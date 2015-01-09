@@ -115,6 +115,7 @@ class Entree
     requires({:entree => entree}, :entree)
     begin
       delie_onglet
+      delete_docs
       entree.delete
     rescue Exception => e
       lie_onglet if EntreesOnglets[:saisies_id => @id, :onglets_id => @id_onglet].nil? && !Saisies[:id => @id].nil?
@@ -145,5 +146,31 @@ class Entree
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update_avatar").sub("$2", "Entree").sub("$3", "mise à jour de tous de l'avatar")
       raise MSG[LANG.to_sym][:error][crud].sub("$1", "update_avatar").sub("$2", "Entree").sub("$3", "mise à jour de tous de l'avatar")
     end
+  end
+
+  def delete_docs
+    requires({:id => @id}, :id)
+    begin
+      Docs.where(:saisies_id => @id).delete
+    rescue Exception => e
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "delete_docs").sub("$2", "Entree").sub("$3", "supprime les documents d'une entree")
+      raise MSG[LANG.to_sym][:error][crud].sub("$1", "delete_docs").sub("$2", "Entree").sub("$3", "supprime les documents d'une entree")
+    end
+  end
+
+  def get_docs
+    requires({:id => @id}, :id)
+    docs = []
+    begin
+      Docs.where(:saisies_id => @id).each do |d|
+        doc = Doc.new d.id
+        doc.read
+        docs.push({id: doc.id, nom: doc.nom, md5: doc.url})
+      end
+    rescue Exception => e
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "get_docs").sub("$2", "Entree").sub("$3", "récupération des documents d'une entrée")
+      raise MSG[LANG.to_sym][:error][crud].sub("$1", "get_docs").sub("$2", "Entree").sub("$3", "récupération des documents d'une entrée")
+    end
+    docs
   end
 end
