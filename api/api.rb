@@ -1,13 +1,16 @@
+require 'lib/helpers/authentication'
+require 'lib/annuaire'
 
 class Api < Grape::API
 format :json
 rescue_from :all
 
 helpers AuthenticationHelpers
+helpers Laclasse::Helpers::Authentication
 
 
 before do
-	error!( '401 Unauthorized', 401 ) unless is_logged?
+	error!( '401 Unauthorized', 401 ) unless logged?
   get_current_user
 end
 

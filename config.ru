@@ -9,11 +9,8 @@ use Rack::Rewrite do
   rewrite %r{/.*/(app)/(.*)}, '/$1/$2'
 end
 
-use Rack::Session::Cookie, :key => 'rack.session',
-                           #:domain => 'foo.com',
-                           :path => APP_PATH,
-                           :expire_after => 3600, # In seconds
-                           :secret => SESSION_KEY
+require 'lib/helpers/session'
+Laclasse::Helpers::Session.configure_rake_session self
                            
 use OmniAuth::Builder do
   configure do |config|

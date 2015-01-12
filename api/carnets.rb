@@ -28,7 +28,7 @@ class CarnetsApi < Grape::API
         requires :classe_id, type: Integer
     }
     get '/classes/:classe_id' do
-        response = Annuaire.send_request_signed(:service_annuaire_regroupement, params[:classe_id].to_s, {'expand' => 'true'})
+        response = Laclasse::Annuaire.send_request_signed(:service_annuaire_regroupement, params[:classe_id].to_s, {'expand' => 'true'})
         CarnetsLib.get_carnets_by_classe_of response
     end
 
@@ -66,7 +66,7 @@ class CarnetsApi < Grape::API
         requires :name, type: String, desc: "nom de l'élève"
     }
     get '/eleves/:name' do
-        response = Annuaire.send_request_signed(:service_annuaire_suivi_perso, "users/" + $current_user[:info].uid.to_s + '/eleves/' + params[:name], {})
+        response = Laclasse::Annuaire.send_request_signed(:service_annuaire_suivi_perso, "users/" + $current_user[:info].uid.to_s + '/eleves/' + params[:name], {})
         CarnetsLib.search_carnets_of response
     end
 
@@ -75,11 +75,11 @@ class CarnetsApi < Grape::API
         requires :name, type: String, desc: "nom de l'élève"
     }
     get '/evignal/eleves/:name' do
-        profil_actif_current_user = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})["profil_actif"]["etablissement_code_uai"]
+        profil_actif_current_user = $current_user[:user_detailed]["profil_actif"]["etablissement_code_uai"]
         if profil_actif_current_user != UAI_EVIGNAL
             error!('Ressource non trouvee', 404)
         end
-        response = Annuaire.send_request_signed(:service_annuaire_suivi_perso, ANNUAIRE_URL[:suivi_perso_search] + params[:name], {})
+        response = Laclasse::Annuaire.send_request_signed(:service_annuaire_suivi_perso, ANNUAIRE_URL[:suivi_perso_search] + params[:name], {})
         CarnetsLib.search_carnets_of response, true
     end
 

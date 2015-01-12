@@ -1,5 +1,7 @@
 require 'sinatra'
 require "sinatra/reloader" if ENV[ 'RACK_ENV' ] == 'development'
+require 'lib/helpers/authentication'
+require 'lib/annuaire'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
@@ -20,17 +22,18 @@ class SinatraApp < Sinatra::Base
   end
 
   helpers AuthenticationHelpers
+  helpers Laclasse::Helpers::Authentication
   include CarnetsLib
 
   # Routes nécessitant une authentification
   ['/?', '/login' ].each { |route| 
     before APP_PATH + route do 
-      login! env['REQUEST_PATH'] unless is_logged?
+      login! env['REQUEST_PATH'] unless logged?
     end
   }
 
   get APP_PATH + '/' do
-    if is_logged?
+    if logged?
       erb :app
     else
       erb "<div class='jumbotron'>
@@ -48,7 +51,7 @@ class SinatraApp < Sinatra::Base
       carnet.read
       tabs = get_tabs carnet.uid_elv, nil, params[:url]
       puts tabs.inspect
-      response = Annuaire.send_request_signed(:service_annuaire_user, carnet.uid_elv, {"expand" => "true"})
+      response = Laclasse::Annuaire.send_request_signed(:service_annuaire_user, carnet.uid_elv, {"expand" => "true"})
       erb"<div class='row-fluid' style='height: 100%'>"+
           "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 aside-contener' style='height:100%'>"+
               "<div style='height:100%'>"+(HtmlMessageGenerator.aside_public_carnet response)+"</div>"+
@@ -64,7 +67,7 @@ class SinatraApp < Sinatra::Base
   end
 
   get APP_PATH + '/auth/:provider/callback' do
-    init_session( request.env )
+    $current_user = init_session( request.env )
     redirect params[:url] if params[:url] !=  env['rack.url_scheme'] + "://" + env['HTTP_HOST'] + APP_PATH + '/'
     redirect APP_PATH + '/'
     #erb "<h1>Connected !</h1><pre>#{request.env['omniauth.auth'].to_html}</pre><hr>"

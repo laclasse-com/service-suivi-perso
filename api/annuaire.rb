@@ -1,6 +1,5 @@
 #coding: utf-8
 
-require 'annuaire'
 require 'logger'
 
 # API d'interfaçage avec l'annuaire
@@ -12,7 +11,7 @@ class AnnuaireApi < Grape::API
 
   desc "retourne le profile actif de l'utilisateur courant"
   get '/currentuser' do
-    response = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
+    response = $current_user[:user_detailed]
     hight_role = ""
     response["roles"].each do |role|
       if role["etablissement_code_uai"] == response["profil_actif"]["etablissement_code_uai"] && COEFF[hight_role] < COEFF[role["role_id"]]
@@ -48,7 +47,7 @@ class AnnuaireApi < Grape::API
     requires :id, type: String
   end
   get '/users/:id' do
-    response = Annuaire.send_request_signed(:service_annuaire_user, params[:id], {"expand" => "true"})
+    response = Laclasse::Annuaire.send_request_signed(:service_annuaire_user, params[:id], {"expand" => "true"})
     if response["error"].nil?
       prefix_annuaire = ANNUAIRE[:url].split('/')
       prefix_annuaire.pop
@@ -61,7 +60,7 @@ class AnnuaireApi < Grape::API
 
   desc "retourne toutes les classes de l'utilisateur"
   get '/classes' do
-    response = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
+    response = $current_user[:user_detailed]
     if response["error"].nil?
       response["classes"]
     else 
@@ -74,7 +73,7 @@ class AnnuaireApi < Grape::API
         requires :rgp_id, type: Integer
     }
     get '/regroupements/:rgp_id' do
-        response = Annuaire.send_request_signed(:service_annuaire_regroupement, params[:rgp_id].to_s, {'expand' => 'true'})
+        response = Laclasse::Annuaire.send_request_signed(:service_annuaire_regroupement, params[:rgp_id].to_s, {'expand' => 'true'})
         response
     end
 
@@ -86,7 +85,7 @@ class AnnuaireApi < Grape::API
   get '/etablissements/:uai/personnels' do
       allUsers = []
       users=[]
-      personnels = Annuaire.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
+      personnels = Laclasse::Annuaire.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
       if personnels.class == Array
         personnels.each do |personnel|
           role_id = ""
@@ -99,25 +98,23 @@ class AnnuaireApi < Grape::API
         end
         allUsers.concat(personnels)
       end
-      eleve = Annuaire.send_request_signed(:service_annuaire_user, params[:uid_elv].to_s, {"expand" => "true"})
+      eleve = Laclasse::Annuaire.send_request_signed(:service_annuaire_user, params[:uid_elv].to_s, {"expand" => "true"})
       eleve["role_id"] = ROLES[:eleve]
       allUsers.concat([eleve]) if eleve["error"].nil?
       parents = []
       eleve["parents"].each do |p|
-        parent = Annuaire.send_request_signed(:service_annuaire_user, p["id_ent"].to_s, {"expand" => "true"})
+        parent = Laclasse::Annuaire.send_request_signed(:service_annuaire_user, p["id_ent"].to_s, {"expand" => "true"})
         parent["role_id"] = ROLES[:parents]
         parents.concat([parent]) if parent["error"].nil?
       end
       allUsers.concat(parents);
       allUsers.each do |user|
-        begin
           carnet = Carnet.new(nil, params[:uid_elv])
           carnet.read
           right = Right.new(nil, user["id_ent"], nil, nil, carnet.id)
-          right.select
-        rescue Exception => e
-          users.push user
-        end
+          if !right.exist?
+            users.push user
+          end
       end
       users
   end
@@ -130,7 +127,7 @@ class AnnuaireApi < Grape::API
   get '/evignal/:uai/personnels' do
     allUsers = []
     users=[]
-    personnels = Annuaire.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
+    personnels = Laclasse::Annuaire.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
     if personnels.class == Array
       personnels.each do |personnel|
         role_id = ""
@@ -166,9 +163,9 @@ class AnnuaireApi < Grape::API
       users = []
       avatars = {}
       while uids.size > 50
-        users.concat(Annuaire.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.pop(50).join(';').to_s, {'expand' => 'true'}))
+        users.concat(Laclasse::Annuaire.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.pop(50).join(';').to_s, {'expand' => 'true'}))
       end
-      users.concat(Annuaire.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join(';').to_s, {'expand' => 'true'})) if !uids.empty?
+      users.concat(Laclasse::Annuaire.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join(';').to_s, {'expand' => 'true'})) if !uids.empty?
       users.each do |user|
         avatars[user["id_ent"]] = user["avatar"]
       end
