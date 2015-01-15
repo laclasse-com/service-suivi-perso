@@ -3,8 +3,9 @@
 			<ul ui-sortable="sortableOptions" class="nav nav-tabs " ng-model="tabs">
 	      <li  ng-repeat="tab in tabs" ng-class="{active: tab.active}">
 	        <a  class="cursor" ng-click="activeTab(tab)" ng-dblclick="tab.editable=true" ng-show="!tab.editable">{{tab.nom}} <i ng-click="open(tab, '', 'tab')" class="toolbar-suivi toolbar-suivi-del toolbar-suivi-del-carnet cursor"></i> </a>
-	        
-	        <input type="text" class="tab-editable" ng-show="tab.editable" ng-model="tab.nom" ng-blur="changeNameTab(tab)" autofocus>	   	      	
+	        <form ng-submit="changeNameTab(tab)">
+	        	<input type="text" class="tab-editable" ng-show="tab.editable" ng-model="tab.nom" autofocus>	   	      		        	
+	        </form>
 	      </li>
 	      <li ng-class="{active: false}" class="cursor" >
 	        <a ng-click="addTab()"><strong>+</strong></a>

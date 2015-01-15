@@ -13,7 +13,7 @@ class PublicUrlApi < Grape::API
   }
   post '/carnets/:uid_elv' do
       begin        
-        response = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
+        response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
         carnet = Carnet.new(nil, params[:uid_elv])
         carnet.read
         #verification des droits coté backend
@@ -55,7 +55,7 @@ class PublicUrlApi < Grape::API
   }
   delete '/carnets/:uid_elv' do
     begin     
-      response = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})   
+      response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})   
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
       #verification des droits coté backend
@@ -89,7 +89,7 @@ class PublicUrlApi < Grape::API
   #     begin
   #       carnet = Carnet.new(nil, nil, nil, nil, nil, params[:url_pub])
   #       carnet.read
-  #       response = Annuaire.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
+  #       response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
   #       if response["profil_actif"]["etablissement_code_uai"] == UAI_EVIGNAL
   #         redirect APP_PATH + "/#/evignal/classes/"+carnet.id_classe.to_s+"/carnets/"+carnet.uid_elv
   #       else

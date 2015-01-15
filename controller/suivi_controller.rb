@@ -48,7 +48,7 @@ class SinatraApp < Sinatra::Base
       carnet.read
       tabs = get_tabs carnet.uid_elv, nil, params[:url]
       puts tabs.inspect
-      response = Annuaire.send_request_signed(:service_annuaire_user, carnet.uid_elv, {"expand" => "true"})
+      response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, carnet.uid_elv, {"expand" => "true"})
       erb"<div class='row-fluid' style='height: 100%'>"+
           "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 aside-contener' style='height:100%'>"+
               "<div style='height:100%'>"+(HtmlMessageGenerator.aside_public_carnet response)+"</div>"+
