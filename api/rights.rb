@@ -28,7 +28,7 @@ class RightsApi < Grape::API
     }
     get '/users/:uid' do
       begin
-        response = Annuaire.send_request_signed(:service_annuaire_user, params[:uid], {"expand" => "true"})
+        response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, params[:uid], {"expand" => "true"})
         carnet = Carnet.new(params[:carnet_id], params[:uid_elv])
         carnet.read
         right = Right.new(nil, params[:uid], nil, nil, carnet.id)
