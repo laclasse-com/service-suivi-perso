@@ -1,5 +1,5 @@
 require 'lib/helpers/authentication'
-require 'lib/annuaire'
+require 'lib/cross_app/sender'
 
 class Api < Grape::API
 format :json

@@ -99,14 +99,11 @@ class EntreesApi < Grape::API
     }
     post '/upload' do
         begin
-            # new_filename = params[:file][:tempfile].path+"_"+params[:file][:filename]
-            # File.rename params[:file][:tempfile], new_filename
+            new_filename = params[:file][:tempfile].path+"_"+params[:file][:filename]
+            File.rename params[:file][:tempfile], new_filename
 
-            # # # Annuaire.post_raw_request_signed( :service_annuaire_user, "#{uid}/upload/avatar",
-            # #                                 {},
-            # #                                 image: File.open( new_filename ) )
-
-            # File.delete new_filename
+            rep = Laclasse::CrossAppSender.post_request_signed(:service_docs_suivi, nil, {}, {"uid_current_user" => $current_user[:info].uid, "id_carnet" => params[:id_carnet], "file" => File.open( new_filename )}, {"rack.session" => cookies['rack.session']})
+            File.delete new_filename
             doc = Doc.new nil, params[:file][:filename], "dhdsqkjfkie54564ds6f4ds", params[:id_entree]
             doc.create
             {docs:[{id: doc.id, nom: doc.nom, md5: doc.url}]}            

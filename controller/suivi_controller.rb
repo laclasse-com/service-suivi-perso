@@ -1,7 +1,7 @@
 require 'sinatra'
 require "sinatra/reloader" if ENV[ 'RACK_ENV' ] == 'development'
 require 'lib/helpers/authentication'
-require 'lib/annuaire'
+require 'lib/cross_app/sender'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
@@ -51,7 +51,7 @@ class SinatraApp < Sinatra::Base
       carnet.read
       tabs = get_tabs carnet.uid_elv, nil, params[:url]
       puts tabs.inspect
-      response = Laclasse::Annuaire.send_request_signed(:service_annuaire_user, carnet.uid_elv, {"expand" => "true"})
+      response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, carnet.uid_elv, {"expand" => "true"})
       erb"<div class='row-fluid' style='height: 100%'>"+
           "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 aside-contener' style='height:100%'>"+
               "<div style='height:100%'>"+(HtmlMessageGenerator.aside_public_carnet response)+"</div>"+
