@@ -51,7 +51,8 @@ angular.module('suiviApp')
 		'update': {method:'PUT', url: APP_PATH + '/api/entrees/:id', params: {id: '@id', contenu: '@contenu', avatar: '@avatar'}},
 		'update_avatar': {method:'PUT', url: APP_PATH + '/api/entrees/:uid/avatar', params: {uid: '@uid', avatar: '@avatar'}},
 		'delete': {method:'DELETE', url: APP_PATH + '/api/entrees/:id', params: {id: '@id'}},
-		'deleteDoc': {method:'DELETE', url: APP_PATH + '/api/entrees/delete/docs/:id', params: {id: '@id'}}
+		'deleteDoc': {method:'DELETE', url: APP_PATH + '/api/entrees/delete/docs/:id', params: {id: '@id', id_carnet: '@id_carnet'}},
+		'getDoc': {method:'GET', responseType :'blob', url: APP_PATH + '/api/entrees/docs/:id', params: {id: '@id', id_carnet: '@id_carnet'}}
 	});
 }])
 .factory('Rights', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {

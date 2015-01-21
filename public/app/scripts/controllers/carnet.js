@@ -3,16 +3,16 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('CarnetCtrl', ['$rootScope', '$scope', '$stateParams', '$modal', 'Onglets', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser', 'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'LACLASSE_PATH', 'APP_PATH', 'Rights', '$state', 'Profil', '$window', '$upload', function($rootScope, $scope, $stateParams, $modal, Onglets, Entrees, Carnets, Annuaire, CurrentUser, AVATAR_DEFAULT, AVATAR_M, AVATAR_F, LACLASSE_PATH, APP_PATH, Rights, $state, Profil, $window, $upload) {
+.controller('CarnetCtrl', ['$rootScope', '$scope', '$stateParams', '$modal', 'Onglets', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser', 'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'LACLASSE_PATH', 'APP_PATH', 'Rights', '$state', 'Profil', '$window', '$upload', '$http', function($rootScope, $scope, $stateParams, $modal, Onglets, Entrees, Carnets, Annuaire, CurrentUser, AVATAR_DEFAULT, AVATAR_M, AVATAR_F, LACLASSE_PATH, APP_PATH, Rights, $state, Profil, $window, $upload, $http) {
 
   
   Profil.initRights($stateParams.id).promise.then(function(){
     $rootScope.docs=[];
 
-    $scope.deleteDoc = function(doc){
+    $scope.deleteDoc = function(doc, id_carnet){
       $rootScope.docs = _.reject($rootScope.docs, function(d){
         if (doc.id!= null) {
-          Entrees.deleteDoc({id: doc.id}).$promise.then(function(reponse){
+          Entrees.deleteDoc({id: doc.id, id_carnet: id_carnet}).$promise.then(function(reponse){
             if (reponse.error != undefined) {
               alert(reponse.error);
               return false;
@@ -21,6 +21,17 @@ angular.module('suiviApp')
         };
         return doc.md5 == d.md5;
       });
+    }
+
+    $scope.getDoc = function(doc, id_carnet){
+      if (doc.id!= null) {
+        $http.get(APP_PATH + '/api/entrees/docs/'+doc.id+'?id_carnet='+id_carnet, {'responseType' :'blob'}).success(function(data, status) {
+            var link=document.createElement('a');
+            link.href=window.URL.createObjectURL(data);
+            link.download=doc.nom;
+            link.click();
+        });
+      };
     }
 
     Onglets.get({uid: $stateParams.id}, function(reponse){
@@ -246,6 +257,10 @@ angular.module('suiviApp')
         alert("vous ne pouvez pas supprimer les entrées qui ne vous appartiennent pas !")
         return false;
       }
+      _.each(entree.docs, function(doc){
+        Entrees.deleteDoc({id: doc.id, id_carnet: tab.carnet_id});
+      });
+
       Entrees.delete({id: entree.id}).$promise.then(function(reponse){
         if (reponse.error != undefined && reponse.error != null) {
           alert(reponse.error);
