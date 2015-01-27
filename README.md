@@ -6,7 +6,7 @@
 
 Application de micro-blogging autour de l'élève, aussi appelé *carnet de suivi*.
 Le mini-blog se présente en une seule page, avec des onglets. 
-Le nombre et la dénomination des onglets est libre, ce qui fait que cette application est complètement maléable et paramétrable pour l'usage que l'on veut en faire : suivi pédagogique, de projet, par matière, espace d'écahnge avec l'élève, lses parents, ....
+Le nombre et la dénomination des onglets est libre, ce qui fait que cette application est complètement maléable et paramétrable pour l'usage que l'on veut en faire : suivi pédagogique, de projet, par matière, espace d'écahnge avec l'élève, ses parents, ....
 
 Chaque onglet contient les contributions des utilisateurs autorisés à écrire sur le carnet, dans un ordre anté-chronoligique par défaut.
 
