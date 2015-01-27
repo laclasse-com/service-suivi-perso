@@ -22,8 +22,9 @@ La définition de cette url entrîne le choix des onglets que l'on souhaite mont
 
  - On ne peut définir qu'un et un seul carnet par élève
  - Chaque utilisateur peut modifier et supprimer ses propres contributions.
- - L'administrateur pour modifier et supprimer les contributions de tous.
- - Les droits sont imbriqué lire < écrire < admin
+ - L'administrateur peut modifier et supprimer les contributions de tous.
+ - L'administrateur peut ajouter ou supprimer des utilisateurs dans le périmètre de son établissement.
+ - Les droits sont imbriqués lire < écrire < admin (celui qui a "écrire" a forcément "lire")
  - Par défaut les carnets n'ont pas d'url publique.
  - Une url publique est associée à un carnet et un seul.
  - L'url publique est caduque : sa suppression entraine l'invisibilité du carnet par le public (personnes non authentifiées sur le site)
