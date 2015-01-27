@@ -10,7 +10,9 @@ Le nombre et la dénomination des onglets est libre, ce qui fait que cette appli
 
 Chaque onglet contient les contributions des utilisateurs autorisés à écrire sur le carnet, dans un ordre anté-chronoligique par défaut.
 
-Le système de droits d'accès est simple et facilement paramétrable. Les droits Lecture/ecriture/Admin sont définis et transférable à tout utilisateurs rattaché au carnet de suivi.
+Il est possible d'assoicier des documents issus de son espace de stockage en ligne.
+
+Le système de droits d'accès est simple et facilement paramétrable. Les droits Lecture/ecriture/Admin sont définis et transférable à tout utilisateur rattaché au carnet de suivi.
 L'adminstrateur du carnet (admin de l'ENT ou créateur du carnet) peut déléguer des droits d'accès à tout personne rattachée à son établissement (l'élève concerné, ses parents, ses profs ou tout autre personnel de l'établissement).
 
 Il est possible de définir une URL publique du carnet, qui donne accès à celui-ci en lecture seule. 
@@ -24,7 +26,7 @@ La définition de cette url entrîne le choix des onglets que l'on souhaite mont
  - Les droits sont imbriqué lire < écrire < admin
  - Par défaut les carnets n'ont pas d'url publique.
  - Une url publique est associée à un carnet et un seul.
- - L'url publique est caduqe : sa suppression entraine l'invisibilité du carnet par le public (personnes non authentifiées sur le site)
+ - L'url publique est caduque : sa suppression entraine l'invisibilité du carnet par le public (personnes non authentifiées sur le site)
 
 ## Licence Afero GPL v3
 
