@@ -61,8 +61,7 @@ class SinatraApp < Sinatra::Base
           "</div>"+
         "</div>"
     rescue Exception => e
-      status 404
-      erb"Error 404 Not Found !"
+      erb :erreur
     end
   end
 

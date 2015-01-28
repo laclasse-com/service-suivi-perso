@@ -23,13 +23,19 @@
 	padding-right: 2em;
 	padding-left: 2em;
 }
-
 .explicatif{
 	margin-top: 1em;
-	color:#1aa1cc;
-	font-family: "Futura Light";
-	font-size:1.5em; 
-	font-weight: bold;
+	color:#505050;
+}
+
+.explicatif-title{
+	font-family: "Futura Bold";
+	font-size:16px; 
+}
+
+.explicatif-content{
+	font-family: "Futura Medium";
+	font-size:14px; 
 }
 
 .recherche{

@@ -145,7 +145,6 @@ angular.module('suiviApp')
 
     modalInstance.result.then(function () {
       var generateTabs = _.filter($rootScope.tabs, function(tab){ return tab.check == true; });
-      console.log(generateTabs);
       $rootScope.pdf(generateTabs);        
     });
   };
@@ -214,7 +213,6 @@ angular.module('suiviApp')
         //formDataAppender: function(formData, key, val){}
       }).success(function(data, status, headers, config) {
         // file is uploaded successfully
-        console.log(data);
         if (data['envoye'] != undefined && !_.isEmpty(data['envoye'])) {
           $rootScope.resultats.success = data['envoye']
         };

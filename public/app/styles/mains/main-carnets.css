@@ -27,12 +27,12 @@
 }
 
 .carnet-first-name{
-	top: 6em;
+	top: 7em;
 	left: 0.8em;
 }
 
 .carnet-last-name{
-	top: 7em;
+	top: 6em;
 	left: 0.8em;
 }
 
@@ -49,6 +49,7 @@
 }
 
 .avatar{
+	opacity:0.5;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -58,12 +59,13 @@
 
 .contener-ajout{
 	text-align: center;
+	opacity: 1;
 }
 
 #ajout{
 	width: 40%;
 	height: 100%;
-	fill:#505050;
+	fill:#fff;
 }
 
 @media (max-width: 768px) {

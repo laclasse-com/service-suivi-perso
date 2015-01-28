@@ -7,6 +7,12 @@ namespace :db do
     require './config/database'
   end
 
+  desc "Checks if a migration is needed"
+  task :check_migrate => :load_config do
+    Sequel.extension :migration
+    exit Sequel::Migrator.is_current?(Sequel::Model.db, 'migrations') ? 0 : 1
+  end
+
   desc 'Configuring database server.'
   task :configure do
     require 'erb'

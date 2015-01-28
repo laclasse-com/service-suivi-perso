@@ -2,11 +2,12 @@
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="height:100%; padding:0">
 			<ul ui-sortable="sortableOptions" class="nav nav-tabs " ng-model="tabs">
 	      <li  ng-repeat="tab in tabs" ng-class="{active: tab.active}">
-	        <a ng-click="activeTab(tab)" ng-dblclick="tab.editable=true" ng-show="!tab.editable">{{tab.nom}} <i ng-click="open(tab, '', 'tab')" class="toolbar-suivi toolbar-suivi-del toolbar-suivi-del-carnet"></i> </a>
-	        
-	        <input type="text" class="tab-editable" ng-show="tab.editable" ng-model="tab.nom" ng-blur="changeNameTab(tab)" autofocus>	   	      	
+	        <a  class="cursor" ng-click="activeTab(tab)" ng-dblclick="tab.editable=true" ng-show="!tab.editable">{{tab.nom}} <i ng-click="open(tab, '', 'tab')" class="toolbar-suivi toolbar-suivi-del toolbar-suivi-del-carnet cursor"></i> </a>
+	        <form ng-submit="changeNameTab(tab)">
+	        	<input type="text" class="tab-editable" ng-show="tab.editable" ng-model="tab.nom" autofocus>	   	      		        	
+	        </form>
 	      </li>
-	      <li ng-class="{active: false}">
+	      <li ng-class="{active: false}" class="cursor" >
 	        <a ng-click="addTab()"><strong>+</strong></a>
 	      </li>
 	    </ul>
@@ -16,15 +17,15 @@
 			    <div text-angular ta-target-toolbars="{{tab.id}}" name="text_{{tab.id}}" ng-model="tab.htmlcontent" class="text-angular-content" placeholder="publier un nouveau message dans le suivi de {{nameUser}}"></div>
 			    <div class="docs-form" ng-show="docs != null && docs.length > 0"><div ng-repeat="doc in docs" class="doc-form"><i title="Supprimer le document" class="toolbar-suivi toolbar-suivi-del" ng-click="deleteDoc(doc, tab.carnet_id)"></i><strong>{{doc.nom}}</strong></div></div>
 			    <div class="laclasse-toolbar-text-angular">
-						<div text-angular-toolbar class="toolbar" name="{{tab.id}}" ta-toolbar="[['h1','h6'],['bold','italics','underline'],['justifyLeft','justifyCenter','justifyRight'],['insertLink'], ['upload']]"></div>
-						<div class="publier" ng-click="addEntree(tab)" ><i class="toolbar-suivi toolbar-suivi-add"></i><span>PUBLIER</span></div>
+						<div text-angular-toolbar class="toolbar" name="{{tab.id}}"></div>
+						<div class="publier" ng-click="addEntree(tab)" title="Cliquez ici pour publier votre message dans cet onglet du carnet de suivi"><i class="toolbar-suivi toolbar-suivi-add"></i><span>PUBLIER</span></div>
 			    </div>
 	  		</div>
-	  		<div class="exit-carnet-button but-violet"  style="margin:0px 20px" ng-click="predicate = 'date'; reverse=!reverse">
-	  			<span style="margin-right:10px" tooltip-popup-delay='1000' tooltip-placement="right" tooltip="Triez les messages par ordre antéchronologique/chronologique" >Trier par date</span><span style="margin-bottom:3px" class="glyphicon glyphicon-th-list"></span><span class="glyphicon" ng-class="{'glyphicon-arrow-down' : !reverse, 'glyphicon-arrow-up' : reverse}" style="margin-bottom:4px"></span>
+	  		<div class="exit-carnet-button but-violet"  style="margin:0px 20px" ng-click="predicate = 'date'; reverse=!reverse" title="Cliquez ici pour trier par ordre chronologique ou antéchronologique les messages de cet onglet">
+	  			<span style="margin-right:10px" >Trier par date</span><span style="margin-bottom:3px" class="glyphicon glyphicon-th-list"></span><span class="glyphicon" ng-class="{'glyphicon-arrow-down' : !reverse, 'glyphicon-arrow-up' : reverse}" style="margin-bottom:4px"></span>
 	  		</div>
     		<div class="entree" ng-repeat="entree in tab.entrees | orderBy:predicate:reverse">
-					<div class="avatar">
+					<div class="avatar" style="opacity:1">
 						<img no-image ng-src="{{entree.owner.avatar}}" style="width: 100%;background-color: {{entree.owner.avatar_color}}">					
 					</div>
 					<div class="message" style="background-color: {{entree.owner.back_color}}" >
@@ -35,8 +36,8 @@
 							<div class="message-info-date">
 								<span>{{entree.date|date:'EEEE d MMMM yyyy - H:mm'}}</span>								
 							</div>
-							<div class="message-edit"><i ng-click="editEntree(tab, entree)" class="toolbar-suivi toolbar-suivi-edit"></i></div> 
-							<div class="message-corbeille"><i ng-click="open(tab, entree, 'entree')" class="toolbar-suivi toolbar-suivi-corbeille"></i></div>
+							<div title="Cliquez ici pour éditer ce message" class="message-edit"><i ng-click="editEntree(tab, entree)" class="toolbar-suivi toolbar-suivi-edit"></i></div> 
+							<div title="Cliquez ici pour supprimer ce message" class="message-corbeille"><i ng-click="open(tab, entree, 'entree')" class="toolbar-suivi toolbar-suivi-corbeille"></i></div>
 						</div>
 						<div ta-bind ng-model="entree.contenu" class="message-text"></div>
 						<div class="docs-form" style ="background-color:transparent; border:none; padding-right:0;" ng-show="entree.docs != null && entree.docs.length > 0"><div ng-repeat="docEntree in entree.docs" class="doc-form" style="padding:10px; margin:0;background-color: {{entree.owner.avatar_color}}"><strong><a href="" target="_self" download="doc.nom" style="color:inherit; cursor: pointer" title="Cliquez pour télécherger le document" ng-click="getDoc(docEntree, tab.carnet_id)">{{docEntree.nom}}</a></strong></div></div>
@@ -55,10 +56,10 @@
 	        <div class="modal-footer">
 		        <div>
 					<div class="exit-carnet-button" ng-click="ok()">
-						<span>Oui</span>
+						<span title="Cliquez ici si vous êtes sûr de vouloir le supprimer">Oui</span>
 					</div>
 					<div class="exit-carnet-button" ng-click="cancel()">
-						<span>Non</span>
+						<span title="Cliquez ici si vous ne souhaitez plus le supprimer et revenir au carnet de suivi">Non</span>
 					</div>			
 				</div>
 	        </div>

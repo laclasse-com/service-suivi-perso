@@ -64,7 +64,7 @@ angular.module('suiviApp')
     });
 
     $scope.update = function(user){
-      console.log(user);
+      // console.log(user);
       if (user.admin && !user.w) {user.w=true;};
       if (user.w && !user.r) {user.r=true;};
       if (_.last(user.action) != 'add' && _.last(user.action) != 'update') {
@@ -253,7 +253,6 @@ angular.module('suiviApp')
 
       modalInstance.result.then(function () {
         var generateTabs = _.filter($rootScope.tabs, function(tab){ return tab.check == true; });
-        console.log(generateTabs);
         $scope.generateUrl(generateTabs)       
       });
     };

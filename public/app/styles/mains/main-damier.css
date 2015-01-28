@@ -5,12 +5,12 @@
 .damier{
 	position: relative;
 	float: left;
-	color:#505050;
+	color:#fff;
 	opacity: 0.8;
 }
 
 .damier-add{
-	opacity: 0.5;
+	opacity: 0.8;
 }
 
 .damier:hover{
@@ -29,4 +29,8 @@
 
 .hide-damier:hover{
 	opacity: 0.2;
+}
+
+.cursor{
+	cursor: pointer;
 }

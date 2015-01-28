@@ -1,20 +1,24 @@
 <div class="row rights-carnet" style="height:100%">
-	<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+	<div ng-class="{'col-xs-6 col-sm-6 col-md-6 col-lg-6': publique==null, 'col-xs-5 col-sm-5 col-md-5 col-lg-5': publique!=null}">
 		<h4 class="title-rights" style="margin-bottom:20px">Adresse URL publique du carnet</h4>
 	</div>
-	<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5" style="margin: 40px 0 20px 0; overflow: hidden">
-		<div ng-if="publique==null" class="exit-carnet-button" ng-click="open()">
-			<span>Générer l'URL</span>
+	<div ng-class="{'col-xs-6 col-sm-6 col-md-6 col-lg-6': publique==null, 'col-xs-5 col-sm-5 col-md-5 col-lg-5': publique!=null}" style="margin-top: 40px; margin-bottom:20px; overflow: hidden">
+		<div class="row" style="margin-left:40px">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<div ng-if="publique==null" class="exit-carnet-button" ng-click="open()" title="Cliquez ici pour générer une URL publique permettant de visionner les onglets choisis publiquement">
+					<span>Générer l'URL</span>
+				</div>							
+			</div>
 		</div>
 		<strong><span ng-if="publique"> {{publique}}</span></strong>
 	</div>
-	<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="margin: 40px 0 20px 0">
-		<div ng-if="publique" class="exit-carnet-button" clip-copy="publique">
+	<div ng-if="publique" class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="margin: 40px 0 20px 0">
+		<div class="exit-carnet-button" clip-copy="publique" title="Cliquez ici pour copier l'URL dans votre presse papier">
 			<span>Copier l'URL</span>
 		</div>
 	</div>
-	<div class="col-xs-2 col-sm-2 col-md-2 col-md-offset-10 col-lg-2 col-lg-offset-10">
-		<div ng-if="publique" class="exit-carnet-button" ng-click="deleteUrl()">
+	<div ng-if="publique" class="col-xs-2 col-sm-2 col-md-2 col-md-offset-10 col-lg-2 col-lg-offset-10">
+		<div class="exit-carnet-button" ng-click="deleteUrl()" title="Cliquez ici pour supprimer l'URL publique de ce carnet de suivi">
 			<span>Supprimer l'URL</span>
 		</div>
 	</div>
@@ -69,10 +73,10 @@
 	</div>
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<div class="button-rights">
-			<div class="exit-carnet-button" ng-click="cancel()">
-				<span>annuler</span>
+			<div class="exit-carnet-button" ng-click="cancel()" title="Cliquez ici pour annuler la modification des droits du carnet et revenir au carnet de suivi">
+				<span>Revenir au carnet</span>
 			</div>
-			<div class="exit-carnet-button" ng-click="save()">
+			<div class="exit-carnet-button" ng-click="save()" title="Cliquez ici pour enregistrer la modification des droits du carnet et revenir au carnet de suivi">
 				<span>enregistrer les modifications</span>
 			</div>			
 		</div>
@@ -83,22 +87,23 @@
 	            <h3 class="modal-title">Génération de l'URL publique du suivi</h3>
 	        </div>
 	        <div class="modal-body">
-	        	<h4> Choisissez les onglets que vous souhaitez rendre publique </h4>
+	        	<div class="text-danger"><strong>Un adresse publique pour ce carnet permet de voir les données du carnet, pour les onglets choisis, sans authentification. Veuillez à bien choisir ce que vous souhaitez montrer sur ce carnet de suivi.</strong></div>
+	        	<h4> Choisissez les onglets que vous souhaitez rendre public </h4>
 	            <div class="exit-carnet">
-	            	<button type="button" class="exit-carnet-button-pdf" ng-class="{active: allChecked()}" ng-click="checkAllOrNot()" btn-checkbox >
+	            	<button type="button" class="exit-carnet-button-pdf" ng-class="{active: allChecked()}" ng-click="checkAllOrNot()" btn-checkbox title="Cliquez ici pour sélectionner ou désélectionner tous les onglets du carnet de suivi">
 				        tout sélectionner/désélectionner
 				    </button>
-	            	<button type="button" ng-repeat="tab in tabs" class="exit-carnet-button-pdf" ng-model="tab.check" btn-checkbox >
+	            	<button type="button" ng-repeat="tab in tabs" class="exit-carnet-button-pdf" ng-model="tab.check" btn-checkbox title="Cliquez ici pour ajouter l'onglet '{{tab.nom}}' dans la génération de l'URL publique">
 				        {{tab.nom}}
 				    </button>
 	            </div>
 	        </div>
 	        <div class="modal-footer">
 		        <div>
-					<div popover="Il faut au moins un onglet selectionné pour générer un pdf" popover-placement="bottom" popover-trigger="click" class="exit-carnet-button" ng-click="ok()">
+					<div popover="Il faut au moins un onglet selectionné pour générer l'URL publique" popover-placement="bottom" popover-trigger="click" class="exit-carnet-button" ng-click="ok()" title="Cliquez ici pour générer l'URL publique de ce carnet de suivi">
 						<span>Générer l'URL</span>
 					</div>
-					<div class="exit-carnet-button" ng-click="cancel()">
+					<div class="exit-carnet-button" ng-click="cancel()" title="Cliquez ici pour ne pas générer l'URL publique et revenir à la gestion des droits">
 						<span>Annuler</span>
 					</div>			
 				</div>

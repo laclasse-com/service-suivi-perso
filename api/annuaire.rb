@@ -62,7 +62,8 @@ class AnnuaireApi < Grape::API
   get '/classes' do
     response = $current_user[:user_detailed]
     if response["error"].nil?
-      response["classes"]
+      classes = response["classes"].sort_by { |classe| [classe["etablissement_nom"], classe["classe_libelle"]]}
+      classes.reverse
     else 
       response["error"]
     end

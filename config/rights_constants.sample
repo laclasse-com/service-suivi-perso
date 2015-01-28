@@ -8,7 +8,7 @@ COEFF = {
   "PROF_ETB" => "1",
   "PAR_ETB" => "0",
   "ELV_ETB" => "0",
-  "" => "0"
+  "" => "-1"
 }
 
 ROLES = {

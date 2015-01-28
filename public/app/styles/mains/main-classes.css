@@ -20,6 +20,7 @@
 
 
 .classe-name, .college-name {
+	color: #fff;
 	position: absolute;
    	width: 100%;
     text-align: center;
@@ -38,7 +39,8 @@
 	top: 0.5em;
 	left: 0;
 	font-family: "Futura Bold";
-	font-size:5em;
+	font-size:25px;
+	padding: 5px;
 	font-weight: bold;
 }
 
