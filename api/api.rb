@@ -15,6 +15,7 @@ before do
 end
 
 resource(:annuaire) { mount AnnuaireApi }
+resource(:docs) { mount DocsApi }
 resource(:carnets) { mount CarnetsApi }
 resource(:onglets) { mount OngletsApi }
 resource(:entrees) { mount EntreesApi }

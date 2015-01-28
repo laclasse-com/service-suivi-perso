@@ -1,6 +1,9 @@
 puts "loading api/annuaire"
 require __DIR__('annuaire')
 
+puts "loading api/docs"
+require __DIR__('docs')
+
 puts "loading api/carnets"
 require __DIR__('carnets')
 

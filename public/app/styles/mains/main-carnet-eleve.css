@@ -225,3 +225,37 @@
 .but-jaune{
 	background-color: rgba(232, 194, 84, 0.5);
 }
+
+.dropdown-menu {
+	padding: 3px;
+}
+
+
+.treecontrol-container {
+    max-height: 10em;
+    overflow: auto;
+    background-color: #fff;
+    float: left;
+	width: 100%;
+}
+
+.attached-document {
+	float: left;
+	border: 1px solid #aaa;
+	background-color: #999;
+	margin: 3px;
+	padding: 5px;
+}
+
+.attached-document a {
+	color: #fff;
+}
+
+/* directive cartable */
+.cartable { padding-left: 0; }
+.cartable .cartable li { padding-left: 1.5em; }
+.cartable .glyphicon-folder-close { cursor: pointer; }
+.cartable .disabled { color: #aaa; }
+.cartable .disabled button.from-docs { display: none; }
+.cartable button.from-ct { display: none; }
+.cartable .disabled button.from-ct { display: inline; }

@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('CarnetCtrl', ['$rootScope', '$scope', '$stateParams', '$modal', 'Onglets', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser', 'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'LACLASSE_PATH', 'APP_PATH', 'Rights', '$state', 'Profil', '$window', '$upload', '$http', function($rootScope, $scope, $stateParams, $modal, Onglets, Entrees, Carnets, Annuaire, CurrentUser, AVATAR_DEFAULT, AVATAR_M, AVATAR_F, LACLASSE_PATH, APP_PATH, Rights, $state, Profil, $window, $upload, $http) {
+.controller('CarnetCtrl', ['$rootScope', '$scope', '$stateParams', '$modal', 'Onglets', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser', 'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'LACLASSE_PATH', 'APP_PATH', 'Rights', '$state', 'Profil', '$window', '$upload', '$http', '$timeout', 'textAngularManager', function($rootScope, $scope, $stateParams, $modal, Onglets, Entrees, Carnets, Annuaire, CurrentUser, AVATAR_DEFAULT, AVATAR_M, AVATAR_F, LACLASSE_PATH, APP_PATH, Rights, $state, Profil, $window, $upload, $http, $timeout, textAngularManager) {
 
   
   Profil.initRights($stateParams.id).promise.then(function(){
@@ -35,7 +35,7 @@ angular.module('suiviApp')
     }
 
     Onglets.get({uid: $stateParams.id}, function(reponse){
-      console.log(reponse);
+      // console.log(reponse);
       if (reponse.error == undefined) {
         var entrees = []
         if (reponse.onglets[0]!=undefined) {entrees = reponse.onglets[0].entrees; $window.sessionStorage.setItem("id", reponse.onglets[0].carnet_id);};
@@ -172,24 +172,33 @@ angular.module('suiviApp')
                 entree.id = reponse.id;
                 entree.owner.avatar = LACLASSE_PATH + '/' + entree.owner.avatar;
                 if ($rootScope.docs.length > 0) {
-                  $upload.upload({
-                    url: APP_PATH + '/api/entrees/upload', //upload.php script, node.js route, or servlet url
-                    method: 'POST',
-                    // headers: {'Cookie': {suivi_api: JSON.stringify($cookies['suivi_api'])}},
-                    withCredentials: true,
-                    data: {id_carnet: tab.carnet_id, id_entree: entree.id },
-                    file: $rootScope.docs[0].file, // or list of files ($files) for html5 only
-                    //fileName: 'doc.jpg' or ['$window.sessionStorage.getItem("prenom").jpg', '2.jpg', ...] // to modify the name of the file(s)
-                    // customize file formData name ('Content-Disposition'), server side file variable name. 
-                    //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file' 
-                    // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
-                    //formDataAppender: function(formData, key, val){}
-                  }).success(function(data, status, headers, config) {
-                    entree.docs = data.docs;              
-                    t.entrees.push(entree);
-                    t.htmlcontent = "";
-                    $rootScope.docs = [];
-                  });
+                  if($rootScope.docs[0].cartable){
+                    Entrees.postDoc({id_carnet: tab.carnet_id, id_entree: entree.id, file: $rootScope.docs[0].file}).$promise.then(function(data){
+                      entree.docs = data.docs;              
+                      t.entrees.push(entree);
+                      t.htmlcontent = "";
+                      $rootScope.docs = [];
+                    });
+                  } else {
+                    $upload.upload({
+                      url: APP_PATH + '/api/entrees/upload', //upload.php script, node.js route, or servlet url
+                      method: 'POST',
+                      // headers: {'Cookie': {suivi_api: JSON.stringify($cookies['suivi_api'])}},
+                      withCredentials: true,
+                      data: {id_carnet: tab.carnet_id, id_entree: entree.id },
+                      file: $rootScope.docs[0].file, // or list of files ($files) for html5 only
+                      //fileName: 'doc.jpg' or ['$window.sessionStorage.getItem("prenom").jpg', '2.jpg', ...] // to modify the name of the file(s)
+                      // customize file formData name ('Content-Disposition'), server side file variable name. 
+                      //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file' 
+                      // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
+                      //formDataAppender: function(formData, key, val){}
+                    }).success(function(data, status, headers, config) {
+                      entree.docs = data.docs;              
+                      t.entrees.push(entree);
+                      t.htmlcontent = "";
+                      $rootScope.docs = [];
+                    });                    
+                  };
                 } else {
                   t.entrees.push(entree);
                   t.htmlcontent = "";
@@ -206,29 +215,39 @@ angular.module('suiviApp')
                 if (e.id == t.modifEntree) {
                   e.contenu = t.htmlcontent;
                   e.owner.avatar = LACLASSE_PATH + '/' + CurrentUser.get().avatar;
-                  if ($rootScope.docs.length > 0) {
-                    $upload.upload({
-                      url: APP_PATH + '/api/entrees/upload', //upload.php script, node.js route, or servlet url
-                      method: 'POST',
-                      // headers: {'Cookie': {suivi_api: JSON.stringify($cookies['suivi_api'])}},
-                      withCredentials: true,
-                      data: {id_carnet: tab.carnet_id, id_entree: e.id },
-                      file: $rootScope.docs[0].file, // or list of files ($files) for html5 only
-                      //fileName: 'doc.jpg' or ['$window.sessionStorage.getItem("prenom").jpg', '2.jpg', ...] // to modify the name of the file(s)
-                      // customize file formData name ('Content-Disposition'), server side file variable name. 
-                      //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file' 
-                      // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
-                      //formDataAppender: function(formData, key, val){}
-                    }).success(function(data, status, headers, config) {
-                      e.docs = data.docs;
-                      t.modifEntree = null;
-                      t.htmlcontent = "";
-                      $rootScope.docs = [];
-                    });                     
+                  if ($rootScope.docs.length > 0 && $rootScope.docs[0].md5 == null ) {
+                    if($rootScope.docs[0].cartable){
+                      Entrees.postDoc({id_carnet: tab.carnet_id, id_entree: e.id, file: $rootScope.docs[0].file}).$promise.then(function(data){
+                        e.docs = data.docs;
+                        t.modifEntree = null;
+                        t.htmlcontent = "";
+                        $rootScope.docs = [];
+                      });
+                    } else {
+                      $upload.upload({
+                        url: APP_PATH + '/api/entrees/upload', //upload.php script, node.js route, or servlet url
+                        method: 'POST',
+                        // headers: {'Cookie': {suivi_api: JSON.stringify($cookies['suivi_api'])}},
+                        withCredentials: true,
+                        data: {id_carnet: tab.carnet_id, id_entree: e.id },
+                        file: $rootScope.docs[0].file, // or list of files ($files) for html5 only
+                        //fileName: 'doc.jpg' or ['$window.sessionStorage.getItem("prenom").jpg', '2.jpg', ...] // to modify the name of the file(s)
+                        // customize file formData name ('Content-Disposition'), server side file variable name. 
+                        //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file' 
+                        // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
+                        //formDataAppender: function(formData, key, val){}
+                      }).success(function(data, status, headers, config) {
+                        e.docs = data.docs;
+                        t.modifEntree = null;
+                        t.htmlcontent = "";
+                        $rootScope.docs = [];
+                      });            
+                    };         
                   }else {
-                    e.docs = [];
+                    e.docs = $rootScope.docs;
                     t.modifEntree = null;
                     t.htmlcontent = "";
+                    $rootScope.docs = [];
                   };
                 };
               });
@@ -243,11 +262,16 @@ angular.module('suiviApp')
         alert("vous ne pouvez pas editer les entrées qui ne vous appartiennent pas !")
         return false;
       }
+      var editorScope = textAngularManager.retrieveEditor('text_'+tab.id).scope;
+      $timeout(function(){
+        editorScope.displayElements.text.trigger('focus');
+      });
       _.each($scope.tabs, function(t){
         if (t.id == tab.id) {
           t.htmlcontent = entree.contenu;
           t.modifEntree = entree.id;
           $rootScope.docs = entree.docs;
+          // console.log($rootScope.docs);
         };
       });
     }

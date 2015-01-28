@@ -3,23 +3,51 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('UploadTextAngularCtrl',['$rootScope', '$modalInstance', '$scope', 'UPLOAD_SIZE', 'APP_PATH',
-  function($rootScope, $modalInstance, $scope, UPLOAD_SIZE, APP_PATH) {
-  	if ($rootScope.docs.length > 0) {alert("vous ne pouvez uploader qu'un seul document");$modalInstance.close(); };
-  	$scope.document={};
+.controller('UploadTextAngularCtrl',['$rootScope', '$modalInstance', '$scope', 'UPLOAD_SIZE', 'APP_PATH', 'Documents',
+  function($rootScope, $modalInstance, $scope, UPLOAD_SIZE, APP_PATH, Documents) {
+
+  	$scope.cartable = {};
+	$scope.cartable.expandedNodes = [];
+	$scope.treeOptions = {
+		dirSelectable: false
+	};
+
+  	$rootScope.document={nom: null, md5: null, file: null, cartable: false};
   	$scope.upload_size = false;
   	$scope.upload = function($files){
   		if ($files[0].size <= UPLOAD_SIZE) {
-  			$scope.document = $files[0];
+  			$rootScope.document.file = $files[0];
+  			$rootScope.document.nom = $files[0].name;
+  			$rootScope.document.cartable = false;
   			$scope.upload_size = true;
+  			$files = null;
   		} else {
   			$scope.upload_size = false;
   			alert("La taille du fichier ne doit pas dépasser 25Mo");
   		}
   	}
 
+  	var dead_Documents = function() {
+		$scope.erreurs.push( { message: "Application Documents non disponible" } );
+		$scope.faulty_docs_app = true;
+	};
+
+  	Documents.list_files()
+	.success( function ( response ) {
+	   if ( _(response.error).isEmpty() && _(response).has( 'files' ) ) {
+	   $scope.cartable = response;
+	   $scope.cartable.files = _( response.files ).reject( function( file ) {
+           return _(file).has( 'phash' );
+       } ); //.rest();
+	   $scope.cartable.expandedNodes = [];
+	   } else {
+	   dead_Documents();
+	   }
+	} )
+	.error( dead_Documents );
+
     $scope.valider = function() {
-    	if ($scope.upload_size) {
+    	if ($scope.upload_size || $rootScope.document.cartable) {
 	    	// $upload.upload({
 		    //     url: APP_PATH + '/api/entrees/upload', //upload.php script, node.js route, or servlet url
 		    //     method: 'POST',
@@ -34,7 +62,7 @@ angular.module('suiviApp')
 		    //     //formDataAppender: function(formData, key, val){}
 		    // }).success(function(data, status, headers, config) {
 		        // file is uploaded successfully
-		        $rootScope.docs.push({nom: $scope.document.name, md5: null, file: $scope.document });
+		        $rootScope.docs.push($rootScope.document);
 		        // console.log(data);
 		        // if (data['envoye'] != undefined && !_.isEmpty(data['envoye'])) {
 		        //   $rootScope.resultats.success = data['envoye']

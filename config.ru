@@ -9,8 +9,8 @@ use Rack::Rewrite do
   rewrite %r{/.*/(app)/(.*)}, '/$1/$2'
 end
 
-require 'lib/helpers/session'
-Laclasse::Helpers::Session.configure_rake_session self
+require 'lib/helpers/rack'
+Laclasse::Helpers::Rack.configure_rake self
                            
 use OmniAuth::Builder do
   configure do |config|

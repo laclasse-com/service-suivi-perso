@@ -3,19 +3,25 @@
 </div>
 <div class="modal-body">
     <div>
-		<div class="exit-carnet-button" ng-click="uploadFile()">
-			<input type="file" id="inputFile" ng-file-select="upload($files)" ng-hide="false">
+     	<div class="row">
+			<div class="attached-document" ng-if="document.nom != null">
+			    <a href="">{{document.nom}}</a>
+			</div>
+	    </div>
+		<div dropdown class="dropdown">
+			<button dropdown-toggle class="btn btn-sm btn-default dropdown-toggle pull-right" role="button" data-toggle="dropdown" data-target="#" href=""
+				data-ng-class="{'disabled': faulty_docs_app}">
+			    <span class="glyphicon glyphicon-plus-sign"></span> Ajouter une ressource
+			</button>
+			<div dropdown-menu class="dropdown-menu" role="menu" ng-click="$event.stopPropagation()">
+			    <div cartable
+				 class="treecontrol-container"
+				 data-racine="cartable.files"
+				>
+			    </div>
+			    <input type="file" id="inputFile" ng-file-select="upload($files)" ng-hide="false">
+			</div>
 		</div>
-		<div class="exit-carnet-button" ng-click="UploadCartable()">
-			<span>Insérer un fichier de mon cartable</span>
-		</div>			
-	</div>
-	<div cartable
-	     class="treecontrol-container"
-	     data-racine="cartable.files"
-	     data-target="devoir"
-	     data-regroupement="selected_regroupement"
-	     data-add-callback="consume_Documents_response_callback">
 	</div>
 </div>
 <div class="modal-footer">

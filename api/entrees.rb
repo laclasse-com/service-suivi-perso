@@ -124,6 +124,32 @@ class EntreesApi < Grape::API
         end
     end
 
+    desc "Upload document pour un message de suivi"
+    params {
+        requires :id_carnet, type: Integer
+        requires :id_entree, type: Integer
+        requires :file, type: String
+    }
+    post '/upload/documents' do
+        begin
+            #envoi de la requete au documents pour créé le fichier dans l'espace perso de stockage du suivi
+            reponse = Laclasse::CrossAppSender.post_raw_request_signed(:service_docs_suivi, "copy", {}, {uid_current_user: $current_user[:info].uid, id_carnet: params[:id_carnet], target: params[:file]}, {"rack.session" => cookies['rack.session']})
+
+            #s'il n'y a pas d'erreur on insère dans la BDD les coordonnées du docs.
+            if reponse["error"].nil?
+                doc = Doc.new nil, reponse["nom"], reponse["md5"], params[:id_entree]
+                doc.create
+                {docs:[{id: doc.id, nom: doc.nom, md5: doc.url}]}            
+            else
+                error!("Impossible d'uploader le document", 404)
+            end
+        rescue Exception => e
+            LOGGER.error e.message
+            LOGGER.error e.backtrace[0..10].to_s
+            error!("Impossible d'uploader le document", 404)
+        end
+    end
+
     desc "suppression d'un document d'une entrée"
     params {
         requires :id, type: Integer, desc: "id du document"
@@ -136,7 +162,7 @@ class EntreesApi < Grape::API
             doc.read
 
             #On envoie la requete pour la suppression du fichier dans l'espace de stockage du suivi dans les documents
-            reponse = Laclasse::CrossAppSender.put_request_signed(:service_docs_suivi, params[:id_carnet].to_s+'/'+URI.encode(doc.nom, /\W/), {}, {md5: doc.url}, {"rack.session" => cookies['rack.session']})
+            reponse = Laclasse::CrossAppSender.put_request_signed(:service_docs_suivi, params[:id_carnet].to_s+'/'+doc.url, {}, {nom: doc.nom}, {"rack.session" => cookies['rack.session']})
 
             #Si la suppression s'est déroulé correctement on supprime les coordonnées dans la bdd
             if reponse['error'].nil?
@@ -163,7 +189,7 @@ class EntreesApi < Grape::API
             doc.read
 
             #on envoi la requete pour récupérer le fichier qui se trouve dans l'espace de stockage du suivi dans les documents
-            reponse = Laclasse::CrossAppSender.send_request_signed(:service_docs_suivi, params[:id_carnet].to_s+'/'+URI.encode(doc.nom, /\W/), {md5: doc.url}, {"rack.session" => cookies['rack.session']})
+            reponse = Laclasse::CrossAppSender.send_request_signed(:service_docs_suivi, params[:id_carnet].to_s+'/'+doc.url, {nom: doc.nom}, {"rack.session" => cookies['rack.session']})
 
             #on retourne le contenu sous forme de blob pour le client.
             if reponse['error'].nil?
