@@ -1,5 +1,7 @@
 require 'sinatra'
 require "sinatra/reloader" if ENV[ 'RACK_ENV' ] == 'development'
+require 'lib/helpers/authentication'
+require 'lib/cross_app/sender'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
@@ -20,17 +22,18 @@ class SinatraApp < Sinatra::Base
   end
 
   helpers AuthenticationHelpers
+  helpers Laclasse::Helpers::Authentication
   include CarnetsLib
 
   # Routes nécessitant une authentification
   ['/?', '/login' ].each { |route| 
     before APP_PATH + route do 
-      login! env['REQUEST_PATH'] unless is_logged?
+      login! env['REQUEST_PATH'] unless logged?
     end
   }
 
   get APP_PATH + '/' do
-    if is_logged?
+    if logged?
       erb :app
     else
       erb "<div class='jumbotron'>
@@ -63,7 +66,7 @@ class SinatraApp < Sinatra::Base
   end
 
   get APP_PATH + '/auth/:provider/callback' do
-    init_session( request.env )
+    $current_user = init_session( request.env )
     redirect params[:url] if params[:url] !=  env['rack.url_scheme'] + "://" + env['HTTP_HOST'] + APP_PATH + '/'
     redirect APP_PATH + '/'
     #erb "<h1>Connected !</h1><pre>#{request.env['omniauth.auth'].to_html}</pre><hr>"

@@ -15,3 +15,6 @@ require __DIR__('onglets')
 
 puts "loading model/saisies"
 require __DIR__('saisies')
+
+puts "loading model/docs"
+require __DIR__('docs')

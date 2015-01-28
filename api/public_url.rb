@@ -13,7 +13,7 @@ class PublicUrlApi < Grape::API
   }
   post '/carnets/:uid_elv' do
       begin        
-        response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
+        response = $current_user[:user_detailed]
         carnet = Carnet.new(nil, params[:uid_elv])
         carnet.read
         #verification des droits coté backend
@@ -37,8 +37,8 @@ class PublicUrlApi < Grape::API
             onglet.read
             onglet.update nil, nil, url_pub
           end
-          {url_pub: prefix_url + APP_PATH + '/public/' + url_pub} #TODO remettre pour la prod
-          # {url_pub: 'http://localhost:9292' + APP_PATH + '/public/' + url_pub}
+          # {url_pub: prefix_url + APP_PATH + '/public/' + url_pub} #TODO remettre pour la prod
+          {url_pub: 'http://localhost:9292' + APP_PATH + '/public/' + url_pub}
         else
           error!("Vous n'êtes pas autorisé pour cette ressource", 401)
         end
@@ -55,7 +55,7 @@ class PublicUrlApi < Grape::API
   }
   delete '/carnets/:uid_elv' do
     begin     
-      response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})   
+      response = $current_user[:user_detailed]   
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
       #verification des droits coté backend

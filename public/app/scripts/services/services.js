@@ -21,6 +21,7 @@ angular.module('suiviApp')
     return rights;
   }
   this.verifRights = function(carnet, uid_elv, right){
+    // console.log(rights);
     if (currentUser == null) {$state.go( 'erreur', {code: '404', message: "Utilisateur courant non trouvé"}, { reload: true, inherit: true, notify: true } );}
     else if (currentUser.error != undefined) {$state.go( 'erreur', {code: '404', message: currentUser.error}, { reload: true, inherit: true, notify: true } );};
     if (carnet.error != undefined) {$state.go( 'erreur', {code: '404', message: carnet.error}, { reload: true, inherit: true, notify: true } );};

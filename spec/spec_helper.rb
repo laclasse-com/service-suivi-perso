@@ -126,7 +126,7 @@ end
 module AuthenticationHelpers
   module_function
 
-  def is_logged?
+  def logged?
     true
   end
 

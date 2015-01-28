@@ -46,11 +46,14 @@ angular.module('suiviApp')
 	return $resource( APP_PATH + '/api/entrees/', {id_onglet: '@id_onglet'}, {
 		'get':    {method:'GET'},
 		'post':   {method:'POST', 
-				params: {id_onglet: '@id_onglet', carnet_id: '@carnet_id', uid: '@uid', avatar: '@avatar', avatar_color: '@avatar_color', back_color: '@back_color', infos: '@infos', contenu: '@contenu'}},
+				params: {id_onglet: '@id_onglet', carnet_id: '@carnet_id', uid: '@uid', avatar: '@avatar', avatar_color: '@avatar_color', back_color: '@back_color', infos: '@infos', contenu: '@contenu', docs: '@docs'}},
 		'query':  {method:'GET', isArray:true},
 		'update': {method:'PUT', url: APP_PATH + '/api/entrees/:id', params: {id: '@id', contenu: '@contenu', avatar: '@avatar'}},
 		'update_avatar': {method:'PUT', url: APP_PATH + '/api/entrees/:uid/avatar', params: {uid: '@uid', avatar: '@avatar'}},
-		'delete': {method:'DELETE', url: APP_PATH + '/api/entrees/:id', params: {id: '@id'}}
+		'delete': {method:'DELETE', url: APP_PATH + '/api/entrees/:id', params: {id: '@id'}},
+		'deleteDoc': {method:'DELETE', url: APP_PATH + '/api/entrees/delete/docs/:id', params: {id: '@id', id_carnet: '@id_carnet'}},
+		'getDoc': {method:'GET', responseType :'blob', url: APP_PATH + '/api/entrees/docs/:id', params: {id: '@id', id_carnet: '@id_carnet'}},
+		'postDoc': {method:'POST', url: APP_PATH + '/api/entrees/upload/documents', params: {id_carnet: '@id_carnet', id_entree: '@id_entree', file: '@file'}}
 	});
 }])
 .factory('Rights', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
@@ -63,7 +66,7 @@ angular.module('suiviApp')
 		'carnets':  {method:'GET', isArray:false, url: APP_PATH + '/api/rights/carnets/:uid_elv', params: {uid_elv: '@uid_elv', evignal: '@evignal'}},
 		'users':  {method:'GET', isArray:false, url: APP_PATH + '/api/rights/users/:uid', params: {uid: '@uid', uid_elv: '@uid_elv', carnet_id: '@carnet_id'}},
 		'update': {method:'PUT', url: APP_PATH + '/api/rights/:id', params: {id: '@id', read: '@read', write: '@write', admin: '@admin'}},
-		'delete': {method:'DELETE', url: APP_PATH + '/api/rights/:id', params: {id: '@id'}}
+		'delete': {method:'DELETE', url: APP_PATH + '/api/rights/:id', params: {id: '@id'}},
 	});
 }])
 .factory('Public', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
@@ -71,6 +74,12 @@ angular.module('suiviApp')
 		'get':    {method:'GET'},
 		'post': {method:'POST', url: APP_PATH + '/api/public/carnets/:uid_elv', params: {uid_elv: '@uid_elv', id_onglets: '@id_onglets'}},
 		'delete': {method:'DELETE', url: APP_PATH + '/api/public/carnets/:uid_elv', params: {uid_elv: '@uid_elv'}},
+	});
+}])
+.factory('Docs', ['$resource', 'DOCS_URL', function( $resource, DOCS_URL ) {
+	return $resource( DOCS_URL	 + '/api/suivi/', {id_carnet: '@id_carnet', md5: '@md5', nom: '@nom'}, {
+		'get':    {method:'GET'},
+		'post': {method:'POST',  params: {id_carnet: '@id_carnet', upload: '@upload'}},
 	});
 }]);
 

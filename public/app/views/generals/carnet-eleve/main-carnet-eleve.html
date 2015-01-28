@@ -14,7 +14,8 @@
     <div class="tab-content">
     	<div ng-show="tab.active"ng-repeat="tab in tabs">
 	  		<div style="margin:20px">
-			    <div text-angular ta-target-toolbars="{{tab.id}}" ng-model="tab.htmlcontent" class="text-angular-content" placeholder="publier un nouveau message dans le suivi de {{nameUser}}"></div>
+			    <div text-angular ta-target-toolbars="{{tab.id}}" name="text_{{tab.id}}" ng-model="tab.htmlcontent" class="text-angular-content" placeholder="publier un nouveau message dans le suivi de {{nameUser}}"></div>
+			    <div class="docs-form" ng-show="docs != null && docs.length > 0"><div ng-repeat="doc in docs" class="doc-form"><i title="Supprimer le document" class="toolbar-suivi toolbar-suivi-del" ng-click="deleteDoc(doc, tab.carnet_id)"></i><strong>{{doc.nom}}</strong></div></div>
 			    <div class="laclasse-toolbar-text-angular">
 						<div text-angular-toolbar class="toolbar" name="{{tab.id}}"></div>
 						<div class="publier" ng-click="addEntree(tab)" title="Cliquez ici pour publier votre message dans cet onglet du carnet de suivi"><i class="toolbar-suivi toolbar-suivi-add"></i><span>PUBLIER</span></div>
@@ -39,6 +40,7 @@
 							<div title="Cliquez ici pour supprimer ce message" class="message-corbeille"><i ng-click="open(tab, entree, 'entree')" class="toolbar-suivi toolbar-suivi-corbeille"></i></div>
 						</div>
 						<div ta-bind ng-model="entree.contenu" class="message-text"></div>
+						<div class="docs-form" style ="background-color:transparent; border:none; padding-right:0;" ng-show="entree.docs != null && entree.docs.length > 0"><div ng-repeat="docEntree in entree.docs" class="doc-form" style="padding:10px; margin:0;background-color: {{entree.owner.avatar_color}}"><strong><a href="" target="_self" download="doc.nom" style="color:inherit; cursor: pointer" title="Cliquez pour télécherger le document" ng-click="getDoc(docEntree, tab.carnet_id)">{{docEntree.nom}}</a></strong></div></div>
 					</div>
 	    		</div>
 	    	</div>

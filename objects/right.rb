@@ -102,4 +102,10 @@ class Right
       raise MSG[LANG.to_sym][:error][crud].sub("$1", "update").sub("$2", "Right").sub("$3", "la suppression d'un droit")
     end
   end
+
+  def exist?
+    right = DroitsSpecifiques[:id => @id] if !@id.nil?
+    right = DroitsSpecifiques[:uid => @uid, :carnets_id => @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right.nil? ? false : true
+  end
 end

@@ -1,6 +1,5 @@
 #coding: utf-8
 
-require 'lib/cross_app_sender'
 require 'logger'
 
 # API d'interfaçage avec l'annuaire
@@ -12,7 +11,7 @@ class AnnuaireApi < Grape::API
 
   desc "retourne le profile actif de l'utilisateur courant"
   get '/currentuser' do
-    response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
+    response = $current_user[:user_detailed]
     hight_role = ""
     response["roles"].each do |role|
       if role["etablissement_code_uai"] == response["profil_actif"]["etablissement_code_uai"] && COEFF[hight_role] < COEFF[role["role_id"]]
@@ -61,7 +60,7 @@ class AnnuaireApi < Grape::API
 
   desc "retourne toutes les classes de l'utilisateur"
   get '/classes' do
-    response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
+    response = $current_user[:user_detailed]
     if response["error"].nil?
       classes = response["classes"].sort_by { |classe| [classe["etablissement_nom"], classe["classe_libelle"]]}
       classes.reverse
@@ -111,14 +110,12 @@ class AnnuaireApi < Grape::API
       end
       allUsers.concat(parents);
       allUsers.each do |user|
-        begin
           carnet = Carnet.new(nil, params[:uid_elv])
           carnet.read
           right = Right.new(nil, user["id_ent"], nil, nil, carnet.id)
-          right.select
-        rescue Exception => e
-          users.push user
-        end
+          if !right.exist?
+            users.push user
+          end
       end
       users
   end

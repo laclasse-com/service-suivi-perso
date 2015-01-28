@@ -18,7 +18,8 @@ gem 'rest-client'
 gem 'savon'
 gem 'nokogiri'
 gem 'rack-rewrite'
-gem 'laclasse-common', :git => 'https://github.com/laclasse-com/laclasse-common.git'
+gem 'laclasse-common', :git => 'https://github.com/laclasse-com/laclasse-common.git', :branch => 'develop'
+
 
 #Generation de pdf
 gem 'pdfkit'

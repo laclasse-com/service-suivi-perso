@@ -4,6 +4,7 @@
 angular.module('suiviApp', [
   'ui.router', 
   'ngResource', 
+  'ngCookies',
   'services.messages',
   'ui.bootstrap',
   'ui.sortable',
