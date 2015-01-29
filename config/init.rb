@@ -11,3 +11,5 @@ require __DIR__('rights_constants')
 
 puts "loading config/options"
 require __DIR__('options')
+
+require_relative './common'

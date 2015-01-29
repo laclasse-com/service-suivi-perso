@@ -19,7 +19,7 @@ end
 desc "Installing application"
 task :install do 
   # Adding config files from sample if not exist.
-  FileUtils.cp File.join(APP_ROOT, 'config', 'constants.sample'), File.join(APP_ROOT, 'config', 'constants.rb') if !File.exist? File.join(APP_ROOT, 'config', 'constants.rb') 
+  FileUtils.cp File.join(APP_ROOT, 'config', 'common.rb.sample'), File.join(APP_ROOT, 'config', 'common.rb') if !File.exist? File.join(APP_ROOT, 'config', 'common.rb') 
   FileUtils.cp File.join(APP_ROOT, 'config', 'database.sample'), File.join(APP_ROOT, 'config', 'database.rb') if !File.exist? File.join(APP_ROOT, 'config', 'database.rb') 
   FileUtils.cp File.join(APP_ROOT, 'config', 'cas_server.sample'), File.join(APP_ROOT, 'config', 'cas_server.rb') if !File.exist? File.join(APP_ROOT, 'config', 'cas_server.rb') 
 
