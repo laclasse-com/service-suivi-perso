@@ -39,10 +39,12 @@ module HtmlMessageGenerator
 	end
 
   def HtmlMessageGenerator.aside_public_carnet user
-    sexe_date = user["sexe"] == 'F' ? 'née le ' : 'né le '
-    date_naiss = Date.strptime(user['date_naissance'], "%Y-%m-%d").strftime("%d/%m/%Y")
-
-    avatar = URL_ENT+user["avatar"]
+    # sexe_date = user["sexe"] == 'F' ? 'née le ' : 'né le '
+    # date_naiss = Date.strptime(user['date_naissance'], "%Y-%m-%d").strftime("%d/%m/%Y")
+    avatar = "api/default_avatar/avatar_neutre.svg"
+    avatar = "api/default_avatar/avatar_feminin.svg" if user["sexe"] == "F"
+    avatar = "api/default_avatar/avatar_masculin.svg" if user["sexe"] == "M"
+    avatar = URL_ENT+avatar
     aside = "<div class='row carnet-eleve-contener'>"+
               "<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' >"+
                 "<div class='row ' style='display: table-row'>"+
@@ -56,14 +58,14 @@ module HtmlMessageGenerator
                       "<span >"+user["prenom"]+"</span>"+
                     "</div>"+
                     "<div class='eleve-info-lastname'>"+
-                      "<span >"+user["nom"]+"</span>"+
+                      "<span >"+user["nom"].split('').first+"."+"</span>"+
                     "</div>"+
                     "<div>"+
-                      "<span>"+user["classes"][0]["classe_libelle"]+" - "+user["classes"][0]["etablissement_nom"]+"</span>"+
+                      "<span>"+user["classes"][0]["etablissement_nom"]+"</span>"+
                     "</div>"+
-                    "<div>"+
-                      "<span>"+sexe_date+date_naiss+"</span>"+
-                    "</div>"+
+                    # "<div>"+
+                    #   "<span>"+sexe_date+date_naiss+"</span>"+
+                    # "</div>"+
                   "</div>"+
                 "</div>"+
               "</div>"+
@@ -102,15 +104,18 @@ module HtmlMessageGenerator
   def HtmlMessageGenerator.main_entrees_public_carnet entrees
     saisies =""
     entrees.each do |entree|
+      infos = entree[:owner][:infos].split(" ")
+      infos[1] = infos[1].split("").first.upcase
+      infos = infos.join(" ")
       date = entree[:date].strftime("%A %-d %B %Y - %k:%M")
       saisies += "<div class='entree'>"+
                   "<div class='avatar'>"+
-                    "<img src='"+URL_ENT+entree[:owner][:avatar]+"' style='width: 100%;background-color: "+entree[:owner][:avatar_color]+"'>"  +       
+                    "<img src='"+URL_ENT+"api/default_avatar/avatar_neutre.svg"+"' style='width: 100%;background-color: "+entree[:owner][:avatar_color]+"'>"  +       
                   "</div>"+
                   "<div class='message' style='background-color: "+entree[:owner][:back_color]+"' >"+
                     "<div class='message-info'>"+
                       "<div class='message-info-profil'>"+
-                        "<span style='vertica' ><strong>"+entree[:owner][:infos]+"</strong></span>"   +              
+                        "<span style='vertica' ><strong>"+infos+"</strong></span>"   +              
                       "</div>"+
                       "<div class='message-info-date'>"+
                         "<span>"+date+"</span> "+           

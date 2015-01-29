@@ -38,7 +38,7 @@ class PublicUrlApi < Grape::API
             onglet.update nil, nil, url_pub
           end
           # {url_pub: prefix_url + APP_PATH + '/public/' + url_pub} #TODO remettre pour la prod
-          {url_pub: 'http://localhost:9292' + APP_PATH + '/public/' + url_pub}
+          {url_pub: 'http://localhost:9393' + APP_PATH + '/public/' + url_pub}
         else
           error!("Vous n'êtes pas autorisé pour cette ressource", 401)
         end

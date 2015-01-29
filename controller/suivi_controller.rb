@@ -61,6 +61,7 @@ class SinatraApp < Sinatra::Base
           "</div>"+
         "</div>"
     rescue Exception => e
+      puts e.message
       erb :erreur
     end
   end
