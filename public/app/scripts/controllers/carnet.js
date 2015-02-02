@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('CarnetCtrl', ['$rootScope', '$scope', '$stateParams', '$modal', 'Onglets', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser', 'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'LACLASSE_PATH', 'APP_PATH', 'Rights', '$state', 'Profil', '$window', '$upload', '$http', '$timeout', 'textAngularManager', function($rootScope, $scope, $stateParams, $modal, Onglets, Entrees, Carnets, Annuaire, CurrentUser, AVATAR_DEFAULT, AVATAR_M, AVATAR_F, LACLASSE_PATH, APP_PATH, Rights, $state, Profil, $window, $upload, $http, $timeout, textAngularManager) {
+.controller('CarnetCtrl', ['$rootScope', '$scope', '$stateParams', '$modal', 'Onglets', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser', 'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'LACLASSE_PATH', 'APP_PATH', 'Rights', '$state', 'Profil', '$window', '$upload', '$http', '$timeout', 'textAngularManager', 'Notifications', function($rootScope, $scope, $stateParams, $modal, Onglets, Entrees, Carnets, Annuaire, CurrentUser, AVATAR_DEFAULT, AVATAR_M, AVATAR_F, LACLASSE_PATH, APP_PATH, Rights, $state, Profil, $window, $upload, $http, $timeout, textAngularManager, Notifications) {
 
   
   Profil.initRights($stateParams.id).promise.then(function(){
@@ -14,8 +14,10 @@ angular.module('suiviApp')
         if (doc.id!= null) {
           Entrees.deleteDoc({id: doc.id, id_carnet: id_carnet}).$promise.then(function(reponse){
             if (reponse.error != undefined) {
-              alert(reponse.error);
+              Notifications.add(reponse.error, "error");
               return false;
+            } else {
+              Notifications.add("le Document: "+doc.nom+", a bien été supprimé.", "success");
             };
           });
         };
@@ -56,7 +58,7 @@ angular.module('suiviApp')
         });
         $scope.nameUser = $window.sessionStorage.getItem("prenom") + " " + $window.sessionStorage.getItem("nom"); 
       } else{
-        alert(reponse.error);
+        Notifications.add(reponse.error, "error");
       };
     });
 
@@ -78,12 +80,12 @@ angular.module('suiviApp')
 
     $scope.changeNameTab = function(tab){
       if (CurrentUser.getRights().profil == "parent" || CurrentUser.getRights().profil == "élève" || CurrentUser.getRights().admin == 0) {
-        alert("vous n'êtes pas autorisé à modifier l'onglet !")
+        Notifications.add("vous n'êtes pas autorisé à modifier l'onglet !","warning");
         return false;
       }
       Onglets.update({id: tab.id, nom: tab.nom, ordre: tab.ordre}).$promise.then(function(reponse){
         if (reponse.error != undefined && reponse.error != null) {
-          alert(reponse.error);
+          Notifications.add(reponse.error, "error");
         } else {
           _.each($scope.tabs, function(t){
             if (t.id == tab.id) {
@@ -96,7 +98,7 @@ angular.module('suiviApp')
 
     $scope.addTab = function(){
       if (CurrentUser.getRights().profil == "parent" || CurrentUser.getRights().profil == "élève" || CurrentUser.getRights().admin == 0) {
-        alert("vous n'êtes pas autorisé à ajouter un onglet !")
+        Notifications.add("vous n'êtes pas autorisé à ajouter un onglet !","warning");
         return false;
       }
       var newTab = {
@@ -119,23 +121,25 @@ angular.module('suiviApp')
           newTab.owner = reponse.owner;
           $scope.activeTab(newTab);
           $scope.tabs.push(newTab);
-          $window.sessionStorage.setItem("id", reponse.carnet_id);            
+          $window.sessionStorage.setItem("id", reponse.carnet_id);  
+          Notifications.add("Un nouvel onglet a été ajouté", "success");    
         } else {
-          alert(reponse.error);
+          Notifications.add(reponse.error, "error");
         };
       });
     };
 
     $scope.removeTab = function(tab){
       if (CurrentUser.getRights().profil == "parent" || CurrentUser.getRights().profil == "élève" || CurrentUser.getRights().admin == 0) {
-        alert("vous n'êtes pas autorisé à supprimer l'onglet !")
+        Notifications.add("vous n'êtes pas autorisé à supprimer l'onglet !","warning");
         return false;
       }
       Onglets.delete({id: tab.id}).$promise.then(function(reponse){
         if (reponse.error != undefined && reponse.error != null) {
-          alert(reponse.error);
+          Notifications.add(reponse.error, "error");
         } else{
           $scope.tabs = _.reject($scope.tabs, function(t){
+            Notifications.add("l'onglet '"+tab.nom+"' a été supprimé", "success");
             return t.id == tab.id;
           });
         };
@@ -144,10 +148,10 @@ angular.module('suiviApp')
 
     $scope.addEntree = function(tab){
       if (CurrentUser.getRights().write == 0) {
-        alert("vous n'êtes pas autorisé à ajouter une entrée !")
+        Notifications.add("vous n'êtes pas autorisé à ajouter une entrée !","warning");
         return false;
       }
-      if (tab.htmlcontent.trim()=="") {alert("Vous devez obligatoirement avoir du texte dans votre message !");return false;};
+      if (tab.htmlcontent.trim()=="") {Notifications.add("Vous devez obligatoirement avoir du texte dans votre message !","warning");return false;};
       if (tab.modifEntree == null) {
         var owner = Annuaire.get_infos_of(CurrentUser.get(), $stateParams.classe_id);
         var entree = {
@@ -165,7 +169,7 @@ angular.module('suiviApp')
         };
         Entrees.post({id_onglet: tab.id, carnet_id: tab.carnet_id, uid: entree.owner.uid, avatar: entree.owner.avatar, avatar_color: entree.owner.avatar_color, back_color: entree.owner.back_color, infos: entree.owner.infos, contenu: entree.contenu, docs: entree.docs}).$promise.then(function(reponse){
           if (reponse.error != undefined && reponse.error != null) {
-            alert(reponse.error);
+            Notifications.add(reponse.error, "error");
           } else{
             _.each($scope.tabs, function(t){
               if (t.id == tab.id) {
@@ -174,10 +178,14 @@ angular.module('suiviApp')
                 if ($rootScope.docs.length > 0) {
                   if($rootScope.docs[0].cartable){
                     Entrees.postDoc({id_carnet: tab.carnet_id, id_entree: entree.id, file: $rootScope.docs[0].file}).$promise.then(function(data){
-                      entree.docs = data.docs;              
-                      t.entrees.push(entree);
-                      t.htmlcontent = "";
-                      $rootScope.docs = [];
+                      if (data.error == undefined) {
+                        entree.docs = data.docs;              
+                        t.entrees.push(entree);
+                        t.htmlcontent = "";
+                        $rootScope.docs = [];                        
+                      } else {
+                        Notifications.add(reponse.error, "error");
+                      };
                     });
                   } else {
                     $upload.upload({
@@ -197,6 +205,8 @@ angular.module('suiviApp')
                       t.entrees.push(entree);
                       t.htmlcontent = "";
                       $rootScope.docs = [];
+                    }).error(function(reponse){
+                      Notifications.add(reponse.error, "error");
                     });                    
                   };
                 } else {
@@ -205,6 +215,7 @@ angular.module('suiviApp')
                 };    
               };
             });
+            Notifications.add("Votre message a été publié avec succés dans le carnet de suivi.", "success");
           }
         });
       } else {
@@ -218,10 +229,14 @@ angular.module('suiviApp')
                   if ($rootScope.docs.length > 0 && $rootScope.docs[0].md5 == null ) {
                     if($rootScope.docs[0].cartable){
                       Entrees.postDoc({id_carnet: tab.carnet_id, id_entree: e.id, file: $rootScope.docs[0].file}).$promise.then(function(data){
-                        e.docs = data.docs;
-                        t.modifEntree = null;
-                        t.htmlcontent = "";
-                        $rootScope.docs = [];
+                        if (data.error == undefined) {
+                          e.docs = data.docs;
+                          t.modifEntree = null;
+                          t.htmlcontent = "";
+                          $rootScope.docs = [];                          
+                        } else {
+                          Notifications.add(reponse.error, "error");                          
+                        };
                       });
                     } else {
                       $upload.upload({
@@ -241,6 +256,8 @@ angular.module('suiviApp')
                         t.modifEntree = null;
                         t.htmlcontent = "";
                         $rootScope.docs = [];
+                      }).error(function(reponse){
+                        Notifications.add(reponse.error, "error");
                       });            
                     };         
                   }else {
@@ -248,6 +265,7 @@ angular.module('suiviApp')
                     t.modifEntree = null;
                     t.htmlcontent = "";
                     $rootScope.docs = [];
+                    Notifications.add("Votre message a été modifé avec succés dans le carnet de suivi.", "success");
                   };
                 };
               });
@@ -259,7 +277,7 @@ angular.module('suiviApp')
 
     $scope.editEntree = function(tab, entree){
       if (entree.owner.uid != CurrentUser.get().id_ent && CurrentUser.getRights().admin == 0) {
-        alert("vous ne pouvez pas editer les entrées qui ne vous appartiennent pas !")
+        Notifications.add("vous ne pouvez pas editer les entrées qui ne vous appartiennent pas !","warning");
         return false;
       }
       var editorScope = textAngularManager.retrieveEditor('text_'+tab.id).scope;
@@ -278,7 +296,7 @@ angular.module('suiviApp')
 
     $scope.removedEntree = function(tab, entree){
       if (entree.owner.uid != CurrentUser.get().id_ent && CurrentUser.getRights().admin == 0) {
-        alert("vous ne pouvez pas supprimer les entrées qui ne vous appartiennent pas !")
+        Notifications.add("vous ne pouvez pas supprimer les entrées qui ne vous appartiennent pas !","warning");
         return false;
       }
       _.each(entree.docs, function(doc){
@@ -287,11 +305,12 @@ angular.module('suiviApp')
 
       Entrees.delete({id: entree.id}).$promise.then(function(reponse){
         if (reponse.error != undefined && reponse.error != null) {
-          alert(reponse.error);
+          Notifications.add(reponse.error, "error");
         } else{
           _.each($scope.tabs, function(t){
             if(t.id == tab.id){
               t.entrees = _.reject(t.entrees, function(e){
+                Notifications.add("Votre message a été supprimé avec succés du carnet de suivi.", "success");
                 return e.id == entree.id;
               });
             }

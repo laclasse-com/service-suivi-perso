@@ -18,7 +18,8 @@ gem 'rest-client'
 gem 'savon'
 gem 'nokogiri'
 gem 'rack-rewrite'
-gem 'laclasse-common', :git => 'https://github.com/laclasse-com/laclasse-common.git', :branch => 'develop'
+# gem 'laclasse-common', :git => 'https://github.com/laclasse-com/laclasse-common.git', :branch => 'develop'
+gem 'laclasse-common', :path => '/home/hadrien/developpements/laclasse-common'
 
 
 #Generation de pdf

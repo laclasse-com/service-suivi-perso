@@ -255,16 +255,32 @@ angular.module('suiviApp')
 /*                   Resource to show flash messages and responses                  */
 /************************************************************************************/
 angular.module('services.messages', []); 
-angular.module('services.messages').factory("FlashServiceStyled", ['$rootScope', function($rootScope) {
+angular.module('services.messages').factory("Notifications", ['$rootScope', function($rootScope) {
+  var indexSuccess = 0;
+  var indexError = 0;
+  var indexWarning = 0;
+  var indexInfo = 0;
+  $rootScope.notifications = {success: {}, error: {}, warning: {}, info: {}};
   return {
-    show: function(message, classe) {
-      /* classe in ["alert alert-error", "alert alert-success", "alert alert-info", "alert alert-warning"] */
-      $rootScope.flashMessage = message;
-      $rootScope.flashStyle = classe
+    add: function(message, classe) {
+      /* classe success, error, warning, info*/
+      switch(classe){
+        case "success":
+          $rootScope.notifications.success[indexSuccess++] = message;
+          break;
+        case "error":
+          $rootScope.notifications.error[indexError++] = message;
+          break;
+        case "warning":
+          $rootScope.notifications.warning[indexWarning++] = message;
+          break;
+        case "info":
+          $rootScope.notifications.info[indexInfo++] = message;
+          break;
+      }
     },
     clear: function() {
-      $rootScope.flashMessage = "";
-      $rootScope.flashStyle ="alert"; 
+      $rootScope.notifications = {success: {}, error: {}, warning: {}, info: {}};
     }
   }
 }]);

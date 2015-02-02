@@ -9,7 +9,7 @@ use Rack::Rewrite do
   rewrite %r{/.*/(app)/(.*)}, '/$1/$2'
 end
 
-require 'lib/helpers/rack'
+require 'laclasse/common/helpers/rack'
 Laclasse::Helpers::Rack.configure_rake self
                            
 use OmniAuth::Builder do

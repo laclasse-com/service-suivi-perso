@@ -1,5 +1,5 @@
-require 'lib/helpers/authentication'
-require 'lib/cross_app/sender'
+require 'laclasse/common/helpers/authentication'
+require 'laclasse/common/cross_app/sender'
 
 class Api < Grape::API
 format :json

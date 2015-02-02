@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('AsideCarnetEvignalCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', 'Rights', 'Profil', 'CarnetPdf', '$http', 'Onglets', '$modal', '$window', '$upload', 'UPLOAD_SIZE', 'UAI_EVIGNAL', 'GetPersonnelsEvignal', 'CarnetPersonnelsEvignal', function($rootScope, $scope, $state, $stateParams, CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH, Rights, Profil, CarnetPdf, $http, Onglets, $modal, $window, $upload, UPLOAD_SIZE, UAI_EVIGNAL, GetPersonnelsEvignal, CarnetPersonnelsEvignal) {
+.controller('AsideCarnetEvignalCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', 'Rights', 'Profil', 'CarnetPdf', '$http', 'Onglets', '$modal', '$window', '$upload', 'UPLOAD_SIZE', 'UAI_EVIGNAL', 'GetPersonnelsEvignal', 'CarnetPersonnelsEvignal', 'Notifications', function($rootScope, $scope, $state, $stateParams, CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH, Rights, Profil, CarnetPdf, $http, Onglets, $modal, $window, $upload, UPLOAD_SIZE, UAI_EVIGNAL, GetPersonnelsEvignal, CarnetPersonnelsEvignal, Notifications) {
 
   Profil.initRights($stateParams.id).promise.then(function(){
   
@@ -196,7 +196,6 @@ angular.module('suiviApp')
   };
 
   $scope.open = function () {
-
     var modalInstance = $modal.open({
       templateUrl: 'myModalPdfContent.html',
       controller: $scope.modalInstanceCtrl,
@@ -274,33 +273,23 @@ angular.module('suiviApp')
         //formDataAppender: function(formData, key, val){}
       }).success(function(data, status, headers, config) {
         // file is uploaded successfully
-        // console.log(data);
+        console.log(data);
         if (data['envoye'] != undefined && !_.isEmpty(data['envoye'])) {
-          $rootScope.resultats.success = data['envoye']
+          var nomSuccess = "";
+          _.each(data["envoye"], function(e){
+            nomSuccess += e.name+", ";
+          });
+          Notifications.add("Message envoyé à "+nomSuccess, "success");
         };
         if (data['echoue'] != undefined && !_.isEmpty(data['echoue'])) {
-          $rootScope.resultats.echoue = data['echoue']
+          var nomEchoue = "";
+          _.each(data["echoue"], function(e){
+            nomSuccess += e.name+", ";
+          });
+          Notifications.add("L'envoi du message à "+nomEchoue+" a echoué", "error");
         };
-        $scope.openResult();
       });
     });
   };
 
-  $scope.modalInstanceMailEchecCtrl = function ($rootScope, $scope, $modalInstance) {
-    $scope.ok = function () {
-      $modalInstance.close();                
-    };
-  };
-
-  $scope.openResult = function () {
-
-    var modalInstance = $modal.open({
-      templateUrl: 'myModalMailEchecContent.html',
-      controller: $scope.modalInstanceMailEchecCtrl,
-      size: 'sm'
-    });
-
-    modalInstance.result.then(function () {  
-    });
-  };
 }]);

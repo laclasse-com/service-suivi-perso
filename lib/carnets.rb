@@ -88,7 +88,9 @@ module CarnetsLib
       })
     end
     response = []
+    puts ANNUAIRE_URL[:user_liste] + uids.join(";").to_s
     response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join(";").to_s, {'expand' => 'true'}) if !uids.empty?
+    puts "la reponse de l'annuaire => "+response.inspect
     response.each do |user|
       carnets.each do |carnet|
         if carnet[:uid_elv] == user["id_ent"]
