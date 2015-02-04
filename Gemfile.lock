@@ -1,5 +1,7 @@
-PATH
-  remote: /home/hadrien/developpements/laclasse-common
+GIT
+  remote: https://github.com/laclasse-com/laclasse-common.git
+  revision: e6bb2e139cb2ee969fa1d205dcce3357f1dda89f
+  branch: develop
   specs:
     laclasse-common (0.3)
       logstash-logger
