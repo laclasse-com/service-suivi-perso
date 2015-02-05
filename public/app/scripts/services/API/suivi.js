@@ -81,6 +81,11 @@ angular.module('suiviApp')
 		'get':    {method:'GET'},
 		'post': {method:'POST',  params: {id_carnet: '@id_carnet', upload: '@upload'}},
 	});
+}])
+.factory('Stats', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
+	return $resource( APP_PATH	 + '/api/stats/', {}, {
+		'get':    {method:'GET'}},
+	});
 }]);
 
 

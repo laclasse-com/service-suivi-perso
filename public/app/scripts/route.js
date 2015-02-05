@@ -157,7 +157,22 @@ angular.module('suiviApp')
                  controller: 'RightsEvignalCtrl'
                    }
                }
-             });
+             })
+           .state( 'suivi.stats',{
+            parent: 'suivi',
+            resolve: { auth: function( Profil ) { Profil.redirection( ['PROF_ETB', 'DIR_ETB', 'ADM_ETB', 'TECH', 'AVS_ETB', 'CPE_ETB'], false ); } },
+            url: '/stats',
+            views: {
+              'aside': {
+                templateUrl:APP_PATH + '/app/views/generals/lists/asides/aside-lists.html',
+                controller: 'AsideCtrl'
+              },
+              'main': {
+                templateUrl:APP_PATH + '/app/views/generals/lists/mains/main-stats.html',
+                controller: 'StatsCtrl'
+               }
+              }
+            });
 
   $urlRouterProvider.otherwise(function ($injector, $location) {
       $location.path("/evignal/carnets");
