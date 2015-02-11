@@ -4,12 +4,13 @@
 
 angular.module('suiviApp')
 .controller('CarnetsCtrl', ['$scope', '$rootScope', '$state', '$stateParams', 'Carnets', 'GetByClasse', 'Rights', 'CurrentUser', 'Notifications', function($scope, $rootScope, $state, $stateParams, Carnets, GetByClasse, Rights, CurrentUser, Notifications) {
-	GetByClasse.query({id: $stateParams.classe_id}).$promise.then(function(response){
-		if (response[0] != undefined && response[0].error != undefined && response[0].error != null){
-			Notifications.add(response[0].error, "error");
-			$scope.classe_carnets = Carnets.get_by_classe([]);
+	GetByClasse.get({id: $stateParams.classe_id}).$promise.then(function(response){
+		if (response.error != undefined){
+			Notifications.add(response.error, "error");
+			$scope.classe_carnets = Carnets.get_by_classe({classe: {}, carnets: []});
 		} else {
 			$scope.classe_carnets = Carnets.get_by_classe(response);
+			console.log($scope.classe_carnets);
 		};
 		// console.log($scope.classe_carnets);
 	});

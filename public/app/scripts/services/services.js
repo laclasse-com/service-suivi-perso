@@ -75,7 +75,7 @@ angular.module('suiviApp')
 
 .service('Profil', ['CurrentUser', '$state', 'Carnets', '$q', 'UAI_EVIGNAL', function( CurrentUser, $state, Carnets,$q, UAI_EVIGNAL ) {
   this.redirection = function(allowed_types, evignal){
-    CurrentUser.getRequest().$promise.then(function(currentUser){
+    return CurrentUser.getRequest().$promise.then(function(currentUser){
       // console.log(currentUser);
       var profil_actif_evignal = (currentUser.profil_actif.etablissement_code_uai == UAI_EVIGNAL);
       CurrentUser.set(currentUser);
@@ -145,6 +145,7 @@ angular.module('suiviApp')
         }
         $state.go( stateName, params, { reload: true, inherit: true, notify: true } ); 
       };
+      return true;
     });
   };
   this.initRights = function(uid_elv){

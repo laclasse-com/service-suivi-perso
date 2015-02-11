@@ -37,7 +37,7 @@ module CarnetsLib
   end
 
   def get_carnets_by_classe_of response_annuaire
-  	carnets = []
+  	carnets = {classe: {}, carnets: []}
   	# info sur la classe
   	classe = {
   		id: response_annuaire['id'], 
@@ -47,13 +47,13 @@ module CarnetsLib
   		collegeId: response_annuaire["etablissement"]['id'],
   		college_code: response_annuaire["etablissement"]['code_uai']
   	}
-  	carnets.push(classe)
+  	carnets[:classe] = classe
   	response_annuaire['eleves'].each do |reponse|
-      puts reponse['avatar'].inspect
+      # puts reponse['avatar'].inspect
   		carnet = Carnet.new(nil, reponse['id_ent'])
   		if carnet.exist?
   			carnet.read
-	  		carnets.push({
+	  		carnets[:carnets].push({
 	  			id: carnet.id,
 	  			couleur: nil,
 	  			uid_elv: reponse['id_ent'],
@@ -88,9 +88,9 @@ module CarnetsLib
       })
     end
     response = []
-    puts ANNUAIRE_URL[:user_liste] + uids.join(";").to_s
-    response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join(";").to_s, {'expand' => 'true'}) if !uids.empty?
-    puts "la reponse de l'annuaire => "+response.inspect
+    # puts ANNUAIRE_URL[:user_liste] + uids.join("_").to_s
+    response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join("_").to_s, {}) if !uids.empty?
+    # puts "la reponse de l'annuaire => "+response.inspect
     response.each do |user|
       carnets.each do |carnet|
         if carnet[:uid_elv] == user["id_ent"]

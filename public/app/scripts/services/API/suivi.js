@@ -84,7 +84,9 @@ angular.module('suiviApp')
 }])
 .factory('Stats', ['$resource', 'APP_PATH', function( $resource, APP_PATH ) {
 	return $resource( APP_PATH	 + '/api/stats/', {}, {
-		'get':    {method:'GET'}},
+		'get':    {method:'GET'},
+		'csv': {method:'GET', url:  APP_PATH + '/api/stats/csv', params: {}, responseType :'blob'},
+		'evignal': {method:'GET', url:  APP_PATH + '/api/stats/evignal', params: {}},
 	});
 }]);
 
@@ -112,18 +114,15 @@ angular.module('suiviApp')
 
 	this.get_by_classe = function(reponse){
 		var classe_carnets = {
-			classe: {},
+			classe: reponse.classe,
 			carnets: []
 		};
-		var i = 0;
-		angular.forEach(reponse, function (carnet) {
+		classe_carnets.classe.couleur = GRID_COLOR[0];
+		var i = 1;
+		angular.forEach(reponse.carnets, function (carnet) {
 			carnet.couleur = GRID_COLOR[i%GRID_COLOR.length];
 			carnet.avatar = LACLASSE_PATH + '/' + carnet.avatar;
-			if (i == 0) {
-				classe_carnets.classe = carnet;
-			} else {
-				classe_carnets.carnets.push(carnet);
-			};
+			classe_carnets.carnets.push(carnet);
 			i++;
 		});
 		while (i < 16 || i % 4 != 0){

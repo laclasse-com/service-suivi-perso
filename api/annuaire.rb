@@ -165,14 +165,16 @@ class AnnuaireApi < Grape::API
       users = []
       avatars = {}
       while uids.size > 50
-        users.concat(Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.pop(50).join(';').to_s, {'expand' => 'true'}))
+        users.concat(Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.pop(50).join('_').to_s, {}))
       end
-      users.concat(Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join(';').to_s, {'expand' => 'true'})) if !uids.empty?
+      users.concat(Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join('_').to_s, {})) if !uids.empty?
       users.each do |user|
         avatars[user["id_ent"]] = user["avatar"]
       end
-      avatars      
+      avatars
     rescue Exception => e
+      puts e.message
+      puts e.backtrace[0..10]
       {error: "Impossible de retourner les avatars"}
     end
   end

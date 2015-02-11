@@ -14,6 +14,7 @@ angular.module('suiviApp', [
   'ngClipboard',
   'textAngular',
   'growlNotifications',
+  'nvd3ChartDirectives',
   'ngColorPicker'
 ]).run(['$rootScope', 'Notifications', '$location', 'CurrentUser', function($rootScope, Notifications, $location, CurrentUser) {
   $rootScope.$on('$stateChangeStart', function($location){

@@ -32,7 +32,7 @@ class CarnetsApi < Grape::API
             response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_regroupement, params[:classe_id].to_s, {'expand' => 'true'})
             CarnetsLib.get_carnets_by_classe_of response            
         rescue Exception => e
-            [{error: "Impossible de récupérer les carnets"}]
+            {error: "Impossible de récupérer les carnets"}
         end
     end
 

@@ -3,9 +3,10 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('StatsCtrl', ['$rootScope', '$scope', 'Notifications', 'Stats', '$http', 'APP_PATH', function($rootScope, $scope, Notifications, Stats, $http, APP_PATH) {
+.controller('StatsEvignalCtrl', ['$rootScope', '$scope', 'Notifications', 'Stats', '$http', 'APP_PATH', function($rootScope, $scope, Notifications, Stats, $http, APP_PATH) {
 
-	Stats.get({}).$promise.then(function(reponse){
+	Stats.evignal({}).$promise.then(function(reponse){
+		console.log(reponse);
 		if (reponse.error != undefined) { 
 			Notifications.add(reponse.error, "error")
 		} else {
@@ -112,7 +113,7 @@ angular.module('suiviApp')
 		};
 	});
 	$scope.downloadStats = function(){
-		$http.get(APP_PATH + '/api/stats/csv', {'responseType' :'blob'}).success(function(data, status) {
+		$http.get(APP_PATH + '/api/stats/evignal/csv', {'responseType' :'blob'}).success(function(data, status) {
             var link=document.createElement('a');
             link.href=window.URL.createObjectURL(data);
             link.download='Statistiques_suivi_perso.csv';

@@ -12,22 +12,46 @@ class StatsApi < Grape::API
   }
   get '/' do
     begin
-      stats = {:carnets_classe => [], :message_carnet => [], :interloc_carnet => []}
-      $current_user[:user_detailed]['classes'].each do |classe|
-        carnets = Carnets.where(:cls_id => classe["classe_id"])
-        nb_carnets = carnets.count
-        stats[:carnets_classe].push({classe: classe["classe_libelle"], nb_carnets: nb_carnets})
-        carnets.each do |carnet|
-          nb_messages = Saisies.where(:carnets_id => carnet.id).count
-          nb_interloc = Saisies.where(:carnets_id => carnet.id).distinct(:uid).count
-          stats[:message_carnet].push({carnet: carnet.id, nb_messages: nb_messages})
-          stats[:interloc_carnet].push({carnet: carnet.id, nb_interloc: nb_interloc})
+      stats = []
+      $current_user[:user_detailed]['classes'].uniq {|classe| [classe["classe_id"], classe["etablissement_code"]]}.each do |cls|
+        classe = {
+          id: cls["classe_id"], 
+          nom: cls["classe_libelle"], 
+          nb_carnets: [],
+          carnets: []
+        }
+
+        response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_regroupement, cls["classe_id"].to_s, {'expand' => 'true'})
+        carnets = CarnetsLib.get_carnets_by_classe_of(response)[:carnets]
+        classe[:nb_carnets] = carnets.size
+
+        carnets.each do |c|
+          classe[:carnets].push({
+            id: c[:id],
+            nom: c[:lastName].capitalize+" "+c[:firstName].capitalize,
+            nb_messages: Saisies.where(:carnets_id => c[:id]).count,
+            nb_interloc: Saisies.where(:carnets_id => c[:id]).distinct(:uid).count
+          })
+        end
+
+        i = stats.index {|etab| etab[:etab_id] == cls["etablissement_code"]} if !stats.empty?
+        if i
+          stats[i][:classes].push classe
+        else
+          stat = {
+            etab_id: cls["etablissement_code"], 
+            etab_nom: cls["etablissement_nom"],
+            classes: []
+          }
+          stat[:classes].push classe
+          stats.push(stat)
         end
       end
-      stats
+      {stats: stats}
     rescue Exception => e
       puts e.message
-      {error: "Impossible de récupérer le nombre de carnet par classe"}
+      puts e.backtrace[0..10]
+      {error: "Impossible de récupérer les statistiques !"}
     end
   end
 
@@ -36,26 +60,137 @@ class StatsApi < Grape::API
   }
   get '/csv' do
     begin
-      # file_csv = Tempfile.new('Statistiques_suivi_perso.csv')
 
       csv_string = CSV.generate do |csv|
-        csv << ["row", "of", "CSV", "data"]
-        csv << ["another", "row"]
+        csv << ["nom élève", "prénom élève", "établissement", "classe", "nombre onglets", "nombre messages", "nombre interlocuteurs"]
+        $current_user[:user_detailed]['classes'].uniq {|classe| [classe["classe_id"], classe["etablissement_code"]]}.each do |cls|
+          response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_regroupement, cls["classe_id"].to_s, {'expand' => 'true'})
+          carnets = CarnetsLib.get_carnets_by_classe_of(response)[:carnets]
+          carnets.each do |c|
+            nb_onglets = CarnetsOnglets.where(:carnets_id =>c[:id]).count
+            nb_messages = Saisies.where(:carnets_id => c[:id]).count
+            nb_interloc = Saisies.where(:carnets_id => c[:id]).distinct(:uid).count
+            csv << [c[:lastName].capitalize, c[:firstName].capitalize, cls["etablissement_nom"], cls["classe_libelle"], nb_onglets, nb_messages, nb_interloc]
+          end
+        end
       end
 
-      # file_csv << csv_string
-
       content_type 'text/csv'
-      header['Content-Disposition'] = "attachment; filename="+file_csv.basename
-      header['Content-Length'] = file_csv.size
+      header['Content-Disposition'] = "attachment; filename='Statistiques_suivi_perso.csv'"
+      header['Content-Length'] = csv_string.size
       env['api.format'] = :binary
       csv_string
     rescue Exception => e
       puts e.message
       {error: "Impossible de récupérer le csv"}
-    # ensure
-    #   file_csv.close
-    #   file_csv.unlink
+    end
+  end
+
+  desc 'récupère le nombre de carnet par classe pour evignal'
+  params{
+  }
+  get '/evignal' do
+    begin
+      stats = []
+      classes = []
+      classes_evignal = $current_user[:user_detailed]['classes'].uniq {|classe| [classe["classe_id"], classe["etablissement_code"]]}
+      carnets = CarnetsLib.get_evignal_carnets
+
+      carnets.each do |c|
+        carnet = {
+          id: c[:id],
+          nom: c[:lastName].capitalize+" "+c[:firstName].capitalize,
+          nb_messages: Saisies.where(:carnets_id => c[:id]).count,
+          nb_interloc: Saisies.where(:carnets_id => c[:id]).distinct(:uid).count
+        }
+
+        index_classe_evignal = classes_evignal.index {|classe| classe["classe_id"] == c[:classe_id]} if !classes_evignal.empty?
+        if index_classe_evignal
+          nom_classe = classes_evignal[index_classe_evignal]["classe_libelle"]
+        else
+          nom_classe = "Autres classes"
+        end
+
+        index_classe = classes.index {|classe| classe[:id] == c[:classe_id] || (classe[:nom] == nom_classe && nom_classe == "Autres classes")} if !classes.empty?
+        if index_classe
+          classes[index_classe][:nb_carnets] = classes[index_classe][:nb_carnets]+1
+          classes[index_classe][:carnets].push(carnet)
+        else
+          classes.push({
+            id: c[:classe_id],
+            etab_id: c[:etablissement_code], 
+            nom: nom_classe, 
+            nb_carnets: 1,
+            carnets: [carnet]
+          })
+        end
+      end
+      classes.each do | classe |
+
+        index_classe_evignal = classes_evignal.index {|cls| cls["etablissement_code"] == classe[:etab_id]} if !classes_evignal.empty?
+        if index_classe_evignal
+          nom_etab = classes_evignal[index_classe_evignal]["etablissement_nom"]
+        else
+          nom_etab = "Autres établissements"
+        end
+
+        i = stats.index {|etab| etab[:etab_id] == classe[:etab_id] || (etab[:etab_nom] == nom_etab && nom_etab == "Autres établissements")} if !stats.empty?
+        if i
+          stats[i][:classes].push classe
+        else          
+          stats.push({
+            etab_id: classe[:etab_id], 
+            etab_nom: nom_etab,
+            classes: [classe]
+          })
+        end
+      end
+      {stats: stats}
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace[0..10]
+      {error: "Impossible de récupérer les statistiques !"}
+    end
+  end
+
+  desc 'récupère le csv pour evignal'
+  params{
+  }
+  get '/evignal/csv' do
+    begin
+
+      csv_string = CSV.generate do |csv|
+        csv << ["nom élève", "prénom élève", "établissement", "classe", "nombre onglets", "nombre messages", "nombre interlocuteurs"]
+        classes_evignal = $current_user[:user_detailed]['classes'].uniq {|classe| [classe["classe_id"], classe["etablissement_code"]]}
+        carnets = CarnetsLib.get_evignal_carnets
+        carnets.each do |c|
+          nb_onglets = CarnetsOnglets.where(:carnets_id =>c[:id]).count
+          nb_messages = Saisies.where(:carnets_id => c[:id]).count
+          nb_interloc = Saisies.where(:carnets_id => c[:id]).distinct(:uid).count
+          index_classe_evignal = classes_evignal.index {|classe| classe["classe_id"] == c[:classe_id]} if !classes_evignal.empty?
+          if index_classe_evignal
+            nom_classe = classes_evignal[index_classe_evignal]["classe_libelle"]
+          else
+            nom_classe = "Autres classes"
+          end
+          index_classe_evignal = classes_evignal.index {|cls| cls["etablissement_code"] == c[:etablissement_code]} if !classes_evignal.empty?
+          if index_classe_evignal
+            nom_etab = classes_evignal[index_classe_evignal]["etablissement_nom"]
+          else
+            nom_etab = "Autres établissements"
+          end
+          csv << [c[:lastName].capitalize, c[:firstName].capitalize, nom_etab, nom_classe, nb_onglets, nb_messages, nb_interloc]
+        end
+      end
+
+      content_type 'text/csv'
+      header['Content-Disposition'] = "attachment; filename='Statistiques_suivi_perso.csv'"
+      header['Content-Length'] = csv_string.size
+      env['api.format'] = :binary
+      csv_string
+    rescue Exception => e
+      puts e.message
+      {error: "Impossible de récupérer le csv"}
     end
   end
 end

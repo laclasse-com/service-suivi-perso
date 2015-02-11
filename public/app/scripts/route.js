@@ -160,7 +160,7 @@ angular.module('suiviApp')
              })
            .state( 'suivi.stats',{
             parent: 'suivi',
-            resolve: { auth: function( Profil ) { Profil.redirection( ['PROF_ETB', 'DIR_ETB', 'ADM_ETB', 'TECH', 'AVS_ETB', 'CPE_ETB'], false ); } },
+            resolve: { auth: function( Profil ) { Profil.redirection( ['DIR_ETB', 'ADM_ETB', 'TECH'], false ); } },
             url: '/stats',
             views: {
               'aside': {
@@ -170,6 +170,21 @@ angular.module('suiviApp')
               'main': {
                 templateUrl:APP_PATH + '/app/views/generals/lists/mains/main-stats.html',
                 controller: 'StatsCtrl'
+               }
+              }
+            })
+           .state( 'suivi.evignal_stats',{
+            parent: 'suivi',
+            resolve: { auth: function( Profil ) { Profil.redirection( ['DIR_ETB', 'ADM_ETB', 'TECH'], true ); } },
+            url: '/evignal/stats',
+            views: {
+              'aside': {
+                templateUrl:APP_PATH + '/app/views/generals/lists/asides/aside-lists.html',
+                controller: 'AsideEvignalCtrl'
+              },
+              'main': {
+                templateUrl:APP_PATH + '/app/views/evignal/lists/mains/main-stats.html',
+                controller: 'StatsEvignalCtrl'
                }
               }
             });
