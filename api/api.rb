@@ -21,6 +21,7 @@ resource(:onglets) { mount OngletsApi }
 resource(:entrees) { mount EntreesApi }
 resource(:rights) { mount RightsApi }
 resource(:public) { mount PublicUrlApi }
+resource(:stats) { mount StatsApi }
 
 add_swagger_documentation 
 end

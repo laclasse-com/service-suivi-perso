@@ -157,7 +157,37 @@ angular.module('suiviApp')
                  controller: 'RightsEvignalCtrl'
                    }
                }
-             });
+             })
+           .state( 'suivi.stats',{
+            parent: 'suivi',
+            resolve: { auth: function( Profil ) { Profil.redirection( ['DIR_ETB', 'ADM_ETB', 'TECH'], false ); } },
+            url: '/stats',
+            views: {
+              'aside': {
+                templateUrl:APP_PATH + '/app/views/generals/lists/asides/aside-lists.html',
+                controller: 'AsideCtrl'
+              },
+              'main': {
+                templateUrl:APP_PATH + '/app/views/generals/lists/mains/main-stats.html',
+                controller: 'StatsCtrl'
+               }
+              }
+            })
+           .state( 'suivi.evignal_stats',{
+            parent: 'suivi',
+            resolve: { auth: function( Profil ) { Profil.redirection( ['DIR_ETB', 'ADM_ETB', 'TECH'], true ); } },
+            url: '/evignal/stats',
+            views: {
+              'aside': {
+                templateUrl:APP_PATH + '/app/views/generals/lists/asides/aside-lists.html',
+                controller: 'AsideEvignalCtrl'
+              },
+              'main': {
+                templateUrl:APP_PATH + '/app/views/evignal/lists/mains/main-stats.html',
+                controller: 'StatsEvignalCtrl'
+               }
+              }
+            });
 
   $urlRouterProvider.otherwise(function ($injector, $location) {
       $location.path("/evignal/carnets");

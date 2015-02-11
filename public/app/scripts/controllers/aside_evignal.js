@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('AsideEvignalCtrl', ['$scope', '$state', '$stateParams', function($scope, $state, $stateParams) {
+.controller('AsideEvignalCtrl', ['$scope', '$state', '$stateParams', 'CurrentUser', function($scope, $state, $stateParams, CurrentUser) {
 
   $scope.nameElv = $stateParams.name;
   $scope.erreur = "";
@@ -20,6 +20,26 @@ angular.module('suiviApp')
       $scope.erreur = "Au minimum trois caractères sont nécessaire pour effectuer une recherche !";
     }
   }
+
+  $scope.stats = function(){
+    $state.go( 'suivi.evignal_stats', {}, { reload: true, inherit: true, notify: true } );
+  };
+  
+  if ($state.current.name == 'suivi.evignal_carnets') {
+    $scope.backClassesDisplay = false;
+  }else{
+    $scope.backClassesDisplay = true;
+  };
+
+  if ($state.current.name == 'suivi.evignal_stats') {
+    $scope.statsDisplay = false;
+  }else{
+    if (CurrentUser.get() != null) {
+      $scope.statsDisplay = ["DIR_ETB", "ADM_ETB", "TECH"].indexOf(CurrentUser.get().hight_role) != -1 ;      
+    } else {
+      $scope.statsDisplay = true;
+    };
+  };
 
   $scope.delSearch = function(){
     $scope.nameElv ="";

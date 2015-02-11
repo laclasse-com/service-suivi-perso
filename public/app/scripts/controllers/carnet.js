@@ -42,10 +42,12 @@ angular.module('suiviApp')
         var entrees = []
         if (reponse.onglets[0]!=undefined) {entrees = reponse.onglets[0].entrees; $window.sessionStorage.setItem("id", reponse.onglets[0].carnet_id);};
         var avatars = Annuaire.avatars(entrees);
+        // console.log(avatars);
         _.each(reponse.onglets, function(tab){
           _.each(tab.entrees, function(entree){
             entree.date = new Date(entree.date);
             entree.owner.avatar = LACLASSE_PATH + '/' + avatars[entree.owner.uid];
+            // console.log(entree.owner.avatar);
           });
         });
         $scope.tabs = reponse.onglets;
@@ -53,6 +55,7 @@ angular.module('suiviApp')
           _.each($scope.tabs, function(tab){
             _.each(tab.entrees, function(entree){
               entree.owner.avatar = LACLASSE_PATH + '/' + reponse[entree.owner.uid];
+              // console.log(entree.owner.avatar);
             });
           });
         });

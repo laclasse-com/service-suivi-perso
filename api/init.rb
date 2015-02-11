@@ -19,5 +19,9 @@ require __DIR__('rights')
 puts "loading api/public_url"
 require __DIR__('public_url')
 
+puts "loading api/stats"
+require __DIR__('stats')
+
 puts "loading api/api"
 require __DIR__('api')
+
