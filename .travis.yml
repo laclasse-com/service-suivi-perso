@@ -7,12 +7,13 @@ before_install:
   - gem --version
 
 before_script:
-  - cp ./config/constants.sample ./config/constants.rb
-  - cp ./config/cas_server.sample ./config/cas_server.rb
+  - cp ./config/options.sample ./config/options.rb
   - cp ./config/database.sample ./config/database.rb
+  - cp ./config/common.rb.sample ./config/common.rb
+  - cp ./config/rights_constants.sample ./config/rights_constants.rb
 
   - rake install
-  - mysql -e 'create database suivi;'
+  - mysql -e 'create database suivi_test;'
   - mysql < ./db/scripts/suivi.sql
   
 script: "bundle exec rake spec"
