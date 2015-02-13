@@ -56,12 +56,12 @@
 		<div class="row rights-search-users">
 			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 ">
 				<span>Ajouter une personne au carnet:</span>
-				<input class="form-control input-sm" type="text" placeholder="entrer un nom" ng-model="search.full_name">
+				<input class="form-control input-sm" type="search" placeholder="entrer un nom" ng-model="search.full_name">
 			</div>
 			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 accordion-rights">
 				<span ng-hide="isEvignal" style="width: 100%; background-color:rgba(26,161,204,0.3); color:#1aa1cc">Collège de l'élève</span>
-				<accordion close-others="true">
-					<accordion-group is-open="list.open" ng-repeat="list in listUsersTypes" ng-if="list.users.length > 0">
+				<accordion close-others="showOnlyOne">
+					<accordion-group is-open="list.open" ng-repeat="list in listUsersTypes" ng-disabled="list.users.length > 0">
 						<accordion-heading>
 							<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': list.open, 'toolbar-suivi-arrow-right': !list.open}"></i>
 							{{list.type}}
@@ -72,8 +72,8 @@
 			</div>
 			<div ng-hide="isEvignal" class="col-xs-9 col-sm-9 col-md-9 col-lg-9 accordion-rights">
 				<span style="width: 100%; background-color:rgba(128, 186, 102, 0.3); color:#80ba66">Collège Elie Vignal</span>
-				<accordion close-others="true">
-					<accordion-group is-open="listEvignal.open" ng-repeat="listEvignal in listUsersEvignalTypes" ng-if="listEvignal.users.length > 0">
+				<accordion close-others="showOnlyOne">
+					<accordion-group is-open="listEvignal.open" ng-repeat="listEvignal in listUsersEvignalTypes" ng-disabled="listEvignal.users.length > 0">
 						<accordion-heading>
 							<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': listEvignal.open, 'toolbar-suivi-arrow-right': !listEvignal.open}"></i>
 							{{listEvignal.type}}

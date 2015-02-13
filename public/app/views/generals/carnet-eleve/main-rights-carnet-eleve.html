@@ -56,21 +56,22 @@
 		<div class="row rights-search-users">
 			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 ">
 				<span>Ajouter une personne au carnet:</span>
-				<input class="form-control input-sm" type="text" placeholder="entrer un nom" ng-model="search.full_name">
+				<input class="form-control input-sm" type="search" placeholder="entrer un nom" ng-model="search.full_name">
 			</div>
 			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 accordion-rights">
-				<accordion close-others="true">
-					<accordion-group is-open="list.open" ng-repeat="list in listUsersTypes">
+				<accordion close-others="showOnlyOne">
+					<accordion-group is-open="list.open" ng-repeat="list in listUsersTypes" is-disabled="list.users.length == 0">
 						<accordion-heading>
 							<i class="toolbar-suivi toolbar-suivi-carnet" ng-class="{'toolbar-suivi-arrow-down': list.open, 'toolbar-suivi-arrow-right': !list.open}"></i>
 							{{list.type}}
 						</accordion-heading>
-						<div class="add-user" ng-repeat="user in list.users | filter:search | orderBy:'fullname':false"><i class="toolbar-suivi toolbar-suivi-add-user" ng-click="addUser(list.type, user)"></i><span style="text-transform: capitalize">{{user.full_name}}</span></div>
+						<div class="add-user" ng-repeat="user in list.users | filter:search | orderBy:'full_name':false"><i class="toolbar-suivi toolbar-suivi-add-user" ng-click="addUser(list.type, user)"></i><span style="text-transform: capitalize">{{user.full_name}}</span></div>
 					</accordion-group>
 				</accordion>
 			</div>
 		</div>
 	</div>
+	{{filtered}}
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<div class="button-rights">
 			<div class="exit-carnet-button" ng-click="cancel()" title="Cliquez ici pour annuler la modification des droits du carnet et revenir au carnet de suivi">
