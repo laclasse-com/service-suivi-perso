@@ -29,7 +29,6 @@ branches:
   only:   
     - master
     - develop
-    - feature/tests
 
 notifications:
   slack:
