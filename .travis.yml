@@ -13,7 +13,6 @@ before_script:
   - cp ./config/common.rb.sample ./config/common.rb
   - cp ./config/rights_constants.sample ./config/rights_constants.rb
 
-  - rake install
   - mysql -e 'create database suivi;'
   - mysql < ./db/scripts/suivi.sql
   
