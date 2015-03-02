@@ -35,7 +35,7 @@ class Onglet
       lie_carnet
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "create").sub("$2", "Onglet").sub("$3", "la création d'un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "create").sub("$2", "Onglet").sub("$3", "la création d'un onglet")      
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "create").sub("$2", "Onglet").sub("$3", "la création d'un onglet")      
     end
   end
 
@@ -51,7 +51,7 @@ class Onglet
       @id
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "lie_carnet").sub("$2", "Onglet").sub("$3", "lier un carnet à un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "lie_carnet").sub("$2", "Onglet").sub("$3", "lier un carnet à un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "lie_carnet").sub("$2", "Onglet").sub("$3", "lier un carnet à un onglet")
     end
   end
 
@@ -69,7 +69,7 @@ class Onglet
       @url_pub = onglet.url_publique
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "read").sub("$2", "Onglet").sub("$3", "la récupération d'un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "read").sub("$2", "Onglet").sub("$3", "la récupération d'un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "read").sub("$2", "Onglet").sub("$3", "la récupération d'un onglet")
     end 
   end
 
@@ -87,7 +87,7 @@ class Onglet
       @nom = nom if !nom.nil?
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Onglet").sub("$3", "la mise à jour d'un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "update").sub("$2", "Onglet").sub("$3", "la mise à jour d'un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Onglet").sub("$3", "la mise à jour d'un onglet")
     end
   end
 
@@ -104,20 +104,19 @@ class Onglet
       lie_carnet if CarnetsOnglets[:onglets_id => @id, :carnets_id => @id_carnet].nil? && !Onglets[:id => @id].nil?
       create if Onglets[:id => @id].nil?
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "delete").sub("$2", "Onglet").sub("$3", "la suppression d'un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "delete").sub("$2", "Onglet").sub("$3", "la suppression d'un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "delete").sub("$2", "Onglet").sub("$3", "la suppression d'un onglet")
     end
   end
 
   def deleteUrl
     requires({:id => @id}, :id)
-    requires({:id_carnet => @id_carnet}, :id_carnet)
     onglet = Onglets[:id => @id]
     requires({:onglet => onglet}, :onglet)
     begin
       onglet.update(:url_publique => nil)
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "deleteUrl").sub("$2", "Onglet").sub("$3", "la suppression de l'url publique")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "deleteUrl").sub("$2", "Onglet").sub("$3", "la suppression de l'url publique")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "deleteUrl").sub("$2", "Onglet").sub("$3", "la suppression de l'url publique")
     end
   end
 
@@ -127,7 +126,7 @@ class Onglet
       CarnetsOnglets.where(:onglets_id => @id).delete
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "delie_carnet").sub("$2", "Onglet").sub("$3", "delier un carnet à un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "delie_carnet").sub("$2", "Onglet").sub("$3", "delier un carnet à un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "delie_carnet").sub("$2", "Onglet").sub("$3", "delier un carnet à un onglet")
     end
   end
   
@@ -145,7 +144,7 @@ class Onglet
       end      
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "get_entrees").sub("$2", "Onglet").sub("$3", "récupération des entrées d'un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "get_entrees").sub("$2", "Onglet").sub("$3", "récupération des entrées d'un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "get_entrees").sub("$2", "Onglet").sub("$3", "récupération des entrées d'un onglet")
     end
     entrees
   end
@@ -161,7 +160,7 @@ class Onglet
       end
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "delete_entrees").sub("$2", "Onglet").sub("$3", "la suppression des entrées d'un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "delete_entrees").sub("$2", "Onglet").sub("$3", "la suppression des entrées d'un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "delete_entrees").sub("$2", "Onglet").sub("$3", "la suppression des entrées d'un onglet")
     end
   end
 end

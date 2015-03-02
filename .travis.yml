@@ -1,27 +1,29 @@
 language: ruby
 rvm:
-  - 1.9.3
+  - "2.2.0"
 
 before_install:
   - gem update --system
   - gem --version
+  - gem install rspec
 
 before_script:
-  - cp ./config/constants.sample ./config/constants.rb
-  - cp ./config/cas_server.sample ./config/cas_server.rb
+  - cp ./config/options.sample ./config/options.rb
   - cp ./config/database.sample ./config/database.rb
+  - cp ./config/common.rb.sample ./config/common.rb
+  - cp ./config/rights_constants.sample ./config/rights_constants.rb
 
-  - rake install
   - mysql -e 'create database suivi;'
   - mysql < ./db/scripts/suivi.sql
   
-script: "bundle exec rake spec"
+script: "bundle exec rspec"
 
 gemfile:
   - Gemfile
   
 services: 
   - mysql
+  - redis-server
 
 branches:
   only:   
@@ -29,6 +31,8 @@ branches:
     - develop
 
 notifications:
-  email:
-    recepients:
-      - pgl@erasme.org
+  slack:
+    rooms:
+      - erasme:IWf0zN63Kuw5HgeJVwhnhxAC#laclassebeta
+    on_success: change
+    on_failure: change

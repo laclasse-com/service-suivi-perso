@@ -5,29 +5,27 @@ require 'digest'
 
 module Outils
 
-  @logger = Logger.new(STDOUT)
-
   #Fonction de vérification des paramètres requis
   # Ex : requires params, :target, :not_empty
   def requires(params, name, constraint=nil)
     if params[name].nil?
-      @logger.error MSG[LANG.to_sym][:error][:missingParameter].sub("$1", name.to_s) 
+      Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:missingParameter].sub("$1", name.to_s) 
       raise ArgumentError, MSG[LANG.to_sym][:error][:missingParameter].sub("$1", name.to_s)
     end
     case constraint
     when :not_empty then 
       if params[name].empty?
-        @logger.error MSG[LANG.to_sym][:error][:parameterShouldNotBeEmpty].sub("$1", name.to_s) 
+        Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:parameterShouldNotBeEmpty].sub("$1", name.to_s) 
         raise ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeEmpty].sub("$1", name.to_s)
       end
     when :false then 
       if params[name] == false
-        @logger.error MSG[LANG.to_sym][:error][:parameterShouldNotBeFalse].sub("$1", name.to_s)
+        Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:parameterShouldNotBeFalse].sub("$1", name.to_s)
         raise ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeFalse].sub("$1", name.to_s)
       end
     when :true then
       if params[name] == true 
-        @logger.error MSG[LANG.to_sym][:error][:parameterShouldNotBeTrue].sub("$1", name.to_s)
+        Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:parameterShouldNotBeTrue].sub("$1", name.to_s)
         raise ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeTrue].sub("$1", name.to_s)
       end
     end if !params[name].nil?

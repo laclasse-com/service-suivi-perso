@@ -41,7 +41,7 @@ class Carnet
       @id = new_carnet.id
     rescue
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "create").sub("$2", "Carnet").sub("$3", "la création d'un carnet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "create").sub("$2", "Carnet").sub("$3", "la création d'un carnet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "create").sub("$2", "Carnet").sub("$3", "la création d'un carnet")
     end
   end
 
@@ -113,7 +113,7 @@ class Carnet
       end      
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "get_onglets").sub("$2", "Carnet").sub("$3", "récupération des onglets d'un carnet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "get_onglets").sub("$2", "Carnet").sub("$3", "récupération des onglets d'un carnet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "get_onglets").sub("$2", "Carnet").sub("$3", "récupération des onglets d'un carnet")
     end
     onglets
   end
@@ -130,7 +130,7 @@ class Carnet
       end      
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "get_entrees").sub("$2", "Carnet").sub("$3", "récupération des entrées d'un carnet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "get_entrees").sub("$2", "Carnet").sub("$3", "récupération des entrées d'un carnet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "get_entrees").sub("$2", "Carnet").sub("$3", "récupération des entrées d'un carnet")
     end
     entrees
   end
@@ -151,7 +151,7 @@ class Carnet
       end   
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "get_rights").sub("$2", "Carnet").sub("$3", "récupération des droits d'un carnet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "get_rights").sub("$2", "Carnet").sub("$3", "récupération des droits d'un carnet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "get_rights").sub("$2", "Carnet").sub("$3", "récupération des droits d'un carnet")
     end
     rights
   end
@@ -168,7 +168,7 @@ class Carnet
       end   
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "get_pers_hopital").sub("$2", "Carnet").sub("$3", "récupération du personnel à l'hopital")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "get_pers_hopital").sub("$2", "Carnet").sub("$3", "récupération du personnel à l'hopital")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "get_pers_hopital").sub("$2", "Carnet").sub("$3", "récupération du personnel à l'hopital")
     end
     rights
   end

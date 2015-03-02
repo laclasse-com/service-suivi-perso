@@ -152,7 +152,7 @@ CREATE  TABLE IF NOT EXISTS `suivi`.`docs` (
   `nom` VARCHAR(250) NOT NULL ,
   `url` VARCHAR(2000) NOT NULL ,
   `saisies_id` BIGINT(20) NOT NULL ,
-  PRIMARY KEY (`id`, `saisies_id`) ,
+  PRIMARY KEY (`id`) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   INDEX `fk_docs_saisies1_idx` (`saisies_id` ASC) ,
   CONSTRAINT `fk_docs_saisies1`

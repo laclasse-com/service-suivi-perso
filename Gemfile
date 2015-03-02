@@ -36,6 +36,6 @@ group :test do
   gem 'coveralls'
   gem 'rack-test'
   gem 'simplecov'
-  gem 'rspec'
+  gem 'rspec', '2.14.1'
   gem 'travis-lint'
 end
