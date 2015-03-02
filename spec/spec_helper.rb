@@ -6,52 +6,24 @@
   require 'rack/test'
   require 'rack/lint'
   require 'rack/mock'
-  # require 'coveralls'
   require 'sequel'
-  # require 'debugger'
-  # require 'tsort'
-
-  # Coveralls.wear!
-  ##############################################
-  # Définition de la couverture de simpleCov,
-  # et Coveralls
-  #
-  ##############################################
-  # SimpleCov.profiles.define 'suivi' do
-  #  add_filter '/config/'
-  #  add_filter '/spec/'
-  #  add_filter '/tasks/'
-  #  add_filter '/helpers/'
-  #  add_filter '/model/'
-  #  add_filter '/controller/'
-
-  #  # add_group 'Controller', '/controller'
-  #  add_group 'Api', '/api'
-  #  # add_group 'Helpers', '/helpers'
-  #  add_group 'Libraries', '/lib'
-  #  # add_group 'Sequel models', '/model'
-  # end
-  # SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-  #  SimpleCov::Formatter::HTMLFormatter,
-  #  # Coveralls::SimpleCov::Formatter
-  # ]
-
-  # SimpleCov.start 'suivi'
-
-  ##############################################
-  #précise l'environnement
-  # ENV["RACK_ENV"] ||= 'test'
+  require 'logger'
+  require_relative './bdd.rb'
+  include BDD
 
   require File.expand_path '../../app.rb', __FILE__
-  # require File.expand_path '../response_annuaire_user.rb', __FILE__
+  require File.expand_path '../response_annuaire_user.rb', __FILE__
   #Config APP_ROOT s'il n'est pas déjà configuré
   APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..')) if !APP_ROOT
-
+  @logger = Logger.new(STDOUT)
   #paramètre pour les Api
   module RSpecMixin
     include Rack::Test::Methods
     def app() Api end
   end
+
+  BDD::clear_db
+  BDD::load_in_tables
 
   # Requires supporting ruby files with custom matchers and macros, etc,
   # from spec/support/ and its subdirectories.
@@ -67,7 +39,7 @@
     config.expect_with :rspec
 
     # Use color in STDOUT
-    config.color_enabled = true
+    config.color = true
 
     # Use color not only in STDOUT but also in pagers and files
     config.tty = true
@@ -280,92 +252,6 @@
 #   "<ul><li><strong>a</strong> : <span>A</span></li><li><strong>b</strong> : <ul><li><strong>c</strong> : <span>C</span></li><li><strong>d</strong> : <ul><li><strong>e</strong> : <span>E</span></li><li><strong>f</strong> : <span>F</span></li></ul><li><strong>g</strong> : <span>G</span></li></ul><li><strong>h</strong> : <span>H</span></li></ul>"
 # end
 
-# ##################################
-# # CREATION D'UNE BASE DE DONNEES #
-# ##################################
-
-# class BDD
-
-#   # def initialize
-#   # end
-
-#   def clear_db
-#     Rights.all.each do |right|
-#       right.delete
-#     end
-#     Entrees.all.each do |entree|
-#       entree.delete
-#     end
-
-#     Carnets.all.each do |carnet|
-#       carnet.delete
-#     end
-#   end
-
-#   def load_in_tables_of(data)
-#     #chargements des données dans la tables carnets
-#     carnets = []
-#     i = 0
-#     data[:carnets].each do |carnet|
-#       if !carnet.empty? && !carnet.nil?
-#         carnets.push(create_carnet(carnet).id)
-#       end
-#     end
-
-#     data[:rights].each do |right|
-#       if !right.empty? && !right.nil?
-#         right[:carnets_id] = carnets[i]
-#         create_right(right)
-#         i+=1
-#       end
-#     end
-
-#     data[:entrees].each do |entree|
-#       if !entree.empty? && !entree.nil?
-#         entree[:carnets_id] = carnets[i]
-#         create_entree(entree)
-#         i+=1
-#       end
-#     end
-#   end
-
-
-#   def create_carnet(opt = {})
-#     carnet = Carnets.new
-#     carnet.uid = opt[:uid]
-#     carnet.nom = opt[:nom]
-#     carnet.prenom = opt[:prenom]
-#     carnet.etablissement = opt[:etablissement]
-#     carnet.classe = opt[:classe]
-#     carnet.sexe = opt[:sexe]
-
-#     carnet.save
-#     Carnets[:uid => opt[:uid]]
-#   end
-
-#   def create_right(opt = {})
-#     right = Rights.new
-#     right.uid = opt[:uid]
-#     right.read = opt[:read]
-#     right.write = opt[:write]
-#     right.carnets_id = opt[:carnets_id]
-
-#     right.save
-#     right
-#   end
-
-#   def create_entree(opt = {})
-#     entree = Entrees.new
-#     entree.uid = opt[:uid]
-#     entree.code_matiere = opt[:code_matiere]
-#     entree.date = opt[:date]
-#     entree.data = opt[:data]
-#     entree.carnets_id = opt[:carnets_id]
-
-#     entree.save
-#     entree
-#   end
-# end
 
 # #######################
 # # DONNEES POUR LA BDD #

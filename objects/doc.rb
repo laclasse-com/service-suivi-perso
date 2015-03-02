@@ -26,14 +26,12 @@ class Doc
       new_doc.nom = @nom
       new_doc.url = @url
       new_doc.saisies_id = @saisies_id
-      puts new_doc.inspect
       new_doc = new_doc.save
-      puts "save good"
       @id = new_doc.id
     rescue Exception => e
       @logger.error e.message+ " "+e.class.to_s
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "create").sub("$2", "Doc").sub("$3", "la création d'un document")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "create").sub("$2", "Doc").sub("$3", "la création d'un document")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "create").sub("$2", "Doc").sub("$3", "la création d'un document")
     end
   end
 

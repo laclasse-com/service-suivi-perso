@@ -47,8 +47,9 @@ class Entree
       @id = new_input.id
       lie_onglet
     rescue Exception => e
+      @logger.error e.message
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "create").sub("$2", "Entree").sub("$3", "la création d'une entree")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "create").sub("$2", "Entree").sub("$3", "la création d'une entree")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "create").sub("$2", "Entree").sub("$3", "la création d'une entree")
     end
   end
 
@@ -63,7 +64,7 @@ class Entree
       @id
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "lie_carnet").sub("$2", "Entree").sub("$3", "lier une entree à un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "lie_carnet").sub("$2", "Entree").sub("$3", "lier une entree à un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "lie_carnet").sub("$2", "Entree").sub("$3", "lier une entree à un onglet")
     end
   end
 
@@ -84,7 +85,7 @@ class Entree
       @date_modification = entree.date_modification
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "read").sub("$2", "Entree").sub("$3", "la récupération d'une entree")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "read").sub("$2", "Entree").sub("$3", "la récupération d'une entree")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "read").sub("$2", "Entree").sub("$3", "la récupération d'une entree")
     end
   end
 
@@ -104,7 +105,7 @@ class Entree
       @date_modification = Time.now if !avatar.nil? || !contenu.nil?
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Entree").sub("$3", "la mise à jour d'une entrée")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "update").sub("$2", "Entree").sub("$3", "la mise à jour d'une entrée")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Entree").sub("$3", "la mise à jour d'une entrée")
     end
   end
 
@@ -121,7 +122,7 @@ class Entree
       lie_onglet if EntreesOnglets[:saisies_id => @id, :onglets_id => @id_onglet].nil? && !Saisies[:id => @id].nil?
       create if Saisies[:id => @id].nil?
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "delete").sub("$2", "Entree").sub("$3", "la suppression d'une entrée")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "delete").sub("$2", "Entree").sub("$3", "la suppression d'une entrée")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "delete").sub("$2", "Entree").sub("$3", "la suppression d'une entrée")
     end
   end
 
@@ -131,10 +132,11 @@ class Entree
       EntreesOnglets.where(:saisies_id => @id).delete
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "delie_carnet").sub("$2", "Entree").sub("$3", "delier une entrée à un onglet")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "delie_carnet").sub("$2", "Entree").sub("$3", "delier une entrée à un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "delie_carnet").sub("$2", "Entree").sub("$3", "delier une entrée à un onglet")
     end
   end
 
+  #met à jour l'avatar de toute les entrée d'un utilisateur
   def update_avatar avatar
     requires({:uid => @uid}, :uid)
     requires({:avatar => avatar}, :avatar)
@@ -144,7 +146,7 @@ class Entree
       end
     rescue Exception => e
       @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update_avatar").sub("$2", "Entree").sub("$3", "mise à jour de tous de l'avatar")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "update_avatar").sub("$2", "Entree").sub("$3", "mise à jour de tous de l'avatar")
+      raise MSG[LANG.to_sym][:error][:crud].sub("$1", "update_avatar").sub("$2", "Entree").sub("$3", "mise à jour de tous de l'avatar")
     end
   end
 
