@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/laclasse-com/laclasse-common.git
-  revision: 68a073c8dceeebc0b6c0eba2bb06e3bb71c872fe
-  branch: develop
+  revision: d159b7e0484bbd09721c3fd11232e0ea9740721e
+  tag: 0.1
   specs:
     laclasse-common (0.3)
       logstash-logger
@@ -68,7 +68,7 @@ GEM
     json (1.8.2)
     logger (1.2.8)
     logstash-event (1.2.02)
-    logstash-logger (0.8.0)
+    logstash-logger (0.9.0)
       logstash-event (~> 1.2)
       stud
     macaddr (1.7.1)
@@ -111,7 +111,7 @@ GEM
     rack-test (0.6.3)
       rack (>= 1.0)
     rake (10.4.2)
-    redis (3.2.0)
+    redis (3.2.1)
     redis-rack (1.5.0)
       rack (~> 1.5)
       redis-store (~> 1.1.0)

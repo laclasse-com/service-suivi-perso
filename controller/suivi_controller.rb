@@ -1,7 +1,7 @@
 require 'sinatra'
 require "sinatra/reloader" if ENV[ 'RACK_ENV' ] == 'development'
-require 'laclasse/common/helpers/authentication'
-require 'laclasse/common/cross_app/sender'
+require 'laclasse/helpers/authentication'
+require 'laclasse/cross_app/sender'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
