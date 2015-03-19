@@ -15,7 +15,7 @@ class DocsApi < Grape::API
     begin
       params_docs = {'cmd' => params[:cmd], 'target' => params[:target]}
       params_docs["init"] = params[:init] if params[:init]
-      reponse = Laclasse::CrossAppSender.send_request_signed(:service_docs_suivi, "cmd/docs", params_docs, {"rack.session" => cookies['rack.session']})
+      reponse = Laclasse::CrossApp::Sender.send_request_signed(:service_docs_suivi, "cmd/docs", params_docs, {"rack.session" => cookies['rack.session']})
     rescue Exception => e
       LOGGER.error e.message
       LOGGER.error e.backtrace[0..10].to_s

@@ -21,7 +21,7 @@ class StatsApi < Grape::API
           carnets: []
         }
 
-        response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_regroupement, cls["classe_id"].to_s, {'expand' => 'true'})
+        response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls["classe_id"].to_s, {'expand' => 'true'})
         carnets = CarnetsLib.get_carnets_by_classe_of(response)[:carnets]
         classe[:nb_carnets] = carnets.size
 
@@ -64,7 +64,7 @@ class StatsApi < Grape::API
       csv_string = CSV.generate do |csv|
         csv << ["nom élève", "prénom élève", "établissement", "classe", "nombre onglets", "nombre messages", "nombre interlocuteurs"]
         $current_user[:user_detailed]['classes'].uniq {|classe| [classe["classe_id"], classe["etablissement_code"]]}.each do |cls|
-          response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_regroupement, cls["classe_id"].to_s, {'expand' => 'true'})
+          response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls["classe_id"].to_s, {'expand' => 'true'})
           carnets = CarnetsLib.get_carnets_by_classe_of(response)[:carnets]
           carnets.each do |c|
             nb_onglets = CarnetsOnglets.where(:carnets_id =>c[:id]).count

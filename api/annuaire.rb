@@ -47,7 +47,7 @@ class AnnuaireApi < Grape::API
     requires :id, type: String
   end
   get '/users/:id' do
-    response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, params[:id], {"expand" => "true"})
+    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, params[:id], {"expand" => "true"})
     if response["error"].nil?
       prefix_annuaire = ANNUAIRE[:url].split('/')
       prefix_annuaire.pop
@@ -75,7 +75,7 @@ class AnnuaireApi < Grape::API
         requires :rgp_id, type: Integer
     }
     get '/regroupements/:rgp_id' do
-        response = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_regroupement, params[:rgp_id].to_s, {'expand' => 'true'})
+        response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, params[:rgp_id].to_s, {'expand' => 'true'})
         response
     end
 
@@ -87,7 +87,7 @@ class AnnuaireApi < Grape::API
   get '/etablissements/:uai/personnels' do
       allUsers = []
       users=[]
-      personnels = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
+      personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
       if personnels.class == Array
         personnels.each do |personnel|
           role_id = ""
@@ -100,12 +100,12 @@ class AnnuaireApi < Grape::API
         end
         allUsers.concat(personnels)
       end
-      eleve = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, params[:uid_elv].to_s, {"expand" => "true"})
+      eleve = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, params[:uid_elv].to_s, {"expand" => "true"})
       eleve["role_id"] = ROLES[:eleve]
       allUsers.concat([eleve]) if eleve["error"].nil?
       parents = []
       eleve["parents"].each do |p|
-        parent = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, p["id_ent"].to_s, {"expand" => "true"})
+        parent = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, p["id_ent"].to_s, {"expand" => "true"})
         parent["role_id"] = ROLES[:parents]
         parents.concat([parent]) if parent["error"].nil?
       end
@@ -129,7 +129,7 @@ class AnnuaireApi < Grape::API
   get '/evignal/:uai/personnels' do
     allUsers = []
     users=[]
-    personnels = Laclasse::CrossAppSender.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
+    personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
     if personnels.class == Array
       personnels.each do |personnel|
         role_id = ""
@@ -165,9 +165,9 @@ class AnnuaireApi < Grape::API
       users = []
       avatars = {}
       while uids.size > 50
-        users.concat(Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.pop(50).join('_').to_s, {}))
+        users.concat(Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.pop(50).join('_').to_s, {}))
       end
-      users.concat(Laclasse::CrossAppSender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join('_').to_s, {})) if !uids.empty?
+      users.concat(Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join('_').to_s, {})) if !uids.empty?
       users.each do |user|
         avatars[user["id_ent"]] = user["avatar"]
       end

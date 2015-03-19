@@ -45,7 +45,7 @@ describe 'CarnetsLibTest' do
 
   it "test mock" do
     reponse_mock = [MOCK_USERS_LISTE[3]]
-    Laclasse::CrossAppSender.should_receive(:send_request_signed).with(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + "VAA99091", {}).and_return(reponse_mock)
+    Laclasse::CrossApp::Sender.should_receive(:send_request_signed).with(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + "VAA99091", {}).and_return(reponse_mock)
     carnets = get_evignal_carnets
     expect(carnets.size).to eq(1)
   end
