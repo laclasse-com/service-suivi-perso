@@ -25,8 +25,8 @@ PANEL_COLOR = [COLOR[:bleu],COLOR[:jaune],COLOR[:violet],COLOR[:vert],
 			  ]
 
 AVATAR = {
-  :F => "/app/bower_components/charte-graphique-laclasse-com/images/avatar_feminin.svg",
-  :M => "/app/bower_components/charte-graphique-laclasse-com/images/avatar_masculin.svg"
+  :F => "/app/bower_components/laclasse-common-client/images/avatar_feminin.svg",
+  :M => "/app/bower_components/laclasse-common-client/images/avatar_masculin.svg"
 }
 UAI_EVIGNAL = "0692165D"
 MAIL_DOMAINE = "@laclasse.com"

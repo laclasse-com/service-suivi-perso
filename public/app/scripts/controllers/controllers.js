@@ -3,7 +3,7 @@
 /* Controllers */
 function RootCtrl($scope, $rootScope, Notifications){
 
-  // $rootScope.racine_images = '/bower_components/charte-graphique-laclasse-com/images/';
+  // $rootScope.racine_images = '/bower_components/laclasse-common-client/images/';
 
   // $rootScope.couleurs = [ 'bleu',
   //    'vert',
