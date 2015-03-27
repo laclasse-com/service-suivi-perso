@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'bundler'
-require "sinatra/reloader"
+require 'sinatra/reloader'
 
 Bundler.require(:default, :development)     # require tout les gems définis dans Gemfile
 
@@ -13,7 +13,7 @@ def __DIR__(*args)
   ::File.expand_path(::File.join(dir, *args.map{|a| a.to_s}))
 end
 
-
+require 'laclasse/helpers/app_infos'
 
 puts "----------> configs <----------"
 require __DIR__('config/init')
@@ -29,4 +29,3 @@ puts "----------> api <--------------"
 require __DIR__('api/init')
 puts "----------> controllers <------"
 require __DIR__('controller/init')
-

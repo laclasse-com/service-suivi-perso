@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'sinatra'
 require "sinatra/reloader" if ENV[ 'RACK_ENV' ] == 'development'
 require 'laclasse/helpers/authentication'
@@ -23,11 +24,12 @@ class SinatraApp < Sinatra::Base
 
   helpers AuthenticationHelpers
   helpers Laclasse::Helpers::Authentication
+  helpers Laclasse::Helpers::AppInfos
   include CarnetsLib
 
   # Routes nécessitant une authentification
-  ['/?', '/login' ].each { |route| 
-    before APP_PATH + route do 
+  ['/?', '/login' ].each { |route|
+    before APP_PATH + route do
       login! env['REQUEST_PATH'] unless logged?
     end
   }
@@ -42,7 +44,18 @@ class SinatraApp < Sinatra::Base
             Please try to connect with CAS sso...
             </p>
             </div>"
-    end  
+    end
+  end
+
+  get "#{APP_PATH}/status" do
+    content_type :json
+
+    app_status = app_infos
+
+    app_status[:status] = 'OK'
+    app_status[:reason] = 'L\'application fonctionne.'
+
+    app_status.to_json
   end
 
   get APP_PATH + '/public/:url' do

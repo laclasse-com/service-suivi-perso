@@ -19,7 +19,7 @@ gem 'savon'
 gem 'nokogiri'
 gem 'rack-rewrite'
 
-gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common.git', tag: '0.2.1'
+gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common.git', tag: '0.2.2'
 
 # Generation de pdf
 gem 'pdfkit'
