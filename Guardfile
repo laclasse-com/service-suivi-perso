@@ -18,7 +18,7 @@ group :red_green_refactor, halt_on_fail: true do
 	  watch('spec/spec_helper.rb')  { 'spec' }
 	end
 
-	guard :rubocop, all_on_start: false do
+	guard :rubocop, cmd: 'rubocop --format offenses', all_on_start: false do
 		watch(%r{^api/(.+)\.rb}) 
 		watch(%r{^controller/(.+)\.rb}) 
 		watch(%r{^helpers/(.+)\.rb}) 
