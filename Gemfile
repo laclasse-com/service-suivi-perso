@@ -39,4 +39,9 @@ group :test do
   gem 'simplecov'
   gem 'rspec', '2.14.1'
   gem 'travis-lint'
+  gem 'rubocop'
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'guard-bundler'
+  gem 'rb-readline'
 end
