@@ -80,6 +80,9 @@ GEM
     guard-rspec (4.3.1)
       guard (~> 2.1)
       rspec (>= 2.14, < 4.0)
+    guard-rubocop (1.2.0)
+      guard (~> 2.0)
+      rubocop (~> 0.20)
     gyoku (1.1.1)
       builder (>= 2.1.2)
     hashie (3.3.2)
@@ -242,6 +245,7 @@ DEPENDENCIES
   guard
   guard-bundler
   guard-rspec
+  guard-rubocop
   htmlentities
   json
   laclasse-common!
