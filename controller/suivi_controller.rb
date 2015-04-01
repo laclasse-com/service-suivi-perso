@@ -1,25 +1,24 @@
 # -*- coding: utf-8 -*-
 require 'sinatra'
-require "sinatra/reloader" if ENV[ 'RACK_ENV' ] == 'development'
+require 'sinatra/reloader' if ENV[ 'RACK_ENV' ] == 'development'
 require 'laclasse/helpers/authentication'
 require 'laclasse/cross_app/sender'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
-
   configure do
-  set :app_file, __FILE__
-  set :root, APP_ROOT
-  set :public_folder, Proc.new { File.join(root, "public") }
-  set :inline_templates, true
-  set :protection, true
-  set :lock, true
+    set :app_file, __FILE__
+    set :root, APP_ROOT
+    set :public_folder, proc { File.join(root, 'public') }
+    set :inline_templates, true
+    set :protection, true
+    set :lock, true
   end
 
   configure :development do
     register Sinatra::Reloader
-    #also_reload '/path/to/some/file'
-    #dont_reload '/path/to/other/file'
+    # also_reload '/path/to/some/file'
+    # dont_reload '/path/to/other/file'
   end
 
   helpers AuthenticationHelpers
@@ -64,15 +63,15 @@ class SinatraApp < Sinatra::Base
       carnet.read
       tabs = get_tabs carnet.uid_elv, nil, params[:url]
       puts tabs.inspect
-      response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, carnet.uid_elv, {"expand" => "true"})
-      erb"<div class='row-fluid' style='height: 100%'>"+
-          "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 aside-contener' style='height:100%'>"+
-              "<div style='height:100%'>"+(HtmlMessageGenerator.aside_public_carnet response)+"</div>"+
-          "</div>"+
-          "<div class='col-xs-6 col-sm-6 col-md-8 col-lg-8 main-contener' style='height:100%; overflow:auto'>"+
-              "<div style='height:100%'>"+(HtmlMessageGenerator.main_public_carnet tabs)+"</div>"+
-          "</div>"+
-        "</div>"
+      response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, carnet.uid_elv, 'expand' => 'true')
+      erb "<div class='row-fluid' style='height: 100%'>"\
+          "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 aside-contener' style='height:100%'>"\
+              "<div style='height:100%'>" + (HtmlMessageGenerator.aside_public_carnet response) + '</div>'\
+          '</div>'\
+          "<div class='col-xs-6 col-sm-6 col-md-8 col-lg-8 main-contener' style='height:100%; overflow:auto'>"\
+              "<div style='height:100%'>" + (HtmlMessageGenerator.main_public_carnet tabs) + '</div>'\
+          '</div>'\
+        '</div>'
     rescue Exception => e
       puts e.message
       erb :erreur
@@ -81,9 +80,9 @@ class SinatraApp < Sinatra::Base
 
   get APP_PATH + '/auth/:provider/callback' do
     $current_user = init_session( request.env )
-    redirect params[:url] if params[:url] !=  env['rack.url_scheme'] + "://" + env['HTTP_HOST'] + APP_PATH + '/'
+    redirect params[:url] if params[:url] !=  env['rack.url_scheme'] + '://' + env['HTTP_HOST'] + APP_PATH + '/'
     redirect APP_PATH + '/'
-    #erb "<h1>Connected !</h1><pre>#{request.env['omniauth.auth'].to_html}</pre><hr>"
+    # erb "<h1>Connected !</h1><pre>#{request.env['omniauth.auth'].to_html}</pre><hr>"
   end
 
   get APP_PATH + '/auth/failure' do
@@ -105,6 +104,6 @@ class SinatraApp < Sinatra::Base
   end
 
   get APP_PATH + '/logout' do
-    logout! (env['rack.url_scheme'] + "://" + env['HTTP_HOST'] + APP_PATH + '/')
+    logout! env['rack.url_scheme'] + '://' + env['HTTP_HOST'] + APP_PATH + '/'
   end
 end

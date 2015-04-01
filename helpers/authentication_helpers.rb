@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 require 'base64'
 require 'cgi'
-# openssl is better than ruby-hmac and we can use sha2 instead for encrypting 
-#require 'hmac-sha1'
+# openssl is better than ruby-hmac and we can use sha2 instead for encrypting
+# require 'hmac-sha1'
 require 'openssl'
 require 'net/http'
 
@@ -10,7 +10,6 @@ require 'net/http'
 $current_user = nil
 
 module AuthenticationHelpers
-
   # def is_logged?
   #   env['rack.session'][:authenticated]
   # end
@@ -77,12 +76,12 @@ module AuthenticationHelpers
 
   # Vérifier la validité du jeton XML envoyé par CAS : du type XXX99999
   def is_uid_valid?
-    valid=true
-    valid=false if !env['rack.session'][:current_user][:info][:uid]
-    valid=false if  env['rack.session'][:current_user][:info][:uid].match(/[a-z]{3}[0-9]{5}/i).nil?
-    valid=false if !env['rack.session'][:current_user][:info][:user]
-    valid=false if !env['rack.session'][:current_user][:info][:info].ENTPersonStructRattachRNE
-    valid=false if  env['rack.session'][:current_user][:info][:info].ENTPersonStructRattachRNE.match(/[0-9]{7}[a-z]{1}/i).nil?
+    valid = true
+    valid = false unless env['rack.session'][:current_user][:info][:uid]
+    valid = false if  env['rack.session'][:current_user][:info][:uid].match(/[a-z]{3}[0-9]{5}/i).nil?
+    valid = false unless env['rack.session'][:current_user][:info][:user]
+    valid = false unless env['rack.session'][:current_user][:info][:info].ENTPersonStructRattachRNE
+    valid = false if  env['rack.session'][:current_user][:info][:info].ENTPersonStructRattachRNE.match(/[0-9]{7}[a-z]{1}/i).nil?
     valid
   end
 
@@ -100,13 +99,12 @@ module AuthenticationHelpers
 
   #   app_key = ANNUAIRE[:api_key]
 
-
   #   principal_parameters.reject! {|k,v| (k == "app_id" || k == "timestamp" || k == "signature" || k == "route_info" )}
 
   #   # rebuild string
   #   canonical_string = url(request) + '?'
   #   canonical_string += Hash[principal_parameters.sort].collect{|key, value| [key.to_s, CGI::escape(value.to_s)].join('=')}.join('&')
-  #   canonical_string += ';' 
+  #   canonical_string += ';'
   #   canonical_string += timestamp
   #   canonical_string += ';'
   #   canonical_string += app_id
@@ -115,31 +113,29 @@ module AuthenticationHelpers
   #   #puts app_key.application_key
 
   #   #puts "calculated canonical string"
-  #   #puts canonical_string  
+  #   #puts canonical_string
 
   #   ## resign messsage
   #   digest = OpenSSL::Digest.new('sha1')
   #   signed_message = Base64.encode64(OpenSSL::HMAC.digest(digest, app_key.chomp, canonical_string))
 
-
   #   if signature == signed_message
-  #     return true 
-  #   else 
-  #     return false 
+  #     return true
+  #   else
+  #     return false
   #   end
   # end
 
-  # returns uri of the rack request 
+  # returns uri of the rack request
   def url(request)
-    url = request.scheme + "://"
+    url = request.scheme + '://'
     url << request.host
-    if request.scheme == "https" && request.port != 443 ||
-      request.scheme == "http" && request.port != 80
+    if request.scheme == 'https' && request.port != 443 ||
+       request.scheme == 'http' && request.port != 80
       url << ":#{request.port}"
     end
 
     url << request.path
     url
-  end     
-
+  end
 end

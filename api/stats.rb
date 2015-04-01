@@ -1,46 +1,44 @@
-#coding: utf-8
+# coding: utf-8
 
 require 'csv'
 require 'tempfile'
 # API pour l'interface des stats
 class StatsApi < Grape::API
-	format :json
-  content_type :json, "application/json"
+  format :json
+  content_type :json, 'application/json'
 
   desc 'récupère le nombre de carnet par classe'
-  params{
-  }
+  params do
+  end
   get '/' do
     begin
       stats = []
-      $current_user[:user_detailed]['classes'].uniq {|classe| [classe["classe_id"], classe["etablissement_code"]]}.each do |cls|
+      $current_user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }.each do |cls|
         classe = {
-          id: cls["classe_id"], 
-          nom: cls["classe_libelle"], 
+          id: cls['classe_id'],
+          nom: cls['classe_libelle'],
           nb_carnets: [],
           carnets: []
         }
 
-        response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls["classe_id"].to_s, {'expand' => 'true'})
+        response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls['classe_id'].to_s, 'expand' => 'true')
         carnets = CarnetsLib.get_carnets_by_classe_of(response)[:carnets]
         classe[:nb_carnets] = carnets.size
 
         carnets.each do |c|
-          classe[:carnets].push({
-            id: c[:id],
-            nom: c[:lastName].capitalize+" "+c[:firstName].capitalize,
-            nb_messages: Saisies.where(:carnets_id => c[:id]).count,
-            nb_interloc: Saisies.where(:carnets_id => c[:id]).distinct(:uid).count
-          })
+          classe[:carnets].push(            id: c[:id],
+                                            nom: c[:lastName].capitalize + ' ' + c[:firstName].capitalize,
+                                            nb_messages: Saisies.where(carnets_id: c[:id]).count,
+                                            nb_interloc: Saisies.where(carnets_id: c[:id]).distinct(:uid).count)
         end
 
-        i = stats.index {|etab| etab[:etab_id] == cls["etablissement_code"]} if !stats.empty?
+        i = stats.index { |etab| etab[:etab_id] == cls['etablissement_code'] } unless stats.empty?
         if i
           stats[i][:classes].push classe
         else
           stat = {
-            etab_id: cls["etablissement_code"], 
-            etab_nom: cls["etablissement_nom"],
+            etab_id: cls['etablissement_code'],
+            etab_nom: cls['etablissement_nom'],
             classes: []
           }
           stat[:classes].push classe
@@ -51,26 +49,26 @@ class StatsApi < Grape::API
     rescue Exception => e
       puts e.message
       puts e.backtrace[0..10]
-      {error: "Impossible de récupérer les statistiques !"}
+      {error: 'Impossible de récupérer les statistiques !'}
     end
   end
 
   desc 'récupère le csv'
-  params{
-  }
+  params do
+  end
   get '/csv' do
     begin
 
       csv_string = CSV.generate do |csv|
-        csv << ["nom élève", "prénom élève", "établissement", "classe", "nombre onglets", "nombre messages", "nombre interlocuteurs"]
-        $current_user[:user_detailed]['classes'].uniq {|classe| [classe["classe_id"], classe["etablissement_code"]]}.each do |cls|
-          response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls["classe_id"].to_s, {'expand' => 'true'})
+        csv << ['nom élève', 'prénom élève', 'établissement', 'classe', 'nombre onglets', 'nombre messages', 'nombre interlocuteurs']
+        $current_user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }.each do |cls|
+          response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls['classe_id'].to_s, 'expand' => 'true')
           carnets = CarnetsLib.get_carnets_by_classe_of(response)[:carnets]
           carnets.each do |c|
-            nb_onglets = CarnetsOnglets.where(:carnets_id =>c[:id]).count
-            nb_messages = Saisies.where(:carnets_id => c[:id]).count
-            nb_interloc = Saisies.where(:carnets_id => c[:id]).distinct(:uid).count
-            csv << [c[:lastName].capitalize, c[:firstName].capitalize, cls["etablissement_nom"], cls["classe_libelle"], nb_onglets, nb_messages, nb_interloc]
+            nb_onglets = CarnetsOnglets.where(carnets_id: c[:id]).count
+            nb_messages = Saisies.where(carnets_id: c[:id]).count
+            nb_interloc = Saisies.where(carnets_id: c[:id]).distinct(:uid).count
+            csv << [c[:lastName].capitalize, c[:firstName].capitalize, cls['etablissement_nom'], cls['classe_libelle'], nb_onglets, nb_messages, nb_interloc]
           end
         end
       end
@@ -82,102 +80,97 @@ class StatsApi < Grape::API
       csv_string
     rescue Exception => e
       puts e.message
-      {error: "Impossible de récupérer le csv"}
+      {error: 'Impossible de récupérer le csv'}
     end
   end
 
   desc 'récupère le nombre de carnet par classe pour evignal'
-  params{
-  }
+  params do
+  end
   get '/evignal' do
     begin
       stats = []
       classes = []
-      classes_evignal = $current_user[:user_detailed]['classes'].uniq {|classe| [classe["classe_id"], classe["etablissement_code"]]}
+      classes_evignal = $current_user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
       carnets = CarnetsLib.get_evignal_carnets
 
       carnets.each do |c|
         carnet = {
           id: c[:id],
-          nom: c[:lastName].capitalize+" "+c[:firstName].capitalize,
-          nb_messages: Saisies.where(:carnets_id => c[:id]).count,
-          nb_interloc: Saisies.where(:carnets_id => c[:id]).distinct(:uid).count
+          nom: c[:lastName].capitalize + ' ' + c[:firstName].capitalize,
+          nb_messages: Saisies.where(carnets_id: c[:id]).count,
+          nb_interloc: Saisies.where(carnets_id: c[:id]).distinct(:uid).count
         }
 
-        index_classe_evignal = classes_evignal.index {|classe| classe["classe_id"] == c[:classe_id]} if !classes_evignal.empty?
+        index_classe_evignal = classes_evignal.index { |classe| classe['classe_id'] == c[:classe_id] } unless classes_evignal.empty?
         if index_classe_evignal
-          nom_classe = classes_evignal[index_classe_evignal]["classe_libelle"]
+          nom_classe = classes_evignal[index_classe_evignal]['classe_libelle']
         else
-          nom_classe = "Autres classes"
+          nom_classe = 'Autres classes'
         end
 
-        index_classe = classes.index {|classe| classe[:id] == c[:classe_id] || (classe[:nom] == nom_classe && nom_classe == "Autres classes")} if !classes.empty?
+        index_classe = classes.index { |classe| classe[:id] == c[:classe_id] || (classe[:nom] == nom_classe && nom_classe == 'Autres classes') } unless classes.empty?
         if index_classe
-          classes[index_classe][:nb_carnets] = classes[index_classe][:nb_carnets]+1
+          classes[index_classe][:nb_carnets] = classes[index_classe][:nb_carnets] + 1
           classes[index_classe][:carnets].push(carnet)
         else
-          classes.push({
-            id: c[:classe_id],
-            etab_id: c[:etablissement_code], 
-            nom: nom_classe, 
-            nb_carnets: 1,
-            carnets: [carnet]
-          })
+          classes.push(            id: c[:classe_id],
+                                   etab_id: c[:etablissement_code],
+                                   nom: nom_classe,
+                                   nb_carnets: 1,
+                                   carnets: [carnet])
         end
       end
-      classes.each do | classe |
-
-        index_classe_evignal = classes_evignal.index {|cls| cls["etablissement_code"] == classe[:etab_id]} if !classes_evignal.empty?
+      classes.each do |classe|
+        index_classe_evignal = classes_evignal.index { |cls| cls['etablissement_code'] == classe[:etab_id] } unless classes_evignal.empty?
         if index_classe_evignal
-          nom_etab = classes_evignal[index_classe_evignal]["etablissement_nom"]
+          nom_etab = classes_evignal[index_classe_evignal]['etablissement_nom']
         else
-          nom_etab = "Autres établissements"
+          nom_etab = 'Autres établissements'
         end
 
-        i = stats.index {|etab| etab[:etab_id] == classe[:etab_id] || (etab[:etab_nom] == nom_etab && nom_etab == "Autres établissements")} if !stats.empty?
+        i = stats.index { |etab| etab[:etab_id] == classe[:etab_id] || (etab[:etab_nom] == nom_etab && nom_etab == 'Autres établissements') } unless stats.empty?
         if i
           stats[i][:classes].push classe
-        else          
-          stats.push({
-            etab_id: classe[:etab_id], 
-            etab_nom: nom_etab,
-            classes: [classe]
-          })
+        else
+          stats.push(            etab_id: classe[:etab_id],
+                                 etab_nom: nom_etab,
+                                 classes: [classe])
         end
       end
       {stats: stats}
     rescue Exception => e
       puts e.message
       puts e.backtrace[0..10]
-      {error: "Impossible de récupérer les statistiques !"}
+      {error: 'Impossible de récupérer les statistiques !'}
     end
   end
 
   desc 'récupère le csv pour evignal'
-  params{
-  }
+  params do
+  end
   get '/evignal/csv' do
     begin
 
       csv_string = CSV.generate do |csv|
-        csv << ["nom élève", "prénom élève", "établissement", "classe", "nombre onglets", "nombre messages", "nombre interlocuteurs"]
-        classes_evignal = $current_user[:user_detailed]['classes'].uniq {|classe| [classe["classe_id"], classe["etablissement_code"]]}
+        csv << ['nom élève', 'prénom élève', 'établissement', 'classe', 'nombre onglets', 'nombre messages', 'nombre interlocuteurs']
+        classes_evignal = $current_user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
         carnets = CarnetsLib.get_evignal_carnets
         carnets.each do |c|
-          nb_onglets = CarnetsOnglets.where(:carnets_id =>c[:id]).count
-          nb_messages = Saisies.where(:carnets_id => c[:id]).count
-          nb_interloc = Saisies.where(:carnets_id => c[:id]).distinct(:uid).count
-          index_classe_evignal = classes_evignal.index {|classe| classe["classe_id"] == c[:classe_id]} if !classes_evignal.empty?
+          nb_onglets = CarnetsOnglets.where(carnets_id: c[:id]).count
+          nb_messages = Saisies.where(carnets_id: c[:id]).count
+          nb_interloc = Saisies.where(carnets_id: c[:id]).distinct(:uid).count
+          index_classe_evignal = classes_evignal.index { |classe| classe['classe_id'] == c[:classe_id] } unless classes_evignal.empty?
           if index_classe_evignal
-            nom_classe = classes_evignal[index_classe_evignal]["classe_libelle"]
+            nom_classe = classes_evignal[index_classe_evignal]['classe_libelle']
           else
-            nom_classe = "Autres classes"
+            nom_classe = 'Autres classes'
           end
-          index_classe_evignal = classes_evignal.index {|cls| cls["etablissement_code"] == c[:etablissement_code]} if !classes_evignal.empty?
+          index_classe_evignal = classes_evignal.index { |cls| cls['etablissement_code'] == c[:etablissement_code] } unless classes_evignal.empty?
           if index_classe_evignal
-            nom_etab = classes_evignal[index_classe_evignal]["etablissement_nom"]
+            nom_etab = classes_evignal[index_classe_evignal]['etablissement_nom']
           else
-            nom_etab = "Autres établissements"
+            nom_etab = 'Autres établissements'
           end
           csv << [c[:lastName].capitalize, c[:firstName].capitalize, nom_etab, nom_classe, nb_onglets, nb_messages, nb_interloc]
         end
@@ -190,7 +183,7 @@ class StatsApi < Grape::API
       csv_string
     rescue Exception => e
       puts e.message
-      {error: "Impossible de récupérer le csv"}
+      {error: 'Impossible de récupérer le csv'}
     end
   end
 end
