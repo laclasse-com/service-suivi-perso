@@ -21,7 +21,7 @@ gem 'rack-rewrite'
 
 gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common.git', tag: '0.2.1'
 
-#Generation de pdf
+# Generation de pdf
 gem 'pdfkit'
 gem 'wkhtmltopdf-binary'
 gem 'htmlentities'

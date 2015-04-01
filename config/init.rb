@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-puts "loading config/constants"
+puts 'loading config/constants'
 require __DIR__('constants')
 
-puts "loading config/rights_constants"
+puts 'loading config/rights_constants'
 require __DIR__('rights_constants')
 
-puts "loading config/options"
+puts 'loading config/options'
 require __DIR__('options')
 
-puts "loading config/database"
+puts 'loading config/database'
 require __DIR__('database')
 
 require_relative './common'
