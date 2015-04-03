@@ -45,7 +45,7 @@ class Entree
       new_input = new_input.save
       @id = new_input.id
       lie_onglet
-    rescue Exception => e
+    rescue Exception
       @logger.error e.message
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Entree').sub('$3', "la création d'une entree")
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Entree').sub('$3', "la création d'une entree")
@@ -61,7 +61,7 @@ class Entree
       new_liaison.onglets_id = @id_onglet
       new_liaison = new_liaison.save
       @id
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'lie_carnet').sub('$2', 'Entree').sub('$3', 'lier une entree à un onglet')
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'lie_carnet').sub('$2', 'Entree').sub('$3', 'lier une entree à un onglet')
     end
@@ -82,7 +82,7 @@ class Entree
       @contenu = entree.contenu
       @date_creation = entree.date_creation
       @date_modification = entree.date_modification
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Entree').sub('$3', "la récupération d'une entree")
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Entree').sub('$3', "la récupération d'une entree")
     end
@@ -102,7 +102,7 @@ class Entree
         @avatar = avatar
       end
       @date_modification = Time.now if !avatar.nil? || !contenu.nil?
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Entree').sub('$3', "la mise à jour d'une entrée")
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Entree').sub('$3', "la mise à jour d'une entrée")
     end
@@ -117,7 +117,7 @@ class Entree
       delie_onglet
       delete_docs
       entree.delete
-    rescue Exception => e
+    rescue Exception
       lie_onglet if EntreesOnglets[saisies_id: @id, onglets_id: @id_onglet].nil? && !Saisies[id: @id].nil?
       create if Saisies[id: @id].nil?
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete').sub('$2', 'Entree').sub('$3', "la suppression d'une entrée")
@@ -129,7 +129,7 @@ class Entree
     requires({id: @id}, :id)
     begin
       EntreesOnglets.where(saisies_id: @id).delete
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delie_carnet').sub('$2', 'Entree').sub('$3', 'delier une entrée à un onglet')
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'delie_carnet').sub('$2', 'Entree').sub('$3', 'delier une entrée à un onglet')
     end
@@ -143,7 +143,7 @@ class Entree
       Saisies.where(uid: @uid).each do |entree|
         entree.update(avatar: avatar)
       end
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update_avatar').sub('$2', 'Entree').sub('$3', "mise à jour de tous de l'avatar")
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'update_avatar').sub('$2', 'Entree').sub('$3', "mise à jour de tous de l'avatar")
     end
@@ -153,7 +153,7 @@ class Entree
     requires({id: @id}, :id)
     begin
       Docs.where(saisies_id: @id).delete
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete_docs').sub('$2', 'Entree').sub('$3', "supprime les documents d'une entree")
       raise MSG[LANG.to_sym][:error][crud].sub('$1', 'delete_docs').sub('$2', 'Entree').sub('$3', "supprime les documents d'une entree")
     end
@@ -168,7 +168,7 @@ class Entree
         doc.read
         docs.push(id: doc.id, nom: doc.nom, md5: doc.url)
       end
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_docs').sub('$2', 'Entree').sub('$3', "récupération des documents d'une entrée")
       raise MSG[LANG.to_sym][:error][crud].sub('$1', 'get_docs').sub('$2', 'Entree').sub('$3', "récupération des documents d'une entrée")
     end
