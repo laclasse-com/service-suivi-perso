@@ -5,9 +5,8 @@ describe 'DocTest' do
     @ids = BDD.ids_datas
   end
 
-  # Methode 'create'
-  it 'ajoute doc dans la BDD' do
-    doc = Doc.new nil, 'nouveau doc.txt', '66666md54444', @ids[:carnet1][:onglet1][:saisie2][:id]
+  it "ajoute doc dans la BDD" do
+    doc = Doc.new nil, "nouveau doc.txt", "66666md54444", @ids[:carnet1][:onglet1][:saisie2][:id]
     doc.create
     expect(doc.id).not_to be_nil
   end
@@ -44,6 +43,9 @@ describe 'DocTest' do
 
   # Methode 'read'
   it 'read récupère un doc de la BDD' do
+=======
+  it "récupère un doc de la BDD" do
+>>>>>>> 49090ea... refactoring Doc class : simplifying.
     doc = Doc.new @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]
     doc.read
     expect(doc.id).not_to be_nil
