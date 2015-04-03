@@ -1,15 +1,14 @@
-#coding: utf-8
+# coding: utf-8
 require 'logger'
 
 class Right
-
   include Outils
 
   attr_accessor :read, :write, :admin, :hopital, :evignal
 
   attr_reader :id, :uid, :full_name, :profil, :carnet_id, :date_creation
 
-  def initialize id=nil, uid=nil, full_name="", profil="", carnet_id=nil, read=0, write=0, admin=0, hopital=0, evignal=0
+  def initialize(id = nil, uid = nil, full_name = '', profil = '', carnet_id = nil, read = 0, write = 0, admin = 0, hopital = 0, evignal = 0)
     @id = id
     @uid = uid
     @full_name = full_name
@@ -25,8 +24,8 @@ class Right
   end
 
   def create
-    requires({:uid => @uid}, :uid)
-    requires({:carnet_id => @carnet_id}, :carnet_id)
+    requires({uid: @uid}, :uid)
+    requires({carnet_id: @carnet_id}, :carnet_id)
     begin
       @date_creation = Time.now
       new_right = DroitsSpecifiques.new
@@ -43,15 +42,15 @@ class Right
       new_right = new_right.save
       @id = new_right.id
     rescue Exception => e
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "create").sub("$2", "Right").sub("$3", "la création d'un droit")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "create").sub("$2", "Right").sub("$3", "la création d'un droit")
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Right').sub('$3', "la création d'un droit")
+      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'create').sub('$2', 'Right').sub('$3', "la création d'un droit")
     end
   end
 
   def select
-    right = DroitsSpecifiques[:id => @id] if !@id.nil?
-    right = DroitsSpecifiques[:uid => @uid, :carnets_id => @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
-    requires({:right => right}, :right)
+    right = DroitsSpecifiques[id: @id] unless @id.nil?
+    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    requires({right: right}, :right)
     begin
       @id = right.id
       @uid = right.uid
@@ -65,47 +64,47 @@ class Right
       @evignal = right.evignal
       @date_creation = right.date_creation
     rescue Exception => e
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "select").sub("$2", "Right").sub("$3", "la récupération d'un droit")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "select").sub("$2", "Right").sub("$3", "la récupération d'un droit")
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'select').sub('$2', 'Right').sub('$3', "la récupération d'un droit")
+      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'select').sub('$2', 'Right').sub('$3', "la récupération d'un droit")
     end
   end
 
-  def update read=nil, write=nil, admin=nil, hopital=nil, evignal=nil
-   right = DroitsSpecifiques[:id => @id] if !@id.nil?
-    right = DroitsSpecifiques[:uid => @uid, :carnets_id => @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
-    requires({:right => right}, :right)
+  def update(read = nil, write = nil, admin = nil, hopital = nil, evignal = nil)
+    right = DroitsSpecifiques[id: @id] unless @id.nil?
+    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    requires({right: right}, :right)
     begin
-      right.update(:read => read) if !read.nil?
-      right.update(:write => write) if !write.nil?
-      right.update(:admin => admin) if !admin.nil?
-      right.update(:hopital => hopital) if !hopital.nil?
-      right.update(:evignal => evignal) if !evignal.nil?
-      @read = read if !read.nil?
-      @write = write if !write.nil?
-      @admin = admin if !admin.nil?
-      @hopital = hopital if !hopital.nil?
-      @evignal = evignal if !evignal.nil?
+      right.update(read: read) unless read.nil?
+      right.update(write: write) unless write.nil?
+      right.update(admin: admin) unless admin.nil?
+      right.update(hopital: hopital) unless hopital.nil?
+      right.update(evignal: evignal) unless evignal.nil?
+      @read = read unless read.nil?
+      @write = write unless write.nil?
+      @admin = admin unless admin.nil?
+      @hopital = hopital unless hopital.nil?
+      @evignal = evignal unless evignal.nil?
     rescue Exception => e
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Right").sub("$3", "la mise à jour d'un droit")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "update").sub("$2", "Right").sub("$3", "la mise à jour d'un droit")
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la mise à jour d'un droit")
+      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la mise à jour d'un droit")
     end
   end
 
   def delete
-    right = DroitsSpecifiques[:id => @id] if !@id.nil?
-    right = DroitsSpecifiques[:uid => @uid, :carnets_id => @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
-    requires({:right => right}, :right)
+    right = DroitsSpecifiques[id: @id] unless @id.nil?
+    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    requires({right: right}, :right)
     begin
       right.delete
     rescue Exception => e
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub("$1", "update").sub("$2", "Right").sub("$3", "la suppression d'un droit")
-      raise MSG[LANG.to_sym][:error][crud].sub("$1", "update").sub("$2", "Right").sub("$3", "la suppression d'un droit")
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la suppression d'un droit")
+      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la suppression d'un droit")
     end
   end
 
   def exist?
-    right = DroitsSpecifiques[:id => @id] if !@id.nil?
-    right = DroitsSpecifiques[:uid => @uid, :carnets_id => @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right = DroitsSpecifiques[id: @id] unless @id.nil?
+    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
     right.nil? ? false : true
   end
 end

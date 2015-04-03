@@ -34,7 +34,7 @@ describe 'CarnetTest' do
 
   it "supprime l'url publique d'un carnet" do
     carnet = Carnet.new(@ids[:carnet2][:id])
-    carnet.deleteUrl
+    carnet.delete_url
     expect(Carnets[:id => @ids[:carnet2][:id]].url_publique).to be_nil
   end
 

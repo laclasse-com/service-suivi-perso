@@ -70,7 +70,7 @@ class PublicUrlApi < Grape::API
       end
       puts right.inspect
       if right.admin == 1
-        carnet.deleteUrl
+        carnet.delete_url
       else
         error!("Vous n'êtes pas autorisé pour cette ressource", 401)
       end
