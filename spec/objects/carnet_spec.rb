@@ -101,7 +101,7 @@ describe 'CarnetTest' do
   end
 
   it 'get_onglets lance une exception si id manquant' do
-    carnet = Carnet.new()
+    carnet = Carnet.new
     expect { carnet.get_onglets }.to raise_error(ArgumentError)
   end
 
@@ -111,19 +111,19 @@ describe 'CarnetTest' do
     expect(entrees.size).to eq(2)
   end
 
-   it 'get_entrees lance une exception si id manquant' do
-    carnet = Carnet.new()
+  it 'get_entrees lance une exception si id manquant' do
+    carnet = Carnet.new
     expect { carnet.get_entrees }.to raise_error(ArgumentError)
   end
 
- it 'retourne les droits specifiques au carnet' do
+  it 'retourne les droits specifiques au carnet' do
     carnet = Carnet.new(@ids[:carnet2][:id])
-    rights = carnet.get_rights -1
+    rights = carnet.get_rights(-1)
     expect(rights.size).to eq(3)
   end
 
- it 'get_rights lance une exception si id manquant' do
-    carnet = Carnet.new()
+  it 'get_rights lance une exception si id manquant' do
+    carnet = Carnet.new
     expect { carnet.get_rights }.to raise_error(ArgumentError)
   end
 
@@ -141,8 +141,8 @@ describe 'CarnetTest' do
     expect(rights.size).to eq(2)
   end
 
-  it "get_pers_evignal_or_hopital lance une exception si id manquant" do
-    carnet = Carnet.new()
+  it 'get_pers_evignal_or_hopital lance une exception si id manquant' do
+    carnet = Carnet.new
     expect { carnet.get_pers_evignal_or_hopital }.to raise_error(ArgumentError)
   end
 end
