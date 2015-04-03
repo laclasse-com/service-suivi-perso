@@ -5,13 +5,13 @@ describe 'DocTest' do
     @ids = BDD::get_ids_datas
   end
 
-  it "add doc in bdd" do
+  it "ajoute doc dans la BDD" do
     doc = Doc.new nil, "nouveau doc.txt", "66666md54444", @ids[:carnet1][:onglet1][:saisie2][:id]
     doc.create
     expect(doc.id).not_to be_nil
   end
 
-  it "récupère un doc" do
+  it "récupère un doc de la BDD" do
     doc = Doc.new @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]
     doc.read
     expect(doc.id).not_to be_nil
