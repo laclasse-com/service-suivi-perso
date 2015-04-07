@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'logger'
 
+# Classe de gestion des onglets du carnet
 class Onglet
   include Outils
 
@@ -20,8 +21,8 @@ class Onglet
   end
 
   def create
-    requires({nom: @nom}, :nom)
-    requires({uid_own: @uid_own}, :uid_own)
+    requires({ nom: @nom }, :nom)
+    requires({ uid_own: @uid_own }, :uid_own)
     begin
       @date_creation = Time.now
       new_tabs = Onglets.new
@@ -32,33 +33,33 @@ class Onglet
       new_tabs = new_tabs.save
       @id = new_tabs.id
       lie_carnet
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Onglet').sub('$3', "la création d'un onglet")
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Onglet').sub('$3', "la création d'un onglet")
     end
   end
 
   def lie_carnet
-    requires({id_carnet: @id_carnet}, :id_carnet)
-    requires({id_onglet: @id}, :id_onglet)
+    requires({ id_carnet: @id_carnet }, :id_carnet)
+    requires({ id_onglet: @id }, :id_onglet)
     begin
       new_liaison = CarnetsOnglets.new
       new_liaison.carnets_id = @id_carnet
       new_liaison.onglets_id = @id
       new_liaison.ordre = @ordre
-      new_liaison = new_liaison.save
+      new_liaison.save
       @id
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'lie_carnet').sub('$2', 'Onglet').sub('$3', 'lier un carnet à un onglet')
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'lie_carnet').sub('$2', 'Onglet').sub('$3', 'lier un carnet à un onglet')
     end
   end
 
   def read
-    requires({id: @id}, :id)
+    requires({ id: @id }, :id)
     onglet = Onglets[id: @id]
     liaison = CarnetsOnglets[onglets_id: @id]
-    requires({onglet: onglet}, :onglet)
+    requires({ onglet: onglet }, :onglet)
     begin
       @id_carnet = liaison.carnets_id unless liaison.nil?
       @nom = onglet.nom
@@ -66,17 +67,17 @@ class Onglet
       @date_creation = onglet.date_creation
       @ordre = liaison.ordre unless liaison.nil?
       @url_pub = onglet.url_publique
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Onglet').sub('$3', "la récupération d'un onglet")
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Onglet').sub('$3', "la récupération d'un onglet")
     end
   end
 
   def update(nom = nil, ordre = nil, url_pub = nil)
-    requires({id: @id}, :id)
-    requires({id_carnet: @id_carnet}, :id_carnet)
+    requires({ id: @id }, :id)
+    requires({ id_carnet: @id_carnet }, :id_carnet)
     onglet = Onglets[id: @id]
-    requires({onglet: onglet}, :onglet)
+    requires({ onglet: onglet }, :onglet)
     begin
       onglet.update(nom: nom) unless nom.nil?
       onglet.update(url_publique: url_pub) unless url_pub.nil?
@@ -84,22 +85,22 @@ class Onglet
       @ordre = ordre unless ordre.nil?
       @url_pub = url_pub unless url_pub.nil?
       @nom = nom unless nom.nil?
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Onglet').sub('$3', "la mise à jour d'un onglet")
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Onglet').sub('$3', "la mise à jour d'un onglet")
     end
   end
 
   def delete
-    requires({id: @id}, :id)
-    requires({id_carnet: @id_carnet}, :id_carnet)
+    requires({ id: @id }, :id)
+    requires({ id_carnet: @id_carnet }, :id_carnet)
     onglet = Onglets[id: @id]
-    requires({onglet: onglet}, :onglet)
+    requires({ onglet: onglet }, :onglet)
     begin
       delete_entrees
       delie_carnet
       onglet.delete
-    rescue Exception => e
+    rescue Exception
       lie_carnet if CarnetsOnglets[onglets_id: @id, carnets_id: @id_carnet].nil? && !Onglets[id: @id].nil?
       create if Onglets[id: @id].nil?
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete').sub('$2', 'Onglet').sub('$3', "la suppression d'un onglet")
@@ -107,30 +108,30 @@ class Onglet
     end
   end
 
-  def deleteUrl
-    requires({id: @id}, :id)
+  def delete_url
+    requires({ id: @id }, :id)
     onglet = Onglets[id: @id]
-    requires({onglet: onglet}, :onglet)
+    requires({ onglet: onglet }, :onglet)
     begin
       onglet.update(url_publique: nil)
-    rescue Exception => e
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'deleteUrl').sub('$2', 'Onglet').sub('$3', "la suppression de l'url publique")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'deleteUrl').sub('$2', 'Onglet').sub('$3', "la suppression de l'url publique")
+    rescue Exception
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete_url').sub('$2', 'Onglet').sub('$3', "la suppression de l'url publique")
+      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete_url').sub('$2', 'Onglet').sub('$3', "la suppression de l'url publique")
     end
   end
 
   def delie_carnet
-    requires({id: @id}, :id)
+    requires({ id: @id }, :id)
     begin
       CarnetsOnglets.where(onglets_id: @id).delete
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delie_carnet').sub('$2', 'Onglet').sub('$3', 'delier un carnet à un onglet')
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'delie_carnet').sub('$2', 'Onglet').sub('$3', 'delier un carnet à un onglet')
     end
   end
 
   def get_entrees
-    requires({id: @id}, :id)
+    requires({ id: @id }, :id)
     entrees = []
     entrees_bdd = EntreesOnglets.where(onglets_id: @id)
     begin
@@ -141,7 +142,7 @@ class Onglet
           entrees.push entree
         end
       end
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_entrees').sub('$2', 'Onglet').sub('$3', "récupération des entrées d'un onglet")
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_entrees').sub('$2', 'Onglet').sub('$3', "récupération des entrées d'un onglet")
     end
@@ -149,7 +150,7 @@ class Onglet
   end
 
   def delete_entrees
-    requires({id: @id}, :id)
+    requires({ id: @id }, :id)
     entrees_bdd = EntreesOnglets.where(onglets_id: @id)
     begin
       entrees_bdd.each do |e|
@@ -157,7 +158,7 @@ class Onglet
         entree.read
         entree.delete
       end
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete_entrees').sub('$2', 'Onglet').sub('$3', "la suppression des entrées d'un onglet")
       raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete_entrees').sub('$2', 'Onglet').sub('$3', "la suppression des entrées d'un onglet")
     end
