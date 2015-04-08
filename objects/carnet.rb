@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'logger'
 
-# Ojet carnet de suivi
+# Ojbet carnet de suivi
 class Carnet
   include Outils
 

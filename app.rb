@@ -10,22 +10,22 @@ Bundler.require(:default, :development)     # require tout les gems définis dan
 def __DIR__(*args)
   filename = caller[0][/^(.*):/, 1]
   dir = File.expand_path(File.dirname(filename))
-  ::File.expand_path(::File.join(dir, *args.map{|a| a.to_s}))
+  ::File.expand_path(::File.join(dir, *args.map(&:to_s)))
 end
 
 require 'laclasse/helpers/app_infos'
 
-puts "----------> configs <----------"
+puts '----------> configs <----------'
 require __DIR__('config/init')
-puts "----------> helpers <----------"
+puts '----------> helpers <----------'
 require __DIR__('helpers/init')
-puts "----------> libs <-------------"
+puts '----------> libs <-------------'
 require __DIR__('lib/init')
-puts "----------> models <-----------"
+puts '----------> models <-----------'
 require __DIR__('model/init')
-puts "----------> objects <-----------"
+puts '----------> objects <-----------'
 require __DIR__('objects/init')
-puts "----------> api <--------------"
+puts '----------> api <--------------'
 require __DIR__('api/init')
-puts "----------> controllers <------"
+puts '----------> controllers <------'
 require __DIR__('controller/init')

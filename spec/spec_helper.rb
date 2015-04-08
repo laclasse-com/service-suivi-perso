@@ -1,6 +1,6 @@
-#################################################################################################
-#                             CONFIGURATION POUR EXECUTER LES TESTS                             #
-#################################################################################################
+  #################################################################################################
+  #                             CONFIGURATION POUR EXECUTER LES TESTS                             #
+  #################################################################################################
   require 'rubygems'
   require 'rspec'
   require 'rack/test'
@@ -13,26 +13,28 @@
 
   require File.expand_path '../../app.rb', __FILE__
   require File.expand_path '../response_annuaire_user.rb', __FILE__
-  #Config APP_ROOT s'il n'est pas déjà configuré
-  APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..')) if !APP_ROOT
+  # Config APP_ROOT s'il n'est pas déjà configuré
+  APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..')) unless APP_ROOT
   @logger = Logger.new(STDOUT)
-  #paramètre pour les Api
+  # paramètre pour les Api
   module RSpecMixin
     include Rack::Test::Methods
-    def app() Api end
+    def app
+      Api
+    end
   end
 
-  BDD::clear_db
-  BDD::load_in_tables
+  BDD.clear_db
+  BDD.load_in_tables
 
   # Requires supporting ruby files with custom matchers and macros, etc,
   # from spec/support/ and its subdirectories.
   # Dir[File.expand_path('spec/support/**/*.rb')].each { |f| require f }
 
-  #configuration pour mocker la session
+  # configuration pour mocker la session
   RSpec.configure do |config|
     config.around(:each) do |test|
-      Sequel.transaction([DB], :rollback=>:always){test.run}
+      Sequel.transaction([DB], rollback: :always) { test.run }
     end
     config.include RSpecMixin
     config.mock_with :rspec
@@ -49,7 +51,6 @@
   end
 ###################################################################################################
 ###################################################################################################
-
 
 # #############
 # # CONSTANTE #
@@ -74,7 +75,7 @@
 # ####################
 
 # #id de l'utilisateur de test
-# def user_uid 
+# def user_uid
 #   "VAA99999"
 # end
 
@@ -172,7 +173,7 @@
 #   response
 # end
 
-# def response_service_users 
+# def response_service_users
 #   response = [
 #     {"id_ent" => "VAA99001","nom" => "NOM1","prenom" =>"Prenom1","full_name" => "Nom1 Prenom1", "etablissement_nom" =>"CLG-TEST1", "classe_libelle" =>"6A"},
 #     {"id_ent" => "VAA99002","nom" => "NOM2","prenom" => "Prenom2","full_name" => "Nom2 Prenom2", "etablissement_nom" =>"CLG-TEST1", "classe_libelle" =>"6A"},
@@ -244,14 +245,13 @@
 # # DONNEES DE TEST POUR LA LIBRAIRIE HASH_DEBUG #
 # ################################################
 
-# def hash_de_test 
+# def hash_de_test
 #   {a: 'A', b: { c: 'C', d: { e: 'E', f: 'F'}, g: 'G'}, h: 'H' }
 # end
 
-# def reponse_hash_debug 
+# def reponse_hash_debug
 #   "<ul><li><strong>a</strong> : <span>A</span></li><li><strong>b</strong> : <ul><li><strong>c</strong> : <span>C</span></li><li><strong>d</strong> : <ul><li><strong>e</strong> : <span>E</span></li><li><strong>f</strong> : <span>F</span></li></ul><li><strong>g</strong> : <span>G</span></li></ul><li><strong>h</strong> : <span>H</span></li></ul>"
 # end
-
 
 # #######################
 # # DONNEES POUR LA BDD #
@@ -337,14 +337,13 @@
 #       # {
 #       #   :uid =>
 #       #   :code_matiere =>
-#       #   :date => 
+#       #   :date =>
 #       #   :data =>
 #       #   :carnets_id =>
 #       # }
 #     ]
 #   }
 # end
-
 
 # #########################
 # # LES CARNETS DE LA BDD #
@@ -390,12 +389,11 @@
 #   {:color =>'', :avatar => '', :uid => carnets5.uid, :nom => carnets5.nom, :prenom => carnets5.prenom, :etablissement => carnets5.etablissement, :classe => carnets5.classe, :sexe => SVG_AVATAR_M}
 # end
 
-
 # #####################################
 # # LES REGROUPEMENT DE L'UTILISATEUR #
 # #####################################
 
-# def regroupements_user 
+# def regroupements_user
 #   [
 #     hash_regroupement({:id => 1, :nom => "6B", :nom_etab => "CLG-VAL D'ARGENT", :id_etab => 9999, :color => PANEL_COLOR[0]}),
 #     hash_regroupement({:id => 2, :nom => "5D", :nom_etab => "CLG-VAL D'ARGENT", :id_etab => 9999, :color => PANEL_COLOR[1]}),
@@ -416,7 +414,7 @@
 #   regroupement
 # end
 
-# def hash_etabs 
+# def hash_etabs
 #   [{
 #     :id => 9999,
 #     :nom => "CLG-VAL D'ARGENT",

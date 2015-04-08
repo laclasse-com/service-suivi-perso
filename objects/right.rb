@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'logger'
 
+# Classe de gestion des droits sur le carnets et ses onglets
 class Right
   include Outils
 
@@ -41,7 +42,7 @@ class Right
       new_right.date_creation = @date_creation
       new_right = new_right.save
       @id = new_right.id
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Right').sub('$3', "la création d'un droit")
       raise MSG[LANG.to_sym][:error][crud].sub('$1', 'create').sub('$2', 'Right').sub('$3', "la création d'un droit")
     end
@@ -63,7 +64,7 @@ class Right
       @hopital = right.hopital
       @evignal = right.evignal
       @date_creation = right.date_creation
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'select').sub('$2', 'Right').sub('$3', "la récupération d'un droit")
       raise MSG[LANG.to_sym][:error][crud].sub('$1', 'select').sub('$2', 'Right').sub('$3', "la récupération d'un droit")
     end
@@ -84,7 +85,7 @@ class Right
       @admin = admin unless admin.nil?
       @hopital = hopital unless hopital.nil?
       @evignal = evignal unless evignal.nil?
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la mise à jour d'un droit")
       raise MSG[LANG.to_sym][:error][crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la mise à jour d'un droit")
     end
@@ -96,7 +97,7 @@ class Right
     requires({right: right}, :right)
     begin
       right.delete
-    rescue Exception => e
+    rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la suppression d'un droit")
       raise MSG[LANG.to_sym][:error][crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la suppression d'un droit")
     end

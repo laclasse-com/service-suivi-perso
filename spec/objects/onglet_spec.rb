@@ -15,7 +15,7 @@ describe 'OngletTest' do
 
   it 'id de carnet nil' do
     onglet = Onglet.new nil, nil, 'Histoire', 'VAA99001'
-    expect { onglet.create }.to raise_error()
+    expect { onglet.create }.to raise_error
   end
 
   it 'titre onglet nil' do
@@ -65,9 +65,13 @@ describe 'OngletTest' do
   it "supprime les entrées de l'onglet" do
     onglet = Onglet.new @ids[:carnet2][:onglet1][:id]
     onglet.delete_entrees
+
     expect(Saisies[id: @ids[:carnet2][:onglet1][:saisie1][:id]]).to be_nil
-    expect(EntreesOnglets[saisies_id: @ids[:carnet2][:onglet1][:saisie1][:id], onglets_id: @ids[:carnet2][:onglet1][:id]]).to be_nil
+    id1 = EntreesOnglets[saisies_id: @ids[:carnet2][:onglet1][:saisie1][:id], onglets_id: @ids[:carnet2][:onglet1][:id]]
+    expect(id1).to be_nil
+
     expect(Saisies[id: @ids[:carnet2][:onglet1][:saisie2][:id]]).to be_nil
-    expect(EntreesOnglets[saisies_id: @ids[:carnet2][:onglet1][:saisie2][:id], onglets_id: @ids[:carnet2][:onglet1][:id]]).to be_nil
+    id2 = EntreesOnglets[saisies_id: @ids[:carnet2][:onglet1][:saisie2][:id], onglets_id: @ids[:carnet2][:onglet1][:id]]
+    expect(id2).to be_nil
   end
 end

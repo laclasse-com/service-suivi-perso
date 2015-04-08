@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'logger'
 
+# Classe de gestion des entrées dans le carnet.
 class Entree
   include Outils
 
