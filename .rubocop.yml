@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 Style/SpaceInsideBrackets:
   Enabled: false
 
@@ -16,10 +18,5 @@ Style/AsciiComments:
 Metrics/ClassLength:
   Max: 300
 
-Metrics/LineLength:
-  Max: 130
-
 Metrics/MethodLength:
   Max: 200
-
-inherit_from: .rubocop_todo.yml
