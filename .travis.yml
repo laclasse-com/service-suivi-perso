@@ -17,6 +17,7 @@ before_script:
   - mysql < ./db/scripts/suivi.sql
   
 script: "bundle exec rspec"
+script: "bundle exec rubocop -D --format simple"
 
 gemfile:
   - Gemfile
