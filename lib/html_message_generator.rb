@@ -4,7 +4,6 @@ require 'date'
 
 module HtmlMessageGenerator
   def self.generateHtmlCover(nom, prenom, sexe, classe, avatar, college)
-    page = ''
     avatar = 'api/default_avatar/avatar_neutre.svg'
     avatar = 'api/default_avatar/avatar_feminin.svg' if sexe == 'F'
     avatar = 'api/default_avatar/avatar_masculin.svg' if sexe == 'M'
@@ -19,7 +18,6 @@ module HtmlMessageGenerator
   end
 
   def self.generateHtmlOnglet(onglet)
-    page = ''
     onglet_html = '<h3>' + onglet[:nom] + '</h3><hr></hr>'
     messages_html = ''
     onglet[:entrees].each do |message|
@@ -45,26 +43,26 @@ module HtmlMessageGenerator
     avatar = 'api/default_avatar/avatar_feminin.svg' if user['sexe'] == 'F'
     avatar = 'api/default_avatar/avatar_masculin.svg' if user['sexe'] == 'M'
     avatar = URL_ENT + avatar
-    aside =  "<div class='row carnet-eleve-contener'>"
-    aside += "  <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' >"
-    aside += "    <div class='row ' style='display: table-row'>"
-    aside += "    <div class='col-xs-1 col-sm-1 col-md-5 col-lg-5 avatar-carnet'>"
-    aside += "      <div class='rouge'>"
-    aside += "        <img src='" + avatar + "'>"
-    aside += '      </div>'
-    aside += '    </div>'
-    aside += "    <div class='col-xs-1 col-sm-1 col-md-7 col-lg-7 eleve-info'>"
-    aside += "      <div class='eleve-info-firstname'>"
-    aside += '        <span >' + user['prenom'] + '</span>'
-    aside += '    </div>'
-    aside += "    <div class='eleve-info-lastname'>"
-    aside += '      <span >' + user['nom'].split('').first + '.' + '</span>'
-    aside += '    </div>'
-    aside += '    <div>'
-    aside += '      <span>' + user['classes'][0]['etablissement_nom'] + '</span>'
-    aside += '    </div>' +
-             aside += '  </div>'
-    aside += '</div>'
+    "<div class='row carnet-eleve-contener'>"
+    + "  <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' >"
+    + "    <div class='row ' style='display: table-row'>"
+    + "    <div class='col-xs-1 col-sm-1 col-md-5 col-lg-5 avatar-carnet'>"
+    + "      <div class='rouge'>"
+    + "        <img src='" + avatar + "'>"
+    + '      </div>'
+    + '    </div>'
+    + "    <div class='col-xs-1 col-sm-1 col-md-7 col-lg-7 eleve-info'>"
+    + "      <div class='eleve-info-firstname'>"
+    + '        <span >' + user['prenom'] + '</span>'
+    + '    </div>'
+    + "    <div class='eleve-info-lastname'>"
+    + '      <span >' + user['nom'].split('').first + '.' + '</span>'
+    + '    </div>'
+    + '    <div>'
+    + '      <span>' + user['classes'][0]['etablissement_nom'] + '</span>'
+    + '    </div>'
+    + '  </div>'
+    + '</div>'
   end
 
   def self.main_public_carnet(onglets)

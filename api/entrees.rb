@@ -33,15 +33,14 @@ class EntreesApi < Grape::API
   end
   post '/' do
     onglet = Onglet.new(params[:id_onglet])
-    docs = []
     begin
       onglet.read
       entree = Entree.new(nil, onglet.id, params[:carnet_id], params[:uid], params[:avatar], params[:avatar_color], params[:back_color], params[:infos], params[:contenu])
       entree.create
       {id: entree.id}
-  rescue Exception => e
-    LOGGER.error e.message
-    {error: "erreur lors de la création de l'entrée"}
+    rescue Exception => e
+      LOGGER.error e.message
+      {error: "erreur lors de la création de l'entrée"}
     end
   end
 
@@ -56,8 +55,8 @@ class EntreesApi < Grape::API
       entree = Entree.new(params[:id])
       entree.read
       entree.update params[:contenu], params[:avatar]
-  rescue Exception
-    {error: "erreur lors de la modification de l'entrée"}
+    rescue Exception
+      {error: "erreur lors de la modification de l'entrée"}
     end
   end
 
@@ -85,8 +84,8 @@ class EntreesApi < Grape::API
       entree = Entree.new(params[:id])
       entree.read
       entree.delete
-  rescue Exception
-    {error: "erreur lors de la suppression de l'onglet"}
+    rescue Exception
+      {error: "erreur lors de la suppression de l'onglet"}
     end
   end
 

@@ -186,7 +186,6 @@ class CarnetsApi < Grape::API
       # p params[:uid_elv].inspect
       onglets = CarnetsLib.get_tabs params[:uid_elv], ids
       # puts onglets.inspect
-      final_document = ''
       final_document = PdfGenerator.generate_pdf params[:nom], params[:prenom], params[:sexe], params[:classe], params[:avatar], params[:college], onglets
       # generate pdf
       kit = PDFKit.new(final_document, page_size: 'Letter')

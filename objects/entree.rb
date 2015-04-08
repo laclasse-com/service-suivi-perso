@@ -60,7 +60,7 @@ class Entree
       new_liaison = EntreesOnglets.new
       new_liaison.saisies_id = @id
       new_liaison.onglets_id = @id_onglet
-      new_liaison = new_liaison.save
+      new_liaison.save
       @id
     rescue Exception
       @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'lie_carnet').sub('$2', 'Entree').sub('$3', 'lier une entree à un onglet')

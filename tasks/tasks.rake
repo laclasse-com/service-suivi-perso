@@ -50,9 +50,9 @@ namespace :db do
     # foreign_key dump is sometimes wrong with non autoincrmente type (ie char)
     # so we need to dump the base in two times : the structure without foreign_keys and the foreigne_key alone
     schema = DB.dump_schema_migration(foreign_key: false)
-    schema_file = File.open(File.join(APP_ROOT, 'db', 'scripst', 'dump_db_schema.sql'), 'w') { |f| f.write(schema) }
+    File.open(File.join(APP_ROOT, 'db', 'scripst', 'dump_db_schema.sql'), 'w') { |f| f.write(schema) }
     fk = DB.dump_foreign_key_migration
-    fk_file = File.open(File.join(APP_ROOT, 'db', 'scripts', 'dump_fk.sql'), 'w') { |f| f.write(fk) }
+    File.open(File.join(APP_ROOT, 'db', 'scripts', 'dump_fk.sql'), 'w') { |f| f.write(fk) }
   end
 
   desc 'Generating Sequel model from database.'
