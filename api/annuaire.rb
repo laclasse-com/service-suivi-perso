@@ -113,9 +113,7 @@ class AnnuaireApi < Grape::API
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
       right = Right.new(nil, user['id_ent'], nil, nil, carnet.id)
-      unless right.exist?
-        users.push user
-      end
+      users.push user unless right.exist?
     end
     users
   end

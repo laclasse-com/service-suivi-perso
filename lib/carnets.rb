@@ -9,9 +9,7 @@ module CarnetsLib
     carnets = []
     response_annuaire.each do |reponse|
       carnet = Carnet.new(nil, reponse['id_ent'])
-      if carnet.exist?
-        carnet.read
-      end
+      carnet.read if carnet.exist?
       if evignal
         etablissement_nom = reponse['classes'][0]['etablissement_nom']
         !carnet.id.nil? && carnet.evignal == true ? active = true : active = false
