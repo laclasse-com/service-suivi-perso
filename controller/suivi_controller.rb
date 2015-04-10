@@ -27,7 +27,7 @@ class SinatraApp < Sinatra::Base
   include CarnetsLib
 
   # Routes nécessitant une authentification
-  ['/?', '/login' ].each { |route|
+  ['/?', '/login' ].each { |route| 
     before APP_PATH + route do
       login! env['REQUEST_PATH'] unless logged?
     end
@@ -61,7 +61,7 @@ class SinatraApp < Sinatra::Base
     begin
       carnet = Carnet.new(nil, nil, nil, nil, nil, params[:url])
       carnet.read
-      tabs = get_tabs carnet.uid_elv, nil, params[:url]
+      tabs = tab_list carnet.uid_elv, nil, params[:url]
       puts tabs.inspect
       response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, carnet.uid_elv, 'expand' => 'true')
       erb "<div class='row-fluid' style='height: 100%'>"\

@@ -40,7 +40,7 @@ class CarnetsApi < Grape::API
   get '/classes/:classe_id' do
     begin
       response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, params[:classe_id].to_s, 'expand' => 'true')
-      CarnetsLib.get_carnets_by_classe_of response
+      CarnetsLib.carnets_de_la_classe response
   rescue Exception
     {error: 'Impossible de récupérer les carnets'}
     end
@@ -49,7 +49,7 @@ class CarnetsApi < Grape::API
   desc 'récupère les carnets d\'e Vignal'
   get '/evignal' do
     begin
-      CarnetsLib.get_evignal_carnets
+      CarnetsLib.carnets_evignal
   rescue Exception => e
     puts e.message
     puts e.backtrace[0..10]
@@ -184,7 +184,7 @@ class CarnetsApi < Grape::API
         ids.push onglet.id
       end
       # p params[:uid_elv].inspect
-      onglets = CarnetsLib.get_tabs params[:uid_elv], ids
+      onglets = CarnetsLib.tab_list params[:uid_elv], ids
       # puts onglets.inspect
       final_document = PdfGenerator.generate_pdf params[:nom], params[:prenom], params[:sexe], params[:classe], params[:avatar], params[:college], onglets
       # generate pdf

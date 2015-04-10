@@ -32,7 +32,7 @@ module CarnetsLib
     carnets
   end
 
-  def get_carnets_by_classe_of(response_annuaire)
+  def carnets_de_la_classe(response_annuaire)
     carnets = {classe: {}, carnets: []}
     # info sur la classe
     classe = {
@@ -64,7 +64,7 @@ module CarnetsLib
     carnets
   end
 
-  def get_evignal_carnets
+  def carnets_evignal
     carnets = []
     uids = []
     Carnets.where(evignal: true).each do |carnet|
@@ -95,7 +95,7 @@ module CarnetsLib
     carnets
   end
 
-  def get_tabs(uid_elv, id_onglets = nil, url_pub = nil)
+  def tab_list(uid_elv, id_onglets = nil, url_pub = nil)
     onglets = []
     carnet = Carnet.new(nil, uid_elv)
     carnet.read

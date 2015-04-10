@@ -12,7 +12,7 @@ class OngletsApi < Grape::API
   end
   get '/' do
     begin
-      onglets = CarnetsLib.get_tabs params[:uid]
+      onglets = CarnetsLib.tab_list params[:uid]
       {onglets: onglets}
     rescue Exception
       {error: 'Impossible de retourner les onglets'}

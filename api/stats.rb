@@ -22,7 +22,7 @@ class StatsApi < Grape::API
         }
 
         response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls['classe_id'].to_s, 'expand' => 'true')
-        carnets = CarnetsLib.get_carnets_by_classe_of(response)[:carnets]
+        carnets = CarnetsLib.carnets_de_la_classe(response)[:carnets]
         classe[:nb_carnets] = carnets.size
 
         carnets.each do |c|
@@ -63,7 +63,7 @@ class StatsApi < Grape::API
         csv << ['nom élève', 'prénom élève', 'établissement', 'classe', 'nombre onglets', 'nombre messages', 'nombre interlocuteurs']
         $current_user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }.each do |cls|
           response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls['classe_id'].to_s, 'expand' => 'true')
-          carnets = CarnetsLib.get_carnets_by_classe_of(response)[:carnets]
+          carnets = CarnetsLib.carnets_de_la_classe(response)[:carnets]
           carnets.each do |c|
             nb_onglets = CarnetsOnglets.where(carnets_id: c[:id]).count
             nb_messages = Saisies.where(carnets_id: c[:id]).count
@@ -92,7 +92,7 @@ class StatsApi < Grape::API
       stats = []
       classes = []
       classes_evignal = $current_user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
-      carnets = CarnetsLib.get_evignal_carnets
+      carnets = CarnetsLib.carnets_evignal
 
       carnets.each do |c|
         carnet = {
@@ -155,7 +155,7 @@ class StatsApi < Grape::API
       csv_string = CSV.generate do |csv|
         csv << ['nom élève', 'prénom élève', 'établissement', 'classe', 'nombre onglets', 'nombre messages', 'nombre interlocuteurs']
         classes_evignal = $current_user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
-        carnets = CarnetsLib.get_evignal_carnets
+        carnets = CarnetsLib.carnets_evignal
         carnets.each do |c|
           nb_onglets = CarnetsOnglets.where(carnets_id: c[:id]).count
           nb_messages = Saisies.where(carnets_id: c[:id]).count
