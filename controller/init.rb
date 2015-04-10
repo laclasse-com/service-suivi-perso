@@ -1,2 +1,2 @@
 puts 'loading controller/suivi_controller'
-require __DIR__('suivi_controller')
+require __dir__('suivi_controller')

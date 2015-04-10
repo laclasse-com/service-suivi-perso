@@ -1,26 +1,26 @@
 puts 'loading api/annuaire'
-require __DIR__('annuaire')
+require __dir__('annuaire')
 
 puts 'loading api/docs'
-require __DIR__('docs')
+require __dir__('docs')
 
 puts 'loading api/carnets'
-require __DIR__('carnets')
+require __dir__('carnets')
 
 puts 'loading api/onglets'
-require __DIR__('onglets')
+require __dir__('onglets')
 
 puts 'loading api/entrees'
-require __DIR__('entrees')
+require __dir__('entrees')
 
 puts 'loading api/rights'
-require __DIR__('rights')
+require __dir__('rights')
 
 puts 'loading api/public_url'
-require __DIR__('public_url')
+require __dir__('public_url')
 
 puts 'loading api/stats'
-require __DIR__('stats')
+require __dir__('stats')
 
 puts 'loading api/api'
-require __DIR__('api')
+require __dir__('api')

@@ -1,2 +1,2 @@
 puts 'loading helpers/authentication_helpers'
-require __DIR__('authentication_helpers')
+require __dir__('authentication_helpers')
