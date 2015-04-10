@@ -3,7 +3,7 @@ require 'htmlentities'
 require 'date'
 
 module HtmlMessageGenerator
-  def self.generateHtmlCover(nom, prenom, sexe, classe, avatar, college)
+  def self.generate_cover(nom, prenom, sexe, classe, avatar, college)
     avatar = 'api/default_avatar/avatar_neutre.svg'
     avatar = 'api/default_avatar/avatar_feminin.svg' if sexe == 'F'
     avatar = 'api/default_avatar/avatar_masculin.svg' if sexe == 'M'
@@ -17,7 +17,7 @@ module HtmlMessageGenerator
     document
   end
 
-  def self.generateHtmlOnglet(onglet)
+  def self.generate_onglet(onglet)
     onglet_html = '<h3>' + onglet[:nom] + '</h3><hr></hr>'
     messages_html = ''
     onglet[:entrees].each do |message|
