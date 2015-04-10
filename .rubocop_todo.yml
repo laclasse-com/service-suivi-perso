@@ -85,11 +85,6 @@ Style/MethodName:
 Style/Next:
   Enabled: false
 
-# Offense count: 1
-# Configuration parameters: NamePrefix, NamePrefixBlacklist.
-Style/PredicateName:
-  Enabled: false
-
 # Offense count: 4
 # Configuration parameters: MaxSlashes.
 Style/RegexpLiteral:
