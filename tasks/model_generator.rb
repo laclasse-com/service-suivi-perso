@@ -75,7 +75,7 @@ end
 ############### Main ################
 models_to_create.each do |m|
   # Camelize table_name to create a ClassName
-  modelName = m.to_s.split(/[^a-z0-9]/i).map(&:capitalize).join
+  model_name = m.to_s.split(/[^a-z0-9]/i).map(&:capitalize).join
   # model creation if it does not exists
   model = createfile(m.to_s + '.rb')
   next if model.nil?
