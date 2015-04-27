@@ -27,7 +27,7 @@ class SinatraApp < Sinatra::Base
   include CarnetsLib
 
   # Routes nécessitant une authentification
-  ['/?', '/login' ].each { |route| 
+  ['/?', '/login' ].each { |route|
     before APP_PATH + route do
       login! env['REQUEST_PATH'] unless logged?
     end
