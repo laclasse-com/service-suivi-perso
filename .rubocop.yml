@@ -6,6 +6,7 @@ AllCops:
     - 'config/**/*'
     - 'public/**/*'
     - 'spec/fixtures/**/*'
+    - Guardfile
 
 Style/SpaceInsideBrackets:
   Enabled: false
