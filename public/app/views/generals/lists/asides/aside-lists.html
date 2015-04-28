@@ -29,9 +29,14 @@
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 search-erreur"  ng-bind="erreur" ng-show="erreur != ''" ng-hide="nameElv.length > 2">
 			</div>
 		</div>
-		<div class="exit-carnet" style="text-align: left">
+		<div class="exit-carnet" style="text-align: left" ng-if="backClassesDisplay">
 			<div class="exit-carnet-button" ng-click="return()">
 				<span title="Permet de revenir à la liste de mes {{accueil}}">Revenir sur mes {{accueil}}</span>
+			</div>
+		</div>
+		<div class="exit-carnet" style="text-align: left" ng-if="statsDisplay">
+			<div class="exit-carnet-button" ng-click="stats()">
+				<span title="Cliquez pour voir sur les statistiques">Statistiques établissement(s)</span>
 			</div>
 		</div>
 	</div>

@@ -3,10 +3,12 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('CarnetsEvignalCtrl', ['$scope', '$rootScope', '$state', '$stateParams', 'Carnets', 'CarnetsEvignal', 'Rights', 'CurrentUser', function($scope, $rootScope, $state, $stateParams, Carnets, CarnetsEvignal, Rights, CurrentUser) {
+.controller('CarnetsEvignalCtrl', ['$scope', '$rootScope', '$state', '$stateParams', 'Carnets', 'CarnetsEvignal', 'Rights', 'CurrentUser', 'Notifications', function($scope, $rootScope, $state, $stateParams, Carnets, CarnetsEvignal, Rights, CurrentUser, Notifications) {
 	CarnetsEvignal.query().$promise.then(function(response){
 		if (response[0] != undefined && response[0].error != undefined && response[0].error != null){
-			alert(response[0].error);
+			Notifications.add(response[0].error, "error");
+			$scope.carnets = Carnets.get_by_name([]);
+
 		} else {
 			$scope.carnets = Carnets.get_by_name(response);
 			// console.log($scope.carnets);			

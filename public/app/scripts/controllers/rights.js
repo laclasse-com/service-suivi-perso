@@ -3,8 +3,9 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('RightsCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'GetPersonnelsEtablissements', 'Annuaire', 'Rights', 'Profil', 'Public', '$modal', 'Onglets', function($rootScope, $scope, $state, $stateParams, CurrentUser, GetPersonnelsEtablissements, Annuaire, Rights, Profil, Public, $modal, Onglets) {
+.controller('RightsCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'GetPersonnelsEtablissements', 'Annuaire', 'Rights', 'Profil', 'Public', '$modal', 'Onglets', '$filter', function($rootScope, $scope, $state, $stateParams, CurrentUser, GetPersonnelsEtablissements, Annuaire, Rights, Profil, Public, $modal, Onglets, $filter) {
   Profil.initRights($stateParams.id).promise.then(function(){
+    $scope.listUsersTypes=[];
     CurrentUser.get().$promise.then(function(reponse){
       _.each(reponse.classes, function(classe){
         if (classe.classe_id == $stateParams.classe_id) {
@@ -162,6 +163,27 @@ angular.module('suiviApp')
         });
       };
     };
+
+    $scope.showOnlyOne=true;
+    $scope.$watch("search.full_name", function (newVal, oldVal, scope) {
+      $scope.filteredArray = $filter('filter')($scope.listUsersTypes, newVal);
+      $scope.showOnlyOne=true;
+      _.each($scope.listUsersTypes, function(list){
+        list.open=false;
+      });
+      if ($scope.search){
+        if ($scope.search.full_name.length > 0){
+          $scope.showOnlyOne=false;
+          _.each($scope.listUsersTypes, function(list){
+            if(_.find($scope.filteredArray, function(filterList){return filterList.type == list.type && filterList.users.length > 0})){
+              list.open = true;
+            } else {
+              list.open=false;
+            };
+          });
+        }
+      }
+    });
 
     $scope.generateUrl = function(tabs){
       Public.post({uid_elv: $stateParams.id, id_onglets: tabs}).$promise.then(function(reponse){

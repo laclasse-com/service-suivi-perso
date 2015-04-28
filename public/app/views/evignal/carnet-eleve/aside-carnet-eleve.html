@@ -401,28 +401,4 @@
 	        </div>
 	    </div>
 	</script>
-
-	<script type="text/ng-template" id="myModalMailEchecContent.html">
-        <div class="modal-header">
-            <h3 class="modal-title bg-danger">Résultat de l'envoi</h3>
-        </div>
-        <div class="modal-body">
-            <h4 ng-hide="resultats.success.length == 0"> Envois réussis :</h4>
-            <hr ng-hide="resultats.success.length == 0"></hr>
-            <div>
-				<h5 class="text-success" ng-repeat="success in resultats.success">{{success.name}} : {{success.message}}</h5>
-            </div>
-            <br>
-            <h4 ng-hide="resultats.echoue.length == 0"> Envois échoués :</h4>
-            <hr ng-hide="resultats.echoue.length == 0"></hr>
-            <div>
-				<h5 class="text-danger" ng-repeat="echoue in resultats.echoue">{{echoue.name}} : {{echoue.message}}</h5>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <div class="exit-carnet-button" ng-click="ok()" title="Cliquez ici pour sotir de la fenêtre et revenir au carnet de suivi">
-				<span>Ok</span>
-			</div>
-        </div>
-    </script>
 </div>

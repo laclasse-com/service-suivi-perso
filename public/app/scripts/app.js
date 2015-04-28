@@ -4,6 +4,7 @@
 angular.module('suiviApp', [
   'ui.router', 
   'ngResource', 
+  'ngCookies',
   'services.messages',
   'ui.bootstrap',
   'ui.sortable',
@@ -12,13 +13,15 @@ angular.module('suiviApp', [
   'angularFileUpload',
   'ngClipboard',
   'textAngular',
+  'growlNotifications',
+  'nvd3ChartDirectives',
   'ngColorPicker'
-]).run(['$rootScope', 'FlashServiceStyled', '$location', 'CurrentUser', function($rootScope, FlashServiceStyled, $location, CurrentUser) {
+]).run(['$rootScope', 'Notifications', '$location', 'CurrentUser', function($rootScope, Notifications, $location, CurrentUser) {
   $rootScope.$on('$stateChangeStart', function($location){
     // console.log("good");
-    FlashServiceStyled.clear(); 
+    Notifications.clear(); 
   });
   window.scope = $rootScope;
-  FlashServiceStyled.clear(); 
+  Notifications.clear(); 
 }]);
 

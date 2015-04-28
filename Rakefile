@@ -1,5 +1,5 @@
-begin; require 'rubygems'; rescue LoadError; end
-
+# begin; require 'rubygems'; rescue LoadError; end
+require 'rubygems'
 require 'rake'
 require 'rake/clean'
 require 'rspec/core/rake_task'
@@ -12,4 +12,4 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.rspec_opts = '--require spec_helper --color'
 end
 
-task :default => :spec
+task default: :spec

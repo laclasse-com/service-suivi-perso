@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('RightsEvignalCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'GetPersonnelsEtablissements', 'GetPersonnelsEvignal', 'Annuaire', 'Rights', '$modal', '$window', 'UAI_EVIGNAL', 'Profil', 'Public', 'Onglets', function($rootScope, $scope, $state, $stateParams, CurrentUser, GetPersonnelsEtablissements, GetPersonnelsEvignal, Annuaire, Rights, $modal, $window, UAI_EVIGNAL, Profil, Public, Onglets) {
+.controller('RightsEvignalCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'GetPersonnelsEtablissements', 'GetPersonnelsEvignal', 'Annuaire', 'Rights', '$modal', '$window', 'UAI_EVIGNAL', 'Profil', 'Public', 'Onglets', '$filter', function($rootScope, $scope, $state, $stateParams, CurrentUser, GetPersonnelsEtablissements, GetPersonnelsEvignal, Annuaire, Rights, $modal, $window, UAI_EVIGNAL, Profil, Public, Onglets, $filter) {
   Profil.initRights($stateParams.id).promise.then(function(){
     CurrentUser.get().$promise.then(function(reponse){
       _.each(reponse.classes, function(classe){
@@ -356,6 +356,38 @@ angular.module('suiviApp')
         });
       };
     };
+
+    $scope.showOnlyOne=true;
+    $scope.$watch("search.full_name", function (newVal, oldVal, scope) {
+      $scope.filteredArray = $filter('filter')($scope.listUsersTypes, newVal);
+      $scope.filteredArrayEvignal = $filter('filter')($scope.listUsersEvignalTypes, newVal);
+      $scope.showOnlyOne=true;
+      _.each($scope.listUsersTypes, function(list){
+        list.open=false;
+      });
+      _.each($scope.listUsersEvignalTypes, function(list){
+        list.open=false;
+      });
+      if ($scope.search){
+        if ($scope.search.full_name.length > 0){
+          $scope.showOnlyOne=false;
+          _.each($scope.listUsersTypes, function(list){
+            if(_.find($scope.filteredArray, function(filterList){return filterList.type == list.type && filterList.users.length > 0})){
+              list.open = true;
+            } else {
+              list.open=false;
+            };
+          });
+          _.each($scope.listUsersEvignalTypes, function(list){
+            if(_.find($scope.filteredArrayEvignal, function(filterList){return filterList.type == list.type && filterList.users.length > 0})){
+              list.open = true;
+            } else {
+              list.open=false;
+            };
+          });
+        }
+      }
+    });
 
     $scope.generateUrl = function(tabs){
       Public.post({uid_elv: $stateParams.id, id_onglets: tabs}).$promise.then(function(reponse){

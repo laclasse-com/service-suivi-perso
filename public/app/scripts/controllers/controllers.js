@@ -1,9 +1,9 @@
 'use strict';
 
 /* Controllers */
-function RootCtrl($scope, $rootScope, FlashServiceStyled){
+function RootCtrl($scope, $rootScope, Notifications){
 
-  // $rootScope.racine_images = '/bower_components/charte-graphique-laclasse-com/images/';
+  // $rootScope.racine_images = '/bower_components/laclasse-common-client/images/';
 
   // $rootScope.couleurs = [ 'bleu',
   //    'vert',
@@ -25,4 +25,4 @@ function RootCtrl($scope, $rootScope, FlashServiceStyled){
   // }
   // Svg.modifyFill("logolaclasse", "white");
 };
-RootCtrl.$inject=['$scope', '$rootScope', 'FlashServiceStyled'];
+RootCtrl.$inject=['$scope', '$rootScope', 'Notifications'];

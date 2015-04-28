@@ -1,53 +1,43 @@
-#coding: utf-8
+# coding: utf-8
 require 'logger'
 require 'date'
 require 'digest'
 
+# diverses fonctions utiles
 module Outils
-
-  @logger = Logger.new(STDOUT)
-
-  #Fonction de vérification des paramètres requis
+  # Fonction de vérification des paramètres requis
   # Ex : requires params, :target, :not_empty
-  def requires(params, name, constraint=nil)
+  def requires(params, name, constraint = nil)
     if params[name].nil?
-      @logger.error MSG[LANG.to_sym][:error][:missingParameter].sub("$1", name.to_s) 
-      raise ArgumentError, MSG[LANG.to_sym][:error][:missingParameter].sub("$1", name.to_s)
+      Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:missingParameter].sub('$1', name.to_s)
+      fail ArgumentError, MSG[LANG.to_sym][:error][:missingParameter].sub('$1', name.to_s)
     end
     case constraint
-    when :not_empty then 
+    when :not_empty then
       if params[name].empty?
-        @logger.error MSG[LANG.to_sym][:error][:parameterShouldNotBeEmpty].sub("$1", name.to_s) 
-        raise ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeEmpty].sub("$1", name.to_s)
+        Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:parameterShouldNotBeEmpty].sub('$1', name.to_s)
+        fail ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeEmpty].sub('$1', name.to_s)
       end
-    when :false then 
+    when :false then
       if params[name] == false
-        @logger.error MSG[LANG.to_sym][:error][:parameterShouldNotBeFalse].sub("$1", name.to_s)
-        raise ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeFalse].sub("$1", name.to_s)
+        Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:parameterShouldNotBeFalse].sub('$1', name.to_s)
+        fail ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeFalse].sub('$1', name.to_s)
       end
     when :true then
-      if params[name] == true 
-        @logger.error MSG[LANG.to_sym][:error][:parameterShouldNotBeTrue].sub("$1", name.to_s)
-        raise ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeTrue].sub("$1", name.to_s)
+      if params[name] == true
+        Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:parameterShouldNotBeTrue].sub('$1', name.to_s)
+        fail ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeTrue].sub('$1', name.to_s)
       end
-    end if !params[name].nil?
+    end unless params[name].nil?
   end
 
-  #Fonction permettant de supprimer les caractère nuisible
-  # def sanitize
-  # end
-
-  def Outils::annee_scolaire_string
-    annee_scolaire = ""
-    if Date.today.month > 8
-      annee_scolaire = Date.today.year.to_s + "-" + (Date.today.year+1).to_s
-    else
-      annee_scolaire = (Date.today.year-1).to_s + "-" + Date.today.year.to_s
-    end
+  def self::annee_scolaire_string
+    annee_scolaire = (Date.today.year - 1).to_s + '-' + Date.today.year.to_s
+    annee_scolaire = Date.today.year.to_s + '-' + (Date.today.year + 1).to_s if Date.today.month > 8
     annee_scolaire
   end
 
-  def Outils::md5_encode message
+  def self::md5_encode(message)
     md5 = Digest::MD5.new
     md5 << message
     md5.hexdigest
