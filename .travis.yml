@@ -16,8 +16,9 @@ before_script:
   - mysql -e 'create database suivi;'
   - mysql < ./db/scripts/suivi.sql
   
-script: "bundle exec rspec"
-script: "bundle exec rubocop -D --format simple"
+script: 
+  - "bundle exec rspec"
+  - "bundle exec rubocop -D --format simple"
 
 gemfile:
   - Gemfile
