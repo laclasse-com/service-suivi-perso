@@ -1,3 +1,4 @@
+# Module de mock des données de la base.
 module BDD
   @ids_datas = {}
 

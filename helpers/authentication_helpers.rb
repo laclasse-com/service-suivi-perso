@@ -9,6 +9,7 @@ require 'net/http'
 # VARIABLE GLOBAL DE L'UTILISATEUR COURANT
 $current_user = nil
 
+# helper pour les fonctions d'authentification et d'utilisateur connecté.
 module AuthenticationHelpers
   #
   # Getter sur les infos de la session

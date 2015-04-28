@@ -61,10 +61,6 @@ Style/Blocks:
 Style/CommentAnnotation:
   Enabled: false
 
-# Offense count: 4
-Style/Documentation:
-  Enabled: false
-
 # Offense count: 18
 # Configuration parameters: AllowedVariables.
 Style/GlobalVars:

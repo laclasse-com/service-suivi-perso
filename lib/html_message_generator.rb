@@ -2,6 +2,7 @@
 require 'htmlentities'
 require 'date'
 
+# Helpers pour les messages HTML
 module HtmlMessageGenerator
   def self.generate_cover(nom, prenom, sexe, classe, avatar, college)
     avatar = 'api/default_avatar/avatar_neutre.svg'

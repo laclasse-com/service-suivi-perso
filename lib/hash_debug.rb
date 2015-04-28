@@ -1,5 +1,5 @@
+# Pretty display of a hash
 # https://gist.github.com/chastell/1196800
-
 class Hash
   def to_html
     [ '<ul>',
