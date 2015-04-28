@@ -130,7 +130,7 @@ class Onglet
     end
   end
 
-  def get_entrees
+  def entrees
     requires({ id: @id }, :id)
     entrees = []
     entrees_bdd = EntreesOnglets.where(onglets_id: @id)
@@ -143,8 +143,8 @@ class Onglet
         end
       end
     rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_entrees').sub('$2', 'Onglet').sub('$3', "récupération des entrées d'un onglet")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_entrees').sub('$2', 'Onglet').sub('$3', "récupération des entrées d'un onglet")
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'entrees').sub('$2', 'Onglet').sub('$3', "récupération des entrées d'un onglet")
+      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'entrees').sub('$2', 'Onglet').sub('$3', "récupération des entrées d'un onglet")
     end
     entrees
   end

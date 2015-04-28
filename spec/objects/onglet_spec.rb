@@ -58,7 +58,7 @@ describe 'OngletTest' do
 
   it "récupère les entrées de l'onglet" do
     onglet = Onglet.new @ids[:carnet2][:onglet1][:id], @ids[:carnet2][:id]
-    entrees = onglet.get_entrees
+    entrees = onglet.entrees
     expect(entrees.size).to eq(2)
   end
 

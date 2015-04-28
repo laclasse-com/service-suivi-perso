@@ -118,7 +118,7 @@ class Carnet
     onglets
   end
 
-  def get_entrees
+  def entrees
     requires({id: @id}, :id)
     entrees = []
     entrees_bdd = Saisies.where(carnets_id: @id)
@@ -129,8 +129,8 @@ class Carnet
         entrees.push entree
       end
     rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_entrees').sub('$2', 'Carnet').sub('$3', "récupération des entrées d'un carnet")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_entrees').sub('$2', 'Carnet').sub('$3', "récupération des entrées d'un carnet")
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'entrees').sub('$2', 'Carnet').sub('$3', "récupération des entrées d'un carnet")
+      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'entrees').sub('$2', 'Carnet').sub('$3', "récupération des entrées d'un carnet")
     end
     entrees
   end

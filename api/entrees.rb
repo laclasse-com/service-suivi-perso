@@ -14,7 +14,7 @@ class EntreesApi < Grape::API
     begin
       onglet = Onglet.new(params[:id_onglet])
       onglet.read
-      onglet.get_entrees
+      onglet.entrees
     rescue Exception
       {error: 'Impossible de retourner les entrées'}
     end

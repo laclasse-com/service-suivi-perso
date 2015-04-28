@@ -102,7 +102,7 @@ module CarnetsLib
     carnet.get_onglets.each do |tab|
       if (id_onglets.nil? || id_onglets.include?(tab.id)) && (url_pub.nil? || url_pub == tab.url_pub)
         entrees = []
-        tab.get_entrees.each do |e|
+        tab.entrees.each do |e|
           entrees.push ({
             id: e.id,
             owner: {

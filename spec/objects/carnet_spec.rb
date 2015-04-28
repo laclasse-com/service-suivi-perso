@@ -107,13 +107,13 @@ describe 'CarnetTest' do
 
   it 'retourne les entrees du carnets' do
     carnet = Carnet.new(@ids[:carnet2][:id])
-    entrees = carnet.get_entrees
+    entrees = carnet.entrees
     expect(entrees.size).to eq(2)
   end
 
-  it 'get_entrees lance une exception si id manquant' do
+  it 'entrees lance une exception si id manquant' do
     carnet = Carnet.new
-    expect { carnet.get_entrees }.to raise_error(ArgumentError)
+    expect { carnet.entrees }.to raise_error(ArgumentError)
   end
 
   it 'retourne les droits specifiques au carnet' do
