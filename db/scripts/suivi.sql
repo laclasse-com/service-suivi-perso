@@ -34,7 +34,7 @@ CREATE  TABLE IF NOT EXISTS `suivi`.`onglets` (
   `nom` VARCHAR(45) NOT NULL ,
   `uid_own` VARCHAR(8) NOT NULL COMMENT 'uid de l\'utilisateur ayant créé cet onglet' ,
   `date_creation` TIMESTAMP NULL DEFAULT NULL ,
-  `url_publique` VARCHAR(2000) NULL ,
+  `url_publique` VARCHAR(767) NULL ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   INDEX `url_publique_idx` (`url_publique` ASC) )
