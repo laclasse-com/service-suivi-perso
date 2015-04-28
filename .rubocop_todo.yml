@@ -17,14 +17,6 @@ Lint/ParenthesesAsGroupedExpression:
 Lint/RescueException:
   Enabled: false
 
-# Offense count: 1
-Lint/UselessAssignment:
-  Enabled: false
-
-# Offense count: 19
-Lint/Void:
-  Enabled: false
-
 # Offense count: 50
 Metrics/AbcSize:
   Max: 92
@@ -42,10 +34,6 @@ Metrics/LineLength:
 # Configuration parameters: CountKeywordArgs.
 Metrics/ParameterLists:
   Max: 10
-
-# Offense count: 3
-Metrics/PerceivedComplexity:
-  Max: 16
 
 # Offense count: 7
 Style/AccessorMethodName:

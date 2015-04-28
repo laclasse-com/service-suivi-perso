@@ -44,26 +44,26 @@ module HtmlMessageGenerator
     avatar = 'api/default_avatar/avatar_feminin.svg' if user['sexe'] == 'F'
     avatar = 'api/default_avatar/avatar_masculin.svg' if user['sexe'] == 'M'
     avatar = URL_ENT + avatar
-    "<div class='row carnet-eleve-contener'>"
-    + "  <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' >"
-    + "    <div class='row ' style='display: table-row'>"
-    + "    <div class='col-xs-1 col-sm-1 col-md-5 col-lg-5 avatar-carnet'>"
-    + "      <div class='rouge'>"
-    + "        <img src='" + avatar + "'>"
-    + '      </div>'
-    + '    </div>'
-    + "    <div class='col-xs-1 col-sm-1 col-md-7 col-lg-7 eleve-info'>"
-    + "      <div class='eleve-info-firstname'>"
-    + '        <span >' + user['prenom'] + '</span>'
-    + '    </div>'
-    + "    <div class='eleve-info-lastname'>"
-    + '      <span >' + user['nom'].split('').first + '.' + '</span>'
-    + '    </div>'
-    + '    <div>'
-    + '      <span>' + user['classes'][0]['etablissement_nom'] + '</span>'
-    + '    </div>'
-    + '  </div>'
-    + '</div>'
+    "<div class='row carnet-eleve-contener'>
+        <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' >
+          <div class='row ' style='display: table-row'>
+            <div class='col-xs-1 col-sm-1 col-md-5 col-lg-5 avatar-carnet'>
+              <div class='rouge'>
+                <img src='" + avatar + "'>
+              </div>
+            </div>
+          <div class='col-xs-1 col-sm-1 col-md-7 col-lg-7 eleve-info'>
+            <div class='eleve-info-firstname'>
+              <span >" + user['prenom'] + "</span>
+          </div>
+          <div class='eleve-info-lastname'>
+            <span >" + user['nom'].split('').first + '.' + "</span>
+          </div>
+          <div>
+            <span>" + user['classes'][0]['etablissement_nom'] + "</span>
+          </div>
+        </div>
+      </div>"
   end
 
   def self.main_public_carnet(onglets)

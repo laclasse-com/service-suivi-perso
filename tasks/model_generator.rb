@@ -28,7 +28,7 @@ require_relative '../config/database'
 plugin_to_add = %w(validation_helpers json_serializer composition)
 
 # International Error message
-message_empty = 'ne peut pas &ecirc;tre vide' # "cannot be empty"
+# message_empty = 'ne peut pas &ecirc;tre vide' # "cannot be empty"
 
 # List of the tables we want to create scafolding Sequel model
 models_to_create = DB.tables
@@ -75,7 +75,7 @@ end
 ############### Main ################
 models_to_create.each do |m|
   # Camelize table_name to create a ClassName
-  model_name = m.to_s.split(/[^a-z0-9]/i).map(&:capitalize).join
+  # model_name = m.to_s.split(/[^a-z0-9]/i).map(&:capitalize).join
   # model creation if it does not exists
   model = createfile(m.to_s + '.rb')
   next if model.nil?
