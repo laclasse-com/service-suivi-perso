@@ -11,7 +11,7 @@ class Api < Grape::API
 
   before do
     error!( '401 Unauthorized', 401 ) unless logged?
-    get_current_user
+    current_user_ent
   end
 
   resource(:annuaire) { mount AnnuaireApi }

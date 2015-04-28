@@ -14,7 +14,7 @@ module AuthenticationHelpers
   #
   # Getter sur les infos de la session
   #
-  def get_current_user
+  def current_user_ent
     return nil if env['rack.session'][:current_user].nil?
     $current_user ||= env['rack.session'][:current_user]
   end
