@@ -1,4 +1,4 @@
-# TODO Task
+# to do Task
 desc 'show a todolist from all the TODO tags in the source'
 task :todo do
   underyellow = "\e[4;33m%s\e[0m"

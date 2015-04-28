@@ -56,11 +56,6 @@ Style/AccessorMethodName:
 Style/Blocks:
   Enabled: false
 
-# Offense count: 1
-# Configuration parameters: Keywords.
-Style/CommentAnnotation:
-  Enabled: false
-
 # Offense count: 18
 # Configuration parameters: AllowedVariables.
 Style/GlobalVars:
