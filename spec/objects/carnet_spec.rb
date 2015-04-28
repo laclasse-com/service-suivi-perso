@@ -96,13 +96,13 @@ describe 'CarnetTest' do
 
   it 'retourne tous les onglets du carnet' do
     carnet = Carnet.new(@ids[:carnet2][:id])
-    onglets = carnet.get_onglets
+    onglets = carnet.onglets
     expect(onglets.size).to eq(2)
   end
 
-  it 'get_onglets lance une exception si id manquant' do
+  it 'onglets lance une exception si id manquant' do
     carnet = Carnet.new
-    expect { carnet.get_onglets }.to raise_error(ArgumentError)
+    expect { carnet.onglets }.to raise_error(ArgumentError)
   end
 
   it 'retourne les entrees du carnets' do

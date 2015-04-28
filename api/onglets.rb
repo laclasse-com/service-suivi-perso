@@ -28,7 +28,7 @@ class OngletsApi < Grape::API
     begin
       onglets = []
       carnet.read
-      carnet.get_onglets.each do |onglet|
+      carnet.onglets.each do |onglet|
         onglets.push(id: onglet.id, nom: onglet.nom, check: false)
       end
       {onglets: onglets}
@@ -46,7 +46,7 @@ class OngletsApi < Grape::API
     carnet = Carnet.new(nil, params[:uid])
     begin
       carnet.read
-      ordre = carnet.get_onglets.size + 1
+      ordre = carnet.onglets.size + 1
       onglet = Onglet.new(nil, carnet.id, params[:nom], $current_user[:info].uid.to_s, ordre)
       onglet.create
       {id: onglet.id, carnet_id: onglet.id_carnet, ordre: onglet.ordre, owner: onglet.uid_own}

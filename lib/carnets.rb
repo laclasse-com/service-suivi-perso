@@ -99,7 +99,7 @@ module CarnetsLib
     onglets = []
     carnet = Carnet.new(nil, uid_elv)
     carnet.read
-    carnet.get_onglets.each do |tab|
+    carnet.onglets.each do |tab|
       if (id_onglets.nil? || id_onglets.include?(tab.id)) && (url_pub.nil? || url_pub == tab.url_pub)
         entrees = []
         tab.entrees.each do |e|
@@ -136,7 +136,7 @@ module CarnetsLib
 
   def last_carnet_model(old_carnet, new_carnet)
     # récupérer ses onglets
-    old_onglets = old_carnet.get_onglets
+    old_onglets = old_carnet.onglets
     # créer les nouveaux onglets par rapport a ceux du dernier carnet
     old_onglets.each do |old_onglet|
       new_onglet = Onglet.new(nil, new_carnet.id, old_onglet.nom, new_carnet.uid_adm, old_onglet.ordre)

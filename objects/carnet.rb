@@ -101,7 +101,7 @@ class Carnet
     carnet.nil? ? false : true
   end
 
-  def get_onglets
+  def onglets
     requires({id: @id}, :id)
     onglets = []
     onglets_bdd = CarnetsOnglets.where(carnets_id: @id)
@@ -112,8 +112,8 @@ class Carnet
         onglets.push onglet
       end
     rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_onglets').sub('$2', 'Carnet').sub('$3', "récupération des onglets d'un carnet")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_onglets').sub('$2', 'Carnet').sub('$3', "récupération des onglets d'un carnet")
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'onglets').sub('$2', 'Carnet').sub('$3', "récupération des onglets d'un carnet")
+      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'onglets').sub('$2', 'Carnet').sub('$3', "récupération des onglets d'un carnet")
     end
     onglets
   end
