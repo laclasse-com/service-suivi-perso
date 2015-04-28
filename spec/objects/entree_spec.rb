@@ -104,7 +104,7 @@ describe 'EntreeTest' do
 
   it "récupère les documents d'une entrée" do
     entree = Entree.new @ids[:carnet1][:onglet1][:saisie1][:id]
-    docs = entree.get_docs
+    docs = entree.docs_attaches
     expect(docs.size).to eq(1)
   end
 end

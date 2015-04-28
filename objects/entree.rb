@@ -160,7 +160,7 @@ class Entree
     end
   end
 
-  def get_docs
+  def docs_attaches
     requires({id: @id}, :id)
     docs = []
     begin
@@ -170,8 +170,8 @@ class Entree
         docs.push(id: doc.id, nom: doc.nom, md5: doc.url)
       end
     rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_docs').sub('$2', 'Entree').sub('$3', "récupération des documents d'une entrée")
-      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'get_docs').sub('$2', 'Entree').sub('$3', "récupération des documents d'une entrée")
+      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'docs_attaches').sub('$2', 'Entree').sub('$3', "récupération des documents d'une entrée")
+      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'docs_attaches').sub('$2', 'Entree').sub('$3', "récupération des documents d'une entrée")
     end
     docs
   end

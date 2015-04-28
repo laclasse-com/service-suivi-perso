@@ -113,7 +113,7 @@ module CarnetsLib
               back_color: e.back_color
             },
             contenu: e.contenu,
-            docs: e.get_docs,
+            docs: e.docs_attaches,
             date: e.date_modification
           })
         end
