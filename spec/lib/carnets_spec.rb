@@ -4,7 +4,7 @@ describe 'CarnetsLibTest' do
   include CarnetsLib
 
   before(:all) do
-    @ids = BDD.get_ids_datas
+    @ids = BDD.ids_datas
   end
 
   it "retourne les carnets par rapport à la réponse de l'annuaire d'un user" do

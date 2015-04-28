@@ -1,5 +1,5 @@
-begin; require 'rubygems'; rescue LoadError; end
-
+#begin; require 'rubygems'; rescue LoadError; end
+require 'rubygems'
 require 'rake'
 require 'rake/clean'
 require 'rspec/core/rake_task'

@@ -2,7 +2,7 @@ require File.expand_path '../../spec_helper.rb', __FILE__
 
 describe 'OngletTest' do
   before(:all) do
-    @ids = BDD.get_ids_datas
+    @ids = BDD.ids_datas
   end
 
   it 'ajoute un nouvel onglet' do

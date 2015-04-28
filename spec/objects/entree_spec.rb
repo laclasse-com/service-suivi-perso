@@ -2,7 +2,7 @@ require File.expand_path '../../spec_helper.rb', __FILE__
 
 describe 'EntreeTest' do
   before(:all) do
-    @ids = BDD.get_ids_datas
+    @ids = BDD.ids_datas
   end
 
   it "ajoute une entree à l'onglet d'un carnet" do

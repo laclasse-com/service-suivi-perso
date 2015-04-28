@@ -2,7 +2,7 @@ require File.expand_path '../../spec_helper.rb', __FILE__
 
 describe 'DocTest' do
   before(:all) do
-    @ids = BDD.get_ids_datas
+    @ids = BDD.ids_datas
   end
 
   # Methode 'create'

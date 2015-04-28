@@ -1,10 +1,7 @@
 # Module de mock des données de la base.
 module BDD
+  attr_reader :ids_datas
   @ids_datas = {}
-
-  def self::get_ids_datas
-    @ids_datas
-  end
 
   def self::clear_db
     Docs.all.each(&:delete)

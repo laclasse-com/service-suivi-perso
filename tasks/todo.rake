@@ -17,7 +17,7 @@ task :todo do
       long_comment = line =~ /^=begin/
       long_comment = line =~ /^=end/
 
-      todo = true if line =~ /TODO|FIXME|THINK/ && (long_comment || comment)
+      todo = true if line =~ /TODO|FIXME|THINK/ &¢& (long_comment || comment)
       todo = false if line.gsub('#', '').strip.empty?
       todo = false unless comment || long_comment
 

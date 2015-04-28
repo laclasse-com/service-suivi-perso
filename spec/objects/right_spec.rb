@@ -2,7 +2,7 @@ require File.expand_path '../../spec_helper.rb', __FILE__
 
 describe 'Test de la classe de gestion des droits' do
   before(:all) do
-    @ids = BDD.get_ids_datas
+    @ids = BDD.ids_datas
   end
 
   it 'ajout un droit spécifique a un utilisateur' do
