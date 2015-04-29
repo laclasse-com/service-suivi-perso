@@ -14,7 +14,7 @@ describe 'CarnetTest' do
 
   it 'créer un carnet pour un élève ayant déja un carnet' do
     carnet = Carnet.new(nil, 'VAA99093', 'VAA99003', '666666K', 2)
-    expect { carnet.create }.to raise_error(RuntimeError)
+    expect { carnet.create }.to raise_error(CrudError)
   end
 
   it 'créer un carnet pour un élève avec uid nil' do
@@ -37,10 +37,13 @@ describe 'CarnetTest' do
     expect { carnet.create }.to raise_error(ArgumentError)
   end
 
-  # A voir : un elv inexistant devrait peut-être lancer une exception ??
-  # it "créer un carnet pour un élève inexistant" do
-  #  carnet = Carnet.new(nil, "VZZ69999", "VAA99003", "666666K", 2)
-  #  expect{carnet.create}.to raise_error(RuntimeError)
+  # Pour ce test, il faut mocker l'annuaire
+  # qui doit renvoyer pour ce cas précis : {"error"=>"Introuvable: l'utilisateur n'existe pas"}
+  # mais qui doit être OK pour tous les autres cas de test :/
+
+  # it 'créer un carnet pour un élève inexistant' do
+  #   carnet = Carnet.new(nil, 'VZZ69999', 'VAA99003', '666666K', 2)
+  #   expect { carnet.create }.to raise_error(RuntimeError)
   # end
 
   it "Récupère un carnet à partir d'un id" do
@@ -52,12 +55,12 @@ describe 'CarnetTest' do
 
   it "Récupère un carnet à partir d'un id nil" do
     carnet = Carnet.new(nil)
-    expect { carnet.read }.to raise_error(ArgumentError)
+    expect { carnet.read }.to raise_error(CrudError)
   end
 
   it "Récupère un carnet à partir d'un id inexistant" do
     carnet = Carnet.new(999_999)
-    expect { carnet.read }.to raise_error(ArgumentError)
+    expect { carnet.read }.to raise_error(CrudError)
   end
 
   it 'met a jour la colonne evignal et url pub du carnet' do
@@ -68,15 +71,20 @@ describe 'CarnetTest' do
     expect(carnet.url_pub).to eq('nouvelle url pub')
   end
 
+  it "met a jour la colonne evignal et url pub d'un carnet inexistant" do
+    carnet = Carnet.new(999_999)
+    expect { carnet.update true, 'nouvelle url pub' }.to raise_error(CrudError)
+  end
+
   it "supprime l'url publique d'un carnet" do
     carnet = Carnet.new(@ids[:carnet2][:id])
     carnet.delete_url
     expect(Carnets[id: @ids[:carnet2][:id]].url_publique).to be_nil
   end
 
-  it "Suppression de l'url publique d'un carnet : id nil, doir lancer une exception" do
+  it "Suppression de l'url publique d'un carnet : id nil, doit lancer une exception" do
     carnet = Carnet.new(nil)
-    expect { carnet.delete_url }.to raise_error(ArgumentError)
+    expect { carnet.delete_url }.to raise_error(CrudError)
   end
 
   it 'retourne true si le carnet existe' do
