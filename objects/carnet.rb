@@ -1,9 +1,6 @@
 # coding: utf-8
 require 'logger'
 
-# Classe d'erreur
-class CrudError < StandardError; end
-
 # Ojbet carnet de suivi
 class Carnet
   include Outils
