@@ -31,10 +31,8 @@ class Doc
       new_doc.saisies_id = @saisies_id
       new_doc = new_doc.save
       @id = new_doc.id
-    rescue Exception => e
-      @logger.error e.message + ' ' + e.class.to_s
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Doc').sub('$3', "la création d'un document")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Doc').sub('$3', "la création d'un document")
+    rescue
+      raise_error 'create', "la création d'un document"
     end
   end
 
@@ -46,8 +44,7 @@ class Doc
       @url = @doc.url
       @saisies_id = @doc.saisies_id
     rescue
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Doc').sub('$3', 'la récupération du document')
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Doc').sub('$3', 'la récupération du document')
+      raise_error 'read', 'la récupération du document'
     end
   end
 
@@ -58,9 +55,8 @@ class Doc
       @nom = nom unless nom.nil?
       @doc.update(url: url) unless url.nil?
       @url = url unless url.nil?
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Doc').sub('$3', 'la mise à jour')
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Doc').sub('$3', 'la mise à jour')
+    rescue
+      raise_error 'update', 'la mise à jour'
     end
   end
 
@@ -68,9 +64,14 @@ class Doc
     requires({doc: @doc}, :doc)
     begin
       @doc.delete
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete').sub('$2', 'Doc').sub('$3', 'la suppression du document')
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete').sub('$2', 'Doc').sub('$3', 'la suppression du document')
+    rescue
+      raise_error 'update', 'la suppression du document'
     end
+  end
+
+  def raise_error(function_name, action_msg)
+    crud_error = CrudError.new
+    @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', function_name).sub('$2', 'Doc').sub('$3', action_msg)
+    fail crud_error,  MSG[LANG.to_sym][:error][:crud].sub('$1', function_name).sub('$2', 'Doc').sub('$3', action_msg)
   end
 end
