@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'sinatra'
-require 'sinatra/reloader' if ENV[ 'RACK_ENV' ] == 'development'
+require 'sinatra/reloader' if ENV['RACK_ENV'] == 'development'
 require 'laclasse/helpers/authentication'
 require 'laclasse/cross_app/sender'
 
@@ -27,7 +27,7 @@ class SinatraApp < Sinatra::Base
   include CarnetsLib
 
   # Routes nécessitant une authentification
-  ['/?', '/login' ].each { |route|
+  ['/?', '/login'].each { |route|
     before APP_PATH + route do
       login! env['REQUEST_PATH'] unless logged?
     end
@@ -48,7 +48,7 @@ class SinatraApp < Sinatra::Base
 
   get "#{APP_PATH}/status" do
     content_type :json
-
+    puts '.........................'
     app_status = app_infos
 
     app_status[:status] = 'OK'
@@ -79,7 +79,7 @@ class SinatraApp < Sinatra::Base
   end
 
   get APP_PATH + '/auth/:provider/callback' do
-    $current_user = init_session( request.env )
+    $current_user = init_session(request.env)
     redirect params[:url] if params[:url] !=  env['rack.url_scheme'] + '://' + env['HTTP_HOST'] + APP_PATH + '/'
     redirect APP_PATH + '/'
     # erb "<h1>Connected !</h1><pre>#{request.env['omniauth.auth'].to_html}</pre><hr>"

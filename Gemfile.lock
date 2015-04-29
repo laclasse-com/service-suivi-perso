@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/laclasse-com/laclasse-common.git
-  revision: e7cbd3701be75cb13c5020988d5f3720eda67d53
+  revision: 2bae56396d25b3988b029b868db76bdb2965ad2c
   specs:
-    laclasse-common (0.3)
+    laclasse-common (0.2.3)
       logstash-logger
       redis-rack (~> 1.5.0)
       rest-client
@@ -44,6 +44,8 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.2.5)
     docile (1.1.5)
+    domain_name (0.5.24)
+      unf (>= 0.0.5, < 1.0.0)
     equalizer (0.0.9)
     ffi (1.9.8)
     formatador (0.2.5)
@@ -88,6 +90,8 @@ GEM
     hashie (3.3.2)
     hitimes (1.2.2)
     htmlentities (4.3.3)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     httpi (2.2.7)
       rack
     i18n (0.7.0)
@@ -99,7 +103,7 @@ GEM
       rb-inotify (>= 0.9)
     logger (1.2.8)
     logstash-event (1.2.02)
-    logstash-logger (0.10.0)
+    logstash-logger (0.10.1)
       logstash-event (~> 1.2)
       stud
     lumberjack (1.0.9)
@@ -108,14 +112,14 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
-    mime-types (2.4.3)
+    mime-types (2.5)
     mini_portile (0.6.2)
     minitest (5.5.1)
     multi_json (1.10.1)
     multi_xml (0.5.5)
     mysql2 (0.3.17)
     nenv (0.2.0)
-    netrc (0.10.2)
+    netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     nori (2.4.0)
@@ -161,7 +165,8 @@ GEM
       redis-store (~> 1.1.0)
     redis-store (1.1.4)
       redis (>= 2.2)
-    rest-client (1.7.2)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     rspec (2.14.1)
@@ -223,6 +228,9 @@ GEM
       json
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
     uuid (2.3.7)
       macaddr (~> 1.0)
     virtus (1.0.4)
