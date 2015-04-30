@@ -8,22 +8,14 @@ module Outils
   # Fonction de vérification des paramètres requis
   # Ex : requires params, :target, :not_empty
   def requires(params, name, constraint = nil)
-    if params[name].nil?
-      raise_err name, 'missingParameter'
-    end
+    raise_err name, 'missingParameter' if params[name].nil?
     case constraint
     when :not_empty then
-      if params[name].empty?
-        raise_err name, 'parameterShouldNotBeEmpty'
-      end
+      raise_err name, 'parameterShouldNotBeEmpty' if params[name].empty?
     when :false then
-      unless params[name]
-        raise_err name, 'parameterShouldNotBeFalse'
-      end
+      raise_err name, 'parameterShouldNotBeFalse' unless params[name]
     when :true then
-      if params[name]
-        raise_err name, 'parameterShouldNotBeTrue'
-      end
+      raise_err name, 'parameterShouldNotBeTrue' if params[name]
     end unless params[name].nil?
   end
 
