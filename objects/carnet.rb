@@ -4,6 +4,7 @@ require 'logger'
 # Ojbet carnet de suivi
 class Carnet
   include Outils
+  include ErrorHandler
 
   attr_accessor :url_pub, :evignal
 
@@ -40,7 +41,7 @@ class Carnet
       new_carnet = new_carnet.save
       @id = new_carnet.id
     rescue
-      raise_error 'create', "la création d'un carnet"
+      raise_crud_error 'create', "la création d'un carnet", 'Carnet'
     end
   end
 
@@ -59,7 +60,7 @@ class Carnet
       @date_creation = carnet.date_creation
       @evignal = carnet.evignal
     rescue
-      raise_error 'read', "la récupération d'un carnet"
+      raise_crud_error 'read', "la récupération d'un carnet", 'Carnet'
     end
   end
 
@@ -73,7 +74,7 @@ class Carnet
       carnet.update(url_publique: url_pub) unless url_pub.nil?
       @url_pub = url_pub unless url_pub.nil?
     rescue
-      raise_error 'update', "la modification d'un carnet"
+      raise_crud_error 'update', "la modification d'un carnet", 'Carnet'
     end
     # UPDATE CLASSE POUR LES ANNEES SUIVANTES
   end
@@ -86,7 +87,7 @@ class Carnet
       carnet.update(url_publique: nil)
       @url_pub = nil
     rescue
-      raise_error 'delete_url', "la suppression de l'url"
+      raise_crud_error 'delete_url', "la suppression de l'url", 'Carnet'
     end
     # VOIR SI POSIBILITE DE DELETE LE CARNET
   end
@@ -108,7 +109,7 @@ class Carnet
         onglets.push onglet
       end
     rescue
-      raise_error 'onglets', "récupération des onglets d'un carnet"
+      raise_crud_error 'onglets', "récupération des onglets d'un carnet", 'Carnet'
     end
     onglets
   end
@@ -124,7 +125,7 @@ class Carnet
               entrees.push entree
             end
           rescue
-            raise_error 'entrees', "récupération des entrées d'un carnet"
+            raise_crud_error 'entrees', "récupération des entrées d'un carnet", 'Carnet'
           end
     entrees
   end
@@ -144,7 +145,7 @@ class Carnet
         rights.push right
       end
     rescue
-      raise_error 'get_rights', "récupération des droits d'un carnet"
+      raise_crud_error 'get_rights', "récupération des droits d'un carnet", 'Carnet'
     end
     rights
   end
@@ -160,14 +161,8 @@ class Carnet
         rights.push right
       end
     rescue
-      raise_error 'get_pers_evignal_or_hopital', "récupération du personnel à l'hopital"
+      raise_crud_error 'get_pers_evignal_or_hopital', "récupération du personnel à l'hopital", 'Carnet'
     end
     rights
-  end
-
-  def raise_error(function_name, action_msg)
-    crud_error = CrudError.new
-    @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', function_name).sub('$2', 'Carnet').sub('$3', action_msg)
-    fail crud_error,  MSG[LANG.to_sym][:error][:crud].sub('$1', function_name).sub('$2', 'Carnet').sub('$3', action_msg)
   end
 end

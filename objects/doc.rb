@@ -4,6 +4,7 @@ require 'logger'
 # Classe de gestion des documents attachés sur les posts de carnets
 class Doc
   include Outils
+  include ErrorHandler
 
   attr_accessor :nom, :url
 
@@ -32,7 +33,7 @@ class Doc
       new_doc = new_doc.save
       @id = new_doc.id
     rescue
-      raise_error 'create', "la création d'un document"
+      raise_crud_error 'create', "la création d'un document", 'Doc'
     end
   end
 
@@ -44,7 +45,7 @@ class Doc
       @url = @doc.url
       @saisies_id = @doc.saisies_id
     rescue
-      raise_error 'read', 'la récupération du document'
+      raise_crud_error 'read', 'la récupération du document', 'Doc'
     end
   end
 
@@ -56,7 +57,7 @@ class Doc
       @doc.update(url: url) unless url.nil?
       @url = url unless url.nil?
     rescue
-      raise_error 'update', 'la mise à jour'
+      raise_crud_error 'update', 'la mise à jour', 'Doc'
     end
   end
 
@@ -65,13 +66,7 @@ class Doc
     begin
       @doc.delete
     rescue
-      raise_error 'update', 'la suppression du document'
+      raise_crud_error 'update', 'la suppression du document', 'Doc'
     end
-  end
-
-  def raise_error(function_name, action_msg)
-    crud_error = CrudError.new
-    @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', function_name).sub('$2', 'Doc').sub('$3', action_msg)
-    fail crud_error,  MSG[LANG.to_sym][:error][:crud].sub('$1', function_name).sub('$2', 'Doc').sub('$3', action_msg)
   end
 end

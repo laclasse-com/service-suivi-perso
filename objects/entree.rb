@@ -4,6 +4,7 @@ require 'logger'
 # Classe de gestion des entrées dans le carnet.
 class Entree
   include Outils
+  include ErrorHandler
 
   attr_accessor :contenu, :date_modification, :avatar
 
@@ -47,7 +48,7 @@ class Entree
       @id = new_input.id
       lie_onglet
     rescue
-      raise_error 'create', "la création d'une entree"
+      raise_crud_error 'create', "la création d'une entree", 'Entree'
     end
   end
 
@@ -61,7 +62,7 @@ class Entree
       new_liaison.save
       @id
     rescue
-      raise_error 'lie_carnet', 'lier une entree à un onglet'
+      raise_crud_error 'lie_carnet', 'lier une entree à un onglet', 'Entree'
     end
   end
 
@@ -81,7 +82,7 @@ class Entree
       @date_creation = entree.date_creation
       @date_modification = entree.date_modification
     rescue
-      raise_error 'read', "la récupération d'une entrée"
+      raise_crud_error 'read', "la récupération d'une entrée", 'Entree'
     end
   end
 
@@ -100,7 +101,7 @@ class Entree
       end
       @date_modification = Time.now if !avatar.nil? || !contenu.nil?
     rescue
-      raise_error 'update', "la mise à jour d'une entrée"
+      raise_crud_error 'update', "la mise à jour d'une entrée", 'Entree'
     end
   end
 
@@ -116,7 +117,7 @@ class Entree
     rescue
       lie_onglet if EntreesOnglets[saisies_id: @id, onglets_id: @id_onglet].nil? && !Saisies[id: @id].nil?
       create if Saisies[id: @id].nil?
-      raise_error 'delete', "la suppression d'une entrée"
+      raise_crud_error 'delete', "la suppression d'une entrée", 'Entree'
     end
   end
 
@@ -125,7 +126,7 @@ class Entree
     begin
       EntreesOnglets.where(saisies_id: @id).delete
     rescue
-      raise_error 'delie_carnet', 'délier une entrée à un onglet'
+      raise_crud_error 'delie_carnet', 'délier une entrée à un onglet', 'Entree'
     end
   end
 
@@ -138,7 +139,7 @@ class Entree
         entree.update(avatar: avatar)
       end
     rescue
-      raise_error 'update_avatar', "mise à jour de tous de l'avatar"
+      raise_crud_error 'update_avatar', "mise à jour de tous de l'avatar", 'Entree'
     end
   end
 
@@ -147,7 +148,7 @@ class Entree
     begin
       Docs.where(saisies_id: @id).delete
     rescue
-      raise_error 'delete_docs', "supprime les documents d'une entrée"
+      raise_crud_error 'delete_docs', "supprime les documents d'une entrée", 'Entree'
     end
   end
 
@@ -161,14 +162,8 @@ class Entree
         docs.push(id: doc.id, nom: doc.nom, md5: doc.url)
       end
     rescue
-      raise_error 'docs_attaches', "récupération des documents d'une entrée"
+      raise_crud_error 'docs_attaches', "récupération des documents d'une entrée", 'Entree'
     end
     docs
-  end
-
-  def raise_error(function_name, action_msg)
-    crud_error = CrudError.new
-    @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', function_name).sub('$2', 'Entree').sub('$3', action_msg)
-    fail crud_error,  MSG[LANG.to_sym][:error][:crud].sub('$1', function_name).sub('$2', 'Entree').sub('$3', action_msg)
   end
 end
