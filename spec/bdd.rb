@@ -5,17 +5,11 @@ module BDD
 
   def self::clear_db
     Docs.all.each(&:delete)
-
     DroitsSpecifiques.all.each(&:delete)
-
     EntreesOnglets.all.each(&:delete)
-
     Saisies.all.each(&:delete)
-
     CarnetsOnglets.all.each(&:delete)
-
     Onglets.all.each(&:delete)
-
     Carnets.all.each(&:delete)
   end
 
