@@ -5,11 +5,14 @@ require 'date'
 # Helpers pour les messages HTML
 module HtmlMessageGenerator
   def self.img_avatar(sexe = nil)
-    case sexe
-    when 'M' then return 'api/default_avatar/avatar_masculin.svg'
-    when 'F' then return 'api/default_avatar/avatar_feminin.svg'
-    else return 'api/default_avatar/avatar_neutre.svg'
+    if sexe == 'M'
+      avatar = 'api/default_avatar/avatar_masculin.svg'
+    elsif sexe == 'F'
+      avatar = 'api/default_avatar/avatar_feminin.svg'
+    else
+      avatar = 'api/default_avatar/avatar_neutre.svg'
     end
+    avatar
   end
 
   def self.generate_cover(nom, prenom, sexe, classe, avatar, college)
