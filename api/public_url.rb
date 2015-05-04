@@ -26,10 +26,8 @@ class PublicUrlApi < Grape::API
           right = Right.new nil, params[:uid], response['prenom'] + ' ' + response['nom'], 'admin', carnet.id, 1, 1, 1, 0, evignal
         end
       end
-      puts right.inspect
       if right.admin == 1
         message = carnet.uid_elv + '_' + carnet.uid_adm + '_' + carnet.uai + '_' + carnet.date_creation.to_s + '_' + Time.now.to_s
-        # URL_ENT.split('').last == '/' ? prefix_url = URL_ENT.chomp('/') : prefix_url = URL_ENT
         url_pub = Outils.md5_encode message
         carnet.update(nil, url_pub)
         params[:id_onglets].each do |o|
@@ -37,8 +35,9 @@ class PublicUrlApi < Grape::API
           onglet.read
           onglet.update nil, nil, url_pub
         end
-        # {url_pub: prefix_url + APP_PATH + '/public/' + url_pub} #TODO remettre pour la prod
-        {url_pub: 'http://localhost:9393' + APP_PATH + '/public/' + url_pub}
+        URL_ENT.split('').last == '/' ? prefix_url = URL_ENT.chomp('/') : prefix_url = URL_ENT
+        {url_pub: prefix_url + APP_PATH + '/public/' + url_pub} # TODO remettre pour la prod
+        # {url_pub: 'http://localhost:9393' + APP_PATH + '/public/' + url_pub}
       else
         error!("Vous n'êtes pas autorisé pour cette ressource", 401)
       end
