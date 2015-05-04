@@ -4,7 +4,7 @@ require 'date'
 
 # Helpers pour les messages HTML
 module HtmlMessageGenerator
-  def img_avatar(sexe = nil)
+  def self.img_avatar(sexe = nil)
     case sexe
     when 'M' then return 'api/default_avatar/avatar_masculin.svg'
     when 'F' then return 'api/default_avatar/avatar_feminin.svg'
@@ -78,9 +78,9 @@ module HtmlMessageGenerator
 
     tabs += "</ul>\n" + contenu + "</div>
       </div>
-    </div>
-    <script src='<%= APP_PATH %>/app/bower_components/jquery/dist/jquery.js'></script>
-    <script src='<%= APP_PATH %>/app/bower_components/bootstrap/dist/js/bootstrap.min.js'></script>\n"
+    </div>"
+    # <script src='" + APP_PATH + "/app/bower_components/jquery/dist/jquery.js'></script>
+    # <script src='" + APP_PATH + "/app/bower_components/bootstrap/dist/js/bootstrap.min.js'></script>\n"
   end
 
   def self.main_entrees_public_carnet(entrees)
