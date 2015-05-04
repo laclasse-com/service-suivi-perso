@@ -4,11 +4,16 @@ require 'date'
 
 # Helpers pour les messages HTML
 module HtmlMessageGenerator
+  def img_avatar(sexe = nil)
+    case sexe
+    when 'M' then return 'api/default_avatar/avatar_masculin.svg'
+    when 'F' then return 'api/default_avatar/avatar_feminin.svg'
+    else return 'api/default_avatar/avatar_neutre.svg'
+    end
+  end
+
   def self.generate_cover(nom, prenom, sexe, classe, avatar, college)
-    avatar = 'api/default_avatar/avatar_neutre.svg'
-    avatar = 'api/default_avatar/avatar_feminin.svg' if sexe == 'F'
-    avatar = 'api/default_avatar/avatar_masculin.svg' if sexe == 'M'
-    avatar = "<img src='" + URL_ENT + avatar + "' style='text-align: center; width:400px; height:400px; background-color:rgba(128,186,102,0.7)'/>"
+    avatar = "<img src='" + URL_ENT + img_avatar(sexe) + "' style='text-align: center; width:400px; height:400px; background-color:rgba(128,186,102,0.7)'/>"
     info = "<div class='eleve-info'><div><span>" + prenom + ' ' + nom + '</span></div><div><span>' + classe + '</span></div><div><span>' + college + '</span></div></div>'
     titre = "<h1 class='titre'>Suivi de l'année scolaire " + Outils.annee_scolaire_string + '</h1>'
 
@@ -22,14 +27,13 @@ module HtmlMessageGenerator
     onglet_html = '<h3>' + onglet[:nom] + '</h3><hr></hr>'
     messages_html = ''
     onglet[:entrees].each do |message|
-      # p message.inspect
-      messages_html += "<div class='message' style='background-color:" + message[:owner][:back_color] + "'>"
-      messages_html += "  <div class='message-info'>"
-      messages_html += "    <div class='message-info-profil'><span>" + message[:owner][:infos] + '</span></div>'
-      messages_html += "    <div class='message-info-date'><span>" + message[:date].strftime('%d/%m/%Y - %kh%M') + '</span></div>'
-      messages_html += '  </div>'
-      messages_html += "  <div class='message-text'>" + message[:contenu] + '</div>'
-      messages_html += '</div><br></br>'
+      messages_html += "<div class='message' style='background-color:" + message[:owner][:back_color] + "'>
+        <div class='message-info'>
+          <div class='message-info-profil'><span>" + message[:owner][:infos] + "</span></div>
+          <div class='message-info-date'><span>" + message[:date].strftime('%d/%m/%Y - %kh%M') + "</span></div>
+        </div>
+        <div class='message-text'>" + message[:contenu] + '</div>
+        </div><br/></br/>'
     end
     page = onglet_html + messages_html + '<br></br>'
     html = HTMLEntities.new.decode page
@@ -38,12 +42,7 @@ module HtmlMessageGenerator
   end
 
   def self.aside_public_carnet(user)
-    # sexe_date = user["sexe"] == 'F' ? 'née le ' : 'né le '
-    # date_naiss = Date.strptime(user['date_naissance'], "%Y-%m-%d").strftime("%d/%m/%Y")
-    avatar = 'api/default_avatar/avatar_neutre.svg'
-    avatar = 'api/default_avatar/avatar_feminin.svg' if user['sexe'] == 'F'
-    avatar = 'api/default_avatar/avatar_masculin.svg' if user['sexe'] == 'M'
-    avatar = URL_ENT + avatar
+    avatar = URL_ENT + img_avatar( user['sexe'])
     "<div class='row carnet-eleve-contener'>
         <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' >
           <div class='row ' style='display: table-row'>
@@ -67,9 +66,9 @@ module HtmlMessageGenerator
   end
 
   def self.main_public_carnet(onglets)
-    tabs =  "<div class='row' style='height:100%'>\n"
-    tabs += "<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' style='height:100%; padding:0'>\n"
-    tabs += "<ul class='nav nav-tabs' role='class='active'tablist' id='myTab'>\n"
+    tabs =  "<div class='row' style='height:100%'>
+      <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' style='height:100%; padding:0'>
+      <ul class='nav nav-tabs' role='class='active'tablist' id='myTab'>\n"
     contenu = "<div class='tab-content'>\n"
     onglets.each do |onglet|
       onglet[:ordre] == 1 ? active = 'active' : active = ''
@@ -77,11 +76,11 @@ module HtmlMessageGenerator
       contenu += "<div role='tabpanel' class='tab-pane " + active + "' id='tab" + onglet[:id].to_s + "'>" + (HtmlMessageGenerator.main_entrees_public_carnet onglet[:entrees]) + "</div>\n"
     end
 
-    tabs += "</ul>\n" + contenu + "</div>\n"
-    tabs += "</div>\n"
-    tabs += "</div>\n"
-    tabs += "<script src='<%= APP_PATH %>/app/bower_components/jquery/dist/jquery.js'></script>\n"
-    tabs += "<script src='<%= APP_PATH %>/app/bower_components/bootstrap/dist/js/bootstrap.min.js'></script>\n"
+    tabs += "</ul>\n" + contenu + "</div>
+      </div>
+    </div>
+    <script src='<%= APP_PATH %>/app/bower_components/jquery/dist/jquery.js'></script>
+    <script src='<%= APP_PATH %>/app/bower_components/bootstrap/dist/js/bootstrap.min.js'></script>\n"
   end
 
   def self.main_entrees_public_carnet(entrees)
@@ -93,7 +92,7 @@ module HtmlMessageGenerator
       date = entree[:date].strftime('%A %-d %B %Y - %k:%M')
       saisies += "<div class='entree'>"
       saisies += "<div class='avatar'>"
-      saisies += "<img src='" + URL_ENT + 'api/default_avatar/avatar_neutre.svg' + "' style='width: 100%;background-color: " + entree[:owner][:avatar_color] + "'>"
+      saisies += "<img src='" + URL_ENT + img_avatar('N') + "' style='width: 100%;background-color: " + entree[:owner][:avatar_color] + "'>"
       saisies += '</div>'
       saisies += "<div class='message' style='background-color: " + entree[:owner][:back_color] + "' >"
       saisies += "<div class='message-info'>"

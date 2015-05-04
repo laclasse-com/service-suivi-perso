@@ -8,26 +8,14 @@ module Outils
   # Fonction de vérification des paramètres requis
   # Ex : requires params, :target, :not_empty
   def requires(params, name, constraint = nil)
-    if params[name].nil?
-      Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:missingParameter].sub('$1', name.to_s)
-      fail ArgumentError, MSG[LANG.to_sym][:error][:missingParameter].sub('$1', name.to_s)
-    end
+    raise_err name, 'missingParameter' if params[name].nil?
     case constraint
     when :not_empty then
-      if params[name].empty?
-        Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:parameterShouldNotBeEmpty].sub('$1', name.to_s)
-        fail ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeEmpty].sub('$1', name.to_s)
-      end
+      raise_err name, 'parameterShouldNotBeEmpty' if params[name].empty?
     when :false then
-      if params[name] == false
-        Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:parameterShouldNotBeFalse].sub('$1', name.to_s)
-        fail ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeFalse].sub('$1', name.to_s)
-      end
+      raise_err name, 'parameterShouldNotBeFalse' unless params[name]
     when :true then
-      if params[name] == true
-        Logger.new(STDOUT).error MSG[LANG.to_sym][:error][:parameterShouldNotBeTrue].sub('$1', name.to_s)
-        fail ArgumentError, MSG[LANG.to_sym][:error][:parameterShouldNotBeTrue].sub('$1', name.to_s)
-      end
+      raise_err name, 'parameterShouldNotBeTrue' if params[name]
     end unless params[name].nil?
   end
 
@@ -41,5 +29,10 @@ module Outils
     md5 = Digest::MD5.new
     md5 << message
     md5.hexdigest
+  end
+
+  def raise_err(name, msg)
+    Logger.new(STDOUT).error MSG[LANG.to_sym][:error][msg.to_sym].sub('$1', name.to_s)
+    fail ArgumentError, MSG[LANG.to_sym][:error][msg.to_sym].sub('$1', name.to_s)
   end
 end
