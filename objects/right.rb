@@ -48,9 +48,14 @@ class Right
     end
   end
 
-  def select
+  def right_select
     right = DroitsSpecifiques[id: @id] unless @id.nil?
     right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right
+  end
+
+  def select
+    right = right_select
     requires({right: right}, :right)
     begin
       @id = right.id
@@ -70,8 +75,7 @@ class Right
   end
 
   def update(read = nil, write = nil, admin = nil, hopital = nil, evignal = nil)
-    right = DroitsSpecifiques[id: @id] unless @id.nil?
-    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right = right_select
     requires({right: right}, :right)
     begin
       right.update(read: read) unless read.nil?
@@ -90,8 +94,7 @@ class Right
   end
 
   def delete
-    right = DroitsSpecifiques[id: @id] unless @id.nil?
-    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right = right_select
     requires({right: right}, :right)
     begin
       right.delete
@@ -101,8 +104,7 @@ class Right
   end
 
   def exist?
-    right = DroitsSpecifiques[id: @id] unless @id.nil?
-    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right = right_select
     right.nil? ? false : true
   end
 end
