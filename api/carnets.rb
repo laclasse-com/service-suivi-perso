@@ -8,6 +8,18 @@ class CarnetsApi < Grape::API
   content_type :json, 'application/json'
   content_type :pdf, 'application/pdf'
   helpers AuthenticationHelpers
+  helpers do
+    params :creation_carnet_params_set do
+      requires :uid_elv, type: String
+      requires :full_name_elv, type: String
+      requires :etablissement_code, type: String
+      requires :classe_id, type: Integer
+      requires :uid_adm, type: String
+      requires :full_name_adm, type: String
+      requires :profil_adm, type: String
+      requires :with_model, type: Boolean
+    end
+  end
   include CarnetsLib
 
   desc 'récupère un carnet'
@@ -101,14 +113,15 @@ class CarnetsApi < Grape::API
 
   desc "création d'un carnet"
   params do
-    requires :uid_elv, type: String
-    requires :full_name_elv, type: String
-    requires :etablissement_code, type: String
-    requires :classe_id, type: Integer
-    requires :uid_adm, type: String
-    requires :full_name_adm, type: String
-    requires :profil_adm, type: String
-    requires :with_model, type: Boolean
+    use :creation_carnet_params_set
+    #    requires :uid_elv, type: String
+    #    requires :full_name_elv, type: String
+    #    requires :etablissement_code, type: String
+    #    requires :classe_id, type: Integer
+    #    requires :uid_adm, type: String
+    #    requires :full_name_adm, type: String
+    #    requires :profil_adm, type: String
+    #    requires :with_model, type: Boolean
   end
   post '/'do
     carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id])
@@ -132,14 +145,15 @@ class CarnetsApi < Grape::API
 
   desc "création ou mise a jour d'un carnet evignal"
   params do
-    requires :uid_elv, type: String
-    requires :full_name_elv, type: String
-    requires :etablissement_code, type: String
-    requires :classe_id, type: Integer
-    requires :uid_adm, type: String
-    requires :full_name_adm, type: String
-    requires :profil_adm, type: String
-    requires :with_model, type: Boolean
+    use :creation_carnet_params_set
+    #    requires :uid_elv, type: String
+    #    requires :full_name_elv, type: String
+    #    requires :etablissement_code, type: String
+    #    requires :classe_id, type: Integer
+    #    requires :uid_adm, type: String
+    #    requires :full_name_adm, type: String
+    #    requires :profil_adm, type: String
+    #    requires :with_model, type: Boolean
   end
   post '/evignal'do
     carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id], nil, true)
