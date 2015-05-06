@@ -4,6 +4,7 @@ require 'logger'
 # Classe de gestion des entrées dans le carnet.
 class Entree
   include Outils
+  include ErrorHandler
 
   attr_accessor :contenu, :date_modification, :avatar
 
@@ -46,10 +47,8 @@ class Entree
       new_input = new_input.save
       @id = new_input.id
       lie_onglet
-    rescue Exception
-      @logger.error e.message
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Entree').sub('$3', "la création d'une entree")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Entree').sub('$3', "la création d'une entree")
+    rescue
+      raise_crud_error 'create', "la création d'une entree", 'Entree'
     end
   end
 
@@ -62,9 +61,8 @@ class Entree
       new_liaison.onglets_id = @id_onglet
       new_liaison.save
       @id
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'lie_carnet').sub('$2', 'Entree').sub('$3', 'lier une entree à un onglet')
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'lie_carnet').sub('$2', 'Entree').sub('$3', 'lier une entree à un onglet')
+    rescue
+      raise_crud_error 'lie_carnet', 'lier une entree à un onglet', 'Entree'
     end
   end
 
@@ -83,9 +81,8 @@ class Entree
       @contenu = entree.contenu
       @date_creation = entree.date_creation
       @date_modification = entree.date_modification
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Entree').sub('$3', "la récupération d'une entree")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Entree').sub('$3', "la récupération d'une entree")
+    rescue
+      raise_crud_error 'read', "la récupération d'une entrée", 'Entree'
     end
   end
 
@@ -103,9 +100,8 @@ class Entree
         @avatar = avatar
       end
       @date_modification = Time.now if !avatar.nil? || !contenu.nil?
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Entree').sub('$3', "la mise à jour d'une entrée")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Entree').sub('$3', "la mise à jour d'une entrée")
+    rescue
+      raise_crud_error 'update', "la mise à jour d'une entrée", 'Entree'
     end
   end
 
@@ -118,11 +114,10 @@ class Entree
       delie_onglet
       delete_docs
       entree.delete
-    rescue Exception
+    rescue
       lie_onglet if EntreesOnglets[saisies_id: @id, onglets_id: @id_onglet].nil? && !Saisies[id: @id].nil?
       create if Saisies[id: @id].nil?
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete').sub('$2', 'Entree').sub('$3', "la suppression d'une entrée")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete').sub('$2', 'Entree').sub('$3', "la suppression d'une entrée")
+      raise_crud_error 'delete', "la suppression d'une entrée", 'Entree'
     end
   end
 
@@ -130,9 +125,8 @@ class Entree
     requires({id: @id}, :id)
     begin
       EntreesOnglets.where(saisies_id: @id).delete
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delie_carnet').sub('$2', 'Entree').sub('$3', 'delier une entrée à un onglet')
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'delie_carnet').sub('$2', 'Entree').sub('$3', 'delier une entrée à un onglet')
+    rescue
+      raise_crud_error 'delie_carnet', 'délier une entrée à un onglet', 'Entree'
     end
   end
 
@@ -144,9 +138,8 @@ class Entree
       Saisies.where(uid: @uid).each do |entree|
         entree.update(avatar: avatar)
       end
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update_avatar').sub('$2', 'Entree').sub('$3', "mise à jour de tous de l'avatar")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'update_avatar').sub('$2', 'Entree').sub('$3', "mise à jour de tous de l'avatar")
+    rescue
+      raise_crud_error 'update_avatar', "mise à jour de tous de l'avatar", 'Entree'
     end
   end
 
@@ -154,9 +147,8 @@ class Entree
     requires({id: @id}, :id)
     begin
       Docs.where(saisies_id: @id).delete
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete_docs').sub('$2', 'Entree').sub('$3', "supprime les documents d'une entree")
-      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'delete_docs').sub('$2', 'Entree').sub('$3', "supprime les documents d'une entree")
+    rescue
+      raise_crud_error 'delete_docs', "supprime les documents d'une entrée", 'Entree'
     end
   end
 
@@ -169,9 +161,8 @@ class Entree
         doc.read
         docs.push(id: doc.id, nom: doc.nom, md5: doc.url)
       end
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'docs_attaches').sub('$2', 'Entree').sub('$3', "récupération des documents d'une entrée")
-      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'docs_attaches').sub('$2', 'Entree').sub('$3', "récupération des documents d'une entrée")
+    rescue
+      raise_crud_error 'docs_attaches', "récupération des documents d'une entrée", 'Entree'
     end
     docs
   end

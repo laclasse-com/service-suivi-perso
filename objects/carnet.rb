@@ -4,6 +4,7 @@ require 'logger'
 # Ojbet carnet de suivi
 class Carnet
   include Outils
+  include ErrorHandler
 
   attr_accessor :url_pub, :evignal
 
@@ -40,8 +41,7 @@ class Carnet
       new_carnet = new_carnet.save
       @id = new_carnet.id
     rescue
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Carnet').sub('$3', "la création d'un carnet")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Carnet').sub('$3', "la création d'un carnet")
+      raise_crud_error 'create', "la création d'un carnet", 'Carnet'
     end
   end
 
@@ -49,7 +49,7 @@ class Carnet
     carnet = Carnets[id: @id] unless @id.nil?
     carnet = Carnets[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
     carnet = Carnets[url_publique: @url_pub] if !@url_pub.nil? && carnet.nil?
-    requires({carnet: carnet}, :carnet)
+    # requires({carnet: carnet}, :carnet) # PGL Mieux vaut lancer CrudError
     begin
       @id = carnet.id
       @uid_elv = carnet.uid_elv
@@ -60,23 +60,21 @@ class Carnet
       @date_creation = carnet.date_creation
       @evignal = carnet.evignal
     rescue
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Carnet').sub('$3', 'la récupération du carnet')
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'read').sub('$2', 'Carnet').sub('$3', 'la récupération du carnet')
+      raise_crud_error 'read', "la récupération d'un carnet", 'Carnet'
     end
   end
 
   def update(evignal = nil, url_pub = nil)
     carnet = Carnets[id: @id] unless @id.nil?
     carnet = Carnets[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
-    requires({carnet: carnet}, :carnet)
+    # requires({carnet: carnet}, :carnet) # PGL Mieux vaut lancer CrudError
     begin
       carnet.update(evignal: evignal) unless evignal.nil?
       @evignal = evignal unless evignal.nil?
       carnet.update(url_publique: url_pub) unless url_pub.nil?
       @url_pub = url_pub unless url_pub.nil?
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Carnet').sub('$3', 'la mise à jour')
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Carnet').sub('$3', 'la mise à jour')
+    rescue
+      raise_crud_error 'update', "la modification d'un carnet", 'Carnet'
     end
     # UPDATE CLASSE POUR LES ANNEES SUIVANTES
   end
@@ -84,13 +82,12 @@ class Carnet
   def delete_url
     carnet = Carnets[id: @id] unless @id.nil?
     carnet = Carnets[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
-    requires({carnet: carnet}, :carnet)
+    # requires({carnet: carnet}, :carnet) # PGL Mieux vaut lancer CrudError
     begin
       carnet.update(url_publique: nil)
       @url_pub = nil
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete_url').sub('$2', 'Carnet').sub('$3', "la suppression de l'url")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'delete_url').sub('$2', 'Carnet').sub('$3', "la suppression de l'url")
+    rescue
+      raise_crud_error 'delete_url', "la suppression de l'url", 'Carnet'
     end
     # VOIR SI POSIBILITE DE DELETE LE CARNET
   end
@@ -111,9 +108,8 @@ class Carnet
         onglet.read
         onglets.push onglet
       end
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'onglets').sub('$2', 'Carnet').sub('$3', "récupération des onglets d'un carnet")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'onglets').sub('$2', 'Carnet').sub('$3', "récupération des onglets d'un carnet")
+    rescue
+      raise_crud_error 'onglets', "récupération des onglets d'un carnet", 'Carnet'
     end
     onglets
   end
@@ -123,15 +119,14 @@ class Carnet
     entrees = []
     entrees_bdd = Saisies.where(carnets_id: @id)
     begin
-      entrees_bdd.each do |e|
-        entree = Entree.new(e.id)
-        entree.read
-        entrees.push entree
-      end
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'entrees').sub('$2', 'Carnet').sub('$3', "récupération des entrées d'un carnet")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'entrees').sub('$2', 'Carnet').sub('$3', "récupération des entrées d'un carnet")
-    end
+            entrees_bdd.each do |e|
+              entree = Entree.new(e.id)
+              entree.read
+              entrees.push entree
+            end
+          rescue
+            raise_crud_error 'entrees', "récupération des entrées d'un carnet", 'Carnet'
+          end
     entrees
   end
 
@@ -149,9 +144,8 @@ class Carnet
         right.select
         rights.push right
       end
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_rights').sub('$2', 'Carnet').sub('$3', "récupération des droits d'un carnet")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_rights').sub('$2', 'Carnet').sub('$3', "récupération des droits d'un carnet")
+    rescue
+      raise_crud_error 'get_rights', "récupération des droits d'un carnet", 'Carnet'
     end
     rights
   end
@@ -166,9 +160,8 @@ class Carnet
         right.select
         rights.push right
       end
-    rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_pers_hopital').sub('$2', 'Carnet').sub('$3', "récupération du personnel à l'hopital")
-      raise MSG[LANG.to_sym][:error][:crud].sub('$1', 'get_pers_hopital').sub('$2', 'Carnet').sub('$3', "récupération du personnel à l'hopital")
+    rescue
+      raise_crud_error 'get_pers_evignal_or_hopital', "récupération du personnel à l'hopital", 'Carnet'
     end
     rights
   end

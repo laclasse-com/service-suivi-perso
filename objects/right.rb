@@ -4,6 +4,7 @@ require 'logger'
 # Classe de gestion des droits sur le carnets et ses onglets
 class Right
   include Outils
+  include ErrorHandler
 
   attr_accessor :read, :write, :admin, :hopital, :evignal
 
@@ -43,14 +44,18 @@ class Right
       new_right = new_right.save
       @id = new_right.id
     rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'create').sub('$2', 'Right').sub('$3', "la création d'un droit")
-      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'create').sub('$2', 'Right').sub('$3', "la création d'un droit")
+      raise_crud_error 'create', "la création d'un droit", 'Right'
     end
   end
 
-  def select
+  def right_select
     right = DroitsSpecifiques[id: @id] unless @id.nil?
     right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right
+  end
+
+  def select
+    right = right_select
     requires({right: right}, :right)
     begin
       @id = right.id
@@ -65,14 +70,12 @@ class Right
       @evignal = right.evignal
       @date_creation = right.date_creation
     rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'select').sub('$2', 'Right').sub('$3', "la récupération d'un droit")
-      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'select').sub('$2', 'Right').sub('$3', "la récupération d'un droit")
+      raise_crud_error 'select', "la récupération d'un droit", 'Right'
     end
   end
 
   def update(read = nil, write = nil, admin = nil, hopital = nil, evignal = nil)
-    right = DroitsSpecifiques[id: @id] unless @id.nil?
-    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right = right_select
     requires({right: right}, :right)
     begin
       right.update(read: read) unless read.nil?
@@ -86,26 +89,22 @@ class Right
       @hopital = hopital unless hopital.nil?
       @evignal = evignal unless evignal.nil?
     rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la mise à jour d'un droit")
-      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la mise à jour d'un droit")
+      raise_crud_error 'update', "la  mise à jour d'un droit", 'Right'
     end
   end
 
   def delete
-    right = DroitsSpecifiques[id: @id] unless @id.nil?
-    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right = right_select
     requires({right: right}, :right)
     begin
       right.delete
     rescue Exception
-      @logger.error MSG[LANG.to_sym][:error][:crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la suppression d'un droit")
-      raise MSG[LANG.to_sym][:error][crud].sub('$1', 'update').sub('$2', 'Right').sub('$3', "la suppression d'un droit")
+      raise_crud_error 'delete', "la  suppression d'un droit", 'Right'
     end
   end
 
   def exist?
-    right = DroitsSpecifiques[id: @id] unless @id.nil?
-    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right = right_select
     right.nil? ? false : true
   end
 end

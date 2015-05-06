@@ -7,6 +7,7 @@ class AnnuaireApi < Grape::API
   format :json
 
   helpers AuthenticationHelpers
+  helpers RolesHelpers
 
   desc "retourne le profile actif de l'utilisateur courant"
   get '/currentuser' do
@@ -87,18 +88,9 @@ class AnnuaireApi < Grape::API
     all_users = []
     users = []
     personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
-    if personnels.class == Array
-      personnels.each do |personnel|
-        role_id = ''
-        personnel['roles'].each do |role|
-          if COEFF[role['role_id']] > COEFF[role_id] && role['role_id'] != ROLES[:super_admin]
-            role_id = role['role_id']
-          end
-        end
-        personnel['role_id'] = role_id
-      end
-      all_users.concat(personnels)
-    end
+
+    all_users.concat affecter_role_max(personnels) if personnels.class == Array
+
     eleve = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, params[:uid_elv].to_s, 'expand' => 'true')
     eleve['role_id'] = ROLES[:eleve]
     all_users.concat([eleve]) if eleve['error'].nil?
@@ -127,18 +119,9 @@ class AnnuaireApi < Grape::API
     all_users = []
     users = []
     personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
-    if personnels.class == Array
-      personnels.each do |personnel|
-        role_id = ''
-        personnel['roles'].each do |role|
-          if COEFF[role['role_id']] > COEFF[role_id] && role['role_id'] != ROLES[:super_admin]
-            role_id = role['role_id']
-          end
-        end
-        personnel['role_id'] = role_id
-      end
-      all_users.concat(personnels)
-    end
+
+    all_users.concat affecter_role_max(personnels) if personnels.class == Array
+
     all_users.each do |user|
       begin
         carnet = Carnet.new(nil, params[:uid_elv])
