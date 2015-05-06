@@ -11,7 +11,6 @@ before_script:
   - cp ./config/options.sample ./config/options.rb
   - cp ./config/database.sample ./config/database.rb
   - cp ./config/common.rb.sample ./config/common.rb
-  - cp ./config/rights_constants.sample ./config/rights_constants.rb
 
   - mysql -e 'create database suivi;'
   - mysql < ./db/scripts/suivi.sql
