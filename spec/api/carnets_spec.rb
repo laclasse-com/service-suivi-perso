@@ -5,11 +5,11 @@ describe 'CarnetApiTest' do
 
   def app
     CarnetsApi::API
- end
+  end
 
   describe CarnetsApi::API do
     it "Retourne le status de l'application" do
-      r = get APP_PATH + '/status'
+      get APP_PATH + '/status'
       # get '/'
       puts last_response.inspect
       expect(last_response.status).to eq(200)
