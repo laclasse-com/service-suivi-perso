@@ -37,7 +37,7 @@ Metrics/PerceivedComplexity:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Style/Blocks:
+Style/BlockDelimiters:
   Enabled: false
 
 # Offense count: 18

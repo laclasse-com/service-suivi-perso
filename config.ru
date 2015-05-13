@@ -11,16 +11,15 @@ end
 
 require 'laclasse/helpers/rack'
 Laclasse::Helpers::Rack.configure_rake self
-                           
+
 use OmniAuth::Builder do
   configure do |config|
     config.path_prefix = APP_PATH + '/auth'
   end
-  provider :cas,  CASAUTH::CONFIG 
+  provider :cas,  CASAUTH::CONFIG
 end
 
-
-map APP_PATH + "/api" do
+map APP_PATH + '/api' do
   run Api
 end
 

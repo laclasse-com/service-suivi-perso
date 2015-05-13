@@ -117,11 +117,11 @@ class RightsApi < Grape::API
     begin
     carnet.read
     params[:users].each do |user|
-      r = user.r ? 1 :   0
-      w = user.w ? 1 :   0
-      admin = user.admin ? 1 :   0
-      hopital = user.hopital ? 1 :   0
-      evignal = user.evignal ? 1 :   0
+      r = user.r ? 1 : 0
+      w = user.w ? 1 : 0
+      admin = user.admin ? 1 : 0
+      hopital = user.hopital ? 1 : 0
+      evignal = user.evignal ? 1 : 0
       case user.action.last
       when 'add'
         if user.id_right.nil?
