@@ -64,7 +64,7 @@ class SinatraApp < Sinatra::Base
 
   get APP_PATH + '/auth/:provider/callback' do
     $current_user = init_session(request.env)
-    redirect params[:url] if params[:url] !=  env['rack.url_scheme'] + '://' + env['HTTP_HOST'] + APP_PATH + '/'
+    redirect params[:url] if params[:url] != env['rack.url_scheme'] + '://' + env['HTTP_HOST'] + APP_PATH + '/'
     redirect APP_PATH + '/'
   end
 
