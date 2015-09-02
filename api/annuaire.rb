@@ -11,7 +11,7 @@ class AnnuaireApi < Grape::API
 
   desc "retourne le profile actif de l'utilisateur courant"
   get '/currentuser' do
-    response = $current_user[:user_detailed]
+    response = env['rack.session'][:current_user][:user_detailed]
     hight_role = ''
     response['roles'].each do |role|
       if role['etablissement_code_uai'] == response['profil_actif']['etablissement_code_uai'] && COEFF[hight_role] < COEFF[role['role_id']]
@@ -60,7 +60,7 @@ class AnnuaireApi < Grape::API
 
   desc "retourne toutes les classes de l'utilisateur"
   get '/classes' do
-    response = $current_user[:user_detailed]
+    response = env['rack.session'][:current_user][:user_detailed]
     if response['error'].nil?
       classes = response['classes'].sort_by { |classe| [classe['etablissement_nom'], classe['classe_libelle']] }
       classes = classes.uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }

@@ -13,11 +13,11 @@ class PublicUrlApi < Grape::API
   end
   post '/carnets/:uid_elv' do
     begin
-      response = $current_user[:user_detailed]
+      response = env['rack.session'][:current_user][:user_detailed]
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
       # verification des droits coté backend
-      right =  Right.new nil, $current_user[:info].uid.to_s, nil, nil, carnet.id
+      right =  Right.new nil, env['rack.session'][:current_user][:info].uid.to_s, nil, nil, carnet.id
       begin
         right.select
       rescue Exception
@@ -54,11 +54,11 @@ class PublicUrlApi < Grape::API
   end
   delete '/carnets/:uid_elv' do
     begin
-      response = $current_user[:user_detailed]
+      response = env['rack.session'][:current_user][:user_detailed]
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
       # verification des droits coté backend
-      right = Right.new nil, $current_user[:info].uid.to_s, nil, nil, carnet.id
+      right = Right.new nil, env['rack.session'][:current_user][:info].uid.to_s, nil, nil, carnet.id
       begin
         right.select
       rescue Exception
@@ -88,7 +88,7 @@ class PublicUrlApi < Grape::API
   #     begin
   #       carnet = Carnet.new(nil, nil, nil, nil, nil, params[:url_pub])
   #       carnet.read
-  #       response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, $current_user[:info].uid.to_s, {"expand" => "true"})
+  #       response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, env['rack.session'][:current_user][:info].uid.to_s, {"expand" => "true"})
   #       if response["profil_actif"]["etablissement_code_uai"] == UAI_EVIGNAL
   #         redirect APP_PATH + "/#/evignal/classes/"+carnet.id_classe.to_s+"/carnets/"+carnet.uid_elv
   #       else
