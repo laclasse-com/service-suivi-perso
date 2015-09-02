@@ -24,16 +24,19 @@
         </div>
         <div class="modal-body">
             <div>
-				<h4> Voulez vous créer ce carnet avec les mêmes onglets du dernier carnet que vous avez créé ?</h4>
-				<h5 class="text-danger">Attention : Si le dernier carnet que vous avez créé n'a aucun onglet, celui-ci n'en aura pas non plus !!!</h5>
+				<h4> Voulez vous créer ce carnet avec les mêmes onglets que dernier carnet que vous avez créé ?</h4>
+				<h5 class="text-danger">Attention : Si le dernier carnet créé n'a aucun onglet, celui-ci n'en aura pas non plus.</h5>
             </div>
         </div>
         <div class="modal-footer">
             <div class="exit-carnet-button" ng-click="oui()">
-				<span title="Cliquez ici si vous souhaitez créer et reprendre votre ancien model de carnet">Oui</span>
+				<span title="Cliquez ici si vous souhaitez créer et reprendre votre ancien model de carnet">Créer à l'identique</span>
 			</div>
 			<div class="exit-carnet-button" ng-click="non()">
-				<span title="Cliquez ici si vous souhaitez créer un carnet sans onglet">Non</span>
+				<span title="Cliquez ici si vous souhaitez créer un carnet sans onglet">Créer un carnet vierge</span>
+			</div>
+			<div class="exit-carnet-button" ng-click="annuler()"">
+				<span title="Annuler">Annuler</span>
 			</div>
         </div>
     </script>

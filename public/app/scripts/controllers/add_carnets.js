@@ -37,13 +37,17 @@ angular.module('suiviApp')
   };
 
   $scope.modalInstanceCreateCarnetCtrl = function ($rootScope, $scope, $modalInstance) {
-    $rootScope.model_carnet = false;
+    $rootScope.model_carnet = "no_model";
     $scope.oui = function () {
-      $rootScope.model_carnet = true;
+      $rootScope.model_carnet = "model";
       $modalInstance.close();                
     };
     $scope.non = function () {
-      $rootScope.model_carnet = false;
+      $rootScope.model_carnet = "no_model";         
+      $modalInstance.close();                
+    };
+    $scope.annuler = function () {
+      $rootScope.model_carnet = "no_creation";  
       $modalInstance.close();                
     };
   };
@@ -57,7 +61,10 @@ angular.module('suiviApp')
     });
 
     modalInstance.result.then(function () {  
-      $scope.createCarnet(carnet, $rootScope.model_carnet)
+      var modelCarnet = ($rootScope.model_carnet == "model") ? true : false;
+      if ($rootScope.model_carnet != "no_creation") {
+        $scope.createCarnet(carnet, modelCarnet);
+      }
     });
   };
 }]);
