@@ -6,19 +6,8 @@ require 'cgi'
 require 'openssl'
 require 'net/http'
 
-# VARIABLE GLOBAL DE L'UTILISATEUR COURANT
-$current_user = nil
-
 # helper pour les fonctions d'authentification et d'utilisateur connecté.
 module AuthenticationHelpers
-  #
-  # Getter sur les infos de la session
-  #
-  def current_user_ent
-    return nil if env['rack.session'][:current_user].nil?
-    $current_user ||= env['rack.session'][:current_user]
-  end
-
   # returns uri of the rack request
   def url(request)
     url = request.scheme + '://'

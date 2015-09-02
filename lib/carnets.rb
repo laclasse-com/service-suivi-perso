@@ -19,17 +19,19 @@ module CarnetsLib
         etablissement_nom = nil
         !carnet.id.nil? ? active = true : active = false
       end
-      carnets.push( id: carnet.id,
-                    couleur: nil,
-                    uid_elv: reponse['id_ent'],
-                    firstName: reponse['prenom'],
-                    lastName: reponse['nom'],
-                    classe: reponse['classes'][0]['classe_libelle'],
-                    classe_id: reponse['classes'][0]['classe_id'],
-                    etablissement_code: reponse['classes'][0]['etablissement_code'],
-                    etablissement_nom: etablissement_nom,
-                    avatar: reponse['avatar'],
-                    active: active)
+      carnets.push(
+        id: carnet.id,
+        couleur: nil,
+        uid_elv: reponse['id_ent'],
+        firstName: reponse['prenom'],
+        lastName: reponse['nom'],
+        classe: reponse['classes'][0]['classe_libelle'],
+        classe_id: reponse['classes'][0]['classe_id'],
+        etablissement_code: reponse['classes'][0]['etablissement_code'],
+        etablissement_nom: etablissement_nom,
+        avatar: reponse['avatar'],
+        active: active
+      )
     end
     carnets
   end
@@ -51,16 +53,18 @@ module CarnetsLib
       carnet = Carnet.new(nil, reponse['id_ent'])
       if carnet.exist?
         carnet.read
-        carnets[:carnets].push(                         id: carnet.id,
-                                                        couleur: nil,
-                                                        uid_elv: reponse['id_ent'],
-                                                        firstName: reponse['prenom'],
-                                                        lastName: reponse['nom'],
-                                                        classe: response_annuaire['libelle_aaf'],
-                                                        classe_id: response_annuaire['id'],
-                                                        etablissement_code: response_annuaire['etablissement']['code_uai'],
-                                                        avatar: reponse['avatar'],
-                                                        active: !carnet.id.nil?)
+        carnets[:carnets].push(
+          id: carnet.id,
+          couleur: nil,
+          uid_elv: reponse['id_ent'],
+          firstName: reponse['prenom'],
+          lastName: reponse['nom'],
+          classe: response_annuaire['libelle_aaf'],
+          classe_id: response_annuaire['id'],
+          etablissement_code: response_annuaire['etablissement']['code_uai'],
+          avatar: reponse['avatar'],
+          active: !carnet.id.nil?
+        )
       end
     end
     carnets
@@ -71,15 +75,17 @@ module CarnetsLib
     uids = []
     Carnets.where(evignal: true).each do |carnet|
       uids.push carnet.uid_elv
-      carnets.push(        id: carnet.id,
-                           couleur: nil,
-                           uid_elv: carnet.uid_elv,
-                           firstName: nil,
-                           lastName: nil,
-                           classe: nil,
-                           classe_id: carnet.cls_id,
-                           etablissement_code: carnet.uai,
-                           avatar: nil)
+      carnets.push(
+        id: carnet.id,
+        couleur: nil,
+        uid_elv: carnet.uid_elv,
+        firstName: nil,
+        lastName: nil,
+        classe: nil,
+        classe_id: carnet.cls_id,
+        etablissement_code: carnet.uai,
+        avatar: nil
+      )
     end
     response = []
     # puts ANNUAIRE_URL[:user_liste] + uids.join("_").to_s
@@ -105,7 +111,7 @@ module CarnetsLib
       if (id_onglets.nil? || id_onglets.include?(tab.id)) && (url_pub.nil? || url_pub == tab.url_pub)
         entrees = []
         tab.entrees.each do |e|
-          entrees.push ({
+          entrees.push(
             id: e.id,
             owner: {
               uid: e.uid,
@@ -116,10 +122,9 @@ module CarnetsLib
             },
             contenu: e.contenu,
             docs: e.docs_attaches,
-            date: e.date_modification
-          })
+            date: e.date_modification)
         end
-        onglets.push ({
+        onglets.push(
           id: tab.id,
           carnet_id: tab.id_carnet,
           nom: tab.nom,
@@ -130,7 +135,7 @@ module CarnetsLib
           htmlcontent: '',
           modifEntree: nil,
           entrees: entrees
-        })
+        )
       end
     end
     onglets.sort_by { |o| o[:ordre] }

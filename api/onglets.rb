@@ -47,7 +47,7 @@ class OngletsApi < Grape::API
     begin
       carnet.read
       ordre = carnet.onglets.size + 1
-      onglet = Onglet.new(nil, carnet.id, params[:nom], $current_user[:info].uid.to_s, ordre)
+      onglet = Onglet.new(nil, carnet.id, params[:nom], env['rack.session'][:current_user][:info].uid.to_s, ordre)
       onglet.create
       {id: onglet.id, carnet_id: onglet.id_carnet, ordre: onglet.ordre, owner: onglet.uid_own}
   rescue Exception

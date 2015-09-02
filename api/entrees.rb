@@ -102,7 +102,7 @@ class EntreesApi < Grape::API
       File.rename params[:file][:tempfile], new_filename
 
       # envoi de la requete au documents pour créé le fichier dans l'espace perso de stockage du suivi
-      reponse = Laclasse::CrossApp::Sender.post_raw_request_signed(:service_docs_suivi, nil, {}, {uid_current_user: $current_user[:info].uid, id_carnet: params[:id_carnet], file: File.open( new_filename ), nom: params[:file][:filename]}, 'rack.session' => cookies['rack.session'])
+      reponse = Laclasse::CrossApp::Sender.post_raw_request_signed(:service_docs_suivi, nil, {}, {uid_current_user: env['rack.session'][:current_user][:info].uid, id_carnet: params[:id_carnet], file: File.open( new_filename ), nom: params[:file][:filename]}, 'rack.session' => cookies['rack.session'])
 
       # Suppression du fichier temp
       File.delete new_filename
@@ -131,7 +131,7 @@ class EntreesApi < Grape::API
   post '/upload/documents' do
     begin
       # envoi de la requete au documents pour créé le fichier dans l'espace perso de stockage du suivi
-      reponse = Laclasse::CrossApp::Sender.post_raw_request_signed(:service_docs_suivi, 'copy', {}, {uid_current_user: $current_user[:info].uid, id_carnet: params[:id_carnet], target: params[:file]}, 'rack.session' => cookies['rack.session'])
+      reponse = Laclasse::CrossApp::Sender.post_raw_request_signed(:service_docs_suivi, 'copy', {}, {uid_current_user: env['rack.session'][:current_user][:info].uid, id_carnet: params[:id_carnet], target: params[:file]}, 'rack.session' => cookies['rack.session'])
 
       # s'il n'y a pas d'erreur on insère dans la BDD les coordonnées du docs.
       if reponse['error'].nil?
