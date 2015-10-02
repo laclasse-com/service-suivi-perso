@@ -16,6 +16,15 @@ $provide.value("$locale", {
       "Jumaat",
       "Sabtu"
     ],
+    "ERANAMES": [
+      "S.M.",
+      "TM"
+    ],
+    "ERAS": [
+      "S.M.",
+      "TM"
+    ],
+    "FIRSTDAYOFWEEK": 0,
     "MONTH": [
       "Januari",
       "Februari",
@@ -53,6 +62,10 @@ $provide.value("$locale", {
       "Nov",
       "Dis"
     ],
+    "WEEKENDRANGE": [
+      5,
+      6
+    ],
     "fullDate": "dd MMMM y",
     "longDate": "d MMMM y",
     "medium": "d MMM y h:mm:ss a",
@@ -63,14 +76,13 @@ $provide.value("$locale", {
     "shortTime": "h:mm a"
   },
   "NUMBER_FORMATS": {
-    "CURRENCY_SYM": "RM",
-    "DECIMAL_SEP": ".",
-    "GROUP_SEP": ",",
+    "CURRENCY_SYM": "$",
+    "DECIMAL_SEP": ",",
+    "GROUP_SEP": ".",
     "PATTERNS": [
       {
         "gSize": 3,
         "lgSize": 3,
-        "macFrac": 0,
         "maxFrac": 3,
         "minFrac": 0,
         "minInt": 1,
@@ -82,18 +94,17 @@ $provide.value("$locale", {
       {
         "gSize": 3,
         "lgSize": 3,
-        "macFrac": 0,
         "maxFrac": 2,
         "minFrac": 2,
         "minInt": 1,
-        "negPre": "\u00a4-",
+        "negPre": "-\u00a4\u00a0",
         "negSuf": "",
-        "posPre": "\u00a4",
+        "posPre": "\u00a4\u00a0",
         "posSuf": ""
       }
     ]
   },
   "id": "ms-latn-bn",
-  "pluralCat": function (n, opt_precision) {  return PLURAL_CATEGORY.OTHER;}
+  "pluralCat": function(n, opt_precision) {  return PLURAL_CATEGORY.OTHER;}
 });
 }]);
