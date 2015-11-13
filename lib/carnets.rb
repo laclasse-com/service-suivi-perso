@@ -90,9 +90,8 @@ module CarnetsLib
 
     return [] if uids.empty?
 
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, uids.join('_').to_s, {})
-
-    return [] if response.key? 'error'
+    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, "liste/#{uids.join('_')}", {})
+    return [] unless response.is_a? Array
 
     response.each do |user|
       carnets.each do |carnet|
