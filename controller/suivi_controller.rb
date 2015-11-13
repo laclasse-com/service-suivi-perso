@@ -28,13 +28,13 @@ class SinatraApp < Sinatra::Base
   include CarnetsLib
 
   # Routes nécessitant une authentification
-  ['/?', '/login'].each { |route|
-    before APP_PATH + route do
+  [ '/?', '/login' ].each do |route|
+    before "#{APP_PATH}#{route}" do
       login! env['REQUEST_PATH'] unless logged?
     end
-  }
+  end
 
-  get APP_PATH + '/' do
+  get "#{APP_PATH}/" do
     erb :app if logged?
   end
 
@@ -48,7 +48,7 @@ class SinatraApp < Sinatra::Base
     app_status.to_json
   end
 
-  get APP_PATH + '/public/:url' do
+  get "#{APP_PATH}/public/:url" do
     begin
       carnet = Carnet.new(nil, nil, nil, nil, nil, params[:url])
       carnet.read
@@ -64,21 +64,21 @@ class SinatraApp < Sinatra::Base
     end
   end
 
-  get APP_PATH + '/auth/:provider/callback' do
-    init_session(request.env)
-    redirect params[:url] if params[:url] != env['rack.url_scheme'] + '://' + env['HTTP_HOST'] + APP_PATH + '/'
-    redirect APP_PATH + '/'
+  get "#{APP_PATH}/auth/:provider/callback" do
+    init_session( request.env )
+    redirect params[:url] if params[:url] != "#{env['rack.url_scheme']}://#{env['HTTP_HOST']}#{APP_PATH}"
+    redirect "#{APP_PATH}/"
   end
 
-  get APP_PATH + '/auth/failure' do
+  get "#{APP_PATH}/auth/failure" do
     erb "<h1>L'authentification a échoué : </h1><h3>message:<h3> <pre>#{params}</pre>"
   end
 
-  get APP_PATH + '/login' do
-    login! APP_PATH + '/'
+  get "#{APP_PATH}/login" do
+    login! "#{APP_PATH}/"
   end
 
-  get APP_PATH + '/logout' do
-    logout! env['rack.url_scheme'] + '://' + env['HTTP_HOST'] + APP_PATH + '/'
+  get "#{APP_PATH}/logout" do
+    logout! "#{env['rack.url_scheme']}://#{env['HTTP_HOST']}#{APP_PATH}"
   end
 end
