@@ -1,4 +1,6 @@
-# oding: utfequire 'sinatra'
+# coding: utf-8
+
+require 'sinatra'
 require 'sinatra/reloader' if ENV['RACK_ENV'] == 'development'
 require 'laclasse/helpers/authentication'
 require 'laclasse/cross_app/sender'
