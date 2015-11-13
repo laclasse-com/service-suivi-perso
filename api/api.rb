@@ -6,7 +6,7 @@ class Api < Grape::API
   format :json
   rescue_from :all
 
-  helpers AuthenticationHelpers
+  helpers URLHelpers
   helpers Laclasse::Helpers::Authentication
 
   before do

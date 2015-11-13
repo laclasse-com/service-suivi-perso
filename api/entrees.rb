@@ -3,7 +3,7 @@
 class EntreesApi < Grape::API
   format :json
 
-  helpers AuthenticationHelpers
+  helpers URLHelpers
   include CarnetsLib
 
   desc "retourne les entrées d'un onglet"

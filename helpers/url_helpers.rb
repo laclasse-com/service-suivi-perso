@@ -7,7 +7,7 @@ require 'openssl'
 require 'net/http'
 
 # helper pour les fonctions d'authentification et d'utilisateur connecté.
-module AuthenticationHelpers
+module URLHelpers
   # returns uri of the rack request
   def url(request)
     url = request.scheme + '://'

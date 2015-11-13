@@ -3,7 +3,7 @@
 class OngletsApi < Grape::API
   format :json
 
-  helpers AuthenticationHelpers
+  helpers URLHelpers
   include CarnetsLib
 
   desc 'retourne tout les onglets et les entrees assocciés à un carnet'

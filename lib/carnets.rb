@@ -5,7 +5,7 @@
 module CarnetsLib
   module_function
 
-  include AuthenticationHelpers
+  include URLHelpers
 
   def search_carnets_of(response_annuaire, evignal = false)
     carnets = []

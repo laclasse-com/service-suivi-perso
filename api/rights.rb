@@ -3,7 +3,7 @@
 class RightsApi < Grape::API
   format :json
 
-  helpers AuthenticationHelpers
+  helpers URLHelpers
   include CarnetsLib
 
   desc "retourne un droit avec l'id"

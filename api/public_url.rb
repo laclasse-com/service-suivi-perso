@@ -3,7 +3,7 @@
 class PublicUrlApi < Grape::API
   format :json
   content_type :json, 'application/json'
-  helpers AuthenticationHelpers
+  helpers URLHelpers
   include CarnetsLib
 
   desc 'création d\'une url public d\'un carnet'

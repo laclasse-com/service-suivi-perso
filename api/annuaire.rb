@@ -6,7 +6,7 @@ require 'logger'
 class AnnuaireApi < Grape::API
   format :json
 
-  helpers AuthenticationHelpers
+  helpers URLHelpers
   helpers RolesHelpers
 
   desc "retourne le profile actif de l'utilisateur courant"

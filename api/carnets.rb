@@ -7,7 +7,7 @@ class CarnetsApi < Grape::API
   format :json
   content_type :json, 'application/json'
   content_type :pdf, 'application/pdf'
-  helpers AuthenticationHelpers
+  helpers URLHelpers
   helpers do
     params :creation_carnet_params_set do
       requires :uid_elv, type: String

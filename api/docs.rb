@@ -3,7 +3,7 @@
 class DocsApi < Grape::API
   format :json
 
-  helpers AuthenticationHelpers
+  helpers URLHelpers
 
   desc 'appelle les cmd des docs et retourne la reponse'
   params do

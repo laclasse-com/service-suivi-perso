@@ -22,7 +22,7 @@ class SinatraApp < Sinatra::Base
     # dont_reload '/path/to/other/file'
   end
 
-  helpers AuthenticationHelpers
+  helpers URLHelpers
   helpers Laclasse::Helpers::Authentication
   helpers Laclasse::Helpers::AppInfos
   include CarnetsLib
