@@ -40,8 +40,8 @@ class CarnetsApi < Grape::API
         url_pub: carnet.url_pub,
         date_creation: carnet.date_creation
       }
-  rescue Exception
-    {error: 'Impossible de récupérer le carnet'}
+    rescue Exception
+      {error: 'Impossible de récupérer le carnet'}
     end
   end
 
@@ -53,8 +53,8 @@ class CarnetsApi < Grape::API
     begin
       response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, params[:classe_id].to_s, 'expand' => 'true')
       CarnetsLib.carnets_de_la_classe response
-  rescue Exception
-    {error: 'Impossible de récupérer les carnets'}
+    rescue Exception
+      {error: 'Impossible de récupérer les carnets'}
     end
   end
 
@@ -62,10 +62,10 @@ class CarnetsApi < Grape::API
   get '/evignal' do
     begin
       CarnetsLib.carnets_evignal
-  rescue Exception => e
-    puts e.message
-    puts e.backtrace[0..10]
-    [{error: 'Impossible de récupérer les carnets'}]
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace[0..10]
+      [{error: 'Impossible de récupérer les carnets'}]
     end
   end
 
@@ -84,8 +84,8 @@ class CarnetsApi < Grape::API
         personnels.push(id_ent: p.uid, profil: p.profil, fullname: p.full_name)
       end
       {personnels: personnels}
-  rescue Exception
-    {error: "Impossible de récupérer le personnel à l'hôpital"}
+    rescue Exception
+      {error: "Impossible de récupérer le personnel à l'hôpital"}
     end
   end
 
@@ -138,8 +138,8 @@ class CarnetsApi < Grape::API
       right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], 'élève', carnet.id, 0, 0, 0)
       right_elv.create
       {carnet_id: carnet.id}
-  rescue
-    {error: 'erreur lors de la création du carnet'}
+    rescue
+      {error: 'erreur lors de la création du carnet'}
     end
   end
 
@@ -176,8 +176,8 @@ class CarnetsApi < Grape::API
         right_elv.create
       end
       {carnet_id: carnet.id}
-  rescue
-    {error: 'erreur lors de la création du carnet'}
+    rescue
+      {error: 'erreur lors de la création du carnet'}
     end
   end
 
@@ -208,10 +208,10 @@ class CarnetsApi < Grape::API
       content_type 'application/pdf'
       kit.to_pdf
 
-  rescue Exception => e
-    p e.message.inspect
-    p e.backtrace[0..10].inspect
-    error!('Ressource non trouvee', 404)
+    rescue Exception => e
+      p e.message.inspect
+      p e.backtrace[0..10].inspect
+      error!('Ressource non trouvee', 404)
     end
   end
 
@@ -225,10 +225,10 @@ class CarnetsApi < Grape::API
       file = {name: params[:file][:filename], path: params[:file][:tempfile].path} unless params[:file].nil?
       infos = JSON.parse(params[:mail_infos])
       MailGenerator.send_emails infos['uid_exp'], infos['destinataires']['list'], infos['objet'], infos['message'], file
-  rescue Exception => e
-    p e.message.inspect
-    p e.backtrace[0..10].inspect
-    error!('Ressource non trouvee', 404)
+    rescue Exception => e
+      p e.message.inspect
+      p e.backtrace[0..10].inspect
+      error!('Ressource non trouvee', 404)
     end
   end
 end
