@@ -15,7 +15,6 @@ class PublicUrlApi < Grape::API
   end
   post '/carnets/:uid_elv' do
     begin
-      response = user[:user_detailed]
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
 
@@ -24,9 +23,9 @@ class PublicUrlApi < Grape::API
       begin
         right.select
       rescue Exception
-        response['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL ? evignal = 1 : evignal = 0
-        if (response['profil_actif']['etablissement_code_uai'] == carnet.uai || evignal == 1) && response['roles_max_priority_etab_actif'] > 1
-          right = Right.new nil, params[:uid], response['prenom'] + ' ' + response['nom'], 'admin', carnet.id, 1, 1, 1, 0, evignal
+        user[:user_detailed]['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL ? evignal = 1 : evignal = 0
+        if (user[:user_detailed]['profil_actif']['etablissement_code_uai'] == carnet.uai || evignal == 1) && user[:user_detailed]['roles_max_priority_etab_actif'] > 1
+          right = Right.new nil, params[:uid], user[:user_detailed]['prenom'] + ' ' + user[:user_detailed]['nom'], 'admin', carnet.id, 1, 1, 1, 0, evignal
         end
       end
       if right.admin == 1
@@ -39,8 +38,7 @@ class PublicUrlApi < Grape::API
           onglet.update nil, nil, url_pub
         end
         URL_ENT.split('').last == '/' ? prefix_url = URL_ENT.chomp('/') : prefix_url = URL_ENT
-        {url_pub: prefix_url + APP_PATH + '/public/' + url_pub}
-      # {url_pub: 'http://localhost:9393' + APP_PATH + '/public/' + url_pub}
+        { url_pub: prefix_url + APP_PATH + '/public/' + url_pub }
       else
         error!("Vous n'êtes pas autorisé pour cette ressource", 401)
       end
@@ -57,20 +55,19 @@ class PublicUrlApi < Grape::API
   end
   delete '/carnets/:uid_elv' do
     begin
-      response = user[:user_detailed]
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
+
       # verification des droits coté backend
       right = Right.new nil, user[:info].uid.to_s, nil, nil, carnet.id
       begin
         right.select
       rescue Exception
-        response['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL ? evignal = 1 : evignal = 0
-        if (response['profil_actif']['etablissement_code_uai'] == carnet.uai || evignal == 1) && response['roles_max_priority_etab_actif'] > 1
-          right = Right.new nil, params[:uid], response['prenom'] + ' ' + response['nom'], 'admin', carnet.id, 1, 1, 1, 0, evignal
+        user[:user_detailed]['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL ? evignal = 1 : evignal = 0
+        if (user[:user_detailed]['profil_actif']['etablissement_code_uai'] == carnet.uai || evignal == 1) && user[:user_detailed]['roles_max_priority_etab_actif'] > 1
+          right = Right.new nil, params[:uid], user[:user_detailed]['prenom'] + ' ' + user[:user_detailed]['nom'], 'admin', carnet.id, 1, 1, 1, 0, evignal
         end
       end
-      puts right.inspect
       if right.admin == 1
         carnet.delete_url
       else
@@ -91,7 +88,7 @@ class PublicUrlApi < Grape::API
     begin
       carnet = Carnet.new(nil, nil, nil, nil, nil, params[:url_pub])
       carnet.read
-      response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, user[:info].uid.to_s, {'expand' => 'true'})
+      response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, user[:info].uid.to_s, 'expand' => 'true' )
       if response['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL
         redirect APP_PATH + '/#/evignal/classes/' + carnet.id_classe.to_s + '/carnets/' + carnet.uid_elv
       else

@@ -12,36 +12,29 @@ class AnnuaireApi < Grape::API
 
   desc "retourne le profile actif de l'utilisateur courant"
   get '/currentuser' do
-    p user.keys
-
-    response = user[:user_detailed]
     hight_role = ''
-    response['roles'].each do |role|
-      if role['etablissement_code_uai'] == response['profil_actif']['etablissement_code_uai'] && COEFF[hight_role] < COEFF[role['role_id']]
+    user[:user_detailed]['roles'].each do |role|
+      if role['etablissement_code_uai'] == user[:user_detailed]['profil_actif']['etablissement_code_uai'] && COEFF[hight_role] < COEFF[role['role_id']]
         hight_role = role['role_id']
       end
     end
 
-    return response['error'] unless response['error'].nil?
-
-    {
-      id_ent: response['id_ent'],
-      profil_actif: response['profil_actif'],
-      actif: response['profil_actif']['actif'],
-      role_max_priority: response['roles_max_priority_etab_actif'],
-      etablissement_id: response['profil_actif']['etablissement_id'],
-      profil_id: response['profil_actif']['profil_id'],
-      roles: response['roles'],
-      profils: response['profils'],
+    { id_ent: user[:user_detailed]['id_ent'],
+      profil_actif: user[:user_detailed]['profil_actif'],
+      actif: user[:user_detailed]['profil_actif']['actif'],
+      role_max_priority: user[:user_detailed]['roles_max_priority_etab_actif'],
+      etablissement_id: user[:user_detailed]['profil_actif']['etablissement_id'],
+      profil_id: user[:user_detailed]['profil_actif']['profil_id'],
+      roles: user[:user_detailed]['roles'],
+      profils: user[:user_detailed]['profils'],
       hight_role: hight_role,
-      user_id: response['profil_actif']['user_id'],
-      sexe: response['sexe'],
-      nom: response['nom'],
-      prenom: response['prenom'],
-      classes: response['classes'],
-      enfants: response['enfants'],
-      avatar: response['avatar']
-    }
+      user_id: user[:user_detailed]['profil_actif']['user_id'],
+      sexe: user[:user_detailed]['sexe'],
+      nom: user[:user_detailed]['nom'],
+      prenom: user[:user_detailed]['prenom'],
+      classes: user[:user_detailed]['classes'],
+      enfants: user[:user_detailed]['enfants'],
+      avatar: user[:user_detailed]['avatar'] }
   end
 
   desc 'retourne les infos sur un utilisateur'
@@ -62,14 +55,10 @@ class AnnuaireApi < Grape::API
 
   desc "retourne toutes les classes de l'utilisateur"
   get '/classes' do
-    response = user[:user_detailed]
-    if response['error'].nil?
-      classes = response['classes'].sort_by { |classe| [classe['etablissement_nom'], classe['classe_libelle']] }
-      classes = classes.uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
-      classes.reverse
-    else
-      response['error']
-    end
+    user[:user_detailed]['classes']
+      .sort_by { |classe| [classe['etablissement_nom'], classe['classe_libelle']] }
+      .uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
+      .reverse
   end
 
   desc 'récupère les informations sur un regroupement'
