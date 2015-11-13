@@ -27,7 +27,7 @@ puts '----------> libs <-------------'
 require_relative '../lib/init'
 
 puts '----------> models <-----------'
-require_relative '../model/init'
+require_relative '../models/init'
 
 puts '----------> objects <-----------'
 require_relative '../objects/init'

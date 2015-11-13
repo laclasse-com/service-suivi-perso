@@ -48,7 +48,7 @@ namespace :db do
     require 'pry'
     require 'sequel'
     require './config/database'
-    require './model/init'
+    require './models/init'
     pry.binding
   end
 end
