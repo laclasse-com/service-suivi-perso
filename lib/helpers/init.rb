@@ -1,3 +1,3 @@
-require __dir__('url_helpers')
-require __dir__('roles_helpers')
-require __dir__('error_helpers')
+require_relative './url_helpers'
+require_relative './roles_helpers'
+require_relative './error_helpers'

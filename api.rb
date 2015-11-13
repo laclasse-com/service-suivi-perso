@@ -1,5 +1,9 @@
+# coding: utf-8
 require 'laclasse/helpers/authentication'
 require 'laclasse/cross_app/sender'
+
+puts '----------> api <--------------'
+require_relative './api/init'
 
 # Point d'entrée des APi du suivi
 class Api < Grape::API
@@ -11,7 +15,7 @@ class Api < Grape::API
 
   before do
     error!( '401 Unauthorized', 401 ) unless logged?
-    env['rack.session'][:current_user]
+    # env['rack.session'][:current_user]
   end
 
   resource(:annuaire) { mount AnnuaireApi }

@@ -1,20 +1,20 @@
 puts 'loading model/carnets'
-require __dir__('carnets')
+require_relative './carnets'
 
 puts 'loading model/carnets_onglets'
-require __dir__('carnets_onglets')
+require_relative './carnets_onglets'
 
 puts 'loading model/droits_specifiques'
-require __dir__('droits_specifiques')
+require_relative './droits_specifiques'
 
 puts 'loading model/entrees_onglets'
-require __dir__('entrees_onglets')
+require_relative './entrees_onglets'
 
 puts 'loading model/onglets'
-require __dir__('onglets')
+require_relative './onglets'
 
 puts 'loading model/saisies'
-require __dir__('saisies')
+require_relative './saisies'
 
 puts 'loading model/docs'
-require __dir__('docs')
+require_relative './docs'

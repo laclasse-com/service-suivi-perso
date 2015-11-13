@@ -1,15 +1,14 @@
-
 puts 'loading objects/entree'
-require __dir__('entree')
+require_relative './entree'
 
 puts 'loading objects/onglet'
-require __dir__('onglet')
+require_relative './onglet'
 
 puts 'loading objects/carnet'
-require __dir__('carnet')
+require_relative './carnet'
 
 puts 'loading objects/right'
-require __dir__('right')
+require_relative './right'
 
 puts 'loading objects/doc'
-require __dir__('doc')
+require_relative './doc'

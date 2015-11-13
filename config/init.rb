@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 puts 'loading config/constants'
-require __dir__('constants')
+require_relative './constants'
 
 puts 'loading config/options'
-require __dir__('options')
+require_relative './options'
 
 puts 'loading config/database'
-require __dir__('database')
+require_relative './database'
 
 require_relative './common'
