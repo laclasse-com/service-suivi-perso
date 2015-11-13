@@ -18,17 +18,6 @@ module CASAUTH
   }
 end
 
-#
-# Configuration du service d'annuaire de l'ENT
-#
-ANNUAIRE = {
-  url: 'https://v3dev.laclasse.com/api',
-  api_key: 'Une clé d api pour la connexion annuaire',
-  app_id: 'SUIVIELV',
-  api_mode: 'v3'
-}
-
-
 module Configuration
  APP_PREFIX = '/suivi'
  GIT_COMMIT = ''

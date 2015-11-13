@@ -49,7 +49,6 @@ module CarnetsLib
     }
     carnets[:classe] = classe
     response_annuaire['eleves'].each do |reponse|
-      # puts reponse['avatar'].inspect
       carnet = Carnet.new(nil, reponse['id_ent'])
       if carnet.exist?
         carnet.read
@@ -73,6 +72,7 @@ module CarnetsLib
   def carnets_evignal
     carnets = []
     uids = []
+
     Carnets.where(evignal: true).each do |carnet|
       uids.push carnet.uid_elv
       carnets.push(
@@ -87,10 +87,13 @@ module CarnetsLib
         avatar: nil
       )
     end
-    response = []
-    # puts ANNUAIRE_URL[:user_liste] + uids.join("_").to_s
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join('_').to_s, {}) unless uids.empty?
-    # puts "la reponse de l'annuaire => "+response.inspect
+
+    return [] if uids.empty?
+
+    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, uids.join('_').to_s, {})
+
+    return [] if response.key? 'error'
+
     response.each do |user|
       carnets.each do |carnet|
         if carnet[:uid_elv] == user['id_ent']
@@ -100,6 +103,7 @@ module CarnetsLib
         end
       end
     end
+
     carnets
   end
 

@@ -3,6 +3,7 @@
 class OngletsApi < Grape::API
   format :json
 
+  helpers Laclasse::Helpers::User
   helpers URLHelpers
   include CarnetsLib
 
@@ -32,8 +33,8 @@ class OngletsApi < Grape::API
         onglets.push(id: onglet.id, nom: onglet.nom, check: false)
       end
       {onglets: onglets}
-  rescue Exception
-    {error: 'Impossible de retourner les onglets'}
+    rescue Exception
+      {error: 'Impossible de retourner les onglets'}
     end
   end
 
@@ -47,11 +48,11 @@ class OngletsApi < Grape::API
     begin
       carnet.read
       ordre = carnet.onglets.size + 1
-      onglet = Onglet.new(nil, carnet.id, params[:nom], env['rack.session'][:current_user][:info].uid.to_s, ordre)
+      onglet = Onglet.new(nil, carnet.id, params[:nom], user[:info].uid.to_s, ordre)
       onglet.create
       {id: onglet.id, carnet_id: onglet.id_carnet, ordre: onglet.ordre, owner: onglet.uid_own}
-  rescue Exception
-    {error: "erreur lors de la création de l'onglet"}
+    rescue Exception
+      {error: "erreur lors de la création de l'onglet"}
     end
   end
 
@@ -66,8 +67,8 @@ class OngletsApi < Grape::API
       onglet = Onglet.new(params[:id])
       onglet.read
       onglet.update params[:nom], params[:ordre]
-  rescue Exception
-    {error: "erreur lors de la modification de l'onglet"}
+    rescue Exception
+      {error: "erreur lors de la modification de l'onglet"}
     end
   end
 
@@ -80,8 +81,8 @@ class OngletsApi < Grape::API
       onglet = Onglet.new(params[:id])
       onglet.read
       onglet.delete
-  rescue Exception
-    {error: "erreur lors de la suppression de l'onglet"}
+    rescue Exception
+      {error: "erreur lors de la suppression de l'onglet"}
     end
   end
 end

@@ -1,5 +1,6 @@
 # Liste des constantes de l'application
 require 'logger'
+
 URL_REQUEST_TEST = ''
 
 LOGGER = Logger.new(STDOUT)
@@ -18,10 +19,10 @@ ANNUAIRE_URL = {
 }
 
 # Couleurs des carnets sur 16 cases
-PANEL_COLOR = [COLOR[:bleu], COLOR[:jaune], COLOR[:violet], COLOR[:vert],
-               COLOR[:rouge], COLOR[:vert], COLOR[:bleu], COLOR[:jaune],
-               COLOR[:violet], COLOR[:bleu], COLOR[:jaune], COLOR[:rouge],
-               COLOR[:jaune], COLOR[:rouge], COLOR[:vert], COLOR[:bleu]
+PANEL_COLOR = [ COLOR[:bleu], COLOR[:jaune], COLOR[:violet], COLOR[:vert],
+                COLOR[:rouge], COLOR[:vert], COLOR[:bleu], COLOR[:jaune],
+                COLOR[:violet], COLOR[:bleu], COLOR[:jaune], COLOR[:rouge],
+                COLOR[:jaune], COLOR[:rouge], COLOR[:vert], COLOR[:bleu]
               ]
 
 AVATAR = {

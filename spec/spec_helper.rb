@@ -23,13 +23,8 @@ require 'laclasse/helpers/authentication'
 require 'laclasse/cross_app/sender'
 require 'laclasse/helpers/app_infos'
 
-puts '----------> libs <-------------'
 require_relative '../lib/init'
-
-puts '----------> models <-----------'
 require_relative '../models/init'
-
-puts '----------> objects <-----------'
 require_relative '../objects/init'
 
 # Config APP_ROOT s'il n'est pas déjà configuré

@@ -3,6 +3,7 @@
 class EntreesApi < Grape::API
   format :json
 
+  helpers Laclasse::Helpers::User
   helpers URLHelpers
   include CarnetsLib
 
@@ -70,8 +71,8 @@ class EntreesApi < Grape::API
       entree = Entree.new(nil, nil, nil, params[:uid])
       entree.update_avatar params[:avatar]
       {good: 'mise à jour effectuée'}
-  rescue Exception
-    {error: "erreur lors de la modification de l'entrée"}
+    rescue Exception
+      {error: "erreur lors de la modification de l'entrée"}
     end
   end
 
@@ -102,7 +103,7 @@ class EntreesApi < Grape::API
       File.rename params[:file][:tempfile], new_filename
 
       # envoi de la requete au documents pour créé le fichier dans l'espace perso de stockage du suivi
-      reponse = Laclasse::CrossApp::Sender.post_raw_request_signed(:service_docs_suivi, nil, {}, {uid_current_user: env['rack.session'][:current_user][:info].uid, id_carnet: params[:id_carnet], file: File.open( new_filename ), nom: params[:file][:filename]}, 'rack.session' => cookies['rack.session'])
+      reponse = Laclasse::CrossApp::Sender.post_raw_request_signed(:service_docs_suivi, nil, {}, {uid_current_user: user[:info].uid, id_carnet: params[:id_carnet], file: File.open( new_filename ), nom: params[:file][:filename]}, 'rack.session' => cookies['rack.session'])
 
       # Suppression du fichier temp
       File.delete new_filename
@@ -115,10 +116,10 @@ class EntreesApi < Grape::API
       else
         error!("Impossible d'uploader le document", 404)
       end
-  rescue Exception => e
-    LOGGER.error e.message
-    LOGGER.error e.backtrace[0..10].to_s
-    error!("Impossible d'uploader le document", 404)
+    rescue Exception => e
+      LOGGER.error e.message
+      LOGGER.error e.backtrace[0..10].to_s
+      error!("Impossible d'uploader le document", 404)
     end
   end
 
@@ -131,7 +132,7 @@ class EntreesApi < Grape::API
   post '/upload/documents' do
     begin
       # envoi de la requete au documents pour créé le fichier dans l'espace perso de stockage du suivi
-      reponse = Laclasse::CrossApp::Sender.post_raw_request_signed(:service_docs_suivi, 'copy', {}, {uid_current_user: env['rack.session'][:current_user][:info].uid, id_carnet: params[:id_carnet], target: params[:file]}, 'rack.session' => cookies['rack.session'])
+      reponse = Laclasse::CrossApp::Sender.post_raw_request_signed(:service_docs_suivi, 'copy', {}, {uid_current_user: user[:info].uid, id_carnet: params[:id_carnet], target: params[:file]}, 'rack.session' => cookies['rack.session'])
 
       # s'il n'y a pas d'erreur on insère dans la BDD les coordonnées du docs.
       if reponse['error'].nil?
@@ -141,10 +142,10 @@ class EntreesApi < Grape::API
       else
         error!("Impossible d'uploader le document", 404)
       end
-  rescue Exception => e
-    LOGGER.error e.message
-    LOGGER.error e.backtrace[0..10].to_s
-    error!("Impossible d'uploader le document", 404)
+    rescue Exception => e
+      LOGGER.error e.message
+      LOGGER.error e.backtrace[0..10].to_s
+      error!("Impossible d'uploader le document", 404)
     end
   end
 
@@ -168,10 +169,10 @@ class EntreesApi < Grape::API
       else
         error!('Impossible de supprimer le document', 404)
       end
-  rescue Exception => e
-    LOGGER.error e.message
-    LOGGER.error e.backtrace[0..10].to_s
-    error!('Impossible de supprimer le document', 404)
+    rescue Exception => e
+      LOGGER.error e.message
+      LOGGER.error e.backtrace[0..10].to_s
+      error!('Impossible de supprimer le document', 404)
     end
   end
 
@@ -199,10 +200,10 @@ class EntreesApi < Grape::API
       else
         error!('Impossible de récupérer le document', 404)
       end
-  rescue Exception => e
-    LOGGER.error e.message
-    LOGGER.error e.backtrace[0..10].to_s
-    error!('Impossible de récupérer le document', 404)
+    rescue Exception => e
+      LOGGER.error e.message
+      LOGGER.error e.backtrace[0..10].to_s
+      error!('Impossible de récupérer le document', 404)
     end
   end
 end

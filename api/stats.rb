@@ -7,13 +7,15 @@ class StatsApi < Grape::API
   format :json
   content_type :json, 'application/json'
 
+  helpers Laclasse::Helpers::User
+
   desc 'récupère le nombre de carnet par classe'
   params do
   end
   get '/' do
     begin
       stats = []
-      env['rack.session'][:current_user][:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }.each do |cls|
+      user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }.each do |cls|
         classe = {
           id: cls['classe_id'],
           nom: cls['classe_libelle'],
@@ -61,7 +63,7 @@ class StatsApi < Grape::API
 
       csv_string = CSV.generate do |csv|
         csv << ['nom élève', 'prénom élève', 'établissement', 'classe', 'nombre onglets', 'nombre messages', 'nombre interlocuteurs']
-        env['rack.session'][:current_user][:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }.each do |cls|
+        user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }.each do |cls|
           response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls['classe_id'].to_s, 'expand' => 'true')
           carnets = CarnetsLib.carnets_de_la_classe(response)[:carnets]
           carnets.each do |c|
@@ -91,7 +93,7 @@ class StatsApi < Grape::API
     begin
       stats = []
       classes = []
-      classes_evignal = env['rack.session'][:current_user][:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
+      classes_evignal = user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
       carnets = CarnetsLib.carnets_evignal
 
       carnets.each do |c|
@@ -154,7 +156,7 @@ class StatsApi < Grape::API
 
       csv_string = CSV.generate do |csv|
         csv << ['nom élève', 'prénom élève', 'établissement', 'classe', 'nombre onglets', 'nombre messages', 'nombre interlocuteurs']
-        classes_evignal = env['rack.session'][:current_user][:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
+        classes_evignal = user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
         carnets = CarnetsLib.carnets_evignal
         carnets.each do |c|
           nb_onglets = CarnetsOnglets.where(carnets_id: c[:id]).count

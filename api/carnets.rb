@@ -7,6 +7,8 @@ class CarnetsApi < Grape::API
   format :json
   content_type :json, 'application/json'
   content_type :pdf, 'application/pdf'
+
+  helpers Laclasse::Helpers::User
   helpers URLHelpers
   helpers do
     params :creation_carnet_params_set do
@@ -94,7 +96,7 @@ class CarnetsApi < Grape::API
     requires :name, type: String, desc: "nom de l'élève"
   end
   get '/eleves/:name' do
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_suivi_perso, 'users/' + env['rack.session'][:current_user][:info].uid.to_s + '/eleves/' + params[:name], {})
+    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_suivi_perso, 'users/' + user[:info].uid.to_s + '/eleves/' + params[:name], {})
     CarnetsLib.search_carnets_of response
   end
 
@@ -103,7 +105,7 @@ class CarnetsApi < Grape::API
     requires :name, type: String, desc: "nom de l'élève"
   end
   get '/evignal/eleves/:name' do
-    profil_actif_current_user = env['rack.session'][:current_user][:user_detailed]['profil_actif']['etablissement_code_uai']
+    profil_actif_current_user = user[:user_detailed]['profil_actif']['etablissement_code_uai']
     if profil_actif_current_user != UAI_EVIGNAL
       error!('Ressource non trouvee', 404)
     end
@@ -197,13 +199,13 @@ class CarnetsApi < Grape::API
       params[:id_onglets].each do |onglet|
         ids.push onglet.id
       end
-      # p params[:uid_elv].inspect
+
       onglets = CarnetsLib.tab_list params[:uid_elv], ids
-      # puts onglets.inspect
       final_document = PdfGenerator.generate_pdf params[:nom], params[:prenom], params[:sexe], params[:classe], params[:avatar], params[:college], onglets
+
       # generate pdf
       kit = PDFKit.new(final_document, page_size: 'Letter')
-      # puts kit.inspect
+
       kit.stylesheets << 'public/app/styles/pdf/pdf.css'
       content_type 'application/pdf'
       kit.to_pdf

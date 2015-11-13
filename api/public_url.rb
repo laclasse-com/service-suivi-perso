@@ -3,6 +3,8 @@
 class PublicUrlApi < Grape::API
   format :json
   content_type :json, 'application/json'
+
+  helpers Laclasse::Helpers::User
   helpers URLHelpers
   include CarnetsLib
 
@@ -13,11 +15,12 @@ class PublicUrlApi < Grape::API
   end
   post '/carnets/:uid_elv' do
     begin
-      response = env['rack.session'][:current_user][:user_detailed]
+      response = user[:user_detailed]
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
+
       # verification des droits coté backend
-      right =  Right.new nil, env['rack.session'][:current_user][:info].uid.to_s, nil, nil, carnet.id
+      right = Right.new( nil, user[:info].uid.to_s, nil, nil, carnet.id )
       begin
         right.select
       rescue Exception
@@ -37,7 +40,7 @@ class PublicUrlApi < Grape::API
         end
         URL_ENT.split('').last == '/' ? prefix_url = URL_ENT.chomp('/') : prefix_url = URL_ENT
         {url_pub: prefix_url + APP_PATH + '/public/' + url_pub}
-        # {url_pub: 'http://localhost:9393' + APP_PATH + '/public/' + url_pub}
+      # {url_pub: 'http://localhost:9393' + APP_PATH + '/public/' + url_pub}
       else
         error!("Vous n'êtes pas autorisé pour cette ressource", 401)
       end
@@ -54,11 +57,11 @@ class PublicUrlApi < Grape::API
   end
   delete '/carnets/:uid_elv' do
     begin
-      response = env['rack.session'][:current_user][:user_detailed]
+      response = user[:user_detailed]
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
       # verification des droits coté backend
-      right = Right.new nil, env['rack.session'][:current_user][:info].uid.to_s, nil, nil, carnet.id
+      right = Right.new nil, user[:info].uid.to_s, nil, nil, carnet.id
       begin
         right.select
       rescue Exception
@@ -80,24 +83,24 @@ class PublicUrlApi < Grape::API
     end
   end
 
-  # desc 'ouvrir un carnet avec une url publique'
-  # params{
-  #     requires :url_pub, type: String
-  # }
-  # get '/:url_pub' do
-  #     begin
-  #       carnet = Carnet.new(nil, nil, nil, nil, nil, params[:url_pub])
-  #       carnet.read
-  #       response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, env['rack.session'][:current_user][:info].uid.to_s, {"expand" => "true"})
-  #       if response["profil_actif"]["etablissement_code_uai"] == UAI_EVIGNAL
-  #         redirect APP_PATH + "/#/evignal/classes/"+carnet.id_classe.to_s+"/carnets/"+carnet.uid_elv
-  #       else
-  #         redirect APP_PATH + "/#/classes/"+carnet.id_classe.to_s+"/carnets/"+carnet.uid_elv
-  #       end
-  #     rescue Exception => e
-  #       puts e.message
-  #       puts e.backtrace[0..10]
-  #         error!('Ressource non trouvee', 404)
-  #     end
-  # end
+  desc 'ouvrir un carnet avec une url publique'
+  params {
+    requires :url_pub, type: String
+  }
+  get '/:url_pub' do
+    begin
+      carnet = Carnet.new(nil, nil, nil, nil, nil, params[:url_pub])
+      carnet.read
+      response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, user[:info].uid.to_s, {'expand' => 'true'})
+      if response['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL
+        redirect APP_PATH + '/#/evignal/classes/' + carnet.id_classe.to_s + '/carnets/' + carnet.uid_elv
+      else
+        redirect APP_PATH + '/#/classes/' + carnet.id_classe.to_s + '/carnets/' + carnet.uid_elv
+      end
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace[0..10]
+      error!('Ressource non trouvee', 404)
+    end
+  end
 end
