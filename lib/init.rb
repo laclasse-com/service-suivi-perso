@@ -1,11 +1,14 @@
+puts 'loading lib/helpers'
+require __dir__('helpers/init')
+
+puts 'loading lib/i18n/messages'
+require __dir__('i18n/messages')
+
 puts 'loading lib/hash_debug'
 require __dir__('hash_debug')
 
 puts 'loading lib/carnets'
 require __dir__('carnets')
-
-puts 'loading lib/i18n/messages'
-require __dir__('i18n/messages')
 
 puts 'loading lib/outils'
 require __dir__('outils')

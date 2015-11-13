@@ -4,7 +4,7 @@ require 'rubygems'
 require 'bundler'
 require 'sinatra/reloader'
 
-Bundler.require(:default, :development)     # require tout les gems définis dans Gemfile
+Bundler.require(:default, :development) # require tout les gems définis dans Gemfile
 
 # DIR Method
 def __dir__(*args)
@@ -17,8 +17,6 @@ require 'laclasse/helpers/app_infos'
 
 puts '----------> configs <----------'
 require __dir__('config/init')
-puts '----------> helpers <----------'
-require __dir__('helpers/init')
 puts '----------> libs <-------------'
 require __dir__('lib/init')
 puts '----------> models <-----------'
