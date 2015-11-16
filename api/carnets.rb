@@ -33,15 +33,14 @@ class CarnetsApi < Grape::API
     begin
       carnet = Carnet.new(params[:id], params[:uid_elv])
       carnet.read
-      {
-        id: carnet.id,
+
+      { id: carnet.id,
         uid_elv: carnet.uid_elv,
         uid_adm: carnet.uid_adm,
         uai: carnet.uai,
         id_classe: carnet.id_classe,
         url_pub: carnet.url_pub,
-        date_creation: carnet.date_creation
-      }
+        date_creation: carnet.date_creation }
     rescue Exception
       {error: 'Impossible de récupérer le carnet'}
     end
@@ -116,14 +115,6 @@ class CarnetsApi < Grape::API
   desc "création d'un carnet"
   params do
     use :creation_carnet_params_set
-    #    requires :uid_elv, type: String
-    #    requires :full_name_elv, type: String
-    #    requires :etablissement_code, type: String
-    #    requires :classe_id, type: Integer
-    #    requires :uid_adm, type: String
-    #    requires :full_name_adm, type: String
-    #    requires :profil_adm, type: String
-    #    requires :with_model, type: Boolean
   end
   post '/'do
     carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id])
@@ -148,14 +139,6 @@ class CarnetsApi < Grape::API
   desc "création ou mise a jour d'un carnet evignal"
   params do
     use :creation_carnet_params_set
-    #    requires :uid_elv, type: String
-    #    requires :full_name_elv, type: String
-    #    requires :etablissement_code, type: String
-    #    requires :classe_id, type: Integer
-    #    requires :uid_adm, type: String
-    #    requires :full_name_adm, type: String
-    #    requires :profil_adm, type: String
-    #    requires :with_model, type: Boolean
   end
   post '/evignal'do
     carnet = Carnet.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id], nil, true)
