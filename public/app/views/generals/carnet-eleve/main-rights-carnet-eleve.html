@@ -7,7 +7,7 @@
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 				<div ng-if="publique==null" class="exit-carnet-button" ng-click="open()" title="Cliquez ici pour générer une URL publique permettant de visionner les onglets choisis publiquement">
 					<span>Générer l'URL</span>
-				</div>							
+				</div>
 			</div>
 		</div>
 		<strong><span ng-if="publique"> {{publique}}</span></strong>
@@ -79,36 +79,36 @@
 			</div>
 			<div class="exit-carnet-button" ng-click="save()" title="Cliquez ici pour enregistrer la modification des droits du carnet et revenir au carnet de suivi">
 				<span>enregistrer les modifications</span>
-			</div>			
+			</div>
 		</div>
 	</div>
 
 	<script type="text/ng-template" id="myModalUrlContent.html">
 		<div class="modal-header">
-	            <h3 class="modal-title">Génération de l'URL publique du suivi</h3>
-	        </div>
-	        <div class="modal-body">
-	        	<div class="text-danger"><strong>Un adresse publique pour ce carnet permet de voir les données du carnet, pour les onglets choisis, sans authentification. Veuillez à bien choisir ce que vous souhaitez montrer sur ce carnet de suivi.</strong></div>
-	        	<h4> Choisissez les onglets que vous souhaitez rendre public </h4>
-	            <div class="exit-carnet">
-	            	<button type="button" class="exit-carnet-button-pdf" ng-class="{active: allChecked()}" ng-click="checkAllOrNot()" btn-checkbox title="Cliquez ici pour sélectionner ou désélectionner tous les onglets du carnet de suivi">
-				        tout sélectionner/désélectionner
-				    </button>
-	            	<button type="button" ng-repeat="tab in tabs" class="exit-carnet-button-pdf" ng-model="tab.check" btn-checkbox title="Cliquez ici pour ajouter l'onglet '{{tab.nom}}' dans la génération de l'URL publique">
-				        {{tab.nom}}
-				    </button>
-	            </div>
-	        </div>
-	        <div class="modal-footer">
-		        <div>
-					<div popover="Il faut au moins un onglet selectionné pour générer l'URL publique" popover-placement="bottom" popover-trigger="click" class="exit-carnet-button" ng-click="ok()" title="Cliquez ici pour générer l'URL publique de ce carnet de suivi">
-						<span>Générer l'URL</span>
-					</div>
-					<div class="exit-carnet-button" ng-click="cancel()" title="Cliquez ici pour ne pas générer l'URL publique et revenir à la gestion des droits">
-						<span>Annuler</span>
-					</div>			
+		    <h3 class="modal-title">Génération de l'URL publique du suivi</h3>
+		</div>
+		<div class="modal-body">
+			<div class="text-danger"><strong>Un adresse publique pour ce carnet permet de voir les données du carnet, pour les onglets choisis, sans authentification. Veuillez à bien choisir ce que vous souhaitez montrer sur ce carnet de suivi.</strong></div>
+			<h4> Choisissez les onglets que vous souhaitez rendre public </h4>
+		    <div class="exit-carnet">
+			    <button type="button" class="exit-carnet-button-pdf" ng-class="{active: allChecked()}" ng-click="checkAllOrNot()" btn-checkbox ng-model="all_tabs_selected" title="Cliquez ici pour sélectionner ou désélectionner tous les onglets du carnet de suivi">
+				    tout sélectionner/désélectionner
+			    </button>
+			    <button type="button" ng-repeat="tab in tabs" class="exit-carnet-button-pdf" ng-model="tab.check" btn-checkbox title="Cliquez ici pour ajouter l'onglet '{{tab.nom}}' dans la génération de l'URL publique">
+				    {{tab.nom}}
+			    </button>
+		    </div>
+		</div>
+		<div class="modal-footer">
+			<div>
+				<div popover="Il faut au moins un onglet selectionné pour générer l'URL publique" popover-placement="bottom" popover-trigger="click" class="exit-carnet-button" ng-click="ok()" title="Cliquez ici pour générer l'URL publique de ce carnet de suivi">
+					<span>Générer l'URL</span>
 				</div>
-	        </div>
-	    </div>
+				<div class="exit-carnet-button" ng-click="cancel()" title="Cliquez ici pour ne pas générer l'URL publique et revenir à la gestion des droits">
+					<span>Annuler</span>
+				</div>
+			</div>
+		</div>
+</div>
 	</script>
 </div>

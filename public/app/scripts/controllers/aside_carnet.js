@@ -6,7 +6,7 @@ angular.module('suiviApp')
 .controller('AsideCarnetCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', 'Rights', 'Profil', 'CarnetPdf', '$http', 'Onglets', '$modal', '$window', '$upload', 'UPLOAD_SIZE', function($rootScope, $scope, $state, $stateParams, CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH, Rights, Profil, CarnetPdf, $http, Onglets, $modal, $window, $upload, UPLOAD_SIZE) {
 
   Profil.initRights($stateParams.id).promise.then(function(){
-  
+
     $scope.contactCollege = [];
     $scope.parents = [];
 
@@ -15,12 +15,12 @@ angular.module('suiviApp')
       $window.sessionStorage.setItem("nom", $scope.user.nom);
       $window.sessionStorage.setItem("prenom", $scope.user.prenom);
       if (CurrentUser.getRights().admin == 1) {
-        $scope.show = true;
+	$scope.show = true;
       };
       angular.forEach(reponse.parents, function(parent){
-        GetUser.get({id: parent.id_ent}).$promise.then(function(rep){
-          $scope.parents.push( Annuaire.get_parent(rep));
-        });
+	GetUser.get({id: parent.id_ent}).$promise.then(function(rep){
+	  $scope.parents.push( Annuaire.get_parent(rep));
+	});
       });
     });
 
@@ -33,16 +33,16 @@ angular.module('suiviApp')
 
     $scope.allNeedsClicked = function () {
       var newValue = !$scope.allNeedsMet();
-      
+
       _.each($scope.contactCollege, function (contact) {
-        contact.done = newValue;
+	contact.done = newValue;
       });
     };
-    
+
     // Returns true if and only if all contacts are done.
     $scope.allNeedsMet = function () {
       var needsMet = _.reduce($scope.contactCollege, function (memo, contact) {
-        return memo + (contact.done ? 1 : 0);
+	return memo + (contact.done ? 1 : 0);
       }, 0);
 
       return (needsMet === $scope.contactCollege.length);
@@ -59,19 +59,19 @@ angular.module('suiviApp')
 
     $scope.show = false;
 
-    
+
     $scope.rights = function(){
-      $state.go( 'suivi.rights', $state.params, { reload: true, inherit: true, notify: true } );  
+      $state.go( 'suivi.rights', $state.params, { reload: true, inherit: true, notify: true } );
     }
 
     $rootScope.pdf = function(tabs){
       $http.post(APP_PATH + '/api/carnets/'+$stateParams.id+'/pdf', {'nom': $scope.user.nom, 'prenom': $scope.user.prenom, 'sexe': $scope.user.sexe, 'college': $scope.user.classe.nom_etablissement, 'avatar': $scope.user.avatar, 'classe': $scope.user.classe.libelle, 'id_onglets': tabs}, {'responseType' :'blob'}).success(function(data, status) {
-            var blob= new Blob([data], {type:'application/pdf'});
-            var link=document.createElement('a');
-            link.href=window.URL.createObjectURL(blob);
-            link.download="Carnet_Suivi_"+$scope.user.prenom+"_"+$scope.user.nom+".pdf";
-            link.click();
-        });
+	    var blob= new Blob([data], {type:'application/pdf'});
+	    var link=document.createElement('a');
+	    link.href=window.URL.createObjectURL(blob);
+	    link.download="Carnet_Suivi_"+$scope.user.prenom+"_"+$scope.user.nom+".pdf";
+	    link.click();
+	});
 
 
 
@@ -92,14 +92,14 @@ angular.module('suiviApp')
 
     Onglets.tabs({uid: $stateParams.id}, function(reponse){
       if (reponse.error == undefined) {
-        $rootScope.tabs = reponse.onglets;  
+	$rootScope.tabs = reponse.onglets;
       } else{
-        alert(reponse[0].error);
+	alert(reponse[0].error);
       };
     });
     $scope.ok = function () {
       if ($scope.oneNeedsMet()) {
-        $modalInstance.close();        
+	$modalInstance.close();
       };
       return false;
     };
@@ -110,7 +110,7 @@ angular.module('suiviApp')
 
     $scope.allChecked = function(){
       var needsMet = _.reduce($rootScope.tabs, function (memo, tab) {
-        return memo + (tab.check ? 1 : 0);
+	return memo + (tab.check ? 1 : 0);
       }, 0);
 
       return (needsMet === $rootScope.tabs.length);
@@ -118,13 +118,13 @@ angular.module('suiviApp')
 
     $scope.checkAllOrNot = function(){
       if ($scope.allChecked()) {
-        _.each($rootScope.tabs, function (tab) {
-          tab.check = false;
-        });
+	_.each($rootScope.tabs, function (tab) {
+	  tab.check = false;
+	});
       } else {
-        _.each($rootScope.tabs, function (tab) {
-          tab.check = true;
-        });
+	_.each($rootScope.tabs, function (tab) {
+	  tab.check = true;
+	});
       };
       return false;
     };
@@ -145,14 +145,14 @@ angular.module('suiviApp')
 
     modalInstance.result.then(function () {
       var generateTabs = _.filter($rootScope.tabs, function(tab){ return tab.check == true; });
-      $rootScope.pdf(generateTabs);        
+      $rootScope.pdf(generateTabs);
     });
   };
 
   $scope.modalInstanceMailCtrl = function ($rootScope, $scope, $modalInstance) {
     $scope.ok = function () {
       if ($rootScope.mail.message != "" && $rootScope.mail.message) {
-        $modalInstance.close();                
+	$modalInstance.close();
       };
     };
 
@@ -163,16 +163,16 @@ angular.module('suiviApp')
     $scope.onFileSelect = function($files){
       // console.log($files[0]);
       if ($files[0].size <= UPLOAD_SIZE) {
-        $rootScope.mail.file = $files[0];
-        $scope.joindreFile.normal=$files[0].name;
-        $scope.joindreFile.court=$files[0].name;
-        if ($files[0].name.length > 25) {
-          $scope.joindreFile.court = $files[0].name.substring(0, 20)+"...";
-        };
+	$rootScope.mail.file = $files[0];
+	$scope.joindreFile.normal=$files[0].name;
+	$scope.joindreFile.court=$files[0].name;
+	if ($files[0].name.length > 25) {
+	  $scope.joindreFile.court = $files[0].name.substring(0, 20)+"...";
+	};
       } else {
-        $files.splice(0,1);
-        $scope.joindreFile = {court: "Joindre un fichier", mormal: "Joindre un fichier"};
-        alert("La taille du fichier ne doit pas dépasser 25Mo");
+	$files.splice(0,1);
+	$scope.joindreFile = {court: "Joindre un fichier", mormal: "Joindre un fichier"};
+	alert("La taille du fichier ne doit pas dépasser 25Mo");
       };
     };
 
@@ -196,37 +196,37 @@ angular.module('suiviApp')
       size: 'sm'
     });
 
-    modalInstance.result.then(function () {  
+    modalInstance.result.then(function () {
       var file = $rootScope.mail.file
       $rootScope.mail.file = null
       $upload.upload({
-        url: APP_PATH + '/api/carnets/email', //upload.php script, node.js route, or servlet url
-        method: 'POST',
-        //headers: {'header-key': 'header-value'},
-        //withCredentials: true,
-        data: {mail_infos: $rootScope.mail},
-        file: file, // or list of files ($files) for html5 only
-        //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
-        // customize file formData name ('Content-Disposition'), server side file variable name. 
-        //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file' 
-        // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
-        //formDataAppender: function(formData, key, val){}
+	url: APP_PATH + '/api/carnets/email', //upload.php script, node.js route, or servlet url
+	method: 'POST',
+	//headers: {'header-key': 'header-value'},
+	//withCredentials: true,
+	data: {mail_infos: $rootScope.mail},
+	file: file, // or list of files ($files) for html5 only
+	//fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
+	// customize file formData name ('Content-Disposition'), server side file variable name.
+	//fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file'
+	// customize how data is added to formData. See #40#issuecomment-28612000 for sample code
+	//formDataAppender: function(formData, key, val){}
       }).success(function(data, status, headers, config) {
-        // file is uploaded successfully
-        if (data['envoye'] != undefined && !_.isEmpty(data['envoye'])) {
-          $rootScope.resultats.success = data['envoye']
-        };
-        if (data['echoue'] != undefined && !_.isEmpty(data['echoue'])) {
-          $rootScope.resultats.echoue = data['echoue']
-        };
-        $scope.openResult();
+	// file is uploaded successfully
+	if (data['envoye'] != undefined && !_.isEmpty(data['envoye'])) {
+	  $rootScope.resultats.success = data['envoye']
+	};
+	if (data['echoue'] != undefined && !_.isEmpty(data['echoue'])) {
+	  $rootScope.resultats.echoue = data['echoue']
+	};
+	$scope.openResult();
       });
     });
   };
 
   $scope.modalInstanceMailEchecCtrl = function ($rootScope, $scope, $modalInstance) {
     $scope.ok = function () {
-      $modalInstance.close();                
+      $modalInstance.close();
     };
   };
 
@@ -238,7 +238,7 @@ angular.module('suiviApp')
       size: 'sm'
     });
 
-    modalInstance.result.then(function () {  
+    modalInstance.result.then(function () {
     });
   };
 }]);

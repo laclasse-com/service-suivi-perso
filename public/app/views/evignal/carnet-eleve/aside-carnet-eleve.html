@@ -3,12 +3,12 @@
 		<div class="row " style="display: table-row">
 			<div class="col-xs-1 col-sm-1 col-md-5 col-lg-5 avatar-carnet">
 				<div class="rouge">
-					<img no-image src="{{user.avatar}}" alt="">					
+					<img no-image src="{{user.avatar}}" alt="">
 				</div>
 			</div>
 			<div class="col-xs-1 col-sm-1 col-md-7 col-lg-7 eleve-info">
 				<div class="eleve-info-firstname">
-					<span >{{user.prenom}}</span>					
+					<span >{{user.prenom}}</span>
 				</div>
 				<div class="eleve-info-lastname">
 					<span >{{user.nom}}</span>
@@ -37,18 +37,18 @@
 								<td>
 									<div class="carnet-checkbox">
 										<input type="checkbox" value="1" id="familleCheckbox0" ng-model="user.done" ng-disabled="user.email=='Non renseigné'"/>
-						  				<label for="familleCheckbox0"></label>					
+										<label for="familleCheckbox0"></label>
 									</div>
 								</td>
-								<td>																
+								<td>
 									<div class="prefix-infos">
 										adresse email de l'élève:
-									</div>								
+									</div>
 								</td>
 								<td>
 									<div class="infos-famille" ng-style="{'text-transform: lowercase;': parent.email!='Non renseigné'}">
 										{{user.email}}
-									</div>								
+									</div>
 								</td>
 							</tr>
 						</table>
@@ -57,10 +57,10 @@
 								<td>
 									<div class="carnet-checkbox">
 										<input type="checkbox" value="1" id="{{'familleCheckbox'+$index+1}}" ng-model="parent.done" ng-disabled="parent.email=='Non renseigné'"/>
-						  				<label for="{{'familleCheckbox'+$index+1}}"></label>					
+										<label for="{{'familleCheckbox'+$index+1}}"></label>
 									</div>
 								</td>
-								<td>									
+								<td>
 									<div class="prefix-infos">
 										parent {{$index + 1}} :
 									</div>
@@ -89,7 +89,7 @@
 								<td>
 									<div class="prefix-infos">
 										ville du domicile :
-									</div>	
+									</div>
 								</td>
 								<td>
 									<div class="infos-famille">
@@ -101,7 +101,7 @@
 								<td></td>
 								<td>
 									<div class="prefix-infos">
-										téléphone : 
+										téléphone :
 									</div>
 								</td>
 								<td>
@@ -114,7 +114,7 @@
 								<td></td>
 								<td>
 									<div class="prefix-infos">
-										téléphone portable : 
+										téléphone portable :
 									</div>
 								</td>
 								<td>
@@ -136,8 +136,8 @@
 									</div>
 								</td>
 							</tr>
-						</table>										
-					</div>					
+						</table>
+					</div>
 				</div>
 
 				<div class="row" style="margin-top:15px">
@@ -163,7 +163,7 @@
 								<td>
 									<div class="carnet-checkbox">
 										<input type="checkbox" value="1" id="collegeEleveCheckbox0"  ng-checked="allNeedsMet('eleve')" ng-click="allNeedsClicked('eleve')"/>
-						  				<label for="collegeEleveCheckbox0"></label>					
+										<label for="collegeEleveCheckbox0"></label>
 									</div>
 								</td>
 								<td>
@@ -177,7 +177,7 @@
 								<td>
 									<div class="carnet-checkbox">
 										<input type="checkbox" value="false" id="{{'collegeEleveCheckbox'+$index+1}}" ng-model="contact.done"/>
-						  				<label for="{{'collegeEleveCheckbox'+$index+1}}"></label>					
+										<label for="{{'collegeEleveCheckbox'+$index+1}}"></label>
 									</div>
 								</td>
 								<td>
@@ -191,8 +191,8 @@
 									</div>
 								</td>
 							</tr>
-						</table>								
-					</div>				
+						</table>
+					</div>
 				</div>
 
 				<div class="row" style="margin-top:15px">
@@ -217,7 +217,7 @@
 								<td>
 									<div class="carnet-checkbox">
 										<input type="checkbox" value="1" id="collegeEvignalCheckbox0"  ng-checked="allNeedsMet('evignal')" ng-click="allNeedsClicked('evignal')"/>
-						  				<label for="collegeEvignalCheckbox0"></label>					
+										<label for="collegeEvignalCheckbox0"></label>
 									</div>
 								</td>
 								<td>
@@ -231,7 +231,7 @@
 								<td>
 									<div class="carnet-checkbox">
 										<input type="checkbox" value="false" id="{{'collegeEvignalCheckbox'+$index+1}}" ng-model="contact.done"/>
-						  				<label for="{{'collegeEvignalCheckbox'+$index+1}}"></label>					
+										<label for="{{'collegeEvignalCheckbox'+$index+1}}"></label>
 									</div>
 								</td>
 								<td>
@@ -245,8 +245,8 @@
 									</div>
 								</td>
 							</tr>
-						</table>						
-					</div>		
+						</table>
+					</div>
 				</div>
 				<div class="row" style="margin-top:15px">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -270,7 +270,7 @@
 								<td>
 									<div class="carnet-checkbox">
 										<input type="checkbox" value="1" id="hopitalCheckbox0"  ng-checked="allNeedsMet('hopital')" ng-click="allNeedsClicked('hopital')"/>
-						  				<label for="hopitalCheckbox0"></label>					
+										<label for="hopitalCheckbox0"></label>
 									</div>
 								</td>
 								<td>
@@ -284,7 +284,7 @@
 								<td>
 									<div class="carnet-checkbox">
 										<input type="checkbox" value="false" id="{{'hopitalCheckbox'+$index+1}}" ng-model="contact.done"/>
-						  				<label for="{{'hopitalCheckbox'+$index+1}}"></label>					
+										<label for="{{'hopitalCheckbox'+$index+1}}"></label>
 									</div>
 								</td>
 								<td>
@@ -298,8 +298,8 @@
 									</div>
 								</td>
 							</tr>
-						</table>					
-					</div>			
+						</table>
+					</div>
 				</div>
 
 				<div class="row" style="margin-top:15px">
@@ -319,7 +319,7 @@
 			<div class="toolbar-suivi toolbar-suivi-carnet toolbar-suivi-right"></div>
 		</div>
 		<div class="div-right" ng-click="rights()" title="Cliquez ici pour gérer les droits du carnet de suivi">
-			<span>Gérer les droits</span>			
+			<span>Gérer les droits</span>
 		</div>
 	</div>
 
@@ -328,7 +328,7 @@
 			<div class="toolbar-suivi toolbar-suivi-carnet toolbar-suivi-download"></div>
 		</div>
 		<div class="div-right" ng-click="open()" title="Cliquez ici pour télécharger en PDF les onglets choisis du carnet de suivi">
-			<span>Télécharger le suivi en pdf</span>			
+			<span>Télécharger le suivi en pdf</span>
 		</div>
 	</div>
 
@@ -340,65 +340,65 @@
 
 	<script type="text/ng-template" id="myModalPdfContent.html">
 		<div class="modal-header">
-	            <h3 class="modal-title">Génération du pdf du suivi</h3>
-	        </div>
-	        <div class="modal-body">
-	        	<h4> Choisissez les onglets que vous souhaitez générer </h4>
-	            <div class="exit-carnet">
-	            	<button type="button" class="exit-carnet-button-pdf" ng-class="{active: allChecked()}" ng-click="checkAllOrNot()" btn-checkbox title="Cliquez ici pour sélectionner ou désélectionner tous les onglets du carnet de suivi">
-				        tout sélectionner/désélectionner
-				    </button>
-	            	<button type="button" ng-repeat="tab in tabs" class="exit-carnet-button-pdf" ng-model="tab.check" btn-checkbox title="Cliquez ici pour ajouter l'onglet '{{tab.nom}}' dans la génération du PDF">
-				        {{tab.nom}}
-				    </button>
-	            </div>
-	        </div>
-	        <div class="modal-footer">
-		        <div>
-					<div popover="Il faut au moins un onglet selectionné pour générer un pdf" popover-placement="bottom" popover-trigger="click" class="exit-carnet-button" ng-click="ok()" title="Cliquez ici pour générer le PDF avec les onglets sélectionnés">
-						<span>Générer le pdf</span>
-					</div>
-					<div class="exit-carnet-button" ng-click="cancel()" title="Cliquez ici pour annuler la génération du PDF et revenir au carnet de suivi">
-						<span>Annuler</span>
-					</div>			
+		    <h3 class="modal-title">Génération du pdf du suivi</h3>
+		</div>
+		<div class="modal-body">
+			<h4> Choisissez les onglets que vous souhaitez générer </h4>
+		    <div class="exit-carnet">
+			    <button type="button" class="exit-carnet-button-pdf" ng-class="{active: allChecked()}" ng-click="checkAllOrNot()" btn-checkbox ng-model="check_all" title="Cliquez ici pour sélectionner ou désélectionner tous les onglets du carnet de suivi">
+				    tout sélectionner/désélectionner
+			    </button>
+			    <button type="button" ng-repeat="tab in tabs" class="exit-carnet-button-pdf" ng-model="tab.check" btn-checkbox title="Cliquez ici pour ajouter l'onglet '{{tab.nom}}' dans la génération du PDF">
+				    {{tab.nom}}
+			    </button>
+		    </div>
+		</div>
+		<div class="modal-footer">
+			<div>
+				<div popover="Il faut au moins un onglet selectionné pour générer un pdf" popover-placement="bottom" popover-trigger="click" class="exit-carnet-button" ng-click="ok()" title="Cliquez ici pour générer le PDF avec les onglets sélectionnés">
+					<span>Générer le pdf</span>
 				</div>
-	        </div>
-	    </div>
+				<div class="exit-carnet-button" ng-click="cancel()" title="Cliquez ici pour annuler la génération du PDF et revenir au carnet de suivi">
+					<span>Annuler</span>
+				</div>
+			</div>
+		</div>
+</div>
 	</script>
 
 	<script type="text/ng-template" id="myModalMailContent.html">
 		<div class="modal-header">
-	            <h3 class="modal-title">Envoyer un email</h3>
-	        </div>
-	        <div class="modal-body row">
-	        	<form name="myForm">
-		        	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		        		<label>Cet email sera envoyé sur l'adresse email "laclasse.com" de chaque destinataire</label>
-		        		<input class="form-control" style="border:none" type="text" placeholder="{{mail.destinataires.concatener}}" readonly>
-		        	</div>
-		        	<div style="margin-top: 10px;" class="col-xs-6 col-sm-6 col-md-6 col-lg-6">		     
-		        		<input class="form-control" style="border:none" name="objet" type="text" placeholder="Objet" ng-model="mail.objet">
-		        	</div>
-		        	<div style="margin-top: 10px;" class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-			        		<span ng-click="openUpload()" class="glyphicon glyphicon-paperclip" style="cursor: pointer" title="Cliquez ici pour insérer un document à votre mail"></span>
-			        		<span tooltip-placement='bottom' tooltip-popup-delay='700' tooltip="{{joindreFile.normal}}">{{joindreFile.court}}</span>
-			        		<input type="file" id="inputFile" ng-file-select="onFileSelect($files)" ng-hide="true">	        		
-		        	</div>
-		        	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		        		<textarea class="form-control" name="message" style="border:none" placeholder="Rédigez votre message ici" ng-model="mail.message" rows="7"></textarea>
-		        	</div>
-		        </form>
-	        </div>
-	        <div class="modal-footer">
-		        <div>
+		    <h3 class="modal-title">Envoyer un email</h3>
+		</div>
+		<div class="modal-body row">
+			<form name="myForm">
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<label>Cet email sera envoyé sur l'adresse email "laclasse.com" de chaque destinataire</label>
+					<input class="form-control" style="border:none" type="text" placeholder="{{mail.destinataires.concatener}}" readonly>
+				</div>
+				<div style="margin-top: 10px;" class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+					<input class="form-control" style="border:none" name="objet" type="text" placeholder="Objet" ng-model="mail.objet">
+				</div>
+				<div style="margin-top: 10px;" class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+						<span ng-click="openUpload()" class="glyphicon glyphicon-paperclip" style="cursor: pointer" title="Cliquez ici pour insérer un document à votre mail"></span>
+						<span tooltip-placement='bottom' tooltip-popup-delay='700' tooltip="{{joindreFile.normal}}">{{joindreFile.court}}</span>
+						<input type="file" id="inputFile" ng-file-select="onFileSelect($files)" ng-hide="true">
+				</div>
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<textarea class="form-control" name="message" style="border:none" placeholder="Rédigez votre message ici" ng-model="mail.message" rows="7"></textarea>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<div>
 					<div popover="Les champs Objet et Message doivent être rensignés !" popover-placement="bottom" popover-trigger="click" class="exit-carnet-button" ng-click="ok()">
 						<span title="Cliquez ici pour envoyer votre message">Envoyer</span>
 					</div>
 					<div class="exit-carnet-button" ng-click="cancel()">
 						<span title="Cliquez ici pour annuler et revenir au carnet de suivi">Annuler</span>
-					</div>			
+					</div>
 				</div>
-	        </div>
+		</div>
 	    </div>
 	</script>
 </div>
