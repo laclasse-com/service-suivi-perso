@@ -18,14 +18,14 @@ task :todo do
       long_comment = line =~ /^=end/
 
       todo = true if line =~ /TODO|FIXME|THINK/ & (long_comment || comment)
-      todo = false if line.gsub('#', '').strip.empty?
+      todo = false if line.delete('#').strip.empty?
       todo = false unless comment || long_comment
 
       undercolor = underyellow if line =~ /TODO/
       undercolor = underred    if line =~ /FIXME/
       undercolor = undergreen  if line =~ /THINK/
 
-      color = undercolor.gsub('4', '0')
+      color = undercolor.tr('4', '0')
 
       if todo
         unless lastline && lastline + 1 == lineno

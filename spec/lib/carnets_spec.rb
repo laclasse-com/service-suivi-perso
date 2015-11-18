@@ -31,7 +31,7 @@ describe 'CarnetsLibTest' do
   it "créé les mêmes onglets d'un ancien carnet sur un nouveau" do
     old_carnet = Carnet.new @ids[:carnet1][:id]
     old_carnet.read
-    new_carnet =  Carnet.new nil, 'VAA99095', 'VAA99001', '999999K', 1
+    new_carnet = Carnet.new nil, 'VAA99095', 'VAA99001', '999999K', 1
     new_carnet.create
 
     last_carnet_model old_carnet, new_carnet
