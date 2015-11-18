@@ -66,8 +66,7 @@ class AnnuaireApi < Grape::API
     requires :rgp_id, type: Integer
   end
   get '/regroupements/:rgp_id' do
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, params[:rgp_id].to_s, 'expand' => 'true')
-    response
+    Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, params[:rgp_id].to_s, 'expand' => 'true')
   end
 
   desc 'récupère les utilisateur d\'un etablissement'
@@ -99,6 +98,7 @@ class AnnuaireApi < Grape::API
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
       right = Right.new(nil, user['id_ent'], nil, nil, carnet.id)
+      right.select # FIXME: not sure is useful?
 
       right.exist?
     end
@@ -111,22 +111,17 @@ class AnnuaireApi < Grape::API
   end
   get '/evignal/:uai/personnels' do
     all_users = []
-    users = []
     personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
 
-    all_users.concat affecter_role_max(personnels) if personnels.class == Array
+    all_users.concat( affecter_role_max( personnels ) ) if personnels.is_a? Array
 
-    all_users.each do |user|
-      begin
-        carnet = Carnet.new(nil, params[:uid_elv])
-        carnet.read
-        right = Right.new(nil, user['id_ent'], nil, nil, carnet.id)
-        right.select
-      rescue Exception
-        users.push user
-      end
+    all_users.reject do |user|
+      carnet = Carnet.new(nil, params[:uid_elv])
+      carnet.read
+      right = Right.new(nil, user['id_ent'], nil, nil, carnet.id)
+
+      right.exist?
     end
-    users
   end
 
   desc 'récupère les avatars des proprietaire des messages'
@@ -134,22 +129,17 @@ class AnnuaireApi < Grape::API
     requires :uids, type: Array
   end
   post '/avatars' do
-    begin
-      uids = params[:uids]
-      users = []
-      avatars = {}
-      while uids.size > 50
-        users.concat(Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.pop(50).join('_').to_s, {}))
-      end
-      users.concat(Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, ANNUAIRE_URL[:user_liste] + uids.join('_').to_s, {})) unless uids.empty?
-      users.each do |user|
-        avatars[user['id_ent']] = user['avatar']
-      end
-      avatars
-    rescue Exception => e
-      puts e.message
-      puts e.backtrace[0..10]
-      { error: 'Impossible de retourner les avatars' }
+    users = []
+    avatars = {}
+
+    while params[:uids].size > 50
+      users.concat( Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, "#{ANNUAIRE_URL[:user_liste]}#{params[:uids].pop(50).join('_')}", {} ) )
     end
+
+    users.each do |user|
+      avatars[ user['id_ent'] ] = user['avatar']
+    end
+
+    avatars
   end
 end

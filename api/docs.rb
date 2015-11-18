@@ -11,15 +11,9 @@ class DocsApi < Grape::API
     optional :target, type: String
     optional :init
   end
-  get '' do
-    begin
-      params_docs = {'cmd' => params[:cmd], 'target' => params[:target]}
-      params_docs['init'] = params[:init] if params[:init]
-      Laclasse::CrossApp::Sender.send_request_signed(:service_docs_suivi, 'cmd/docs', params_docs, 'rack.session' => cookies['rack.session'])
-    rescue Exception => e
-      LOGGER.error e.message
-      LOGGER.error e.backtrace[0..10].to_s
-      error!("Une erreur s'est produite", 404)
-    end
+  get do
+    params_docs = {'cmd' => params[:cmd], 'target' => params[:target]}
+    params_docs['init'] = params[:init] if params[:init]
+    Laclasse::CrossApp::Sender.send_request_signed(:service_docs_suivi, 'cmd/docs', params_docs, 'rack.session' => cookies['rack.session'])
   end
 end

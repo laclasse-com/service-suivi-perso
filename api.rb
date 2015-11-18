@@ -7,7 +7,11 @@ require_relative './api/init'
 # Point d'entrée des APi du suivi
 class Api < Grape::API
   format :json
-  rescue_from :all
+  rescue_from :all do |e|
+    LOGGER.error e.message
+    LOGGER.error e.backtrace[0..10]
+    error!({ error: 'Server error.' }, 500, 'Content-Type' => 'text/error')
+  end
 
   helpers URLHelpers
   helpers Laclasse::Helpers::Authentication
