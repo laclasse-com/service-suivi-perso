@@ -77,28 +77,31 @@ class AnnuaireApi < Grape::API
   end
   get '/etablissements/:uai/personnels' do
     all_users = []
-    users = []
-    personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
+    personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, "#{params[:uai]}" + '/personnel', {})
 
-    all_users.concat affecter_role_max(personnels) if personnels.class == Array
+    all_users.concat( affecter_role_max( personnels ) ) if personnels.is_a? Array
 
     eleve = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, params[:uid_elv].to_s, 'expand' => 'true')
-    eleve['role_id'] = ROLES[:eleve]
-    all_users.concat([eleve]) if eleve['error'].nil?
-    parents = []
-    eleve['parents'].each do |p|
-      parent = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, p['id_ent'].to_s, 'expand' => 'true')
-      parent['role_id'] = ROLES[:parents]
-      parents.concat([parent]) if parent['error'].nil?
+    if eleve['error'].nil?
+      eleve['role_id'] = ROLES[:eleve]
+      all_users.concat([eleve])
+
+      eleve['parents'].each do |p|
+        parent = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, p['id_ent'].to_s, 'expand' => 'true')
+        if parent['error'].nil?
+          parent['role_id'] = ROLES[:parents]
+          all_users.concat([parent])
+        end
+      end
     end
-    all_users.concat(parents)
-    all_users.each do |user|
+
+    all_users.reject do |user|
       carnet = Carnet.new(nil, params[:uid_elv])
       carnet.read
       right = Right.new(nil, user['id_ent'], nil, nil, carnet.id)
-      users.push user unless right.exist?
+
+      right.exist?
     end
-    users
   end
 
   desc 'récupère le personnel de evignal'

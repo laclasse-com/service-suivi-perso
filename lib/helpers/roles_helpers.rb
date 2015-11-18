@@ -5,14 +5,11 @@ module RolesHelpers
   # trouver le role maximum sur l'étab actif
   def affecter_role_max(personnels)
     personnels.each do |personnel|
-      role_id = ''
-      personnel['roles'].each do |role|
-        if COEFF[role['role_id']] > COEFF[role_id] && role['role_id'] != ROLES[:super_admin]
-          role_id = role['role_id']
+      unless personnel['roles'].nil?
+        personnel['role_id'] = personnel['roles'].reduce( '' ) do |memo, role|
+          role['role_id'] if role['role_id'] != ROLES[:super_admin] && COEFF[ role['role_id'] ] > COEFF[ memo ]
         end
       end
-      personnel['role_id'] = role_id
     end
-    personnels
   end
 end
