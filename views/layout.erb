@@ -1,127 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="D&eacute;monstrateur Laclasse.com <-> GAR">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="img/favicon.png">
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="D&eacute;monstrateur Laclasse.com <-> GAR">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="img/favicon.png">
 
-    <title>Laclasse Suivi Perso</title>
+		<title>Laclasse Suivi Perso</title>
 
-    <link href="<%= APP_PATH %>/app/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="<%= APP_PATH %>/app/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="<%= APP_PATH %>/app/bower_components/angular-carousel/dist/angular-carousel.min.css"  rel="stylesheet" type="text/css" >
+		<link href="<%= APP_PATH %>/app/bower_components/laclasse-common-client/css/main.css"  rel="stylesheet" type="text/css" >
+		<link href="<%= APP_PATH %>/app/bower_components/font-awesome/css/font-awesome.min.css"  rel="stylesheet" type="text/css" >
+		<link href="<%= APP_PATH %>/app/bower_components/angular-loading-bar/build/loading-bar.min.css"  rel="stylesheet" type="text/css" >
+		<link href="<%= APP_PATH %>/app/bower_components/nvd3/nv.d3.min.css"  rel="stylesheet" type="text/css" >
 
-    <!-- Custom styles for this template -->
-    <link href="<%= APP_PATH %>/app/bower_components/angular-carousel/dist/angular-carousel.min.css"  rel="stylesheet" type="text/css" >
+		<link href="<%= APP_PATH %>/app/styles/asides/aside-lists.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/asides/aside-carnet-eleve.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/mains/main-damier.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/mains/main-classes.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/mains/main-carnets.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/mains/main-carnet-eleve.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/mains/main-rights-carnet-eleve.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/404.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/mains/growl-notifications.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/mains/stats.css" rel="stylesheet">
+		<link href="<%= APP_PATH %>/app/styles/suivi.css" rel="stylesheet">
 
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+		     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+		     <![endif]-->
+	</head>
 
-    <!-- Custom styles for this template -->
-    <!-- <link href="<%= APP_PATH %>/app/styles/navbar.css" rel="stylesheet"> -->
+	<body>
+		<!-- Main component for a primary marketing message or call to action -->
+		<div class="container-fluid" style="height:100%">
 
-    <link href="<%= APP_PATH %>/app/styles/asides/aside-lists.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/styles/asides/aside-carnet-eleve.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/styles/mains/main-damier.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/styles/mains/main-classes.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/styles/mains/main-carnets.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/styles/mains/main-carnet-eleve.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/styles/mains/main-rights-carnet-eleve.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/styles/404.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/styles/mains/growl-notifications.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/styles/mains/stats.css" rel="stylesheet">
-    <link href="<%= APP_PATH %>/app/bower_components/laclasse-common-client/css/main.css"  rel="stylesheet" type="text/css" >
-    <link href="<%= APP_PATH %>/app/bower_components/font-awesome/css/font-awesome.min.css"  rel="stylesheet" type="text/css" >
-    <link href="<%= APP_PATH %>/app/bower_components/angular-loading-bar/build/loading-bar.min.css"  rel="stylesheet" type="text/css" >
-    <link href="<%= APP_PATH %>/app/bower_components/nvd3/nv.d3.min.css"  rel="stylesheet" type="text/css" >
-    <!-- <link href="<%= APP_PATH %>/app/bower_components/ng-color-picker/color-picker.css"  rel="stylesheet" type="text/css" > -->
+			<div id="flash"></div>
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
-  </head>
+			<!-- Main component for a primary marketing message or call to action -->
+			<div  style="padding:0; height:100%">
 
-  <body>
-      <!-- Main component for a primary marketing message or call to action -->
-      <div class="container-fluid" style="height:100%">
+				<%= yield %>
 
-      <div id="flash"></div>
+			</div>
 
-      <!-- Main component for a primary marketing message or call to action -->
-      <div  style="padding:0; height:100%">
-
-	<%= yield %>
-      </div>
-
-    </div> <!-- /container -->
+		</div> <!-- /container -->
 
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="<%= APP_PATH %>/app/bower_components/jquery/dist/jquery.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/jquery-ui/jquery-ui.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular/angular.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-i18n/angular-locale_fr-fr.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/rangy/rangy-core.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/rangy/rangy-classapplier.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/rangy/rangy-selectionsaverestore.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/rangy/rangy-serializer.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-resource/angular-resource.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-cookies/angular-cookies.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-animate/angular-animate.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-touch/angular-touch.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-loading-bar/build/loading-bar.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-loader/angular-loader.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-carousel/dist/angular-carousel.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/textAngular/dist/textAngular-sanitize.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/textAngular/dist/textAngular.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-ui-sortable/sortable.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/underscore/underscore-min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/ng-file-upload/angular-file-upload-shim.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/ng-file-upload/angular-file-upload.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/zeroclipboard/dist/ZeroClipboard.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/ng-clip/dest/ng-clip.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/ng-color-picker/color-picker.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angular-growl-notifications/dist/angular-growl-notifications.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/d3/d3.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/nvd3/nv.d3.min.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.min.js"></script>
+		<!-- Bootstrap core JavaScript
+		     ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="<%= APP_PATH %>/app/bower_components/jquery/dist/jquery.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/jquery-ui/jquery-ui.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular/angular.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-i18n/angular-locale_fr-fr.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/rangy/rangy-core.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/rangy/rangy-classapplier.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/rangy/rangy-selectionsaverestore.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/rangy/rangy-serializer.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-resource/angular-resource.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-cookies/angular-cookies.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-animate/angular-animate.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-touch/angular-touch.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-loading-bar/build/loading-bar.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-loader/angular-loader.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-carousel/dist/angular-carousel.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/textAngular/dist/textAngular-sanitize.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/textAngular/dist/textAngular.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-ui-sortable/sortable.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/underscore/underscore-min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/ng-file-upload/angular-file-upload-shim.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/ng-file-upload/angular-file-upload.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/zeroclipboard/dist/ZeroClipboard.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/ng-clip/dest/ng-clip.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/ng-color-picker/color-picker.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angular-growl-notifications/dist/angular-growl-notifications.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/d3/d3.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/nvd3/nv.d3.min.js"></script>
+		<script src="<%= APP_PATH %>/app/bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.min.js"></script>
+		<!-- <script src="<%= APP_PATH %>/app/bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
 
-    <script src="<%= APP_PATH %>/app/scripts/filters/filters.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/app.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/route.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/constants.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/constants_default.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/directives/cartable.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/controllers.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/erreur.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/aside.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/aside_evignal.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/classes.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/carnets.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/carnets_evignal.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/add_carnets.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/add_carnets_evignal.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/aside_carnet.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/aside_carnet_evignal.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/carnet.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/upload_text_angular.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/rights.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/rights_evignal.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/stats.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/controllers/stats_evignal.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/directives/directives.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/services/API/annuaire.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/services/API/suivi.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/services/API/documents.js"></script>
-    <script src="<%= APP_PATH %>/app/scripts/services/services.js"></script>
-    <script src="<%= APP_PATH %>/app/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-
-  </body>
+		<script src="<%= APP_PATH %>/app/scripts/filters/filters.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/app.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/route.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/constants.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/constants_default.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/directives/cartable.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/controllers.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/erreur.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/aside.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/aside_evignal.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/classes.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/carnets.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/carnets_evignal.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/add_carnets.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/add_carnets_evignal.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/aside_carnet.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/aside_carnet_evignal.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/carnet.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/upload_text_angular.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/rights.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/rights_evignal.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/stats.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/controllers/stats_evignal.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/directives/directives.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/services/API/annuaire.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/services/API/suivi.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/services/API/documents.js"></script>
+		<script src="<%= APP_PATH %>/app/scripts/services/services.js"></script>
+	</body>
 </html>
