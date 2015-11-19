@@ -33,4 +33,4 @@ config/rights_constants.rb
 config/thin.yml
 
 public/node_modules
-public/app/scripts/constants.js
+public/app/js/constants.js
