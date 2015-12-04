@@ -12,8 +12,9 @@ class DocsApi < Grape::API
     optional :init
   end
   get do
-    params_docs = {'cmd' => params[:cmd], 'target' => params[:target]}
+    params_docs = { 'cmd' => params[:cmd], 'target' => params[:target] }
     params_docs['init'] = params[:init] if params[:init]
-    Laclasse::CrossApp::Sender.send_request_signed(:service_docs_suivi, 'cmd/docs', params_docs, 'rack.session' => cookies['rack.session'])
+
+    Laclasse::CrossApp::Sender.send_request_signed( :service_docs_suivi, 'cmd/docs', params_docs, 'rack.session' => cookies['rack.session'] )
   end
 end

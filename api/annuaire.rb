@@ -66,7 +66,7 @@ class AnnuaireApi < Grape::API
     requires :rgp_id, type: Integer
   end
   get '/regroupements/:rgp_id' do
-    Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, params[:rgp_id].to_s, 'expand' => 'true')
+    Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, "#{params[:rgp_id]}", 'expand' => 'true')
   end
 
   desc 'récupère les utilisateur d\'un etablissement'
@@ -76,17 +76,17 @@ class AnnuaireApi < Grape::API
   end
   get '/etablissements/:uai/personnels' do
     all_users = []
-    personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, "#{params[:uai]}" + '/personnel', {})
+    personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, "#{params[:uai]}/personnel", {})
 
     all_users.concat( affecter_role_max( personnels ) ) if personnels.is_a? Array
 
-    eleve = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, params[:uid_elv].to_s, 'expand' => 'true')
+    eleve = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, "#{params[:uid_elv]}", 'expand' => 'true')
     if eleve['error'].nil?
       eleve['role_id'] = ROLES[:eleve]
       all_users.concat([eleve])
 
       eleve['parents'].each do |p|
-        parent = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, p['id_ent'].to_s, 'expand' => 'true')
+        parent = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, "#{p['id_ent']}", 'expand' => 'true')
         if parent['error'].nil?
           parent['role_id'] = ROLES[:parents]
           all_users.concat([parent])
@@ -110,12 +110,12 @@ class AnnuaireApi < Grape::API
   end
   get '/evignal/:uai/personnels' do
     all_users = []
-    personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, params[:uai].to_s + '/personnel', {})
+    personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, "#{params[:uai]}/personnel", {} )
 
     all_users.concat( affecter_role_max( personnels ) ) if personnels.is_a? Array
 
     all_users.reject do |user|
-      carnet = Carnet.new(nil, params[:uid_elv])
+      carnet = Carnet.new( nil, params[:uid_elv] )
       carnet.read
       right = Right.new(nil, user['id_ent'], nil, nil, carnet.id)
 

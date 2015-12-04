@@ -48,9 +48,12 @@ class SinatraApp < Sinatra::Base
       carnet = Carnet.new( nil, nil, nil, nil, nil, params[:url] )
       carnet.read
       tabs = tab_list( carnet.uid_elv, nil, params[:url] )
+
       response = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_user, carnet.uid_elv, 'expand' => 'true' )
+
       @aside_public_carnet = HtmlMessageGenerator.aside_public_carnet( response )
       @main_public_carnet = HtmlMessageGenerator.main_public_carnet( tabs )
+
       erb :carnet_public
     rescue Exception => e
       puts e.message
