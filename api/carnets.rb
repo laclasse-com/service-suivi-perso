@@ -79,7 +79,7 @@ class CarnetsApi < Grape::API
     requires :name, type: String, desc: "nom de l'élève"
   end
   get '/eleves/:name' do
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_suivi_perso, 'users/' + user[:info].uid.to_s + '/eleves/' + params[:name], {})
+    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_suivi_perso, 'users/' + user[:info].uid.to_s + '/eleves/' + URI.encode( params[:name] ), {})
     CarnetsLib.search_carnets_of response
   end
 
@@ -92,7 +92,7 @@ class CarnetsApi < Grape::API
 
     error!('Ressource non trouvee', 404) if profil_actif_current_user != UAI_EVIGNAL
 
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_suivi_perso, ANNUAIRE_URL[:suivi_perso_search] + params[:name], {})
+    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_suivi_perso, ANNUAIRE_URL[:suivi_perso_search] + URI.encode( params[:name] ), {})
 
     CarnetsLib.search_carnets_of( response, true )
   end

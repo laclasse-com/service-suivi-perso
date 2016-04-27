@@ -21,7 +21,7 @@ angular.module('suiviApp')
 	    if(name != null && name != "" && name.length > 2){
 		$state.go( 'suivi.add', {name: name}, { reload: true, inherit: true, notify: true } );
 	    } else {
-		$scope.erreur = "Au minimum trois caractères sont nécessaire pour effectuer une recherche !";
+		$scope.erreur = "Au minimum trois caractères sont nécessaires pour effectuer une recherche !";
 	    }
 	};
 
