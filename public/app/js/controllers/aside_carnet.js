@@ -70,6 +70,7 @@ angular.module('suiviApp')
 	    var link=document.createElement('a');
 	    link.href=window.URL.createObjectURL(blob);
 	    link.download="Carnet_Suivi_"+$scope.user.prenom+"_"+$scope.user.nom+".pdf";
+      document.body.appendChild(link);
 	    link.click();
 	});
 
