@@ -65,12 +65,9 @@ class CarnetsApi < Grape::API
   get '/evignal/personnels' do
     carnet = Carnet.new( nil, params[:uid_elv] )
     carnet.read
-    { personnels: carnet.get_pers_evignal_or_hopital( true, params[:hopital] )
-                        .map do |p|
-                    { id_ent: p.uid,
-                      profil: p.profil,
-                      fullname: p.full_name }
-                  end }
+    { personnels: carnet.get_pers_evignal_or_hopital( true, params[:hopital] ).map do |p|
+      { id_ent: p.uid, profil: p.profil, fullname: p.full_name }
+    end }
   end
 
   desc "recherche des élèves d'un utilisateur par nom"
