@@ -211,7 +211,7 @@ USER = {
   'enfants' => [
 
   ]
-}
+}.freeze
 
 SEARCH_USER = [{
   'id' => 998,
@@ -426,7 +426,7 @@ SEARCH_USER = [{
   'enfants' => [
 
   ]
-}]
+}].freeze
 
 MOCK_USERS_LISTE = [
   {
@@ -465,4 +465,4 @@ MOCK_USERS_LISTE = [
     'nom' => 'Chamalow',
     'avatar' => 'url_avatar'
   }
-]
+].freeze

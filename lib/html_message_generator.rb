@@ -5,13 +5,13 @@ require 'date'
 # Helpers pour les messages HTML
 module HtmlMessageGenerator
   def self.img_avatar(sexe = nil)
-    if sexe == 'M'
-      avatar = 'api/default_avatar/avatar_masculin.svg'
-    elsif sexe == 'F'
-      avatar = 'api/default_avatar/avatar_feminin.svg'
-    else
-      avatar = 'api/default_avatar/avatar_neutre.svg'
-    end
+    avatar = if sexe == 'M'
+               'api/default_avatar/avatar_masculin.svg'
+             elsif sexe == 'F'
+               'api/default_avatar/avatar_feminin.svg'
+             else
+               'api/default_avatar/avatar_neutre.svg'
+             end
     avatar
   end
 
@@ -74,7 +74,7 @@ module HtmlMessageGenerator
       <ul class='nav nav-tabs' role='class='active'tablist' id='myTab'>\n"
     contenu = "<div class='tab-content'>\n"
     onglets.each do |onglet|
-      onglet[:ordre] == 1 ? active = 'active' : active = ''
+      active = onglet[:ordre] == 1 ? 'active' : ''
       tabs += "<li role='presentation' class='" + active + "'><a href='#tab" + onglet[:id].to_s + "' aria-controls='tab' role='tab' data-toggle='tab'>" + onglet[:nom] + "</a></li>\n"
       contenu += "<div role='tabpanel' class='tab-pane " + active + "' id='tab" + onglet[:id].to_s + "'>" + (HtmlMessageGenerator.main_entrees_public_carnet onglet[:entrees]) + "</div>\n"
     end

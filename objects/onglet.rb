@@ -36,7 +36,7 @@ class Onglet
       lie_carnet
     rescue Exception
       raise_crud_error
-      raise_crud_error 'lie_carnet', 'lier un carnet à un onglet', 'Onglet' 'create', "la création d'un onglet", 'Onglet'
+      raise_crud_error 'create', "la création d'un onglet", 'Onglet'
     end
   end
 
@@ -52,7 +52,7 @@ class Onglet
       @id
     rescue Exception
       raise_crud_error
-      raise_crud_error 'lie_carnet', 'lier un carnet à un onglet', 'Onglet' 'lie_carnet', 'lier un carnet à un onglet', 'Onglet'
+      raise_crud_error 'lie_carnet', 'lier un carnet à un onglet', 'Onglet'
     end
   end
 

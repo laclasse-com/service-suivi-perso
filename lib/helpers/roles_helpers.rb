@@ -9,7 +9,7 @@ module RolesHelpers
 
       personnel['role_id'] = personnel['roles'].reduce( '' ) do |memo, role|
         if role['role_id'] != ROLES[:super_admin] && COEFF[ role['role_id'] ] > COEFF[ memo ]
-          role['role_id'] 
+          role['role_id']
         else
           memo
         end

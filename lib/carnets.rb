@@ -14,10 +14,10 @@ module CarnetsLib
       carnet.read if carnet.exist?
       if evignal
         etablissement_nom = reponse['classes'][0]['etablissement_nom']
-        !carnet.id.nil? && carnet.evignal == true ? active = true : active = false
+        active = !carnet.id.nil? && carnet.evignal == true ? true : false
       else
         etablissement_nom = nil
-        !carnet.id.nil? ? active = true : active = false
+        active = !carnet.id.nil? ? true : false
       end
       carnets.push(
         id: carnet.id,

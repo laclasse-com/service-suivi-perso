@@ -68,10 +68,10 @@ class CarnetsApi < Grape::API
 
     { personnels: carnet.get_pers_evignal_or_hopital( true, params[:hopital] )
                         .map do |p|
-        { id_ent: p.uid,
-          profil: p.profil,
-          fullname: p.full_name }
-    end }
+                    { id_ent: p.uid,
+                      profil: p.profil,
+                      fullname: p.full_name }
+                  end }
   end
 
   desc "recherche des élèves d'un utilisateur par nom"
@@ -136,7 +136,7 @@ class CarnetsApi < Grape::API
         last_carnet = Carnet.new(last_carnet_bdd.id)
         last_carnet.read
       end
-      params[:etablissement_code] == UAI_EVIGNAL ? evignal = 1 : evignal = 0
+      evignal = params[:etablissement_code] == UAI_EVIGNAL ? 1 : 0
       carnet.create
       CarnetsLib.last_carnet_model last_carnet, carnet if !last_carnet.nil? && last_carnet.id != carnet.id
       right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1, 0, 1)

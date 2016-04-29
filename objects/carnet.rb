@@ -133,11 +133,11 @@ class Carnet
   def get_rights(evignal)
     requires({id: @id}, :id)
     rights = []
-    if evignal == -1
-      rights_bdd = DroitsSpecifiques.where(carnets_id: @id)
-    else
-      rights_bdd = DroitsSpecifiques.where(carnets_id: @id, evignal: evignal)
-    end
+    rights_bdd = if evignal == -1
+                   DroitsSpecifiques.where(carnets_id: @id)
+                 else
+                   DroitsSpecifiques.where(carnets_id: @id, evignal: evignal)
+                 end
     begin
       rights_bdd.each do |r|
         right = Right.new(r.id)

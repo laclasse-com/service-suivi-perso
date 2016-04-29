@@ -27,6 +27,6 @@ describe 'OutilsTest' do
   end
 
   it "retourne le md5 d'une chaine" do
-    expect(Outils.md5_encode 'message').to eq('78e731027d8fd50ed642340b7c9a63b3')
+    expect(Outils.md5_encode + 'message').to eq('78e731027d8fd50ed642340b7c9a63b3')
   end
 end

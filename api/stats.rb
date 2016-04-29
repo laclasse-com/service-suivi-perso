@@ -54,12 +54,12 @@ class StatsApi < Grape::API
       csv << ['nom élève', 'prénom élève', 'établissement', 'classe', 'nombre onglets', 'nombre messages', 'nombre interlocuteurs']
 
       user[:user_detailed]['classes']
-      .uniq { |classe| [ classe['classe_id'], classe['etablissement_code'] ] }
-      .each do |cls|
-        response = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_regroupement, "#{cls['classe_id']}", 'expand' => 'true' )
+        .uniq { |classe| [ classe['classe_id'], classe['etablissement_code'] ] }
+        .each do |cls|
+        response = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_regroupement, (cls['classe_id']).to_s, 'expand' => 'true' )
 
         CarnetsLib.carnets_de_la_classe( response )[:carnets]
-        .each do |c|
+          .each do |c|
           nb_onglets = CarnetsOnglets.where( carnets_id: c[:id] ).count
           nb_messages = Saisies.where( carnets_id: c[:id] ).count
           nb_interloc = Saisies.where( carnets_id: c[:id] ).distinct( :uid ).count
@@ -98,11 +98,11 @@ class StatsApi < Grape::API
       }
 
       index_classe_evignal = classes_evignal.index { |classe| classe['classe_id'] == c[:classe_id] } unless classes_evignal.empty?
-      if index_classe_evignal
-        nom_classe = classes_evignal[index_classe_evignal]['classe_libelle']
-      else
-        nom_classe = 'Autres classes'
-      end
+      nom_classe = if index_classe_evignal
+                     classes_evignal[index_classe_evignal]['classe_libelle']
+                   else
+                     'Autres classes'
+                   end
 
       index_classe = classes.index { |classe| classe[:id] == c[:classe_id] || (classe[:nom] == nom_classe && nom_classe == 'Autres classes') } unless classes.empty?
       if index_classe
@@ -118,11 +118,11 @@ class StatsApi < Grape::API
     end
     classes.each do |classe|
       index_classe_evignal = classes_evignal.index { |cls| cls['etablissement_code'] == classe[:etab_id] } unless classes_evignal.empty?
-      if index_classe_evignal
-        nom_etab = classes_evignal[index_classe_evignal]['etablissement_nom']
-      else
-        nom_etab = 'Autres établissements'
-      end
+      nom_etab = if index_classe_evignal
+                   classes_evignal[index_classe_evignal]['etablissement_nom']
+                 else
+                   'Autres établissements'
+                 end
 
       i = stats.index { |etab| etab[:etab_id] == classe[:etab_id] || (etab[:etab_nom] == nom_etab && nom_etab == 'Autres établissements') } unless stats.empty?
       if i
@@ -147,17 +147,17 @@ class StatsApi < Grape::API
         nb_messages = Saisies.where(carnets_id: c[:id]).count
         nb_interloc = Saisies.where(carnets_id: c[:id]).distinct(:uid).count
         index_classe_evignal = classes_evignal.index { |classe| classe['classe_id'] == c[:classe_id] } unless classes_evignal.empty?
-        if index_classe_evignal
-          nom_classe = classes_evignal[index_classe_evignal]['classe_libelle']
-        else
-          nom_classe = 'Autres classes'
-        end
+        nom_classe = if index_classe_evignal
+                       classes_evignal[index_classe_evignal]['classe_libelle']
+                     else
+                       'Autres classes'
+                     end
         index_classe_evignal = classes_evignal.index { |cls| cls['etablissement_code'] == c[:etablissement_code] } unless classes_evignal.empty?
-        if index_classe_evignal
-          nom_etab = classes_evignal[index_classe_evignal]['etablissement_nom']
-        else
-          nom_etab = 'Autres établissements'
-        end
+        nom_etab = if index_classe_evignal
+                     classes_evignal[index_classe_evignal]['etablissement_nom']
+                   else
+                     'Autres établissements'
+                   end
         csv << [c[:lastName].capitalize, c[:firstName].capitalize, nom_etab, nom_classe, nb_onglets, nb_messages, nb_interloc]
       end
     end

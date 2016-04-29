@@ -37,7 +37,7 @@ class RightsApi < Grape::API
     begin
       right.select
     rescue Exception
-      response['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL ? evignal = 1 : evignal = 0
+      evignal = response['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL ? 1 : 0
       if (response['profil_actif']['etablissement_code_uai'] == carnet.uai || evignal == 1) && response['roles_max_priority_etab_actif'] > 1
         right = Right.new nil, params[:uid], response['prenom'] + ' ' + response['nom'], 'admin', carnet.id, 1, 1, 1, 0, evignal
       end
@@ -65,7 +65,7 @@ class RightsApi < Grape::API
   end
   get '/carnets/:uid_elv' do
     carnet = Carnet.new(nil, params[:uid_elv])
-    !params[:evignal].nil? ? evignal = params[:evignal] : evignal = 0
+    evignal = !params[:evignal].nil? ? params[:evignal] : 0
 
     carnet.read
     rights = []
@@ -94,8 +94,8 @@ class RightsApi < Grape::API
     requires :write, type: Boolean, desc: "droit d'ecriture"
   end
   post '/' do
-    !params[:hopital].nil? ? hopital = params[:hopital] : hopital = 0
-    !params[:evignal].nil? ? evignal = params[:evignal] : evignal = 0
+    hopital = !params[:hopital].nil? ? params[:hopital] : 0
+    evignal = !params[:evignal].nil? ? params[:evignal] : 0
     carnet = Carnet.new(nil, params[:uid_elv])
 
     carnet.read

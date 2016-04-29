@@ -39,7 +39,7 @@ class PublicUrlApi < Grape::API
         onglet.read
         onglet.update( nil, nil, url_pub )
       end
-      URL_ENT.split('').last == '/' ? prefix_url = URL_ENT.chomp('/') : prefix_url = URL_ENT
+      prefix_url = URL_ENT.split('').last == '/' ? URL_ENT.chomp('/') : URL_ENT
       { url_pub: prefix_url + APP_PATH + '/public/' + url_pub }
     else
       error!("Vous n'êtes pas autorisé pour cette ressource", 401)
@@ -59,7 +59,7 @@ class PublicUrlApi < Grape::API
     begin
       right.select
     rescue Exception
-      user[:user_detailed]['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL ? evignal = 1 : evignal = 0
+      evignal = user[:user_detailed]['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL ? 1 : 0
       if (user[:user_detailed]['profil_actif']['etablissement_code_uai'] == carnet.uai || evignal == 1) && user[:user_detailed]['roles_max_priority_etab_actif'] > 1
         right = Right.new nil, params[:uid], user[:user_detailed]['prenom'] + ' ' + user[:user_detailed]['nom'], 'admin', carnet.id, 1, 1, 1, 0, evignal
       end
