@@ -33,6 +33,6 @@ module Outils
 
   def raise_err(name, msg)
     Logger.new(STDOUT).error MSG[LANG.to_sym][:error][msg.to_sym].sub('$1', name.to_s)
-    raise ArgumentError, MSG[LANG.to_sym][:error][msg.to_sym].sub('$1', name.to_s)
+    fail ArgumentError, MSG[LANG.to_sym][:error][msg.to_sym].sub('$1', name.to_s)
   end
 end
