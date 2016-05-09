@@ -169,7 +169,7 @@ class CarnetsApi < Grape::API
     # generate pdf
     kit = PDFKit.new( final_document, page_size: 'A4' )
 
-    kit.stylesheets << 'public/app/styles/pdf/pdf.css'
+    kit.stylesheets << 'public/app/css/pdf/pdf.css'
 
     content_type 'application/pdf'
     kit.to_pdf

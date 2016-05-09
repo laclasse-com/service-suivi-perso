@@ -83,15 +83,13 @@ angular.module('suiviApp')
 			}
 			$scope.toolTipContentPieFunction = function(){
 				return function(key, y) {
-					console.log(key);
-					console.log(y);
-			    	return '<p> il y a ' +  y + ' carnet(s) </p>' + 
+			    	return '<p> il y a ' + Math.floor(y) + ' carnet(s) </p>' + 
 			    		   '<p> dans la classe ' + key + '</p>'
 				}
 			}
 			$scope.toolTipContentMultiFunction = function(){
 				return function(key, x, y) {
-			    	return '<p> il y a ' +  y + ' carnet(s) </p>' + 
+			    	return '<p> il y a ' + Math.floor(y) + ' carnet(s) </p>' + 
 			    		   '<p> dans la classe ' + x + '</p>' +
 			    		   '<p> pour ' + key + '</p>'			    	
 				}
@@ -116,6 +114,7 @@ angular.module('suiviApp')
             var link=document.createElement('a');
             link.href=window.URL.createObjectURL(data);
             link.download='Statistiques_suivi_perso.csv';
+    		document.body.appendChild(link);
             link.click();
         });
 	}

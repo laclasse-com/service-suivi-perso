@@ -50,32 +50,35 @@ class StatsApi < Grape::API
 
   desc 'récupère le csv'
   get '/csv' do
-    csv_string = CSV.generate do |csv|
+    csv_string = CSV.generate() do |csv|
       csv << ['nom élève', 'prénom élève', 'établissement', 'classe', 'nombre onglets', 'nombre messages', 'nombre interlocuteurs']
 
       user[:user_detailed]['classes'].uniq { |classe| [ classe['classe_id'], classe['etablissement_code'] ] }.each do |cls|
         response = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_regroupement, (cls['classe_id']).to_s, 'expand' => 'true' )
 
-        CarnetsLib.carnets_de_la_classe( response )[:carnets].each do |c|
-          nb_onglets = CarnetsOnglets.where( carnets_id: c[:id] ).count
-          nb_messages = Saisies.where( carnets_id: c[:id] ).count
-          nb_interloc = Saisies.where( carnets_id: c[:id] ).distinct( :uid ).count
-
-          csv << [ c[:lastName].capitalize,
-                   c[:firstName].capitalize,
-                   cls['etablissement_nom'],
-                   cls['classe_libelle'],
-                   nb_onglets,
-                   nb_messages,
-                   nb_interloc ]
+        carnets_de_la_classe_returned = CarnetsLib.carnets_de_la_classe( response )[:carnets];
+      
+        return csv if carnets_de_la_classe_returned.nil? || carnets_de_la_classe_returned.empty?
+      
+        carnets_de_la_classe_returned.each do |c|
+            nb_onglets = CarnetsOnglets.where( carnets_id: c[:id] ).count
+            nb_messages = Saisies.where( carnets_id: c[:id] ).count
+            nb_interloc = Saisies.where( carnets_id: c[:id] ).distinct( :uid ).count
+            csv << [ c[:lastName].capitalize,
+                     c[:firstName].capitalize,
+                     cls['etablissement_nom'],
+                     "\"#{cls['classe_libelle']}\"",
+                     nb_onglets,
+                     nb_messages,
+                     nb_interloc ]
         end
       end
     end
-
     content_type 'text/csv'
     header['Content-Disposition'] = "attachment; filename='Statistiques_suivi_perso.csv'"
     header['Content-Length'] = csv_string.size
     env['api.format'] = :binary
+
     csv_string
   end
 
