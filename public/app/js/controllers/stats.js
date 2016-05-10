@@ -40,8 +40,6 @@ angular.module('suiviApp')
 			});
 
             $scope.changeFilter = function(){
-            	console.log($scope.etablissement);
-				console.log($scope.classe);
 				$scope.carnetsClasse = [];
 				$scope.carnetsClassePie = [];
 				$scope.messagesInterlocsCarnet = [];
@@ -102,7 +100,6 @@ angular.module('suiviApp')
 			// }
 			// $scope.xAxisTickFormatFunction = function(){
 			// 	return function(d){
-			// 		console.log(d);
 			// 		return d.x;
 			// 	}
 			// }

@@ -63,7 +63,6 @@ angular.module('suiviApp')
 		    // }).success(function(data, status, headers, config) {
 		        // file is uploaded successfully
 		        $rootScope.docs.push($rootScope.document);
-		        // console.log(data);
 		        // if (data['envoye'] != undefined && !_.isEmpty(data['envoye'])) {
 		        //   $rootScope.resultats.success = data['envoye']
 		        // };

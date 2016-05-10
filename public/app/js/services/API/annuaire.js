@@ -335,7 +335,6 @@ angular.module('suiviApp')
 	return list;
 	}; 
 	this.avatars = function(entrees){
-		console.log("get avatars");
 		var entreesUniq = _.uniq(entrees, false, function(entree){
           return entree.owner.uid;
         });

@@ -6,7 +6,6 @@ angular.module('suiviApp')
 .controller('StatsEvignalCtrl', ['$rootScope', '$scope', 'Notifications', 'Stats', '$http', 'APP_PATH', function($rootScope, $scope, Notifications, Stats, $http, APP_PATH) {
 
 	Stats.evignal({}).$promise.then(function(reponse){
-		console.log(reponse);
 		if (reponse.error != undefined) { 
 			Notifications.add(reponse.error, "error")
 		} else {
@@ -41,8 +40,6 @@ angular.module('suiviApp')
 			});
 
             $scope.changeFilter = function(){
-            	console.log($scope.etablissement);
-				console.log($scope.classe);
 				$scope.carnetsClasse = [];
 				$scope.carnetsClassePie = [];
 				$scope.messagesInterlocsCarnet = [];
@@ -84,8 +81,6 @@ angular.module('suiviApp')
 			}
 			$scope.toolTipContentPieFunction = function(){
 				return function(key, y) {
-					console.log(key);
-					console.log(y);
 			    	return '<p> il y a ' +  Math.floor(y) + ' carnet(s) </p>' + 
 			    		   '<p> dans la classe ' + key + '</p>'
 				}
@@ -105,7 +100,6 @@ angular.module('suiviApp')
 			// }
 			// $scope.xAxisTickFormatFunction = function(){
 			// 	return function(d){
-			// 		console.log(d);
 			// 		return d.x;
 			// 	}
 			// }

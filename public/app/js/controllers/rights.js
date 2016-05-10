@@ -65,7 +65,6 @@ angular.module('suiviApp')
     });
 
     $scope.update = function(user){
-      // console.log(user);
       if (user.admin && !user.w) {user.w=true;};
       if (user.w && !user.r) {user.r=true;};
       if (_.last(user.action) != 'add' && _.last(user.action) != 'update') {

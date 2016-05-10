@@ -79,7 +79,6 @@ angular.module('suiviApp')
       // Methode asynchrone avec bug pour plus tard
       // CarnetPdf.post({'uid_elv': $stateParams.id, 'nom': $scope.user.nom, 'prenom': $scope.user.prenom, 'sexe': $scope.user.sexe, 'college': $scope.user.classe.nom_etablissement, 'classe': $scope.user.classe.libelle, 'id_onglets': [1,2,3]}).$promise.then(function(reponse){
       //   var blob= new Blob([reponse], {type:'application/pdf'});
-      //   console.log(blob);
       //   var link=document.createElement('a');
       //   link.href=window.URL.createObjectURL(blob);
       //   link.download="Carnet_Suivi_"+$scope.user.prenom+"_"+$scope.user.nom+".pdf";
@@ -162,7 +161,6 @@ angular.module('suiviApp')
     };
 
     $scope.onFileSelect = function($files){
-      // console.log($files[0]);
       if ($files[0].size <= UPLOAD_SIZE) {
 	$rootScope.mail.file = $files[0];
 	$scope.joindreFile.normal=$files[0].name;

@@ -21,7 +21,6 @@ angular.module('suiviApp')
     return rights;
   }
   this.verifRights = function(carnet, uid_elv, right){
-    // console.log(rights);
     if (currentUser == null) {$state.go( 'erreur', {code: '404', message: "Utilisateur courant non trouvé"}, { reload: true, inherit: true, notify: true } );}
     else if (currentUser.error != undefined) {$state.go( 'erreur', {code: '404', message: currentUser.error}, { reload: true, inherit: true, notify: true } );};
     if (carnet.error != undefined) {$state.go( 'erreur', {code: '404', message: carnet.error}, { reload: true, inherit: true, notify: true } );};
@@ -76,7 +75,6 @@ angular.module('suiviApp')
 .service('Profil', ['CurrentUser', '$state', 'Carnets', '$q', 'UAI_EVIGNAL', function( CurrentUser, $state, Carnets,$q, UAI_EVIGNAL ) {
   this.redirection = function(allowed_types, evignal){
     return CurrentUser.getRequest().$promise.then(function(currentUser){
-      // console.log(currentUser);
       var profil_actif_evignal = (currentUser.profil_actif.etablissement_code_uai == UAI_EVIGNAL);
       CurrentUser.set(currentUser);
       var stateName = 'erreur';
@@ -308,7 +306,6 @@ angular.module('services.messages').factory("Notifications", ['$rootScope', func
 // angular.module('services.svg').factory("Svg", function() {
 //   return {
 //     modifyFill : function(svgId, color){
-//       console.log(svgId +" , " + color);
 //       var s = document.getElementById(svgId)
 //       if (s!=null) {
 //         s.addEventListener("load", function() {

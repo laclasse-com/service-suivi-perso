@@ -13,28 +13,29 @@ class AnnuaireApi < Grape::API
   desc "retourne le profile actif de l'utilisateur courant"
   get '/currentuser' do
     hight_role = ''
-    user[:user_detailed]['roles'].each do |role|
-      if role['etablissement_code_uai'] == user[:user_detailed]['profil_actif']['etablissement_code_uai'] && COEFF[hight_role] < COEFF[role['role_id']]
-        hight_role = role['role_id']
+    unless user[:user_detailed]['roles'].nil?
+      user[:user_detailed]['roles'].each do |role|
+        if !user[:user_detailed]['profil_actif'].nil? && role['etablissement_code_uai'] == user[:user_detailed]['profil_actif']['etablissement_code_uai'] && COEFF[hight_role] < COEFF[role['role_id']]
+          hight_role = role['role_id']
+        end
       end
+      { id_ent: user[:user_detailed]['id_ent'],
+        profil_actif: user[:user_detailed]['profil_actif'],
+        actif: user[:user_detailed]['profil_actif']['actif'],
+        role_max_priority: user[:user_detailed]['roles_max_priority_etab_actif'],
+        etablissement_id: user[:user_detailed]['profil_actif']['etablissement_id'],
+        profil_id: user[:user_detailed]['profil_actif']['profil_id'],
+        roles: user[:user_detailed]['roles'],
+        profils: user[:user_detailed]['profils'],
+        hight_role: hight_role,
+        user_id: user[:user_detailed]['profil_actif']['user_id'],
+        sexe: user[:user_detailed]['sexe'],
+        nom: user[:user_detailed]['nom'],
+        prenom: user[:user_detailed]['prenom'],
+        classes: user[:user_detailed]['classes'],
+        enfants: user[:user_detailed]['enfants'],
+        avatar: user[:user_detailed]['avatar'] }
     end
-
-    { id_ent: user[:user_detailed]['id_ent'],
-      profil_actif: user[:user_detailed]['profil_actif'],
-      actif: user[:user_detailed]['profil_actif']['actif'],
-      role_max_priority: user[:user_detailed]['roles_max_priority_etab_actif'],
-      etablissement_id: user[:user_detailed]['profil_actif']['etablissement_id'],
-      profil_id: user[:user_detailed]['profil_actif']['profil_id'],
-      roles: user[:user_detailed]['roles'],
-      profils: user[:user_detailed]['profils'],
-      hight_role: hight_role,
-      user_id: user[:user_detailed]['profil_actif']['user_id'],
-      sexe: user[:user_detailed]['sexe'],
-      nom: user[:user_detailed]['nom'],
-      prenom: user[:user_detailed]['prenom'],
-      classes: user[:user_detailed]['classes'],
-      enfants: user[:user_detailed]['enfants'],
-      avatar: user[:user_detailed]['avatar'] }
   end
 
   desc 'retourne les infos sur un utilisateur'
