@@ -13,22 +13,27 @@ LOG_LEVEL = "" #Logger::INFO
 APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 # Mapping HAProxy de l'application, ex : '/v3/docs'
-APP_PATH = '/suivi'	
+APP_PATH = '/suivi'
 
 # Version de l'application
 APP_VERSION = 'beta_1.0.1'
 
 # Langage par defaut de l'application
-LANG = 'fr'	
+LANG = 'fr'
 
 # Clef de hachage pour les cookies Rack
-SESSION_KEY = 'SomeKey'	
+SESSION_KEY = 'SomeKey'
 
 # Duree de la session en seconde (défaut 3600)
-SESSION_TIME = 3600	
+SESSION_TIME = 3600
 
 # Url de l'ENT
 URL_ENT = 'https://v3dev.laclasse.com/'
+
+# Url de l'ENT
+URL_DOCS = "#{URL_ENT}/docs"
+
+UPLOAD_SIZE = 26214400
 
 # nom du serveur d'annuaire ENT (xml-aaf academiques)
 SERVICE_ANNUAIRE_ENT = 'http://www.dev.laclasse/com/annuaire/'
@@ -58,7 +63,7 @@ DOCS = {
 #
 # Configuration du service Etherpad
 #
-#ETHERPAD = { 
+#ETHERPAD = {
 #  url: 'localhost:9001',
 #  api_key: 'A50vIgYTfFnxC1wSN22LpOBIqT7brCJB',
 #  default_text: 'Vous etes a present sur etherpad. \n Celui-ci est un document collaboratif. \n'
@@ -67,7 +72,7 @@ DOCS = {
 #
 # Configuration du service de quizs
 #
-#QUIZS = { 
+#QUIZS = {
 #  url: 'http://www.dev.laclasse.com',
 #  uri_open: '/pls/education/quizz.lance_exercice?p_exo_id=',
 #  uri_modif: '/pls/education/!page.laclasse?contexte=DOCUMENTS&paction=modifier_element&ptype=',

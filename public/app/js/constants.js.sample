@@ -1,7 +1,0 @@
-'use strict';
-
-angular.module('suiviApp')
-.constant('LACLASSE_PATH', 'https://v3dev.laclasse.com')
-.constant('APP_PATH', 'http://localhost:9292/suivi')
-.constant('UPLOAD_SIZE', 26214400)
-.constant( 'DOCS_URL', 'http://www.dev.laclasse.com/docs-beta' );
