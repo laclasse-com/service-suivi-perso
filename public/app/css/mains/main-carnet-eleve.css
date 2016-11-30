@@ -47,26 +47,6 @@
 	max-height: 210px;
 }
 
-/*modifier la scrollbar du div elevator*/
-::-webkit-scrollbar { 
-  width: 10px; /*largeur de la scrollbar verticale*/
-  height: 10px; /*hauteur de la scrollbar horizontale*/
-  background-color: #505050;
-	text-align: center;
-}
-
-::-webkit-scrollbar-track { 
-  background-color: #CCC;
-}
-::-webkit-scrollbar-thumb { /*la petite bande qui monte/descend*/
-  background-color: #505050; /*couleur de l'ascenseur*/
-  border-radius: 10px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  width: 1px;
-  height: 10px;
-}
-
 .tab-content{
 	height: 93%;
 	overflow: auto;
@@ -90,7 +70,6 @@
 }
 
 .text-angular-content{
-	font-family: "Futura Light";
 }
 
 .laclasse-toolbar-text-angular .toolbar{
@@ -101,7 +80,6 @@
 	width: 10%;
 	padding: 2px;
 	background-color: #fff;
-	font-family: "Futura Medium";
 	color: #505050;
 	display: table-cell;
 	border: 1px solid #8E8E8E;
@@ -180,7 +158,6 @@
 	min-height: 90px;
 	/*max-height: 90px;
 	overflow: auto;*/
-	font-family: "Futura Light";
 	padding: 5px;
 }
 
@@ -196,7 +173,6 @@
 .message-info-profil{
 	vertical-align: bottom;
 	display: table-cell;
-	font-family: "Futura Bold";
 	font-weight: bold;
 	font-size: 13px;
 }
@@ -206,17 +182,14 @@
 	display: table-cell;
 	padding-right: 20px;
 	text-align: right;
-	font-family: "Futura Light";
 	font-size: 13px;
 }
 
 .modal-header{
-	font-family: "Futura Bold";
 	font-weight: bold;
 }
 
 .modal-body{
-	font-family: "Futura Light";
 }
 
 .but-violet{

@@ -1,22 +1,4 @@
-@font-face { 	
-	font-family: "Futura Bold"; 	
-	src: url('../font/Futura TTF/FUTUB___.TTF'); 
-}
 
-@font-face { 	
-	font-family: "Futura Light"; 	
-	src: url('../font/Futura TTF/FUTUL___.TTF'); 
-}
-
-@font-face { 	
-	font-family: "Futura Medium"; 	
-	src: url('../font/Futura TTF/FUTUH___.TTF'); 
-}
-
-@font-face { 	
-	font-family: "Futura book"; 	
-	src: url('../font/Futura TTF/FUTURA__.TTF'); 
-}
 html { 
     height:100%;
 }
@@ -55,7 +37,6 @@ body {
 }
 
 .eleve-info{
-	font-family: "Futura Light";
 	text-align: left;
 	font-weight: bold;
 	color: #1AA1CC;
@@ -65,7 +46,6 @@ body {
 }
 
 .eleve-info-firstname, .eleve-info-lastname{
-	font-family: "Futura Bold";
 	font-size: 20px;
 	width: 100%;
 }
@@ -79,7 +59,6 @@ body {
 }
 
 .infos-detaillees .panel-title{
-	font-family: "Futura Light";
 	font-size: 13px;
 	font-weight: bold;
 }
@@ -204,7 +183,6 @@ body {
 
 
 .prefix-infos, .infos-famille{
-	font-family: "Futura Light";
 	font-size: 12px;
 	display: inline-block;
 	font-weight: bold;
@@ -235,7 +213,6 @@ body {
 
 .div-right{
 	display: inline-block;
-	font-family: "Futura Light";
 	font-size: 13px;
 	font-weight: bold;
 }
@@ -256,7 +233,6 @@ body {
 	padding: 3px 10px;
 	text-align: center;
 	border: 1.5px solid #505050;
-	font-family: "Futura book";
 	font-size: 14px;
 	color: #323232;
 	cursor: pointer;

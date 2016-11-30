@@ -1,22 +1,3 @@
-@font-face { 	
-	font-family: "Futura Bold"; 	
-	src: url('../font/Futura TTF/FUTUB___.TTF'); 
-}
-
-@font-face { 	
-	font-family: "Futura Light"; 	
-	src: url('../font/Futura TTF/FUTUL___.TTF'); 
-}
-
-@font-face { 	
-	font-family: "Futura Medium"; 	
-	src: url('../font/Futura TTF/FUTUH___.TTF'); 
-}
-
-@font-face { 	
-	font-family: "Futura book"; 	
-	src: url('../font/Futura TTF/FUTURA__.TTF'); 
-}
 
 .aside-contener{
 	background-color: white;
@@ -29,18 +10,15 @@
 }
 
 .explicatif-title{
-	font-family: "Futura Bold";
 	font-size:16px; 
 }
 
 .explicatif-content{
-	font-family: "Futura Medium";
 	font-size:14px; 
 }
 
 .recherche{
 	margin-top: 4em;
-	font-family: "Futura Light";
 	color: #323232;
 	font-weight: bold;
 	font-size: 0.9em;
@@ -75,7 +53,6 @@
 }
 
 .search-erreur{
-	font-family: "Futura Light";
 	color: red;
 	font-weight: bold;
 }

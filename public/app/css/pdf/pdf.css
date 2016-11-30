@@ -1,22 +1,3 @@
-/*@font-face { 	
-	font-family: "Futura Bold"; 	
-	src: url('../font/Futura TTF/FUTUB___.TTF'); 
-}*/
-
-/*@font-face { 	
-	font-family: "Futura Light"; 	
-	src: url('../font/Futura TTF/FUTUL___.TTF'); 
-}*/
-
-/*@font-face { 	
-	font-family: "Futura Medium"; 	
-	src: url('../font/Futura TTF/FUTUH___.TTF'); 
-}
-
-@font-face { 	
-	font-family: "Futura book"; 	
-	src: url('../font/Futura TTF/FUTURA__.TTF'); 
-}*/
 
 .titre, .eleve-info{
 	color: #1AA1CC;
@@ -54,8 +35,6 @@
 .eleve-info{
 	margin-top: 50px;
 	font-size: 25px;
-	/*font-family: "Futura Light";*/
-	/*font-weight: bold;*/
 }
 
 .message-info{
