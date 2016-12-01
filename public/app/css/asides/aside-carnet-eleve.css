@@ -223,6 +223,7 @@ body {
 
 .exit-carnet{
 	margin-top: 20px;
+	margin-bottom: 20px;
 	text-align: center;
 	display: inline-block;
 	width: 100%;
@@ -236,6 +237,7 @@ body {
 	font-size: 14px;
 	color: #323232;
 	cursor: pointer;
+	text-transform: uppercase;
 }
 
 .exit-carnet-button-pdf{
