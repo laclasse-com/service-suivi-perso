@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/laclasse-com/laclasse-common.git
-  revision: 074b0536c1cd3f1e898697f81a913c2846afcad2
+  revision: 954932295d05d89ac6846ab4f8e23905988360fd
   specs:
-    laclasse-common (0.2.32)
+    laclasse-common (0.2.37)
       redis-rack (~> 1.5.0)
       rest-client
 
@@ -42,7 +42,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.2.5)
     docile (1.1.5)
-    domain_name (0.5.20160615)
+    domain_name (0.5.20161129)
       unf (>= 0.0.5, < 1.0.0)
     equalizer (0.0.11)
     ffi (1.9.10)
@@ -87,7 +87,7 @@ GEM
       builder (>= 2.1.2)
     hashie (3.4.3)
     htmlentities (4.3.4)
-    http-cookie (1.0.2)
+    http-cookie (1.0.3)
       domain_name (~> 0.5)
     httpi (2.4.2)
       rack
@@ -103,7 +103,7 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
-    mime-types (2.99.2)
+    mime-types (2.99.3)
     mini_portile (0.6.2)
     minitest (5.8.3)
     multi_json (1.11.2)
@@ -133,7 +133,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     puma (3.6.2)
-    rack (1.6.4)
+    rack (1.6.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-mount (0.8.3)
@@ -149,7 +149,7 @@ GEM
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
     rb-readline (0.5.3)
-    redis (3.3.1)
+    redis (3.3.2)
     redis-rack (1.5.0)
       rack (~> 1.5)
       redis-store (~> 1.1.0)
