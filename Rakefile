@@ -8,8 +8,4 @@ Dir.glob(File.expand_path('../tasks/*.rake', __FILE__)).each do |f|
   import(f)
 end
 
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_opts = '--require spec_helper --color'
-end
-
 task default: :spec
