@@ -10,7 +10,7 @@ class AnnuaireApi < Grape::API
   helpers RolesHelpers
   helpers Laclasse::Helpers::User
 
-  desc "retourne le profile actif de l'utilisateur courant"
+  desc "retourne le profil actif de l'utilisateur courant"
   get '/currentuser' do
     hight_role = ''
     unless user[:user_detailed]['roles'].nil?
