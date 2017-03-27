@@ -31,7 +31,7 @@ angular.module('suiviApp')
                     var textAngular = this;
                     var modalInstance = $modal.open({
                         // Put a link to your template here or whatever
-                        templateUrl: APP_PATH+'/app/views/modals/upload_text_angular.html',
+                        templateUrl: APP_PATH+'/app/views/modal_upload_text_angular.html',
                         size: 'sm',
                         controller: 'UploadTextAngularCtrl'
                     });

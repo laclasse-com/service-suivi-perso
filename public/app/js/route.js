@@ -7,12 +7,12 @@ angular.module( 'suiviApp' )
                    $stateProvider
                        .state( 'erreur', {
                            url: '/erreur/:code?message',
-                           templateUrl: APP_PATH + '/app/views/generals/erreur.html',
+                           templateUrl: APP_PATH + '/app/views/erreur.html',
                            controller: 'ErreurCtrl'
                        } )
                        .state( 'suivi', {
                            abstract:true,
-                           templateUrl: APP_PATH + '/app/views/generals/index.html'} )
+                           templateUrl: APP_PATH + '/app/views/index.html'} )
 
                        .state( 'suivi.classes', {
                            resolve: { auth: function( Profil ) { Profil.redirection( ['PROF_ETB', 'DIR_ETB', 'ADM_ETB', 'TECH', 'AVS_ETB', 'CPE_ETB'], false ); } },
