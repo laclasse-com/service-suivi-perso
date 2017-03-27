@@ -43,10 +43,7 @@ class RightsApi < Grape::API
       end
     end
 
-    prefix_url = URL_ENT
-    prefix_url.chomp!('/') if URL_ENT.split('').last == '/'
-
-    url_pub = prefix_url + APP_PATH + '/public/' + carnet.url_pub unless carnet.url_pub.nil?
+    url_pub = URL_ENT + APP_PATH + '/public/' + carnet.url_pub unless carnet.url_pub.nil?
 
     { id: right.id,
       uid: right.uid,
