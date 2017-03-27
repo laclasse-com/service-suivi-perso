@@ -85,7 +85,7 @@ class SinatraApp < Sinatra::Base
     init_session( request.env )
 
     protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
-    redirect params[:url] if params[:url] != "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}"
+    redirect params[:url] if params[:url] != "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"
     redirect "#{APP_PATH}/"
   end
 
@@ -99,6 +99,6 @@ class SinatraApp < Sinatra::Base
 
   get "#{APP_PATH}/logout" do
     protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
-    logout! "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}"
+    logout! "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"
   end
 end
