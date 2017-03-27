@@ -31,6 +31,7 @@ group :development do
   gem 'shotgun'
   gem 'pry'
   gem 'logger'
+  gem 'pry'
 end
 
 group :test do
