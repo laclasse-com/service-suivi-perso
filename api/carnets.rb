@@ -43,6 +43,18 @@ class CarnetsApi < Grape::API
       date_creation: carnet.date_creation }
   end
 
+  desc 'liste les carnets auxquels un utilisateur a accès'
+  params do
+    requires :uid, type: String
+  end
+  get '/visible/:uid' do
+    error!( '401', 401 ) if params[:uid] != user[:uid]
+
+    Carnets.where( id: DroitsSpecifiques.where( uid: params[:uid] ).select( :carnets_id ).all.map(&:carnets_id) )
+           .naked
+           .all
+  end
+
   desc 'récupère les carnets de la classes'
   params do
     requires :classe_id, type: Integer

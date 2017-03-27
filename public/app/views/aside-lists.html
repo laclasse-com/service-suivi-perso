@@ -42,7 +42,9 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <ul>
-                <li ng:repeat="carnet in mes_carnets">{{carnet}}</li>
+                <li ng:repeat="carnet in visible_carnets">
+                    <a ui:sref="suivi.carnet({ classe_id: carnet.cls_id, id: carnet.uid_elv })">{{carnet.uid_elv}}</a>
+                </li>
             </ul>
         </div>
 </div>

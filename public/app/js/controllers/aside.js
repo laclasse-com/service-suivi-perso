@@ -4,48 +4,53 @@
 
 angular.module('suiviApp')
     .controller( 'AsideCtrl',
-                 [ '$scope', '$state', '$stateParams', 'CurrentUser',
-                   function( $scope, $state, $stateParams, CurrentUser ) {
-                       $scope.nameElv = $stateParams.name;
-                       $scope.erreur = "";
-                       $scope.accueil = "classes";
+                 [ '$scope', '$state', '$stateParams', '$http', 'CurrentUser', 'APP_PATH',
+                   function( $scope, $state, $stateParams, $http, CurrentUser, APP_PATH ) {
+                       var ctrl = $scope;
 
-                       $scope.return = function() {
+                       ctrl.nameElv = $stateParams.name;
+                       ctrl.erreur = "";
+                       ctrl.accueil = "classes";
+
+                       ctrl.return = function() {
                            $state.go( 'suivi.classes', {}, { reload: true, inherit: true, notify: true } );
                        };
 
-                       $scope.stats = function() {
+                       ctrl.stats = function() {
                            $state.go( 'suivi.stats', {}, { reload: true, inherit: true, notify: true } );
                        };
 
-                       $scope.search = function( name ) {
+                       ctrl.search = function( name ) {
                            if ( name != null && name != "" && name.length > 2 ) {
                                $state.go( 'suivi.add', {name: name}, { reload: true, inherit: true, notify: true } );
                            } else {
-                               $scope.erreur = "Au minimum trois caractères sont nécessaires pour effectuer une recherche !";
+                               ctrl.erreur = "Au minimum trois caractères sont nécessaires pour effectuer une recherche !";
                            }
                        };
 
-                       if ( $state.current.name == 'suivi.classes' ) {
-                           $scope.backClassesDisplay = false;
-                       } else {
-                           $scope.backClassesDisplay = true;
-                       };
-
-                       if ( $state.current.name == 'suivi.stats' ) {
-                           $scope.statsDisplay = false;
-                       } else {
-                           if ( CurrentUser.get() != null ) {
-                               $scope.statsDisplay = ["DIR_ETB", "ADM_ETB", "TECH"].indexOf(CurrentUser.get().hight_role) != -1 ;
-                           } else {
-                               $scope.statsDisplay = true;
-                           };
-                       };
-
-                       $scope.delSearch = function() {
-                           $scope.nameElv ="";
-                           $scope.erreur = "";
+                       ctrl.delSearch = function() {
+                           ctrl.nameElv ="";
+                           ctrl.erreur = "";
                            $state.go( 'suivi.classes', {}, { reload: true, inherit: true, notify: true } );
                        };
 
-    }]);
+                       if ( $state.current.name == 'suivi.classes' ) {
+                           ctrl.backClassesDisplay = false;
+                       } else {
+                           ctrl.backClassesDisplay = true;
+                       };
+
+                       if ( $state.current.name == 'suivi.stats' ) {
+                           ctrl.statsDisplay = false;
+                       } else if ( CurrentUser.get() != null ) {
+                           ctrl.statsDisplay = ["DIR_ETB", "ADM_ETB", "TECH"].indexOf(CurrentUser.get().hight_role) != -1 ;
+                       } else {
+                               ctrl.statsDisplay = true;
+                           };
+
+                       $http.get( APP_PATH + '/api/carnets/visible/' + CurrentUser.get().id_ent )
+                           .then( function success( response ) {
+                               ctrl.visible_carnets = response.data;
+                           },
+                                  function error( response ) {} );
+                   } ] );
