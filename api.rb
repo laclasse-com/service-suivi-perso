@@ -2,7 +2,14 @@
 require 'laclasse/helpers/authentication'
 require 'laclasse/cross_app/sender'
 
-require_relative './api/init'
+require_relative './api/annuaire'
+require_relative './api/docs'
+require_relative './api/carnets'
+require_relative './api/onglets'
+require_relative './api/entrees'
+require_relative './api/rights'
+require_relative './api/public_url'
+require_relative './api/stats'
 
 # Point d'entrée des APi du suivi
 class Api < Grape::API
@@ -28,6 +35,4 @@ class Api < Grape::API
   resource(:rights  ) { mount RightsApi }
   resource(:public  ) { mount PublicUrlApi }
   resource(:stats   ) { mount StatsApi }
-
-  add_swagger_documentation
 end

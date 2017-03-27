@@ -1,8 +1,0 @@
-require_relative './annuaire'
-require_relative './docs'
-require_relative './carnets'
-require_relative './onglets'
-require_relative './entrees'
-require_relative './rights'
-require_relative './public_url'
-require_relative './stats'
