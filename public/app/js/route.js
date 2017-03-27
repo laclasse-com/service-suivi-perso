@@ -5,7 +5,6 @@ angular.module( 'suiviApp' )
                    cfpLoadingBarProvider.includeBar = false;
 
                    $stateProvider
-                   // /////////// Normal
                        .state( 'suivi',
                                { abstract:true,
                                  templateUrl: APP_PATH + '/app/views/index.html' } )
@@ -17,6 +16,8 @@ angular.module( 'suiviApp' )
                                                      controller: 'AsideCtrl' },
                                           'main': { templateUrl: APP_PATH + '/app/views/list-regroupements.html',
                                                     controller: 'ClassesCtrl' } } } )
+
+                   // /////////// Normal
                        .state( 'suivi.carnets',
                                { parent: 'suivi',
                                  resolve: { auth: function( Profil ) { Profil.redirection( ['PROF_ETB', 'DIR_ETB', 'ADM_ETB', 'TECH', 'AVS_ETB', 'CPE_ETB'], false ); } },

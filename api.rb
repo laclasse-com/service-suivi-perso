@@ -21,13 +21,13 @@ class Api < Grape::API
   end
 
   resource(:annuaire) { mount AnnuaireApi }
-  resource(:docs) { mount DocsApi }
-  resource(:carnets) { mount CarnetsApi }
-  resource(:onglets) { mount OngletsApi }
-  resource(:entrees) { mount EntreesApi }
-  resource(:rights) { mount RightsApi }
-  resource(:public) { mount PublicUrlApi }
-  resource(:stats) { mount StatsApi }
+  resource(:docs    ) { mount DocsApi }
+  resource(:carnets ) { mount CarnetsApi }
+  resource(:onglets ) { mount OngletsApi }
+  resource(:entrees ) { mount EntreesApi }
+  resource(:rights  ) { mount RightsApi }
+  resource(:public  ) { mount PublicUrlApi }
+  resource(:stats   ) { mount StatsApi }
 
   add_swagger_documentation
 end
