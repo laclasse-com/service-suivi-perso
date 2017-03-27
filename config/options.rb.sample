@@ -4,100 +4,92 @@
 #
 
 # development ou production
-ENV[ 'RACK_ENV' ]  = 'test'
+ENV[ 'RACK_ENV' ] = 'test'.freeze
 
 # niveau de log de l'application
-LOG_LEVEL = "" #Logger::INFO
+LOG_LEVEL = ''.freeze # Logger::INFO
 
 # Chemin absolu de l'application sur le serveur
 APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 # Mapping HAProxy de l'application, ex : '/v3/docs'
-APP_PATH = '/suivi'
+APP_PATH = '/suivi'.freeze
 
 # Version de l'application
-APP_VERSION = 'beta_1.0.1'
+APP_VERSION = %x(date +%F%H%M).chomp
 
 # Langage par defaut de l'application
-LANG = 'fr'
+LANG = 'fr'.freeze
 
 # Clef de hachage pour les cookies Rack
-SESSION_KEY = 'SomeKey'
+SESSION_KEY = 'SomeKey'.freeze
 
 # Duree de la session en seconde (défaut 3600)
 SESSION_TIME = 3600
 
 # Url de l'ENT
-URL_ENT = 'https://v3dev.laclasse.com/'
+URL_ENT = 'https://v3dev.laclasse.com/'.freeze
 
 # Url de l'ENT
-URL_DOCS = "#{URL_ENT}/docs"
+URL_DOCS = "#{URL_ENT}/docs".freeze
 
-UPLOAD_SIZE = 26214400
+UPLOAD_SIZE = 26_214_400
 
 # nom du serveur d'annuaire ENT (xml-aaf academiques)
-SERVICE_ANNUAIRE_ENT = 'http://www.dev.laclasse/com/annuaire/'
+SERVICE_ANNUAIRE_ENT = 'http://www.dev.laclasse/com/annuaire/'.freeze
 
 #
 # Configuration du service d'annuaire de l'ENT
 #
-ANNUAIRE = {
-  url: 'https://v3dev.laclasse.com/api',
-  api_key: "apikey",
-  app_id: 'SUIVIELV',
-  api_mode: 'v3',
-  service_annuaire_app: 'api/app/',
-  service_annuaire_user: 'api/app/users/',
-  service_annuaire_regroupements: 'api/app/regroupements/',
-}
+ANNUAIRE = { url: 'https://v3dev.laclasse.com/api',
+             api_key: 'apikey',
+             app_id: 'SUIVIELV',
+             api_mode: 'v3',
+             service_annuaire_app: 'api/app/',
+             service_annuaire_user: 'api/app/users/',
+             service_annuaire_regroupements: 'api/app/regroupements/' }.freeze
 
 #
 # Configuration du service docs cross app
 #
-DOCS = {
-  url: 'http://localhost:9292/docs/api',
-  api_key: "api_key",
-  app_id: 'SUIVIELV'
-}
-
-#
-# Configuration du service Etherpad
-#
-#ETHERPAD = {
-#  url: 'localhost:9001',
-#  api_key: 'A50vIgYTfFnxC1wSN22LpOBIqT7brCJB',
-#  default_text: 'Vous etes a present sur etherpad. \n Celui-ci est un document collaboratif. \n'
-#}
-
-#
-# Configuration du service de quizs
-#
-#QUIZS = {
-#  url: 'http://www.dev.laclasse.com',
-#  uri_open: '/pls/education/quizz.lance_exercice?p_exo_id=',
-#  uri_modif: '/pls/education/!page.laclasse?contexte=DOCUMENTS&paction=modifier_element&ptype=',
-#  api_key: 'Clef secrete de signature des echanges'
-#}
-
-#
-# Configuration du service de notifications
-#
-
-#NOTIFICATIONS = {
-#      mount: '#{APP_PATH}/faye',
-#      timeout: 25,
-#      engine: {
-#          host: 'http://www.laclasse.com',
-#          type: Faye::Redis,
-#          port: 6379
-#      }
-#}
+DOCS = { url: 'http://localhost:9292/docs/api',
+         api_key: 'api_key',
+         app_id: 'SUIVIELV' }.freeze
 
 #
 # Configuration du service de mail
 #
-MAIL = {
-  adress: "smtp.laclasse.com",
-  enable_starttls_auto: false,
-  webmail_host: 'http://www.dev.laclasse.com/mail/'
-}
+MAIL = { adress: "smtp.laclasse.com",
+         enable_starttls_auto: false,
+         webmail_host: 'http://www.dev.laclasse.com/mail/' }.freeze
+
+#
+# Configuration du Serveur d'Authentification Central CAS
+#
+module CASAUTH
+  CONFIG = { host: 'v3dev.laclasse.com',
+             ssl: true,
+             port: 443,
+             disable_ssl_verification: true,
+             login_url: '/sso/login',
+             service_validate_url: '/sso/serviceValidate',
+             logout_url: '/sso/logout',
+             logout_saml_url: '/saml/saml2/idp/SingleLogoutService.php',
+             full_host: 'https://v3dev.laclasse.com', # Fixes OmniAuthCAS+Rack X-Forwarded-Proto crap
+             restmod_url: '/sso/api/v1/tickets' }.freeze
+end
+
+module Configuration
+  APP_PREFIX = '/suivi'.freeze
+  GIT_COMMIT = ''.freeze
+  ENVIRONMENT = 'development'.freeze
+  LOGSTASH_SERVER = ''.freeze
+  LOGSTASH_PORT = ''.freeze
+end
+
+#
+# Configuration du service REDIS
+#
+REDIS = { host: 'stack0-dev.v3.laclasse.lan',
+          port: 6379,
+          redis_root: 'com:laclasse:v3:dev' }.freeze
