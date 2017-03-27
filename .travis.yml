@@ -16,9 +16,9 @@ before_script:
   - cp ./config/common.rb.sample ./config/common.rb
 
   - mysql -e 'create database suivi;'
-  - mysql < ./db/scripts/suivi.sql
 
 script:
+  - "bundle exec rake db:migrations"
   - "bundle exec rspec"
   - "bundle exec rubocop -D --format simple"
 
