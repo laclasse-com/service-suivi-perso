@@ -48,8 +48,8 @@ class SinatraApp < Sinatra::Base
     end
   end
 
-  get "#{APP_PATH}/" do
-    erb :app if logged?
+  get "#{APP_PATH}/?" do
+    erb :app
   end
 
   get "#{APP_PATH}/status" do
