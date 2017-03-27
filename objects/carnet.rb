@@ -10,7 +10,13 @@ class Carnet
 
   attr_reader :id, :uid_elv, :uid_adm, :uai, :id_classe, :date_creation
 
-  def initialize(id = nil, uid_elv = nil, uid_adm = nil, uai = nil, id_classe = nil, url_pub = nil, evignal = false)
+  def initialize( id = nil,
+                  uid_elv = nil,
+                  uid_adm = nil,
+                  uai = nil,
+                  id_classe = nil,
+                  url_pub = nil,
+                  evignal = false )
     @id = id
     @uid_elv = uid_elv
     @uid_adm = uid_adm
@@ -119,14 +125,14 @@ class Carnet
     entrees = []
     entrees_bdd = Saisies.where(carnets_id: @id)
     begin
-            entrees_bdd.each do |e|
-              entree = Entree.new(e.id)
-              entree.read
-              entrees.push entree
-            end
-          rescue
-            raise_crud_error 'entrees', "récupération des entrées d'un carnet", 'Carnet'
-          end
+      entrees_bdd.each do |e|
+        entree = Entree.new(e.id)
+        entree.read
+        entrees.push entree
+      end
+    rescue
+      raise_crud_error 'entrees', "récupération des entrées d'un carnet", 'Carnet'
+    end
     entrees
   end
 
