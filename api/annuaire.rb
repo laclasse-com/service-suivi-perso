@@ -79,7 +79,8 @@ class AnnuaireApi < Grape::API
     all_users = []
     personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, "#{params[:uai]}/personnel", {})
 
-    all_users.concat( affecter_role_max( personnels ) ) if personnels.is_a? Array
+    # all_users.concat( affecter_role_max( personnels ) ) if personnels.is_a? Array
+    all_users.concat( personnels ) if personnels.is_a? Array
 
     eleve = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, params[:uid_elv].to_s, 'expand' => 'true')
     if eleve['error'].nil?
