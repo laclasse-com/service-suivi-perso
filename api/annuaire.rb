@@ -19,6 +19,7 @@ class AnnuaireApi < Grape::API
           hight_role = role['role_id']
         end
       end
+
       { id_ent: user[:user_detailed]['id_ent'],
         profil_actif: user[:user_detailed]['profil_actif'],
         actif: user[:user_detailed]['profil_actif']['actif'],
@@ -114,7 +115,8 @@ class AnnuaireApi < Grape::API
     all_users = []
     personnels = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_personnel, "#{params[:uai]}/personnel", {} )
 
-    all_users.concat( affecter_role_max( personnels ) ) if personnels.is_a? Array
+    # all_users.concat( affecter_role_max( personnels ) ) if personnels.is_a? Array
+    all_users.concat( personnels ) if personnels.is_a? Array
 
     all_users.reject do |user|
       carnet = Carnet.new( nil, params[:uid_elv] )
