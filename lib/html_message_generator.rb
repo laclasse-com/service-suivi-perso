@@ -16,9 +16,12 @@ module HtmlMessageGenerator
   end
 
   def self.generate_cover(nom, prenom, sexe, classe, avatar, college)
+    annee_scolaire = (Date.today.year - 1).to_s + '-' + Date.today.year.to_s
+    annee_scolaire = Date.today.year.to_s + '-' + (Date.today.year + 1).to_s if Date.today.month > 8
+
     avatar = "<img src='" + URL_ENT + img_avatar(sexe) + "' style='text-align: center; width:400px; height:400px; background-color:rgba(128,186,102,0.7)'/>"
     info = "<div class='eleve-info'><div><span>" + prenom + ' ' + nom + '</span></div><div><span>' + classe + '</span></div><div><span>' + college + '</span></div></div>'
-    titre = "<h1 class='titre'>Suivi de l'année scolaire " + Outils.annee_scolaire_string + '</h1>'
+    titre = "<h1 class='titre'>Suivi de l'année scolaire " + annee_scolaire + '</h1>'
 
     page = avatar + info + titre
     html = HTMLEntities.new.decode page
