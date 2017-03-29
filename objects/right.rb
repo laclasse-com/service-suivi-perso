@@ -24,7 +24,7 @@ class Right
 
   def create
     @date_creation = Time.now
-    new_right = DroitsSpecifiques.new
+    new_right = Droit.new
     new_right.uid = @uid
     new_right.full_name = @full_name
     new_right.profil = @profil
@@ -40,8 +40,8 @@ class Right
   end
 
   def right_select
-    right = DroitsSpecifiques[id: @id] unless @id.nil?
-    right = DroitsSpecifiques[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
+    right = Droit[id: @id] unless @id.nil?
+    right = Droit[uid: @uid, carnets_id: @carnet_id] if !@uid.nil? && !@carnet_id.nil? && right.nil?
     right
   end
 

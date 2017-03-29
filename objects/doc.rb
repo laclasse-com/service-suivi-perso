@@ -14,12 +14,12 @@ class Doc
     @saisies_id = saisies_id
     @logger = Logger.new(STDOUT)
     # For CRUD <> create.
-    @doc = Docs[id: @id] unless @id.nil?
-    @doc = Docs[url: @url] if !@url.nil? && @id.nil?
+    @doc = Ressource[id: @id] unless @id.nil?
+    @doc = Ressource[url: @url] if !@url.nil? && @id.nil?
   end
 
   def create
-    new_doc = Docs.new
+    new_doc = Ressource.new
     new_doc.nom = @nom
     new_doc.url = @url
     new_doc.saisies_id = @saisies_id

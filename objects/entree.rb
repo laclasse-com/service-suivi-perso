@@ -24,7 +24,7 @@ class Entree
 
   def create
     @date_creation = Time.now
-    new_input = Saisies.new
+    new_input = Saisie.new
     new_input.uid = @uid
     new_input.carnets_id = @id_carnet
     new_input.avatar = @avatar
@@ -40,7 +40,7 @@ class Entree
   end
 
   def lie_onglet
-    new_liaison = EntreesOnglets.new
+    new_liaison = EntreesOnglet.new
     new_liaison.saisies_id = @id
     new_liaison.onglets_id = @id_onglet
     new_liaison.save
@@ -48,9 +48,9 @@ class Entree
   end
 
   def read
-    entree = Saisies[id: @id]
+    entree = Saisie[id: @id]
 
-    @id_onglet = EntreesOnglets[saisies_id: @id].onglets_id unless EntreesOnglets[saisies_id: @id].nil?
+    @id_onglet = EntreesOnglet[saisies_id: @id].onglets_id unless EntreesOnglet[saisies_id: @id].nil?
     @id_carnet = entree.carnets_id
     @uid = entree.uid
     @avatar = entree.avatar
@@ -63,7 +63,7 @@ class Entree
   end
 
   def update(contenu = nil, avatar = nil)
-    entree = Saisies[id: @id]
+    entree = Saisie[id: @id]
 
 
     unless contenu.nil?
@@ -78,35 +78,35 @@ class Entree
   end
 
   def delete
-    entree = Saisies[id: @id]
+    entree = Saisie[id: @id]
 
     delie_onglet
     delete_docs
     entree.delete
   rescue
-    lie_onglet if EntreesOnglets[saisies_id: @id, onglets_id: @id_onglet].nil? && !Saisies[id: @id].nil?
-    create if Saisies[id: @id].nil?
+    lie_onglet if EntreesOnglet[saisies_id: @id, onglets_id: @id_onglet].nil? && !Saisie[id: @id].nil?
+    create if Saisie[id: @id].nil?
   end
 
   def delie_onglet
-    EntreesOnglets.where(saisies_id: @id).delete
+    EntreesOnglet.where(saisies_id: @id).delete
   end
 
   # met à jour l'avatar de toute les entrée d'un utilisateur
   def update_avatar(avatar)
-    Saisies.where(uid: @uid).each do |entree|
+    Saisie.where(uid: @uid).each do |entree|
       entree.update(avatar: avatar)
     end
   end
 
   def delete_docs
-    Docs.where(saisies_id: @id).delete
+    Ressource.where(saisies_id: @id).delete
   end
 
   def docs_attaches
     docs = []
 
-    Docs.where(saisies_id: @id).each do |d|
+    Ressource.where(saisies_id: @id).each do |d|
       doc = Doc.new d.id
       doc.read
       docs.push(id: doc.id, nom: doc.nom, md5: doc.url)

@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('AsideCarnetEvignalCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', 'Rights', 'Profil', 'CarnetPdf', '$http', 'Onglets', '$modal', '$window', '$upload', 'UPLOAD_SIZE', 'UAI_EVIGNAL', 'GetPersonnelsEvignal', 'CarnetPersonnelsEvignal', 'Notifications', function($rootScope, $scope, $state, $stateParams, CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH, Rights, Profil, CarnetPdf, $http, Onglets, $modal, $window, $upload, UPLOAD_SIZE, UAI_EVIGNAL, GetPersonnelsEvignal, CarnetPersonnelsEvignal, Notifications) {
+.controller('AsideCarnetEvignalCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', 'Rights', 'Profil', 'CarnetPdf', '$http', 'Onglet', '$modal', '$window', '$upload', 'UPLOAD_SIZE', 'UAI_EVIGNAL', 'GetPersonnelsEvignal', 'CarnetPersonnelsEvignal', 'Notifications', function($rootScope, $scope, $state, $stateParams, CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH, Rights, Profil, CarnetPdf, $http, Onglet, $modal, $window, $upload, UPLOAD_SIZE, UAI_EVIGNAL, GetPersonnelsEvignal, CarnetPersonnelsEvignal, Notifications) {
 
   Profil.initRights($stateParams.id).promise.then(function(){
   
@@ -149,7 +149,7 @@ angular.module('suiviApp')
   $scope.modalInstanceCtrl = function ($rootScope, $scope, $modalInstance) {
     $rootScope.tabs = [];
 
-    Onglets.tabs({uid: $stateParams.id}, function(reponse){
+    Onglet.tabs({uid: $stateParams.id}, function(reponse){
       if (reponse.error == undefined) {
         $rootScope.tabs = reponse.onglets;  
       } else{

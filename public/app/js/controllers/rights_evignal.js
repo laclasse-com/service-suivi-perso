@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('suiviApp')
-.controller('RightsEvignalCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'GetPersonnelsEtablissements', 'GetPersonnelsEvignal', 'Annuaire', 'Rights', '$modal', '$window', 'UAI_EVIGNAL', 'Profil', 'Public', 'Onglets', '$filter', function($rootScope, $scope, $state, $stateParams, CurrentUser, GetPersonnelsEtablissements, GetPersonnelsEvignal, Annuaire, Rights, $modal, $window, UAI_EVIGNAL, Profil, Public, Onglets, $filter) {
+.controller('RightsEvignalCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'CurrentUser', 'GetPersonnelsEtablissements', 'GetPersonnelsEvignal', 'Annuaire', 'Rights', '$modal', '$window', 'UAI_EVIGNAL', 'Profil', 'Public', 'Onglet', '$filter', function($rootScope, $scope, $state, $stateParams, CurrentUser, GetPersonnelsEtablissements, GetPersonnelsEvignal, Annuaire, Rights, $modal, $window, UAI_EVIGNAL, Profil, Public, Onglet, $filter) {
   Profil.initRights($stateParams.id).promise.then(function(){
     CurrentUser.get().$promise.then(function(reponse){
       _.each(reponse.classes, function(classe){
@@ -422,7 +422,7 @@ angular.module('suiviApp')
     $scope.modalInstanceCtrl = function ($rootScope, $scope, $modalInstance) {
       $rootScope.tabs = [];
 
-      Onglets.tabs({uid: $stateParams.id}, function(reponse){
+      Onglet.tabs({uid: $stateParams.id}, function(reponse){
         if (reponse.error == undefined) {
           $rootScope.tabs = reponse.onglets;  
         } else{

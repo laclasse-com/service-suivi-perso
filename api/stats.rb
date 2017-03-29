@@ -10,25 +10,23 @@ class StatsApi < Grape::API
   helpers Laclasse::Helpers::User
 
   desc 'récupère le nombre de carnet par classe'
-  get do
+  get '/' do
     stats = []
     user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }.each do |cls|
-      classe = {
-        id: cls['classe_id'],
-        nom: cls['classe_libelle'],
-        nb_carnets: [],
-        carnets: []
-      }
+      classe = { id: cls['classe_id'],
+                 nom: cls['classe_libelle'],
+                 nb_carnets: [],
+                 carnets: [] }
 
       response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, cls['classe_id'].to_s, 'expand' => 'true')
       carnets = CarnetsLib.carnets_de_la_classe(response)[:carnets]
       classe[:nb_carnets] = carnets.size
 
       carnets.each do |c|
-        classe[:carnets].push(            id: c[:id],
-                                          nom: c[:lastName].capitalize + ' ' + c[:firstName].capitalize,
-                                          nb_messages: Saisies.where(carnets_id: c[:id]).count,
-                                          nb_interloc: Saisies.where(carnets_id: c[:id]).distinct(:uid).count)
+        classe[:carnets].push( id: c[:id],
+                               nom: c[:lastName].capitalize + ' ' + c[:firstName].capitalize,
+                               nb_messages: Saisie.where(carnets_id: c[:id]).count,
+                               nb_interloc: Saisie.where(carnets_id: c[:id]).distinct(:uid).count)
       end
 
       i = stats.index { |etab| etab[:etab_id] == cls['etablissement_code'] } unless stats.empty?
@@ -61,9 +59,9 @@ class StatsApi < Grape::API
         return csv if carnets_de_la_classe_returned.nil? || carnets_de_la_classe_returned.empty?
 
         carnets_de_la_classe_returned.each do |c|
-          nb_onglets = CarnetsOnglets.where( carnets_id: c[:id] ).count
-          nb_messages = Saisies.where( carnets_id: c[:id] ).count
-          nb_interloc = Saisies.where( carnets_id: c[:id] ).distinct( :uid ).count
+          nb_onglets = CarnetOnglet.where( carnets_id: c[:id] ).count
+          nb_messages = Saisie.where( carnets_id: c[:id] ).count
+          nb_interloc = Saisie.where( carnets_id: c[:id] ).distinct( :uid ).count
           csv << [  c[:lastName].capitalize,
                     c[:firstName].capitalize,
                     cls['etablissement_nom'],
@@ -93,8 +91,8 @@ class StatsApi < Grape::API
       carnet = {
         id: c[:id],
         nom: c[:lastName].capitalize + ' ' + c[:firstName].capitalize,
-        nb_messages: Saisies.where(carnets_id: c[:id]).count,
-        nb_interloc: Saisies.where(carnets_id: c[:id]).distinct(:uid).count
+        nb_messages: Saisie.where(carnets_id: c[:id]).count,
+        nb_interloc: Saisie.where(carnets_id: c[:id]).distinct(:uid).count
       }
 
       index_classe_evignal = classes_evignal.index { |classe| classe['classe_id'] == c[:classe_id] } unless classes_evignal.empty?
@@ -143,9 +141,9 @@ class StatsApi < Grape::API
       classes_evignal = user[:user_detailed]['classes'].uniq { |classe| [classe['classe_id'], classe['etablissement_code']] }
       carnets = CarnetsLib.carnets_evignal
       carnets.each do |c|
-        nb_onglets = CarnetsOnglets.where(carnets_id: c[:id]).count
-        nb_messages = Saisies.where(carnets_id: c[:id]).count
-        nb_interloc = Saisies.where(carnets_id: c[:id]).distinct(:uid).count
+        nb_onglets = CarnetOnglet.where(carnets_id: c[:id]).count
+        nb_messages = Saisie.where(carnets_id: c[:id]).count
+        nb_interloc = Saisie.where(carnets_id: c[:id]).distinct(:uid).count
         index_classe_evignal = classes_evignal.index { |classe| classe['classe_id'] == c[:classe_id] } unless classes_evignal.empty?
         nom_classe = if index_classe_evignal
                        classes_evignal[index_classe_evignal]['classe_libelle']

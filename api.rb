@@ -2,6 +2,10 @@
 require 'laclasse/helpers/authentication'
 require 'laclasse/cross_app/sender'
 
+require_relative './lib/init'
+require_relative './models/init'
+require_relative './objects/init'
+
 require_relative './api/annuaire'
 require_relative './api/docs'
 require_relative './api/carnets'
@@ -28,9 +32,9 @@ class Api < Grape::API
   end
 
   resource(:annuaire) { mount AnnuaireApi }
-  resource(:docs    ) { mount DocsApi }
+  resource(:docs    ) { mount RessourceApi }
   resource(:carnets ) { mount CarnetsApi }
-  resource(:onglets ) { mount OngletsApi }
+  resource(:onglets ) { mount OngletApi }
   resource(:entrees ) { mount EntreesApi }
   resource(:rights  ) { mount RightsApi }
   resource(:public  ) { mount PublicUrlApi }

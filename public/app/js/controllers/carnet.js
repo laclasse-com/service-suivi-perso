@@ -5,12 +5,12 @@
 angular.module( 'suiviApp' )
     .controller( 'CarnetCtrl',
                  [ '$rootScope', '$scope', '$stateParams', '$modal',
-                   'Onglets', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser',
-                   'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'LACLASSE_PATH', 'APP_PATH',
+                   'Onglet', 'Entrees', 'Carnets', 'Annuaire', 'CurrentUser',
+                   'AVATAR_DEFAULT', 'AVATAR_M', 'AVATAR_F', 'URL_ENT', 'APP_PATH',
                    'Rights', '$state', 'Profil', '$window', '$http', '$timeout', 'textAngularManager', 'Notifications',
                    function( $rootScope, $scope, $stateParams, $modal,
-                             Onglets, Entrees, Carnets, Annuaire, CurrentUser,
-                             AVATAR_DEFAULT, AVATAR_M, AVATAR_F, LACLASSE_PATH, APP_PATH,
+                             Onglet, Entrees, Carnets, Annuaire, CurrentUser,
+                             AVATAR_DEFAULT, AVATAR_M, AVATAR_F, URL_ENT, APP_PATH,
                              Rights, $state, Profil, $window, $http, $timeout, textAngularManager, Notifications ) {
                        Profil.initRights( $stateParams.id ).promise.then( function () {
                            $rootScope.docs = [];
@@ -47,7 +47,7 @@ angular.module( 'suiviApp' )
                                };
                            };
 
-                           Onglets.get( {
+                           Onglet.get( {
                                uid: $stateParams.id
                            }, function ( reponse ) {
                                if ( reponse.error == undefined ) {
@@ -61,14 +61,14 @@ angular.module( 'suiviApp' )
                                    _.each( reponse.onglets, function ( tab ) {
                                        _.each( tab.entrees, function ( entree ) {
                                            entree.date = new Date( entree.date );
-                                           entree.owner.avatar = LACLASSE_PATH + '/' + avatars[ entree.owner.uid ];
+                                           entree.owner.avatar = URL_ENT + '/' + avatars[ entree.owner.uid ];
                                        } );
                                    } );
                                    $scope.tabs = reponse.onglets;
                                    avatars.$promise.then( function ( reponse ) {
                                        _.each( $scope.tabs, function ( tab ) {
                                            _.each( tab.entrees, function ( entree ) {
-                                               entree.owner.avatar = LACLASSE_PATH + '/' + reponse[ entree.owner.uid ];
+                                               entree.owner.avatar = URL_ENT + '/' + reponse[ entree.owner.uid ];
                                            } );
                                        } );
                                    } );
@@ -85,7 +85,7 @@ angular.module( 'suiviApp' )
                                        var avatars = Annuaire.avatars( tab.entrees );
                                        avatars.$promise.then( function ( reponse ) {
                                            _.each( tab.entrees, function ( entree ) {
-                                               entree.owner.avatar = LACLASSE_PATH + '/' + reponse[ entree.owner.uid ];
+                                               entree.owner.avatar = URL_ENT + '/' + reponse[ entree.owner.uid ];
                                            } );
                                        } );
                                    } else {
@@ -100,7 +100,7 @@ angular.module( 'suiviApp' )
                                    return false;
                                }
 
-                               Onglets.update( {
+                               Onglet.update( {
                                    id: tab.id,
                                    nom: tab.nom,
                                    ordre: tab.ordre
@@ -134,7 +134,7 @@ angular.module( 'suiviApp' )
                                    modifEntree: null,
                                    entrees: []
                                };
-                               Onglets.post( {
+                               Onglet.post( {
                                    uid: $stateParams.id,
                                    nom: newTab.nom
                                } ).$promise.then( function ( reponse ) {
@@ -158,7 +158,7 @@ angular.module( 'suiviApp' )
                                    Notifications.add( "vous n'êtes pas autorisé à supprimer l'onglet !", "warning" );
                                    return false;
                                }
-                               Onglets.delete( {
+                               Onglet.delete( {
                                    id: tab.id
                                } ).$promise.then( function ( reponse ) {
                                    if ( reponse.error != undefined && reponse.error != null ) {
@@ -213,7 +213,7 @@ angular.module( 'suiviApp' )
                                            _.each( $scope.tabs, function ( t ) {
                                                if ( t.id == tab.id ) {
                                                    entree.id = reponse.id;
-                                                   entree.owner.avatar = LACLASSE_PATH + '/' + entree.owner.avatar;
+                                                   entree.owner.avatar = URL_ENT + '/' + entree.owner.avatar;
                                                    if ( $rootScope.docs.length > 0 ) {
                                                        if ( $rootScope.docs[ 0 ].cartable ) {
                                                            Entrees.postDoc( {
@@ -275,7 +275,7 @@ angular.module( 'suiviApp' )
                                                _.each( t.entrees, function ( e ) {
                                                    if ( e.id == t.modifEntree ) {
                                                        e.contenu = t.htmlcontent;
-                                                       e.owner.avatar = LACLASSE_PATH + '/' + CurrentUser.get().avatar;
+                                                       e.owner.avatar = URL_ENT + '/' + CurrentUser.get().avatar;
                                                        if ( $rootScope.docs.length > 0 && $rootScope.docs[ 0 ].md5 == null ) {
                                                            if ( $rootScope.docs[ 0 ].cartable ) {
                                                                Entrees.postDoc( {

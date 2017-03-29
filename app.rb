@@ -36,15 +36,13 @@ class SinatraApp < Sinatra::Base
     # dont_reload '/path/to/other/file'
   end
 
-  helpers URLHelpers
   helpers Laclasse::Helpers::Authentication
   helpers Laclasse::Helpers::AppInfos
-  include CarnetsLib
 
   # Routes nécessitant une authentification
   [ '/?', '/login' ].each do |route|
     before "#{APP_PATH}#{route}" do
-      login! env['REQUEST_PATH'] unless logged?
+      login!( env['REQUEST_PATH'] ) unless logged?
     end
   end
 
@@ -64,9 +62,8 @@ class SinatraApp < Sinatra::Base
 
   get "#{APP_PATH}/public/:url" do
     begin
-      carnet = Carnet.new( nil, nil, nil, nil, nil, params[:url] )
-      carnet.read
-      tabs = tab_list( carnet.uid_elv, nil, params[:url] )
+      carnet = Carnet[url_publique: params[:url]]
+      tabs = CarnetsLib.tab_list( carnet.uid_elv, nil, params[:url] )
 
       response = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_user, carnet.uid_elv, 'expand' => 'true' )
 

@@ -7,109 +7,67 @@ module CarnetsLib
 
   include URLHelpers
 
-  def search_carnets_of(response_annuaire, evignal = false)
-    carnets = []
-    response_annuaire.each do |reponse|
-      carnet = Carnet.new(nil, reponse['id_ent'])
-      carnet.read if carnet.exist?
-      if evignal
-        etablissement_nom = reponse['classes'][0]['etablissement_nom']
-        active = !carnet.id.nil? && carnet.evignal == true ? true : false
-      else
-        etablissement_nom = nil
-        active = !carnet.id.nil? ? true : false
-      end
-      carnets.push(
-        id: carnet.id,
+  def search_carnets_of( eleves, evignal = false )
+    eleves.map do |eleve|
+      carnet = Carnet[uid_elv: eleve['id_ent']]
+      next if carnet.nil?
+
+      { id: carnet.id,
         couleur: nil,
-        uid_elv: reponse['id_ent'],
-        firstName: reponse['prenom'],
-        lastName: reponse['nom'],
-        classe: reponse['classes'][0]['classe_libelle'],
-        classe_id: reponse['classes'][0]['classe_id'],
-        etablissement_code: reponse['classes'][0]['etablissement_code'],
-        etablissement_nom: etablissement_nom,
-        avatar: reponse['avatar'],
-        active: active
-      )
+        uid_elv: eleve['id_ent'],
+        firstName: eleve['prenom'],
+        lastName: eleve['nom'],
+        classe: eleve['classes'][0]['classe_libelle'],
+        classe_id: eleve['classes'][0]['classe_id'],
+        etablissement_code: eleve['classes'][0]['etablissement_code'],
+        etablissement_nom: evignal ? eleve['classes'][0]['etablissement_nom'] : nil,
+        avatar: eleve['avatar'],
+        active: evignal ? !carnet.id.nil? && carnet.evignal : !carnet.id.nil? }
     end
-    carnets
+                     .compact
   end
 
-  def carnets_de_la_classe(response_annuaire)
-    carnets = {classe: {}, carnets: []}
-    # info sur la classe
-    classe = {
-      id: response_annuaire['id'],
-      couleur: nil,
-      name: response_annuaire['libelle_aaf'],
-      college: response_annuaire['etablissement']['nom'],
-      collegeId: response_annuaire['etablissement']['id'],
-      college_code: response_annuaire['etablissement']['code_uai']
-    }
-    carnets[:classe] = classe
-    response_annuaire['eleves'].each do |reponse|
-      carnet = Carnet.new(nil, reponse['id_ent'])
-      if carnet.exist?
-        carnet.read
-        carnets[:carnets].push(
-          id: carnet.id,
-          couleur: nil,
-          uid_elv: reponse['id_ent'],
-          firstName: reponse['prenom'],
-          lastName: reponse['nom'],
-          classe: response_annuaire['libelle_aaf'],
-          classe_id: response_annuaire['id'],
-          etablissement_code: response_annuaire['etablissement']['code_uai'],
-          avatar: reponse['avatar'],
-          active: !carnet.id.nil?
-        )
-      end
-    end
-    carnets
-  end
+  # def carnets_evignal
+  #   carnets = []
+  #   uids = []
 
-  def carnets_evignal
-    carnets = []
-    uids = []
+  #   Carnet.where(evignal: true).each do |carnet|
+  #     uids.push carnet.uid_elv
+  #     carnets.push(
+  #       id: carnet.id,
+  #       couleur: nil,
+  #       uid_elv: carnet.uid_elv,
+  #       firstName: nil,
+  #       lastName: nil,
+  #       classe: nil,
+  #       classe_id: carnet.cls_id,
+  #       etablissement_code: carnet.uai,
+  #       avatar: nil
+  #     )
+  #   end
 
-    Carnets.where(evignal: true).each do |carnet|
-      uids.push carnet.uid_elv
-      carnets.push(
-        id: carnet.id,
-        couleur: nil,
-        uid_elv: carnet.uid_elv,
-        firstName: nil,
-        lastName: nil,
-        classe: nil,
-        classe_id: carnet.cls_id,
-        etablissement_code: carnet.uai,
-        avatar: nil
-      )
-    end
+  #   return [] if uids.empty?
 
-    return [] if uids.empty?
+  #   response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, "liste/#{uids.join('_')}", {})
+  #   return [] unless response.is_a? Array
 
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, "liste/#{uids.join('_')}", {})
-    return [] unless response.is_a? Array
+  #   response.each do |user|
+  #     carnets.each do |carnet|
+  #       if carnet[:uid_elv] == user['id_ent']
+  #         carnet[:firstName] = user['prenom']
+  #         carnet[:lastName] = user['nom']
+  #         carnet[:avatar] = user['avatar']
+  #       end
+  #     end
+  #   end
 
-    response.each do |user|
-      carnets.each do |carnet|
-        if carnet[:uid_elv] == user['id_ent']
-          carnet[:firstName] = user['prenom']
-          carnet[:lastName] = user['nom']
-          carnet[:avatar] = user['avatar']
-        end
-      end
-    end
-
-    carnets
-  end
+  #   carnets
+  # end
 
   def tab_list(uid_elv, id_onglets = nil, url_pub = nil)
     onglets = []
-    carnet = Carnet.new(nil, uid_elv)
-    carnet.read
+    carnet = Carnet[uid_elv: uid_elv]
+
     carnet.onglets.each do |tab|
       if (id_onglets.nil? || id_onglets.include?(tab.id)) && (url_pub.nil? || url_pub == tab.url_pub)
         entrees = []
@@ -144,14 +102,14 @@ module CarnetsLib
     onglets.sort_by { |o| o[:ordre] }
   end
 
-  def last_carnet_model(old_carnet, new_carnet)
-    # récupérer ses onglets
-    old_onglets = old_carnet.onglets
-    # créer les nouveaux onglets par rapport a ceux du dernier carnet
-    old_onglets.each do |old_onglet|
-      new_onglet = Onglet.new(nil, new_carnet.id, old_onglet.nom, new_carnet.uid_adm, old_onglet.ordre)
-      new_onglet.create
-    end
-  end
+  # def last_carnet_model(old_carnet, new_carnet)
+  #   # récupérer ses onglets
+  #   old_onglets = old_carnet.onglets
+  #   # créer les nouveaux onglets par rapport a ceux du dernier carnet
+  #   old_onglets.each do |old_onglet|
+  #     new_onglet = Onglet.new(nil, new_carnet.id, old_onglet.nom, new_carnet.uid_adm, old_onglet.ordre)
+  #     new_onglet.create
+  #   end
+  # end
 end
 # rubocop:enable Metrics/ModuleLength

@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('suiviApp')
-    .constant('AVATAR_M', '/app/vendor/laclasse-common-client/images/avatar_masculin.svg')
-    .constant('AVATAR_F', '/app/vendor/laclasse-common-client/images/avatar_feminin.svg')
-    .constant('AVATAR_DEFAULT', '/api/default_avatar/avatar_neutre.svg')
-    .constant('UAI_EVIGNAL', "0692165D")
-    .constant('GRID_COLOR', ['jaune', 'rouge', 'bleu', 'violet', 'bleu', 'violet', 'vert', 'jaune', 'vert', 'jaune', 'rouge', 'bleu', 'rouge', 'bleu', 'violet', 'vert'])
+    .constant( 'AVATAR_M', '/app/vendor/laclasse-common-client/images/avatar_masculin.svg' )
+    .constant( 'AVATAR_F', '/app/vendor/laclasse-common-client/images/avatar_feminin.svg' )
+    .constant( 'AVATAR_DEFAULT', '/api/default_avatar/avatar_neutre.svg' )
+    .constant( 'UAI_EVIGNAL', '0692165D' )
+    .constant( 'GRID_COLOR', [ 'jaune', 'rouge', 'bleu', 'violet', 'bleu', 'violet', 'vert', 'jaune', 'vert', 'jaune', 'rouge', 'bleu', 'rouge', 'bleu', 'violet', 'vert' ] )
     .config( [ '$provide', 'APP_PATH',
-               function( $provide, APP_PATH ) {
+               function configure_textangular( $provide, APP_PATH ) {
                    $provide.decorator( 'taOptions',
                                        [ 'taRegisterTool', '$modal', '$rootScope', '$delegate',
                                          function( taRegisterTool, $modal, $rootScope, taOptions ) {
@@ -25,6 +25,7 @@ angular.module('suiviApp')
                                                  textEditor: 'form-control',
                                                  htmlEditor: 'form-control'
                                              };
+
                                              // // $delegate is the taOptions we are decorating
                                              // // register the tool with textAngular
                                              // taRegisterTool('upload', {

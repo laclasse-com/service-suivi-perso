@@ -22,51 +22,51 @@ describe 'RightTests' do
   it "met a jour les droits spécifiques d'un utilisateur 10000" do
     right = Right.new nil, 'VAA99001', nil, nil, @ids[:carnet1][:id]
     right.update 1, 0, 0, 0, 0
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(1)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be false
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be false
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(1)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be false
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be false
   end
 
   it "met a jour les droits spécifiques d'un utilisateur 01000" do
     right = Right.new nil, 'VAA99001', nil, nil, @ids[:carnet1][:id]
     right.update 0, 1, 0, 0, 0
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(1)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be false
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be false
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(1)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be false
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be false
   end
 
   it "met a jour les droits spécifiques d'un utilisateur 00100" do
     right = Right.new nil, 'VAA99001', nil, nil, @ids[:carnet1][:id]
     right.update 0, 0, 1, 0, 0
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(1)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be false
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be false
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(1)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be false
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be false
   end
 
   it "met a jour les droits spécifiques d'un utilisateur 00010" do
     right = Right.new nil, 'VAA99001', nil, nil, @ids[:carnet1][:id]
     right.update 0, 0, 0, 1, 0
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be true
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be false
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be true
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be false
   end
 
   it "met a jour les droits spécifiques d'un utilisateur 00001" do
     right = Right.new nil, 'VAA99001', nil, nil, @ids[:carnet1][:id]
     right.update 0, 0, 0, 0, 1
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(0)
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be false
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be true
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].read).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].write).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].admin).to eq(0)
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].hopital).to be false
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001'].evignal).to be true
   end
 
   it 'met a jour un droit inexistant en BDD' do
@@ -77,7 +77,7 @@ describe 'RightTests' do
   it 'supprime un droit' do
     right = Right.new nil, 'VAA99001', nil, nil, @ids[:carnet1][:id]
     right.delete
-    expect(DroitsSpecifiques[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001']).to be_nil
+    expect(Droit[carnets_id: @ids[:carnet1][:id], uid: 'VAA99001']).to be_nil
   end
 
   it 'supprime un droit inexistant en BDD' do

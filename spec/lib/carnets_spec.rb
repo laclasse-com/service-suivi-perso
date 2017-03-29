@@ -1,7 +1,7 @@
 require File.expand_path '../../spec_helper.rb', __FILE__
 
-describe 'CarnetsLibTest' do
-  include CarnetsLib
+describe 'CarnetObject.LibTest' do
+  include CarnetObject.Lib
 
   before(:all) do
     @ids = BDD.ids_datas
@@ -29,16 +29,16 @@ describe 'CarnetsLibTest' do
   end
 
   it "créé les mêmes onglets d'un ancien carnet sur un nouveau" do
-    old_carnet = Carnet.new @ids[:carnet1][:id]
+    old_carnet = CarnetObject.new @ids[:carnet1][:id]
     old_carnet.read
-    new_carnet = Carnet.new nil, 'VAA99095', 'VAA99001', '999999K', 1
+    new_carnet = CarnetObject.new nil, 'VAA99095', 'VAA99001', '999999K', 1
     new_carnet.create
 
     last_carnet_model old_carnet, new_carnet
-    nb_onglets = CarnetsOnglets.where(carnets_id: new_carnet.id).count
+    nb_onglets = CarnetObject.nglet.where(carnets_id: new_carnet.id).count
     expect(nb_onglets).to eq(1)
-    CarnetsOnglets.where(carnets_id: new_carnet.id).each do |o|
-      expect(Onglets[id: o.onglets_id].nom).to eq('Maths')
+    CarnetObject.nglet.where(carnets_id: new_carnet.id).each do |o|
+      expect(Onglet[id: o.onglets_id].nom).to eq('Maths')
       expect(o.ordre).to eq(1)
     end
   end

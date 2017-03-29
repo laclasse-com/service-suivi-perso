@@ -30,7 +30,7 @@ class RightsApi < Grape::API
   end
   get '/users/:uid' do
     response = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_user, params[:uid], 'expand' => 'true' )
-    carnet = Carnet.new( params[:carnet_id], params[:uid_elv] )
+    carnet = CarnetObject.new( params[:carnet_id], params[:uid_elv] )
     carnet.read
     right = Right.new( nil, params[:uid], nil, nil, carnet.id )
 
@@ -61,7 +61,7 @@ class RightsApi < Grape::API
     optional :evignal, type: Integer
   end
   get '/carnets/:uid_elv' do
-    carnet = Carnet.new(nil, params[:uid_elv])
+    carnet = CarnetObject.new(nil, params[:uid_elv])
     evignal = !params[:evignal].nil? ? params[:evignal] : 0
 
     carnet.read
@@ -93,7 +93,7 @@ class RightsApi < Grape::API
   post '/' do
     hopital = !params[:hopital].nil? ? params[:hopital] : 0
     evignal = !params[:evignal].nil? ? params[:evignal] : 0
-    carnet = Carnet.new(nil, params[:uid_elv])
+    carnet = CarnetObject.new(nil, params[:uid_elv])
 
     carnet.read
     r = params[:read] ? 1 : 0
@@ -112,7 +112,7 @@ class RightsApi < Grape::API
     requires :users, type: Array, desc: "les utilisateurs ou l'on doit effectuer une action"
   end
   post '/cud/' do
-    carnet = Carnet.new(nil, params[:uid_elv])
+    carnet = CarnetObject.new(nil, params[:uid_elv])
     carnet.read
 
     params[:users].each do |user|

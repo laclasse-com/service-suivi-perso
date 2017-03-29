@@ -2,7 +2,7 @@
 require 'logger'
 
 # Ojbet carnet de suivi
-class Carnet
+class CarnetObject
   attr_accessor :url_pub, :evignal
 
   attr_reader :id, :uid_elv, :uid_adm, :uai, :id_classe, :date_creation
@@ -27,7 +27,7 @@ class Carnet
 
   def create
     @date_creation = Time.now
-    new_carnet = Carnets.new
+    new_carnet = Carnet.new
     new_carnet.uid_elv = @uid_elv
     new_carnet.uid_adm = @uid_adm
     new_carnet.uai = @uai
@@ -41,9 +41,9 @@ class Carnet
   end
 
   def read
-    carnet = Carnets[id: @id] unless @id.nil?
-    carnet = Carnets[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
-    carnet = Carnets[url_publique: @url_pub] if !@url_pub.nil? && carnet.nil?
+    carnet = Carnet[id: @id] unless @id.nil?
+    carnet = Carnet[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
+    carnet = Carnet[url_publique: @url_pub] if !@url_pub.nil? && carnet.nil?
 
     @id = carnet.id
     @uid_elv = carnet.uid_elv
@@ -56,8 +56,8 @@ class Carnet
   end
 
   def update(evignal = nil, url_pub = nil)
-    carnet = Carnets[id: @id] unless @id.nil?
-    carnet = Carnets[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
+    carnet = Carnet[id: @id] unless @id.nil?
+    carnet = Carnet[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
 
     carnet.update(evignal: evignal) unless evignal.nil?
     @evignal = evignal unless evignal.nil?
@@ -67,8 +67,8 @@ class Carnet
   end
 
   def delete_url
-    carnet = Carnets[id: @id] unless @id.nil?
-    carnet = Carnets[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
+    carnet = Carnet[id: @id] unless @id.nil?
+    carnet = Carnet[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
 
     carnet.update(url_publique: nil)
     @url_pub = nil
@@ -76,14 +76,14 @@ class Carnet
   end
 
   def exist?
-    carnet = Carnets[id: @id] unless @id.nil?
-    carnet = Carnets[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
-    carnet.nil? ? false : true
+    carnet = Carnet[id: @id] unless @id.nil?
+    carnet = Carnet[uid_elv: @uid_elv] if !@uid_elv.nil? && @id.nil?
+    !carnet.nil?
   end
 
   def onglets
     onglets = []
-    onglets_bdd = CarnetsOnglets.where(carnets_id: @id)
+    onglets_bdd = CarnetOnglet.where(carnets_id: @id)
 
     onglets_bdd.each do |o|
       onglet = Onglet.new(o.onglets_id)
@@ -95,7 +95,7 @@ class Carnet
 
   def entrees
     entrees = []
-    entrees_bdd = Saisies.where(carnets_id: @id)
+    entrees_bdd = Saisie.where(carnets_id: @id)
 
     entrees_bdd.each do |e|
       entree = Entree.new(e.id)
@@ -107,30 +107,17 @@ class Carnet
   end
 
   def get_rights(evignal)
-    rights = []
     rights_bdd = if evignal == -1
-                   DroitsSpecifiques.where(carnets_id: @id)
+                   Droit.where(carnets_id: @id)
                  else
-                   DroitsSpecifiques.where(carnets_id: @id, evignal: evignal)
+                   Droit.where(carnets_id: @id, evignal: evignal)
                  end
 
-    rights_bdd.each do |r|
+    rights_bdd.map do |r|
       right = Right.new(r.id)
       right.select
-      rights.push right
-    end
-    rights
-  end
 
-  def get_pers_evignal_or_hopital(evignal = true, hopital = false)
-    rights = []
-    rights_bdd = DroitsSpecifiques.where(carnets_id: @id, hopital: hopital, evignal: evignal)
-
-    rights_bdd.each do |r|
-      right = Right.new(r.id)
-      right.select
-      rights.push right
+      right
     end
-    rights
   end
 end

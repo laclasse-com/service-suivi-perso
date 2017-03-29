@@ -63,27 +63,27 @@ describe 'DocTest' do
   it 'update met a jour le nom du document ou son md5' do
     doc = Doc.new @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]
     doc.update 'nouveau nom.txt', 'nouveau md5'
-    expect(Docs[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]].nom).to eq('nouveau nom.txt')
-    expect(Docs[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]].url).to eq('nouveau md5')
+    expect(Ressource[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]].nom).to eq('nouveau nom.txt')
+    expect(Ressource[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]].url).to eq('nouveau md5')
   end
 
   it 'update avec nom nul, ne fait rien' do
     doc = Doc.new @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]
     -> { doc.update nil, 'nouveau md5' }.should_not raise_error(ArgumentError)
-    expect(Docs[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]].nom).to eq('devoir_toto.doc')
+    expect(Ressource[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]].nom).to eq('devoir_toto.doc')
   end
 
   it 'update md5 nul, ne fait rien' do
     doc = Doc.new @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]
     -> { doc.update 'nouveau nom.txt', nil }.should_not raise_error(ArgumentError)
-    expect(Docs[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]].url).to eq('987md5432')
+    expect(Ressource[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]].url).to eq('987md5432')
   end
 
   # methode 'delete'
   it 'delete supprime un document' do
     doc = Doc.new @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]
     doc.delete
-    expect(Docs[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]]).to be_nil
+    expect(Ressource[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]]).to be_nil
   end
 
   it 'delete renvoie une exception ArgumentError car id du doc nul' do

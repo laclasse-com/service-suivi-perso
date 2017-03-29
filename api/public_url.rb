@@ -14,7 +14,7 @@ class PublicUrlApi < Grape::API
     requires :id_onglets, type: Array
   end
   post '/carnets/:uid_elv' do
-    carnet = Carnet.new(nil, params[:uid_elv])
+    carnet = CarnetObject.new(nil, params[:uid_elv])
     carnet.read
 
     # verification des droits coté backend
@@ -51,7 +51,7 @@ class PublicUrlApi < Grape::API
     requires :uid_elv, type: String
   end
   delete '/carnets/:uid_elv' do
-    carnet = Carnet.new(nil, params[:uid_elv])
+    carnet = CarnetObject.new(nil, params[:uid_elv])
     carnet.read
 
     # verification des droits coté backend
@@ -72,11 +72,11 @@ class PublicUrlApi < Grape::API
   end
 
   desc 'ouvrir un carnet avec une url publique'
-  params {
+  params do
     requires :url_pub, type: String
-  }
+  end
   get '/:url_pub' do
-    carnet = Carnet.new(nil, nil, nil, nil, nil, params[:url_pub])
+    carnet = CarnetObject.new(nil, nil, nil, nil, nil, params[:url_pub])
     carnet.read
     response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_user, user[:info].uid.to_s, 'expand' => 'true' )
     if response['profil_actif']['etablissement_code_uai'] == UAI_EVIGNAL

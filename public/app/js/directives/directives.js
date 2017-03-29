@@ -9,9 +9,9 @@ angular.module('suiviApp')
       elm.text(version);
     };
   }])
-.directive('noImage', ['LACLASSE_PATH', 'AVATAR_DEFAULT', function (LACLASSE_PATH, AVATAR_DEFAULT) {
+.directive('noImage', ['URL_ENT', 'AVATAR_DEFAULT', function (URL_ENT, AVATAR_DEFAULT) {
     var setDefaultImage = function (el) {
-        el.attr('src', LACLASSE_PATH + AVATAR_DEFAULT);
+        el.attr('src', URL_ENT + AVATAR_DEFAULT);
     };
 
     return { restrict: 'A',

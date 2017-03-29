@@ -20,7 +20,7 @@ class Onglet
 
   def create
       @date_creation = Time.now
-      new_tabs = Onglets.new
+      new_tabs = Onglet.new
       new_tabs.nom = @nom
       new_tabs.uid_own = @uid_own
       new_tabs.date_creation = @date_creation
@@ -31,7 +31,7 @@ class Onglet
   end
 
   def lie_carnet
-    new_liaison = CarnetsOnglets.new
+    new_liaison = CarnetOnglet.new
     new_liaison.carnets_id = @id_carnet
     new_liaison.onglets_id = @id
     new_liaison.ordre = @ordre
@@ -40,8 +40,8 @@ class Onglet
   end
 
   def read
-    onglet = Onglets[id: @id]
-    liaison = CarnetsOnglets[onglets_id: @id]
+    onglet = Onglet[id: @id]
+    liaison = CarnetOnglet[onglets_id: @id]
 
     @id_carnet = liaison.carnets_id unless liaison.nil?
     @nom = onglet.nom
@@ -52,38 +52,38 @@ class Onglet
   end
 
   def update(nom = nil, ordre = nil, url_pub = nil)
-    onglet = Onglets[id: @id]
+    onglet = Onglet[id: @id]
     onglet.update(nom: nom) unless nom.nil?
     onglet.update(url_publique: url_pub) unless url_pub.nil?
-    CarnetsOnglets[carnets_id: @id_carnet, onglets_id: @id].update(ordre: ordre) unless ordre.nil?
+    CarnetOnglet[carnets_id: @id_carnet, onglets_id: @id].update(ordre: ordre) unless ordre.nil?
     @ordre = ordre unless ordre.nil?
     @url_pub = url_pub unless url_pub.nil?
     @nom = nom unless nom.nil?
   end
 
   def delete
-    onglet = Onglets[id: @id]
+    onglet = Onglet[id: @id]
 
     delete_entrees
     delie_carnet
     onglet.delete
   rescue Exception
-    lie_carnet if CarnetsOnglets[onglets_id: @id, carnets_id: @id_carnet].nil? && !Onglets[id: @id].nil?
-    create if Onglets[id: @id].nil?
+    lie_carnet if CarnetOnglet[onglets_id: @id, carnets_id: @id_carnet].nil? && !Onglet[id: @id].nil?
+    create if Onglet[id: @id].nil?
   end
 
   def delete_url
-    onglet = Onglets[id: @id]
+    onglet = Onglet[id: @id]
     onglet.update(url_publique: nil)
   end
 
   def delie_carnet
-    CarnetsOnglets.where(onglets_id: @id).delete
+    CarnetOnglet.where(onglets_id: @id).delete
   end
 
   def entrees
     entrees = []
-    entrees_bdd = EntreesOnglets.where(onglets_id: @id)
+    entrees_bdd = EntreesOnglet.where(onglets_id: @id)
     entrees_bdd.each do |e|
       entree = Entree.new(e.saisies_id)
       entree.read
@@ -95,7 +95,7 @@ class Onglet
   end
 
   def delete_entrees
-    entrees_bdd = EntreesOnglets.where(onglets_id: @id)
+    entrees_bdd = EntreesOnglet.where(onglets_id: @id)
     entrees_bdd.each do |e|
       entree = Entree.new(e.saisies_id)
       entree.read

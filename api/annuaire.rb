@@ -98,7 +98,7 @@ class AnnuaireApi < Grape::API
     end
 
     all_users.reject do |user|
-      carnet = Carnet.new(nil, params[:uid_elv])
+      carnet = CarnetObject.new(nil, params[:uid_elv])
       carnet.read
       right = Right.new(nil, user['id_ent'], nil, nil, carnet.id)
 
@@ -119,7 +119,7 @@ class AnnuaireApi < Grape::API
     all_users.concat( personnels ) if personnels.is_a? Array
 
     all_users.reject do |user|
-      carnet = Carnet.new( nil, params[:uid_elv] )
+      carnet = CarnetObject.new( nil, params[:uid_elv] )
       carnet.read
       right = Right.new(nil, user['id_ent'], nil, nil, carnet.id)
 

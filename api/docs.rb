@@ -1,6 +1,6 @@
 # coding: utf-8
 # API pour l'interface des docs
-class DocsApi < Grape::API
+class RessourceApi < Grape::API
   format :json
 
   helpers URLHelpers

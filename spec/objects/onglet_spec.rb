@@ -10,7 +10,7 @@ describe 'OngletTest' do
     onglet.create
     expect(onglet.id).not_to be_nil
     # on regarede si la liasin entre le carnet et l'onglet a été créé
-    expect(CarnetsOnglets[carnets_id: @ids[:carnet1][:id], onglets_id: onglet.id]).not_to be_nil
+    expect(CarnetOnglet[carnets_id: @ids[:carnet1][:id], onglets_id: onglet.id]).not_to be_nil
   end
 
   it 'id de carnet nil' do
@@ -38,22 +38,22 @@ describe 'OngletTest' do
   it "mis a jour de l'onglet" do
     onglet = Onglet.new @ids[:carnet1][:onglet1][:id], @ids[:carnet1][:id]
     onglet.update 'nouveau nom', 6, 'nouvelle url publique'
-    expect(Onglets[id: @ids[:carnet1][:onglet1][:id]].nom).to eq('nouveau nom')
-    expect(CarnetsOnglets[carnets_id: @ids[:carnet1][:id], onglets_id: @ids[:carnet1][:onglet1][:id]].ordre).to eq(6)
-    expect(Onglets[id: @ids[:carnet1][:onglet1][:id]].url_publique).to eq('nouvelle url publique')
+    expect(Onglet[id: @ids[:carnet1][:onglet1][:id]].nom).to eq('nouveau nom')
+    expect(CarnetOnglet[carnets_id: @ids[:carnet1][:id], onglets_id: @ids[:carnet1][:onglet1][:id]].ordre).to eq(6)
+    expect(Onglet[id: @ids[:carnet1][:onglet1][:id]].url_publique).to eq('nouvelle url publique')
   end
 
   it 'supprime un onglet' do
     onglet = Onglet.new @ids[:carnet1][:onglet1][:id], @ids[:carnet1][:id]
     onglet.delete
-    expect(Onglets[id: @ids[:carnet1][:onglet1][:id]]).to be_nil
-    expect(CarnetsOnglets[carnets_id: @ids[:carnet1][:id], onglets_id: @ids[:carnet1][:onglet1][:id]]).to be_nil
+    expect(Onglet[id: @ids[:carnet1][:onglet1][:id]]).to be_nil
+    expect(CarnetOnglet[carnets_id: @ids[:carnet1][:id], onglets_id: @ids[:carnet1][:onglet1][:id]]).to be_nil
   end
 
   it "supprime une url publique d'un carnet" do
     onglet = Onglet.new @ids[:carnet2][:onglet1][:id]
     onglet.delete_url
-    expect(Onglets[id: @ids[:carnet2][:onglet1][:id]].url_publique).to be_nil
+    expect(Onglet[id: @ids[:carnet2][:onglet1][:id]].url_publique).to be_nil
   end
 
   it "récupère les entrées de l'onglet" do
@@ -66,12 +66,12 @@ describe 'OngletTest' do
     onglet = Onglet.new @ids[:carnet2][:onglet1][:id]
     onglet.delete_entrees
 
-    expect(Saisies[id: @ids[:carnet2][:onglet1][:saisie1][:id]]).to be_nil
-    id1 = EntreesOnglets[saisies_id: @ids[:carnet2][:onglet1][:saisie1][:id], onglets_id: @ids[:carnet2][:onglet1][:id]]
+    expect(Saisie[id: @ids[:carnet2][:onglet1][:saisie1][:id]]).to be_nil
+    id1 = EntreesOnglet[saisies_id: @ids[:carnet2][:onglet1][:saisie1][:id], onglets_id: @ids[:carnet2][:onglet1][:id]]
     expect(id1).to be_nil
 
-    expect(Saisies[id: @ids[:carnet2][:onglet1][:saisie2][:id]]).to be_nil
-    id2 = EntreesOnglets[saisies_id: @ids[:carnet2][:onglet1][:saisie2][:id], onglets_id: @ids[:carnet2][:onglet1][:id]]
+    expect(Saisie[id: @ids[:carnet2][:onglet1][:saisie2][:id]]).to be_nil
+    id2 = EntreesOnglet[saisies_id: @ids[:carnet2][:onglet1][:saisie2][:id], onglets_id: @ids[:carnet2][:onglet1][:id]]
     expect(id2).to be_nil
   end
 end

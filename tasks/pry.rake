@@ -21,6 +21,8 @@ task :load_config do
   require_relative '../lib/init'
   require_relative '../models/init'
   require_relative '../objects/init'
+
+  require_relative '../app'
 end
 
 desc 'Open pry with app environment'

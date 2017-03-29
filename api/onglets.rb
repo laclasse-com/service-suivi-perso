@@ -1,6 +1,6 @@
 # coding: utf-8
 # API pour l'interface des carnets
-class OngletsApi < Grape::API
+class OngletApi < Grape::API
   format :json
 
   helpers Laclasse::Helpers::User
@@ -25,7 +25,7 @@ class OngletsApi < Grape::API
     requires :uid, type: String, desc: "uid de l'élève"
   end
   get '/tabs' do
-    carnet = Carnet.new(nil, params[:uid])
+    carnet = CarnetObject.new(nil, params[:uid])
     onglets = []
     carnet.read
     carnet.onglets.each do |onglet|
@@ -40,7 +40,7 @@ class OngletsApi < Grape::API
     requires :nom, type: String, desc: 'nom du nouvel onglet'
   end
   post do
-    carnet = Carnet.new(nil, params[:uid])
+    carnet = CarnetObject.new(nil, params[:uid])
     carnet.read
     ordre = carnet.onglets.size + 1
     onglet = Onglet.new(nil, carnet.id, params[:nom], user[:info].uid.to_s, ordre)

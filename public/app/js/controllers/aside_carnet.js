@@ -5,9 +5,9 @@
 angular.module( 'suiviApp' )
     .controller( 'AsideCarnetCtrl',
                  [ '$rootScope', '$scope', '$state', '$stateParams',
-                   'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', 'Rights', 'Profil', 'CarnetPdf', '$http', 'Onglets', '$modal', '$window', 'UPLOAD_SIZE',
+                   'CurrentUser', 'Annuaire', 'AVATAR_F', 'AVATAR_M', 'GetUser', 'GetRegroupement', 'APP_PATH', 'Rights', 'Profil', 'CarnetPdf', '$http', 'Onglet', '$modal', '$window', 'UPLOAD_SIZE',
                    function ( $rootScope, $scope, $state, $stateParams,
-                              CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH, Rights, Profil, CarnetPdf, $http, Onglets, $modal, $window, UPLOAD_SIZE ) {
+                              CurrentUser, Annuaire, AVATAR_F, AVATAR_M, GetUser, GetRegroupement, APP_PATH, Rights, Profil, CarnetPdf, $http, Onglet, $modal, $window, UPLOAD_SIZE ) {
                        Profil.initRights( $stateParams.id ).promise.then( function () {
                            $scope.contactCollege = [];
                            $scope.parents = [];
@@ -120,7 +120,7 @@ angular.module( 'suiviApp' )
                        $scope.modalInstanceCtrl = function ( $rootScope, $scope, $modalInstance ) {
                            $rootScope.tabs = [];
 
-                           Onglets.tabs( {
+                           Onglet.tabs( {
                                uid: $stateParams.id
                            }, function ( reponse ) {
                                if ( reponse.error == undefined ) {

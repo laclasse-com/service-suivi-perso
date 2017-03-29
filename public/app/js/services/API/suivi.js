@@ -89,7 +89,7 @@ angular.module( 'suiviApp' )
             hopital: '@hopital'
         } );
     } ] )
-    .factory( 'Onglets', [ '$resource', 'APP_PATH', function ( $resource, APP_PATH ) {
+    .factory( 'Onglet', [ '$resource', 'APP_PATH', function ( $resource, APP_PATH ) {
         return $resource( APP_PATH + '/api/onglets/', {
             uid: '@uid'
         }, {
@@ -337,7 +337,7 @@ angular.module( 'suiviApp' )
 
 
 angular.module( 'suiviApp' )
-    .service( 'Carnets', [ 'GRID_COLOR', 'Create', 'CurrentUser', 'CarnetsFact', 'LACLASSE_PATH', 'CreateEvignal', 'UAI_EVIGNAL', function ( GRID_COLOR, Create, CurrentUser, CarnetsFact, LACLASSE_PATH, CreateEvignal, UAI_EVIGNAL ) {
+    .service( 'Carnets', [ 'GRID_COLOR', 'Create', 'CurrentUser', 'CarnetsFact', 'URL_ENT', 'CreateEvignal', 'UAI_EVIGNAL', function ( GRID_COLOR, Create, CurrentUser, CarnetsFact, URL_ENT, CreateEvignal, UAI_EVIGNAL ) {
         this.get = function ( params ) {
             return CarnetsFact.get( params );
         };
@@ -347,7 +347,7 @@ angular.module( 'suiviApp' )
             var i = 0;
             angular.forEach( reponse, function ( carnet ) {
                 carnet.couleur = GRID_COLOR[ i % GRID_COLOR.length ];
-                carnet.avatar = LACLASSE_PATH + '/' + carnet.avatar;
+                carnet.avatar = URL_ENT + '/' + carnet.avatar;
                 carnets.push( carnet );
                 i++;
             } );
@@ -379,7 +379,7 @@ angular.module( 'suiviApp' )
             var i = 1;
             angular.forEach( reponse.carnets, function ( carnet ) {
                 carnet.couleur = GRID_COLOR[ i % GRID_COLOR.length ];
-                carnet.avatar = LACLASSE_PATH + '/' + carnet.avatar;
+                carnet.avatar = URL_ENT + '/' + carnet.avatar;
                 classe_carnets.carnets.push( carnet );
                 i++;
             } );

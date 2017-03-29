@@ -56,39 +56,39 @@ describe 'EntreeTest' do
   it "mise à jour de l'avatar ou du contenu de l'entrée" do
     entree = Entree.new @ids[:carnet1][:onglet1][:saisie1][:id]
     entree.update 'nouveau contenu', 'nouvel avatar'
-    expect(Saisies[id: @ids[:carnet1][:onglet1][:saisie1][:id]].contenu).to eq('nouveau contenu')
-    expect(Saisies[id: @ids[:carnet1][:onglet1][:saisie1][:id]].avatar).to eq('nouvel avatar')
+    expect(Saisie[id: @ids[:carnet1][:onglet1][:saisie1][:id]].contenu).to eq('nouveau contenu')
+    expect(Saisie[id: @ids[:carnet1][:onglet1][:saisie1][:id]].avatar).to eq('nouvel avatar')
   end
 
   it "pas de mise à jour du contenu de l'entrée, car il est nul" do
     entree = Entree.new @ids[:carnet1][:onglet1][:saisie1][:id]
     entree.update 'nouveau contenu', 'nouvel avatar'
     entree.update nil, 'nouvel avatar'
-    expect(Saisies[id: @ids[:carnet1][:onglet1][:saisie1][:id]].contenu).to eq('nouveau contenu')
+    expect(Saisie[id: @ids[:carnet1][:onglet1][:saisie1][:id]].contenu).to eq('nouveau contenu')
   end
 
   it "pas de mise à jour de l'avatar de l'entrée, car il est nul" do
     entree = Entree.new @ids[:carnet1][:onglet1][:saisie1][:id]
     entree.update 'nouveau contenu', nil
-    expect(Saisies[id: @ids[:carnet1][:onglet1][:saisie1][:id]].avatar).to eq('url_avatar')
+    expect(Saisie[id: @ids[:carnet1][:onglet1][:saisie1][:id]].avatar).to eq('url_avatar')
   end
 
   it 'supprime une entree' do
     entree = Entree.new @ids[:carnet1][:onglet1][:saisie1][:id], @ids[:carnet1][:onglet1][:id]
     entree.delete
-    expect(Saisies[id: @ids[:carnet1][:onglet1][:saisie1][:id]]).to be_nil
+    expect(Saisie[id: @ids[:carnet1][:onglet1][:saisie1][:id]]).to be_nil
   end
 
   it 'Lance une exception car saisie_id nul' do
     entree = Entree.new nil, @ids[:carnet1][:onglet1][:id]
     expect { entree.delete }.to raise_error(ArgumentError)
-    expect(Saisies[id: @ids[:carnet1][:onglet1][:saisie1][:id]].id).to eq(@ids[:carnet1][:onglet1][:saisie1][:id])
+    expect(Saisie[id: @ids[:carnet1][:onglet1][:saisie1][:id]].id).to eq(@ids[:carnet1][:onglet1][:saisie1][:id])
   end
 
   it "mis a jour de tous les avatars des entrées d'un utilisateur" do
     entree = Entree.new nil, nil, nil, 'VAA99001'
     entree.update_avatar 'nouvel avatar'
-    expect(Saisies[id: @ids[:carnet1][:onglet1][:saisie1][:id]].avatar).to eq('nouvel avatar')
+    expect(Saisie[id: @ids[:carnet1][:onglet1][:saisie1][:id]].avatar).to eq('nouvel avatar')
   end
 
   it 'pas de mise à jour de tous les avatars des entrées, car il est nul' do
@@ -99,7 +99,7 @@ describe 'EntreeTest' do
   it "supprime un doc d'une entrée" do
     entree = Entree.new @ids[:carnet1][:onglet1][:saisie1][:id]
     entree.delete_docs
-    expect(Docs[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]]).to be_nil
+    expect(Ressource[id: @ids[:carnet1][:onglet1][:saisie1][:doc1][:id]]).to be_nil
   end
 
   it "récupère les documents d'une entrée" do
