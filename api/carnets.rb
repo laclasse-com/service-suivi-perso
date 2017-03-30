@@ -8,8 +8,6 @@ class CarnetsApi < Grape::API
   content_type :json, 'application/json'
   content_type :pdf, 'application/pdf'
 
-  include CarnetsLib
-
   helpers Laclasse::Helpers::User
   helpers URLHelpers
 
@@ -48,28 +46,6 @@ class CarnetsApi < Grape::API
     Carnet.where( id: Droit.where( uid: params[:uid] ).select( :carnet_id ).all.map(&:carnet_id) )
           .naked
           .all
-  end
-
-  desc 'récupère les carnets de la classes'
-  params do
-    requires :classe_id, type: Integer
-  end
-  get '/classes/:classe_id' do
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_regroupement, params[:classe_id].to_s, 'expand' => 'true')
-    # TODO: handle error
-
-    CarnetsLib.search_carnets_of( response['eleves'] )
-  end
-
-  desc "recherche des élèves d'un utilisateur par nom"
-  params do
-    requires :name, type: String, desc: "nom de l'élève"
-  end
-  get '/eleves/:name' do
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_suivi_perso, 'users/' + user[:info].uid.to_s + '/eleves/' + URI.encode( params[:name] ), {})
-    # TODO: handle error
-
-    CarnetsLib.search_carnets_of( response )
   end
 
   desc "création d'un pdf du carnet"
