@@ -13,21 +13,27 @@ class CarnetsApi < Grape::API
   helpers Laclasse::Helpers::User
   helpers URLHelpers
 
-  desc 'récupère un carnet'
+  desc 'récupère un carnet avec création à la volée'
   params do
-    optional :id, type: Integer
-    optional :uid_elv, type: String
+    requires :uid_elv, type: String
+
+    optional :with_model, type: Boolean, default: false
+    optional :evignal, type: Boolean, default: false
   end
   get do
-    carnet = if params.key?( :id )
-               Carnet[ id: params[:id] ]
-             elsif params.key?( :uid_elv )
-               Carnet[ uid_elv: params[:uid_elv] ]
-             end
-    error!( 'Unknown Carnet', 404 ) if carnet.nil?
+    #error!( 'Unknown Carnet', 404 ) if invalid_uid_elv
+    carnet = Carnet[ uid_elv: params[:uid_elv] ]
 
-    droit = carnet.droits_dataset[uid: user[:uid]]
-    error!( 'Unauthorized', 401 ) if droit.nil? || !droit.read
+    if carnet.nil?
+      carnet = Carnet.create( uid_elv: params[:uid_elv],
+                              evignal: params[:evignal] )
+
+      if params[:evignal]
+      end
+
+      if params[:with_model]
+      end
+    end
 
     carnet
   end
@@ -66,36 +72,6 @@ class CarnetsApi < Grape::API
     CarnetsLib.search_carnets_of( response )
   end
 
-  desc "création d'un carnet"
-  params do
-    requires :uid_elv, type: String
-
-    requires :with_model, type: Boolean
-  end
-  post do
-    carnet = Carnet[ uid_elv: params[:uid_elv] ]
-    error!( 'Existing Carnet', 403 ) unless carnet.nil?
-
-    # FIXME: anyone can create a carnet?
-    carnet = Carnet.create( uid_elv: params[:uid_elv] )
-
-    last_carnet_bdd = Carnet.where(uid_adm: params[:uid_adm]).order(:date_creation).last if params[:with_model] == true
-    unless last_carnet_bdd.nil?
-      last_carnet = CarnetObject.new(last_carnet_bdd.id)
-      last_carnet.read
-    end
-    carnet.create
-
-    CarnetsLib.last_carnet_model last_carnet, carnet if !last_carnet.nil? && last_carnet.id != carnet.id
-
-    right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1)
-    right_adm.create
-    right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], 'élève', carnet.id, 0, 0, 0)
-    right_elv.create
-
-    { carnet_id: carnet.id }
-  end
-
   desc "création d'un pdf du carnet"
   params do
     requires :nom, type: String
@@ -107,9 +83,7 @@ class CarnetsApi < Grape::API
     requires :id_onglets, type: Array
   end
   post '/:uid_elv/pdf' do
-    ids = params[:id_onglets].map( &:id )
-
-    onglets = CarnetsLib.tab_list( params[:uid_elv], ids )
+    onglets = CarnetsLib.tab_list( params[:uid_elv], params[:id_onglets].map( &:id ) )
     final_document = PdfGenerator.generate_pdf( params[:nom],
                                                 params[:prenom],
                                                 params[:sexe],
@@ -136,73 +110,5 @@ class CarnetsApi < Grape::API
     file = {name: params[:file][:filename], path: params[:file][:tempfile].path} unless params[:file].nil?
     infos = JSON.parse(params[:mail_infos])
     MailGenerator.send_emails infos['uid_exp'], infos['destinataires']['list'], infos['objet'], infos['message'], file
-  end
-
-  # vv EVIGNAL vv
-
-  desc 'récupère les carnets d\'Élie Vignal'
-  get '/evignal' do
-    Carnet.where(evignal: true).naked.all
-  end
-
-  desc 'récupère le personnel à l\'hopital d\'Evignal'
-  params do
-    requires :uid_elv, type: String
-    requires :hopital, type: Boolean
-  end
-  get '/evignal/personnels' do  # '/evignal/:uid_elv/personnels'
-    # retourne les droits +evignal du carnet
-    carnet = Carnet[ uid_elv: params[:uid_elv] ]
-    error!( 'Unknown Carnet', 404 ) if carnet.nil?
-
-    { personnels: carnet.droits_dataset.where( evignal: true, hopital: params[:hopital] ).naked.all }
-  end
-
-  desc "recherche des élèves dans tous les etabs d'un utilisateur par nom"
-  params do
-    requires :name, type: String, desc: "nom de l'élève"
-  end
-  get '/evignal/eleves/:name' do
-    profil_actif_current_user = user[:user_detailed]['profil_actif']['etablissement_code_uai']
-
-    error!('Ressource non trouvee', 404) if profil_actif_current_user != UAI_EVIGNAL
-
-    response = Laclasse::CrossApp::Sender.send_request_signed(:service_annuaire_suivi_perso, ANNUAIRE_URL[:suivi_perso_search] + URI.encode( params[:name] ), {})
-
-    CarnetsLib.search_carnets_of( response, true )
-  end
-
-  desc "création ou mise a jour d'un carnet evignal"
-  params do
-    requires :uid_elv, type: String
-    requires :full_name_elv, type: String
-    requires :etablissement_code, type: String
-    requires :classe_id, type: Integer
-    requires :uid_adm, type: String
-    requires :full_name_adm, type: String
-    requires :profil_adm, type: String
-    requires :with_model, type: Boolean
-  end
-  post '/evignal' do
-    carnet = CarnetObject.new(nil, params[:uid_elv], params[:uid_adm], params[:etablissement_code], params[:classe_id], nil, true)
-    if carnet.exist?
-      carnet.read
-      carnet.update true
-    else
-      last_carnet_bdd = CarnetObject.odel.where(uid_adm: params[:uid_adm]).order(:date_creation).last if params[:with_model] == true
-      unless last_carnet_bdd.nil?
-        last_carnet = CarnetObject.new(last_carnet_bdd.id)
-        last_carnet.read
-      end
-      evignal = params[:etablissement_code] == UAI_EVIGNAL ? 1 : 0
-      carnet.create
-      CarnetsLib.last_carnet_model last_carnet, carnet if !last_carnet.nil? && last_carnet.id != carnet.id
-      right_adm = Right.new(nil, params[:uid_adm], params[:full_name_adm], params[:profil_adm], carnet.id, 1, 1, 1, 0, 1)
-      right_adm.create
-      right_elv = Right.new(nil, params[:uid_elv], params[:full_name_elv], 'élève', carnet.id, 0, 0, 0, 0, evignal)
-      right_elv.create
-    end
-
-    { carnet_id: carnet.id }
   end
 end

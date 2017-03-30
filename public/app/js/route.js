@@ -60,56 +60,11 @@ angular.module( 'suiviApp' )
                                           'main': { templateUrl: APP_PATH + '/app/views/list-stats.html',
                                                     controller: 'StatsCtrl' } } } )
 
-                   // ////////// Collège Élie Vignal
-                       .state( 'suivi.evignal_carnets',
-                               { parent: 'suivi',
-                                 resolve: { auth: function( Profil ) { Profil.redirection( ['PROF_ETB', 'DIR_ETB', 'ADM_ETB', 'TECH', 'AVS_ETB', 'CPE_ETB'], true ); } },
-                                 url: '/evignal/carnets',
-                                 views: { 'aside': { templateUrl: APP_PATH + '/app/views/aside-lists.html',
-                                                     controller: 'AsideEvignalCtrl' },
-                                          'main': { templateUrl: APP_PATH + '/app/views/evignal_list-carnets.html',
-                                                    controller: 'CarnetsEvignalCtrl' } } } )
-                       .state( 'suivi.evignal_add',
-                               { url: '/evignal/carnets/add/:name',
-                                 resolve: { auth: function( Profil ) { Profil.redirection( ['PROF_ETB', 'DIR_ETB', 'ADM_ETB', 'TECH'], true ); } },
-                                 views: { 'aside': { templateUrl: APP_PATH + '/app/views/aside-lists.html',
-                                                     controller: 'AsideEvignalCtrl' },
-                                          'main': { templateUrl: APP_PATH + '/app/views/list-carnets-add-carnet.html',
-                                                    controller: 'AddCarnetsEvignalCtrl' } } } )
-                       .state( 'suivi.evignal_carnet',
-                               { url: '/evignal/classes/:classe_id/carnets/:id',
-                                 resolve: { auth: function( Profil, $stateParams ) {
-                                     Profil.redirection( ['PROF_ETB', 'DIR_ETB', 'ADM_ETB', 'TECH', 'AVS_ETB', 'CPE_ETB', 'PAR_ETB', 'ELV_ETB'], true );
-                                 } },
-                                 views: { 'aside': { templateUrl: APP_PATH + '/app/views/evignal_aside-carnet-eleve.html',
-                                                     controller: 'AsideCarnetEvignalCtrl' },
-                                          'main': { templateUrl: APP_PATH + '/app/views/main-carnet-eleve.html',
-                                                    controller: 'CarnetCtrl' } } } )
-                       .state( 'suivi.evignal_rights',
-                               { url: '/evignal/classes/:classe_id/carnets/:id/rights',
-                                 resolve: { auth: function( Profil, $stateParams ) {
-                                     Profil.redirection( ['PROF_ETB', 'DIR_ETB', 'ADM_ETB', 'TECH', 'AVS_ETB', 'CPE_ETB'], true );
-                                 } },
-                                 views: { 'aside': { templateUrl: APP_PATH + '/app/views/evignal_aside-carnet-eleve.html',
-                                                     controller: 'AsideCarnetEvignalCtrl' },
-                                          'main': { templateUrl: APP_PATH + '/app/views/evignal_main-rights-carnet-eleve.html',
-                                                    controller: 'RightsEvignalCtrl' } } } )
-                       .state( 'suivi.evignal_stats',
-                               { parent: 'suivi',
-                                 resolve: { auth: function( Profil ) { Profil.redirection( ['DIR_ETB', 'ADM_ETB', 'TECH'], true ); } },
-                                 url: '/evignal/stats',
-                                 views: { 'aside': { templateUrl: APP_PATH + '/app/views/aside-lists.html',
-                                                     controller: 'AsideEvignalCtrl' },
-                                          'main': { templateUrl: APP_PATH + '/app/views/evignal_list-stats.html',
-                                                    controller: 'StatsEvignalCtrl' } } } )
-
                    // // ERREUR
                        .state( 'erreur',
                                { url: '/erreur/:code?message',
                                  templateUrl: APP_PATH + '/app/views/erreur.html',
                                  controller: 'ErreurCtrl' } );
 
-                   $urlRouterProvider.otherwise( function( $injector, $location ) {
-                       $location.path( "/evignal/carnets" );
-                   } );
+                   $urlRouterProvider.otherwise('/');
                } ] );
