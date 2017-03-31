@@ -27,23 +27,16 @@ UAI_EVIGNAL = '0692165D'.freeze
 MAIL_DOMAINE = '@laclasse.com'.freeze
 
 # Gestion des droits
-COEFF = { 'user' => '5',
-          'TECH' => '4',
-          'ADM_ETB' => '3',
-          'DIR_ETB' => '2',
-          'AVS_ETB' => '1',
-          'CPE_ETB' => '1',
-          'PROF_ETB' => '1',
-          'PAR_ETB' => '0',
-          'ELV_ETB' => '0',
-          '' => '-1' }.freeze
-
-ROLES = { super_admin: 'TECH',
-          admin: 'ADM_ETB',
-          principal: 'DIR_ETB',
-          assistante_vie_scolaire: 'AVS_ETB',
-          cpe: 'CPE_ETB',
-          prof: 'PROF_ETB',
-          parents: 'PAR_ETB',
-          eleve: 'ELV_ETB',
-          default: '' }.freeze
+DEFAULT_RIGHTS = { Carnet: [ { profil_id: 'ELV', read: false, write: false },
+                             { profil_id: 'TUT', read: false, write: false },
+                             { profil_id: 'ENS', read: true, write: true },
+                             { profil_id: 'EVS', read: true, write: true },
+                             { profil_id: 'DOC', read: true, write: true },
+                             { profil_id: 'DIR', read: true, write: true } ],
+                   Onglet: [ { profil_id: 'ELV', read: false, write: false },
+                             { profil_id: 'TUT', read: false, write: false },
+                             { profil_id: 'ENS', read: true, write: true },
+                             { profil_id: 'EVS', read: true, write: true },
+                             { profil_id: 'DOC', read: true, write: true },
+                             { profil_id: 'DIR', read: true, write: true } ]
+                 }.freeze

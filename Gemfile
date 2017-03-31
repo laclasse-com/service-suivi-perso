@@ -2,8 +2,8 @@
 
 source 'https://rubygems.org'
 
-gem 'grape'
 gem 'json'
+gem 'logger'
 gem 'mail'
 gem 'mysql2'
 gem 'nokogiri'
@@ -14,9 +14,9 @@ gem 'rack'
 gem 'rack-rewrite'
 gem 'rake'
 gem 'rest-client'
-gem 'savon'
 gem 'sequel'
 gem 'sinatra'
+gem 'sinatra-param'
 
 gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common.git'
 
@@ -26,22 +26,11 @@ gem 'pdfkit'
 gem 'wkhtmltopdf-binary'
 
 group :development do
-  gem 'logger'
   gem 'pry'
-  gem 'shotgun'
-  gem 'sinatra-contrib'
-end
-
-group :test do
-  gem 'coveralls'
-  gem 'guard'
-  gem 'guard-bundler'
-  gem 'guard-rspec'
-  gem 'guard-rubocop'
-  gem 'rack-test'
-  gem 'rb-readline'
-  gem 'rspec', '2.14.1'
+  gem 'rspec'
   gem 'rubocop'
+  gem 'shotgun'
   gem 'simplecov'
+  gem 'sinatra-contrib'
   gem 'travis-lint'
 end

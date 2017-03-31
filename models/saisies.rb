@@ -5,6 +5,6 @@ class Saisie < Sequel::Model(:saisies)
   plugin :json_serializer
   plugin :composition
 
-  many_to_one :onglets
+  many_to_one :onglets, class: :Onglet, key: :onglet_id
   one_to_many :ressources
 end

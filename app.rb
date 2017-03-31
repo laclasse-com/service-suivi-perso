@@ -17,7 +17,15 @@ require 'laclasse/helpers/user'
 
 require_relative './lib/init'
 require_relative './models/init'
-require_relative './objects/init'
+
+require_relative './routes/index'
+require_relative './routes/public_url'
+require_relative './routes/auth'
+require_relative './routes/status'
+
+require_relative './routes/api/carnets'
+require_relative './routes/api/onglets'
+require_relative './routes/api/saisies'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
@@ -36,6 +44,9 @@ class SinatraApp < Sinatra::Base
     # dont_reload '/path/to/other/file'
   end
 
+  helpers Sinatra::Param
+
+  helpers Laclasse::Helpers::User
   helpers Laclasse::Helpers::Authentication
   helpers Laclasse::Helpers::AppInfos
 
@@ -46,56 +57,12 @@ class SinatraApp < Sinatra::Base
     end
   end
 
-  get "#{APP_PATH}/?" do
-    erb :app
-  end
+  register Suivi::Routes::Index
+  register Suivi::Routes::PublicUrl
+  register Suivi::Routes::Status
+  register Suivi::Routes::Auth
 
-  get "#{APP_PATH}/status" do
-    content_type :json
-    app_status = app_infos
-
-    app_status[:status] = 'OK'
-    app_status[:reason] = 'L\'application fonctionne.'
-
-    app_status.to_json
-  end
-
-  get "#{APP_PATH}/public/:url" do
-    begin
-      carnet = Carnet[url_publique: params[:url]]
-      tabs = CarnetsLib.tab_list( carnet.uid_elv, nil, params[:url] )
-
-      response = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_user, carnet.uid_elv, 'expand' => 'true' )
-
-      @aside_public_carnet = HtmlMessageGenerator.aside_public_carnet( response )
-      @main_public_carnet = HtmlMessageGenerator.main_public_carnet( tabs )
-
-      erb :carnet_public
-    rescue Exception => e
-      puts e.message
-      status 404
-      erb :erreur
-    end
-  end
-
-  get "#{APP_PATH}/auth/:provider/callback" do
-    init_session( request.env )
-
-    protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
-    redirect params[:url] if params[:url] != "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"
-    redirect "#{APP_PATH}/"
-  end
-
-  get "#{APP_PATH}/auth/failure" do
-    erb "<h1>L'authentification a échoué : </h1><h3>message:<h3> <pre>#{params}</pre>"
-  end
-
-  get "#{APP_PATH}/login" do
-    login! "#{APP_PATH}/"
-  end
-
-  get "#{APP_PATH}/logout" do
-    protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
-    logout! "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"
-  end
+  register Suivi::Routes::Api::Carnets
+  register Suivi::Routes::Api::Onglets
+  register Suivi::Routes::Api::Saisies
 end

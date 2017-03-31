@@ -7,5 +7,5 @@ class Ressource < Sequel::Model(:ressources)
   plugin :composition
 
   # Referential integrity
-  many_to_one :saisies
+  many_to_one :saisies, class: :Saisie, key: :saisie_id
 end

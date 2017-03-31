@@ -1,5 +1,0 @@
-require_relative './entree'
-require_relative './onglet'
-require_relative './carnet'
-require_relative './right'
-require_relative './doc'

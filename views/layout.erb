@@ -109,12 +109,14 @@
         <script src="<%= APP_PATH %>/app/js/services/API/suivi.js"></script>
         <script src="<%= APP_PATH %>/app/js/services/API/documents.js"></script>
         <script src="<%= APP_PATH %>/app/js/services/services.js"></script>
+        <script src="<%= APP_PATH %>/app/js/services/user.js"></script>
         <script>
          'use strict';
 
          angular.module('suiviApp')
                 .constant( 'URL_ENT', '<%=URL_ENT%>' )
                 .constant( 'APP_PATH', '<%=APP_PATH%>' )
+                .constant( 'UID', '<%=user[:info].uid%>' )
                 .constant( 'UPLOAD_SIZE', <%=UPLOAD_SIZE%> )
                 .constant( 'DOCS_URL', '<%=URL_DOCS%>' );
         </script>

@@ -17,10 +17,8 @@ require 'laclasse/helpers/user'
 
 require_relative './lib/init'
 require_relative './models/init'
-require_relative './objects/init'
 
 require_relative './app'
-require_relative './api'
 
 use Rack::Rewrite do
   rewrite %r{/.*/(app)/(.*)}, '/$1/$2'
@@ -33,10 +31,6 @@ use OmniAuth::Builder do
     config.path_prefix = "#{APP_PATH}/auth"
   end
   provider :cas, CASAUTH::CONFIG
-end
-
-map "#{APP_PATH}/api" do
-  run Api
 end
 
 run SinatraApp
