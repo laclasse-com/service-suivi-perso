@@ -18,20 +18,14 @@ module Suivi
           app.get "#{APP_PATH}/api/carnets/:uid_eleve" do
             param :uid_eleve, String, required: true
 
-            carnet = Carnet.of( params[:uid_eleve] )
-            error!( '404 Unknown carnet', 404 ) if carnet.nil?
-            error!( '403 Forbidden', 403 ) unless carnet.allow?( user, :read )
-
-            carnet
+            get_and_check_carnet( params[:uid_eleve], :read )
           end
 
           app.put "#{APP_PATH}/api/carnets/:uid_eleve" do
             param :uid_eleve, String, required: true
             param :sharable_id, String, required: false
 
-            carnet = Carnet.of( params[:uid_eleve] )
-            error!( '404 Unknown carnet', 404 ) if carnet.nil?
-            error!( '403 Forbidden', 403 ) unless carnet.allow?( user, :write )
+            carnet = get_and_check_carnet( params[:uid_eleve], :write )
 
             carnet.sharable_id = params[:sharable_id] if params.key?( :sharable_id )
             carnet.save

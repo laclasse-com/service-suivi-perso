@@ -6,25 +6,23 @@ module Suivi
       module Saisies
         def self.registered( app )
           app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies" do
-            param :uid_eleve, String, required: true # unused
+            param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
 
-            onglet = Onglet[id: params[:onglet_id]]
-            error!( '404 Unknown onglet', 404 ) if onglet.nil?
-            error!( '403 Forbidden', 403 ) unless onglet.allow?( user, :read )
+            get_and_check_carnet( params[:uid_eleve], :write )
+            onglet = get_and_check_onglet( params[:onglet_id], :write )
 
             onglet.saisies_dataset.naked.all
           end
 
           app.post "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies" do
-            param :uid_eleve, String, required: true # unused
+            param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :contenu, String, required: true
             param :background_color, String, required: true
 
-            onglet = Onglet[id: params[:onglet_id]]
-            error!( '404 Unknown onglet', 404 ) if onglet.nil?
-            error!( '403 Forbidden', 403 ) unless onglet.allow?( user, :write )
+            get_and_check_carnet( params[:uid_eleve], :write )
+            onglet = get_and_check_onglet( params[:onglet_id], :write )
 
             onglet.add_saisy( uid: user[:uid],
                               date_creation: DateTime.now,
@@ -33,18 +31,15 @@ module Suivi
           end
 
           app.put "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id" do
-            param :uid_eleve, String, required: true # unused
+            param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :id, Integer, required: true
             param :contenu, String, required: false
             param :background_color, String, required: false
 
-            onglet = Onglet[id: params[:onglet_id]]
-            error!( '404 Unknown onglet', 404 ) if onglet.nil?
-            error!( '403 Forbidden', 403 ) unless onglet.allow?( user, :write )
-
-            saisie = Saisie[id: params[:id]]
-            error!( '404 Unknown saisie', 404 ) if saisie.nil?
+            get_and_check_carnet( params[:uid_eleve], :write )
+            get_and_check_onglet( params[:onglet_id], :write )
+            saisie = get_and_check_saisie( params[:id] )
 
             changed = false
             if params.key?(:contenu)
@@ -65,16 +60,13 @@ module Suivi
           end
 
           app.delete "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id" do
-            param :uid_eleve, String, required: true # unused
+            param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :id, Integer, required: true
 
-            onglet = Onglet[id: params[:onglet_id]]
-            error!( '404 Unknown onglet', 404 ) if onglet.nil?
-            error!( '403 Forbidden', 403 ) unless onglet.allow?( user, :write )
-
-            saisie = Saisie[id: params[:id]]
-            error!( '404 Unknown saisie', 404 ) if saisie.nil?
+            get_and_check_carnet( params[:uid_eleve], :write )
+            onglet = get_and_check_onglet( params[:onglet_id], :write )
+            saisie = get_and_check_saisie( params[:id] )
 
             onglet.remove_saisy( saisie )
           end

@@ -1,5 +1,0 @@
-require_relative './carnets'
-require_relative './droits'
-require_relative './onglets'
-require_relative './saisies'
-require_relative './ressources'

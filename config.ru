@@ -8,15 +8,7 @@ require 'sinatra/reloader' if ENV['RACK_ENV'] == 'development'
 
 require_relative './config/init'
 
-require 'laclasse/cross_app/sender'
-
-require 'laclasse/helpers/authentication'
-require 'laclasse/helpers/app_infos'
 require 'laclasse/helpers/rack'
-require 'laclasse/helpers/user'
-
-require_relative './lib/init'
-require_relative './models/init'
 
 require_relative './app'
 

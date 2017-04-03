@@ -12,11 +12,15 @@ require 'laclasse/cross_app/sender'
 
 require 'laclasse/helpers/authentication'
 require 'laclasse/helpers/app_infos'
-require 'laclasse/helpers/rack'
 require 'laclasse/helpers/user'
 
-require_relative './lib/init'
-require_relative './models/init'
+require_relative './models/carnets'
+require_relative './models/droits'
+require_relative './models/onglets'
+require_relative './models/saisies'
+require_relative './models/ressources'
+
+require_relative './lib/helpers/access_and_rights'
 
 require_relative './routes/index'
 require_relative './routes/public_url'
@@ -25,6 +29,7 @@ require_relative './routes/status'
 
 require_relative './routes/api/carnets'
 require_relative './routes/api/onglets'
+require_relative './routes/api/onglets_droits'
 require_relative './routes/api/saisies'
 
 # Application Sinatra servant de base
@@ -50,6 +55,8 @@ class SinatraApp < Sinatra::Base
   helpers Laclasse::Helpers::Authentication
   helpers Laclasse::Helpers::AppInfos
 
+  helpers Suivi::Helpers::AccessAndRights
+
   # Routes nécessitant une authentification
   [ '/?', '/login' ].each do |route|
     before "#{APP_PATH}#{route}" do
@@ -64,5 +71,6 @@ class SinatraApp < Sinatra::Base
 
   register Suivi::Routes::Api::Carnets
   register Suivi::Routes::Api::Onglets
+  register Suivi::Routes::Api::Onglets::Droits
   register Suivi::Routes::Api::Saisies
 end
