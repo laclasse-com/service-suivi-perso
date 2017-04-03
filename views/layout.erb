@@ -11,22 +11,11 @@
         <title>Laclasse Suivi Perso</title>
 
         <link href="<%= APP_PATH %>/app/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="<%= APP_PATH %>/app/node_modules/angular-carousel/dist/angular-carousel.min.css"  rel="stylesheet" type="text/css" >
         <link href="<%= APP_PATH %>/app/node_modules/laclasse-common-client/css/main.css"  rel="stylesheet" type="text/css" >
+        <link href="<%= APP_PATH %>/app/node_modules/laclasse-common-client/css/damier.css"  rel="stylesheet" type="text/css" >
         <link href="<%= APP_PATH %>/app/node_modules/font-awesome/css/font-awesome.min.css"  rel="stylesheet" type="text/css" >
-        <link href="<%= APP_PATH %>/app/node_modules/angular-loading-bar/build/loading-bar.min.css"  rel="stylesheet" type="text/css" >
-        <link href="<%= APP_PATH %>/app/node_modules/nvd3/build/nv.d3.min.css"  rel="stylesheet" type="text/css" >
 
-        <link href="<%= APP_PATH %>/app/css/asides/aside-lists.css" rel="stylesheet">
-        <link href="<%= APP_PATH %>/app/css/asides/aside-carnet-eleve.css" rel="stylesheet">
-        <link href="<%= APP_PATH %>/app/css/mains/main-damier.css" rel="stylesheet">
-        <link href="<%= APP_PATH %>/app/css/mains/main-classes.css" rel="stylesheet">
-        <link href="<%= APP_PATH %>/app/css/mains/main-carnets.css" rel="stylesheet">
-        <link href="<%= APP_PATH %>/app/css/mains/main-carnet-eleve.css" rel="stylesheet">
-        <link href="<%= APP_PATH %>/app/css/mains/main-rights-carnet-eleve.css" rel="stylesheet">
         <link href="<%= APP_PATH %>/app/css/404.css" rel="stylesheet">
-        <link href="<%= APP_PATH %>/app/css/mains/growl-notifications.css" rel="stylesheet">
-        <link href="<%= APP_PATH %>/app/css/mains/stats.css" rel="stylesheet">
         <link href="<%= APP_PATH %>/app/css/suivi.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -70,55 +59,28 @@
         <script src="<%= APP_PATH %>/app/node_modules/angular-sanitize/angular-sanitize.min.js"></script>
         <script src="<%= APP_PATH %>/app/node_modules/angular-animate/angular-animate.min.js"></script>
         <script src="<%= APP_PATH %>/app/node_modules/angular-touch/angular-touch.min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/angular-loading-bar/build/loading-bar.min.js"></script>
         <script src="<%= APP_PATH %>/app/node_modules/angular-loader/angular-loader.min.js"></script>
         <script src="<%= APP_PATH %>/app/node_modules/angular-ui-router/release/angular-ui-router.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/angular-carousel/dist/angular-carousel.min.js"></script>
         <script src="<%= APP_PATH %>/app/node_modules/textangular/dist/textAngular-sanitize.min.js"></script>
         <script src="<%= APP_PATH %>/app/node_modules/textangular/dist/textAngular.min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/angular-ui-sortable/dist/sortable.min.js"></script>
         <script src="<%= APP_PATH %>/app/node_modules/underscore/underscore-min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/zeroclipboard/dist/ZeroClipboard.min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/ng-clip/dest/ng-clip.min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/ng-color-picker/color-picker.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/angular-growl-notifications/dist/angular-growl-notifications.min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/d3/build/d3.min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/nvd3/build/nv.d3.min.js"></script>
-        <script src="<%= APP_PATH %>/app/node_modules/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.min.js"></script>
 
-        <script src="<%= APP_PATH %>/app/js/filters/filters.js"></script>
         <script src="<%= APP_PATH %>/app/js/app.js"></script>
-        <script src="<%= APP_PATH %>/app/js/route.js"></script>
-        <script src="<%= APP_PATH %>/app/js/constants_default.js"></script>
-        <script src="<%= APP_PATH %>/app/js/directives/cartable.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/controllers.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/erreur.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/aside.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/classes.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/carnets.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/add_carnets.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/aside_carnet.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/carnet.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/upload_text_angular.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/rights.js"></script>
-        <script src="<%= APP_PATH %>/app/js/controllers/stats.js"></script>
-        <script src="<%= APP_PATH %>/app/js/directives/directives.js"></script>
-        <script src="<%= APP_PATH %>/app/js/services/API/annuaire.js"></script>
-        <script src="<%= APP_PATH %>/app/js/services/API/suivi.js"></script>
-        <script src="<%= APP_PATH %>/app/js/services/API/documents.js"></script>
-        <script src="<%= APP_PATH %>/app/js/services/services.js"></script>
+        <script src="<%= APP_PATH %>/app/js/routes.js"></script>
+
         <script src="<%= APP_PATH %>/app/js/services/user.js"></script>
+        <script src="<%= APP_PATH %>/app/js/services/etablissement.js"></script>
+
+        <script src="<%= APP_PATH %>/app/js/controllers/trombinoscope.js"></script>
+        <script src="<%= APP_PATH %>/app/js/controllers/carnet.js"></script>
+        <script src="<%= APP_PATH %>/app/js/controllers/erreur.js"></script>
         <script>
          'use strict';
 
          angular.module('suiviApp')
                 .constant( 'URL_ENT', '<%=URL_ENT%>' )
                 .constant( 'APP_PATH', '<%=APP_PATH%>' )
-                .constant( 'UID', '<%=user[:info].uid%>' )
-                .constant( 'UPLOAD_SIZE', <%=UPLOAD_SIZE%> )
-                .constant( 'DOCS_URL', '<%=URL_DOCS%>' );
+                .constant( 'UID', '<%=user[:info].uid%>' );
         </script>
     </body>
 </html>
