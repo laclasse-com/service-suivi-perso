@@ -9,10 +9,10 @@ module Suivi
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
 
-            get_and_check_carnet( params['uid_eleve'], user, :write )
-            onglet = get_and_check_onglet( params['onglet_id'], user, :write )
+            get_and_check_carnet( params['uid_eleve'], user, :read )
+            onglet = get_and_check_onglet( params['onglet_id'], user, :read )
 
-            json onglet.saisies_dataset.naked.all
+            json onglet.saisies
           end
 
           app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id" do
@@ -20,8 +20,8 @@ module Suivi
             param :onglet_id, Integer, required: true
             param :id, Integer, required: true
 
-            get_and_check_carnet( params['uid_eleve'], user, :write )
-            get_and_check_onglet( params['onglet_id'], user, :write )
+            get_and_check_carnet( params['uid_eleve'], user, :read )
+            get_and_check_onglet( params['onglet_id'], user, :read )
 
             json get_and_check_saisie( params['id'] )
           end

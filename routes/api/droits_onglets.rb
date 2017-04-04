@@ -14,7 +14,7 @@ module Suivi
 
               onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
-              json onglet.droits_dataset.naked.all
+              json onglet.droits
             end
 
             app.post "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/droits/?" do

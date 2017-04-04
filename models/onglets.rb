@@ -11,6 +11,11 @@ class Onglet < Sequel::Model(:onglets)
   one_to_many :saisies, class: :Saisie
   one_to_many :droits
 
+  def before_destroy
+    Droit.where(onglet_id: id).destroy
+    Saisie.where(onglet_id: id).destroy
+  end
+
   def init_droits( default_rights, uid_creator )
     default_rights.each do |default_right|
       add_droit( default_right )
@@ -26,7 +31,7 @@ class Onglet < Sequel::Model(:onglets)
     return droit[ right ] if !droit.nil? && droit.key?( right )
 
     is_admin = user[:user_detailed]['roles'].count do |role|
-      role['etablissement_code_uai'] == uai &&
+      role['etablissement_code_uai'] == user[:user_detailed]['profil_actif']['etablissement_code_uai'] &&
         ( role['role_id'] == 'TECH' ||
           role['role_id'].match('ADM.*') )
     end > 0

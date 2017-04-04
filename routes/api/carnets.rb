@@ -10,9 +10,7 @@ module Suivi
 
             error!( '401', 401 ) if params['uid'] != user[:uid]
 
-            json Carnet.where( id: Onglet.where( id: Saisie.where( uid: params['uid'] ).select( :onglet_id ).all.map(&:onglet_id) ).select( :carnet_id ).all.map(&:carnet_id) )
-                       .naked
-                       .all
+            json Carnet.where( id: Onglet.where( id: Saisie.where( uid: params['uid'] ).select( :onglet_id ).all.map(&:onglet_id) ).select( :carnet_id ).all.map(&:carnet_id) ).all
           end
 
           app.get "#{APP_PATH}/api/carnets/:uid_eleve" do

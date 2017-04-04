@@ -8,7 +8,7 @@ module Suivi
           app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/?" do
             param :uid_eleve, String, required: true
 
-            json get_and_check_carnet( params['uid_eleve'], user, :read ).onglets
+            json get_and_check_carnet( params['uid_eleve'], user, :read ).onglets.select { |onglet| onglet.allow?( user, :read ) }
           end
 
           app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id" do
@@ -65,9 +65,6 @@ module Suivi
 
             get_and_check_carnet( params['uid_eleve'], user, :write )
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
-
-            Droit.where( onglet_id: onglet.id ).destroy
-            Saisie.where( onglet_id: onglet.id ).destroy
 
             json onglet.destroy
           end

@@ -5,12 +5,16 @@ angular.module( 'suiviApp' )
                     var service = this;
 
                     service.onglet = function( uid, onglet, callback ) {
-                        $uibModal.open( { resolve: { onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; } },
+                        $uibModal.open( { resolve: { uid: function() { return uid; },
+                                                     onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; } },
                                           template: '<div class="modal-header">' +
-                                          '            <h3 class="modal-title">Ajouter un onglet</h3>' +
+                                          '            <h3 class="modal-title"><span ng:if="onglet.id">Éditer</span><span ng:if="!onglet.id">Ajouter</span> un onglet</h3>' +
                                           '          </div>' +
                                           '          <div class="modal-body available-apps">' +
                                           '            <input type="text" ng:model="onglet.nom" />' +
+                                          '<ul>' +
+                                          '<li ng:repeat="droit in droits"><droit droit="droit" uid="uid"></droit></li>' +
+                                          '</ul> TODO: ajout droit ; sauvegarde droits' +
                                           '            <div class="clearfix"></div>' +
                                           '          </div>' +
                                           '          <div class="modal-footer">' +
@@ -32,12 +36,25 @@ angular.module( 'suiviApp' )
                                           '              <span class="glyphicon glyphicon-ok-sign"></span> Valider' +
                                           '            </button>' +
                                           '          </div>',
-                                          controller: [ '$scope', '$uibModalInstance', 'onglet',
-                                                        function PopupOngletCtrl( $scope, $uibModalInstance, onglet ) {
+                                          controller: [ '$scope', '$uibModalInstance', 'DroitsOnglets', 'uid', 'onglet',
+                                                        function PopupOngletCtrl( $scope, $uibModalInstance, DroitsOnglets, uid, onglet ) {
                                                             var ctrl = $scope;
 
+                                                            ctrl.uid = uid;
                                                             ctrl.onglet = onglet;
                                                             ctrl.onglet.delete = false;
+
+                                                            DroitsOnglets.query({ uid_eleve: ctrl.uid,
+                                                                                  onglet_id: ctrl.onglet.id }).$promise
+                                                                .then( function success( response ) {
+                                                                    ctrl.droits = _(response).map( function( droit ) {
+                                                                        droit.read = droit.read === 1;
+                                                                        droit.write = droit.write === 1;
+
+                                                                        return droit;
+                                                                    } );
+                                                                },
+                                                                       function error( response ) {} );
 
                                                             ctrl.ok = function() {
                                                                 $uibModalInstance.close( ctrl.onglet );
@@ -89,7 +106,7 @@ angular.module( 'suiviApp' )
                     service.saisie = function( uid, onglet, saisie, callback ) {
                         $uibModal.open( { resolve: { saisie: function() { return _(saisie).isNull() ? { contenu: '', background_color: '#baddad' } : saisie; } },
                                           template: '<div class="modal-header">' +
-                                          '            <h3 class="modal-title">Ajouter une saisie</h3>' +
+                                          '            <h3 class="modal-title"><span ng:if="saisie.id">Éditer</span><span ng:if="!saisie.id">Ajouter</span> une saisie</h3>' +
                                           '          </div>' +
                                           '          <div class="modal-body available-apps">' +
                                           '            <input type="text" ng:model="saisie.contenu" />' +

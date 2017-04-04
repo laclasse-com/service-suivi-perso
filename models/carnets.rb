@@ -22,6 +22,11 @@ class Carnet < Sequel::Model(:carnets)
     carnet
   end
 
+  def before_destroy
+    Droit.where(onglet_id: id).destroy
+    Onglet.where(onglet_id: id).destroy
+  end
+
   def init_droits( default_rights )
     default_rights.each do |default_right|
       add_droit( default_right )
@@ -37,7 +42,7 @@ class Carnet < Sequel::Model(:carnets)
     return droit[ right ] unless droit.nil?
 
     is_admin = user[:user_detailed]['roles'].count do |role|
-      role['etablissement_code_uai'] == uai &&
+      role['etablissement_code_uai'] == user[:user_detailed]['profil_actif']['etablissement_code_uai'] &&
         ( role['role_id'] == 'TECH' ||
           role['role_id'].match('ADM.*') )
     end > 0

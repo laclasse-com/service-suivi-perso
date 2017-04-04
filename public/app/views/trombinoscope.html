@@ -1,11 +1,16 @@
 <div class="col-md-4">
     <input type="text" ng:model="search" />
+
+    <ul>
+        <li ng:repeat="eleve in eleves_contributed"><a ui:sref="carnet({uid: eleve.id_ent})">{{eleve.prenom}} {{eleve.nom}}</a></li>
+    </ul>
+    {{carnets_contributed}}
 </div>
 
 <div class="col-md-8 damier">
     <ul>
         <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins"
-            style="border: 4px solid black; background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
+            style="background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
             ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
             ng:repeat="eleve in eleves | filter:search">
             <a ui:sref="carnet({uid: eleve.id_ent})">
