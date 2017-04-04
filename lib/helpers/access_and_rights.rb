@@ -19,9 +19,10 @@ module Suivi
         onglet
       end
 
-      def get_and_check_saisie( id )
+      def get_and_check_saisie( id, user, right )
         saisie = Saisie[id: params[:id]]
         error!( '404 Unknown saisie', 404 ) if saisie.nil?
+        error!( '403 Forbidden', 403 ) unless saisie.allow?( user, right )
 
         saisie
       end

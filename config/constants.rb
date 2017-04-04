@@ -38,5 +38,10 @@ DEFAULT_RIGHTS = { Carnet: [ { profil_id: 'ELV', read: false, write: false },
                              { profil_id: 'ENS', read: true, write: true },
                              { profil_id: 'EVS', read: true, write: true },
                              { profil_id: 'DOC', read: true, write: true },
-                             { profil_id: 'DIR', read: true, write: true } ]
-                 }.freeze
+                             { profil_id: 'DIR', read: true, write: true } ],
+                   Saisie: [ { profil_id: 'ELV', read: true, write: false },
+                             { profil_id: 'TUT', read: true, write: false },
+                             { profil_id: 'ENS', read: true, write: false },
+                             { profil_id: 'EVS', read: true, write: false },
+                             { profil_id: 'DOC', read: true, write: false },
+                             { profil_id: 'DIR', read: true, write: false } ] }.freeze

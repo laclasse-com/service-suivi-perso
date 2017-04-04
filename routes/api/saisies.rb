@@ -35,10 +35,13 @@ module Suivi
             get_and_check_carnet( params['uid_eleve'], user, :write )
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
-            json onglet.add_saisy( uid: user[:uid],
-                                   date_creation: DateTime.now,
-                                   contenu: params['contenu'],
-                                   back_color: params['background_color'] )
+            saisie = onglet.add_saisy( uid: user[:uid],
+                                       date_creation: DateTime.now,
+                                       contenu: params['contenu'],
+                                       back_color: params['background_color'] )
+            saisie.init_droits( DEFAULT_RIGHTS[:Saisie], user[:uid] )
+
+            json saisie
           end
 
           app.put "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id" do
@@ -50,7 +53,7 @@ module Suivi
 
             get_and_check_carnet( params['uid_eleve'], user, :write )
             get_and_check_onglet( params['onglet_id'], user, :write )
-            saisie = get_and_check_saisie( params['id'] )
+            saisie = get_and_check_saisie( params['id'], user, :write )
 
             changed = false
             if params.key?('contenu')
@@ -77,7 +80,7 @@ module Suivi
 
             get_and_check_carnet( params['uid_eleve'], user, :write )
             get_and_check_onglet( params['onglet_id'], user, :write )
-            saisie = get_and_check_saisie( params['id'] )
+            saisie = get_and_check_saisie( params['id'], user, :write )
 
             json saisie.destroy
           end
