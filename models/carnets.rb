@@ -26,7 +26,7 @@ class Carnet < Sequel::Model(:carnets)
     default_rights.each do |default_right|
       add_droit( default_right )
     end
-    add_droit( uid: uid_eleve, read: true, write: true )
+    add_droit( uid: uid_elv, read: true, write: true )
   end
 
   def allow?( user, right )
