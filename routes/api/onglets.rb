@@ -63,13 +63,13 @@ module Suivi
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
 
-            carnet = get_and_check_carnet( params['uid_eleve'], user, :write )
-
+            get_and_check_carnet( params['uid_eleve'], user, :write )
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
-            onglet.remove_all_droits
-            onglet.remove_all_saisies
 
-            json carnet.remove_onglet( onglet )
+            Droit.where( onglet_id: onglet.id ).destroy
+            Saisie.where( onglet_id: onglet.id ).destroy
+
+            json onglet.destroy
           end
         end
       end

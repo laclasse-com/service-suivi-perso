@@ -7,5 +7,6 @@ angular.module( 'suiviApp' )
                                         onglet_id: '@onglet_id',
                                         id: '@id',
                                         contenu: '@contenu',
-                                        background_color: '@background_color' } );
+                                        background_color: '@background_color' },
+                                      { update: { method: 'PUT' } } );
                 } ] );

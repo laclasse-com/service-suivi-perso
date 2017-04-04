@@ -76,10 +76,10 @@ module Suivi
             param :id, Integer, required: true
 
             get_and_check_carnet( params['uid_eleve'], user, :write )
-            onglet = get_and_check_onglet( params['onglet_id'], user, :write )
+            get_and_check_onglet( params['onglet_id'], user, :write )
             saisie = get_and_check_saisie( params['id'] )
 
-            json onglet.remove_saisy( saisie )
+            json saisie.destroy
           end
         end
       end

@@ -165,7 +165,7 @@ angular.module( 'suiviApp' )
                                             .$update();
                                     }
                                 }
-                                promise.then( function success() {
+                                promise.then( function success( response ) {
                                     callback();
                                 },
                                               function error() {} );

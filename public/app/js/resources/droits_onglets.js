@@ -9,5 +9,6 @@ angular.module( 'suiviApp' )
                                         uid: '@uid',
                                         profil_id: '@profil_id',
                                         read: '@read',
-                                        write: '@write' } );
+                                        write: '@write' },
+                                      { update: { method: 'PUT' } } );
                 } ] );

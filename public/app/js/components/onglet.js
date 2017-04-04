@@ -4,15 +4,17 @@ angular.module( 'suiviApp' )
     .component( 'onglet',
                 { bindings: { uid: '<',
                               onglet: '<' },
-                  template: '<input class="btn btn-default" type="button" ng:click="$ctrl.popup_saisie( $ctrl.uid, $ctrl.onglet, null, $ctrl.$onInit )" value="+" />' +
+                  template: '<button class="btn btn-default" type="button" ng:click="$ctrl.popup_saisie( $ctrl.uid, $ctrl.onglet, null, $ctrl.$onInit )"><span class="glyphicon glyphicon-plus-sign"></span></button>' +
                   '          <ul>' +
                   '            <li ng:repeat="saisie in $ctrl.saisies">' +
-                  '              <saisie uid="$ctrl.uid" onglet-id="$ctrl.onglet.id" saisie="saisie"></saisie>' +
+                  '              <button class="btn btn-default" type="button" ng:click="$ctrl.popup_saisie( $ctrl.uid, $ctrl.onglet, saisie, $ctrl.$onInit )"><span class="glyphicon glyphicon-edit"></span></button>' +
+                  '              <saisie uid="$ctrl.uid" onglet="$ctrl.onglet" saisie="saisie"></saisie>' +
                   '            </li>' +
                   '          </ul>',
                   controller: [ '$uibModal', 'Onglets', 'Saisies', 'Popups',
                                 function( $uibModal, Onglets, Saisies, Popups ) {
                                     var ctrl = this;
+
                                     ctrl.popup_saisie = Popups.saisie;
 
                                     ctrl.$onInit = function() {

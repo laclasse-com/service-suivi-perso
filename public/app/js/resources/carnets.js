@@ -4,5 +4,6 @@ angular.module( 'suiviApp' )
                 function( $resource, APP_PATH ) {
                     return $resource( APP_PATH + '/api/carnets/:uid_eleve',
                                       { uid_eleve: '@uid_eleve',
-                                        sharable_id: '@sharable_id' } );
+                                        sharable_id: '@sharable_id' },
+                                      { update: { method: 'PUT' } } );
                 } ] );
