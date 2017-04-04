@@ -29,7 +29,7 @@ require_relative './routes/status'
 
 require_relative './routes/api/carnets'
 require_relative './routes/api/onglets'
-require_relative './routes/api/onglets_droits'
+require_relative './routes/api/droits_onglets'
 require_relative './routes/api/saisies'
 
 # Application Sinatra servant de base

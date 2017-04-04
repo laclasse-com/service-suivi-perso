@@ -8,29 +8,29 @@ module Suivi
           app.get "#{APP_PATH}/api/carnets/contributed/:uid" do
             param :uid, String, required: true
 
-            error!( '401', 401 ) if params[:uid] != user[:uid]
+            error!( '401', 401 ) if params['uid'] != user[:uid]
 
-            Carnet.where( id: Onglet.where( id: Saisie.where( uid: params[:uid] ).select( :onglet_id ).all.map(&:onglet_id) ).select( :carnet_id ).all.map(&:carnet_id) )
-                  .naked
-                  .all
+            json Carnet.where( id: Onglet.where( id: Saisie.where( uid: params['uid'] ).select( :onglet_id ).all.map(&:onglet_id) ).select( :carnet_id ).all.map(&:carnet_id) )
+                       .naked
+                       .all
           end
 
           app.get "#{APP_PATH}/api/carnets/:uid_eleve" do
             param :uid_eleve, String, required: true
 
-            get_and_check_carnet( params[:uid_eleve], :read )
+            json get_and_check_carnet( params['uid_eleve'], user, :read )
           end
 
           app.put "#{APP_PATH}/api/carnets/:uid_eleve" do
             param :uid_eleve, String, required: true
             param :sharable_id, String, required: false
 
-            carnet = get_and_check_carnet( params[:uid_eleve], :write )
+            carnet = get_and_check_carnet( params['uid_eleve'], user, :write )
 
-            carnet.sharable_id = params[:sharable_id] if params.key?( :sharable_id )
+            carnet.sharable_id = params['sharable_id'] if params.key?( 'sharable_id' )
             carnet.save
 
-            carnet
+            json carnet
           end
         end
       end

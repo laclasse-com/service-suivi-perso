@@ -1,7 +1,7 @@
 angular.module( 'suiviApp' )
     .controller( 'TrombinoscopeCtrl',
-                 [ '$scope', '$http', '$q', 'URL_ENT', 'User', 'Etablissement',
-                   function( $scope, $http, $q, URL_ENT, User, Etablissement ) {
+                 [ '$scope', '$http', '$q', 'URL_ENT', 'User',
+                   function( $scope, $http, $q, URL_ENT, User ) {
                        var ctrl = $scope;
                        ctrl.search = '';
 

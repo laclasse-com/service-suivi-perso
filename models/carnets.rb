@@ -34,7 +34,7 @@ class Carnet < Sequel::Model(:carnets)
     return droit[ right ] if !droit.nil? && droit.key?( right )
 
     droit = droits_dataset[profil_id: user[:user_detailed]['profil_actif']['profil_id']]
-    return droit[ right ] if !droit.nil? && droit.key?( right )
+    return droit[ right ] unless droit.nil?
 
     is_admin = user[:user_detailed]['roles'].count do |role|
       role['etablissement_code_uai'] == uai &&
