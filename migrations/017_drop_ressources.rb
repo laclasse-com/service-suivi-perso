@@ -1,3 +1,5 @@
 Sequel.migration do
-  drop_table!( :ressources )
+  change do
+    drop_table( :ressources )
+  end
 end
