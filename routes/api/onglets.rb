@@ -8,7 +8,15 @@ module Suivi
           app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/?" do
             param :uid_eleve, String, required: true
 
-            json get_and_check_carnet( params['uid_eleve'], user, :read ).onglets.select { |onglet| onglet.allow?( user, :read ) }
+            json( get_and_check_carnet( params['uid_eleve'], user, :read )
+                    .onglets
+                    .select { |onglet| onglet.allow?( user, :read ) }
+                    .map { |onglet|
+                    onglet_hash = onglet.to_hash
+                    onglet_hash[:writable] = onglet.allow?( user, :write )
+
+                    onglet_hash
+                  } )
           end
 
           app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id" do
@@ -17,7 +25,11 @@ module Suivi
 
             get_and_check_carnet( params['uid_eleve'], user, :read )
 
-            json get_and_check_onglet( params['onglet_id'], user, :read )
+            onglet = get_and_check_onglet( params['onglet_id'], user, :read )
+            onglet_hash = onglet.to_hash
+            onglet_hash[:writable] = onglet.allow?( user, :write )
+
+            json( onglet_hash )
           end
 
           app.post "#{APP_PATH}/api/carnets/:uid_eleve/onglets/?" do
@@ -35,10 +47,10 @@ module Suivi
                                       sharable_id: nil,
                                       date_creation: DateTime.now )
 
-              onglet.init_droits( DEFAULT_RIGHTS[:Onglet], user[:uid] )
+              onglet.init_droits( DEFAULT_RIGHTS[:Onglet], user )
             end
 
-            json onglet
+            json( onglet )
           end
 
           app.put "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id" do
@@ -56,7 +68,7 @@ module Suivi
             onglet.sharable_id = params['sharable_id'] if params.key?( 'sharable_id' )
             onglet.save
 
-            json onglet
+            json( onglet )
           end
 
           app.delete "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id" do
@@ -66,7 +78,7 @@ module Suivi
             get_and_check_carnet( params['uid_eleve'], user, :write )
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
-            json onglet.destroy
+            json( onglet.destroy )
           end
         end
       end

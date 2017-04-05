@@ -12,9 +12,7 @@ angular.module( 'suiviApp' )
                                           '          </div>' +
                                           '          <div class="modal-body available-apps">' +
                                           '            <input type="text" ng:model="onglet.nom" />' +
-                                          '<ul>' +
-                                          '<li ng:repeat="droit in droits"><droit droit="droit" uid="uid"></droit></li>' +
-                                          '</ul> TODO: ajout droit ; sauvegarde droits' +
+                                          '            <droits-onglets uid="uid" onglet="onglet"></droits-onglets>' +
                                           '            <div class="clearfix"></div>' +
                                           '          </div>' +
                                           '          <div class="modal-footer">' +
@@ -36,25 +34,13 @@ angular.module( 'suiviApp' )
                                           '              <span class="glyphicon glyphicon-ok-sign"></span> Valider' +
                                           '            </button>' +
                                           '          </div>',
-                                          controller: [ '$scope', '$uibModalInstance', 'DroitsOnglets', 'uid', 'onglet',
-                                                        function PopupOngletCtrl( $scope, $uibModalInstance, DroitsOnglets, uid, onglet ) {
+                                          controller: [ '$scope', '$uibModalInstance', 'uid', 'onglet',
+                                                        function PopupOngletCtrl( $scope, $uibModalInstance, uid, onglet ) {
                                                             var ctrl = $scope;
 
                                                             ctrl.uid = uid;
                                                             ctrl.onglet = onglet;
                                                             ctrl.onglet.delete = false;
-
-                                                            DroitsOnglets.query({ uid_eleve: ctrl.uid,
-                                                                                  onglet_id: ctrl.onglet.id }).$promise
-                                                                .then( function success( response ) {
-                                                                    ctrl.droits = _(response).map( function( droit ) {
-                                                                        droit.read = droit.read === 1;
-                                                                        droit.write = droit.write === 1;
-
-                                                                        return droit;
-                                                                    } );
-                                                                },
-                                                                       function error( response ) {} );
 
                                                             ctrl.ok = function() {
                                                                 $uibModalInstance.close( ctrl.onglet );

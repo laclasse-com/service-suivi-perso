@@ -39,7 +39,7 @@ module Suivi
                                        date_creation: DateTime.now,
                                        contenu: params['contenu'],
                                        back_color: params['background_color'] )
-            saisie.init_droits( DEFAULT_RIGHTS[:Saisie], user[:uid] )
+            saisie.init_droits( DEFAULT_RIGHTS[:Saisie], user )
 
             json saisie
           end

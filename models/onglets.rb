@@ -16,11 +16,14 @@ class Onglet < Sequel::Model(:onglets)
     Saisie.where(onglet_id: id).destroy
   end
 
-  def init_droits( default_rights, uid_creator )
-    default_rights.each do |default_right|
-      add_droit( default_right )
+  def init_droits( default_rights, user_creator )
+    if carnets.uid_elv == user_creator[:uid]
+      add_droit( uid: user_creator[:uid], read: true, write: true )
+    else
+      default_rights.each do |default_right|
+        add_droit( default_right )
+      end
     end
-    add_droit( uid: uid_creator, read: true, write: true )
   end
 
   def allow?( user, right )
@@ -28,7 +31,7 @@ class Onglet < Sequel::Model(:onglets)
     return droit[ right ] unless droit.nil?
 
     droit = droits_dataset[profil_id: user[:user_detailed]['profil_actif']['profil_id']]
-    return droit[ right ] if !droit.nil? && droit.key?( right )
+    return droit[ right ] unless droit.nil?
 
     is_admin = user[:user_detailed]['roles'].count do |role|
       role['etablissement_code_uai'] == user[:user_detailed]['profil_actif']['etablissement_code_uai'] &&

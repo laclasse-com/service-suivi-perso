@@ -18,7 +18,6 @@ require_relative './models/carnets'
 require_relative './models/droits'
 require_relative './models/onglets'
 require_relative './models/saisies'
-require_relative './models/ressources'
 
 require_relative './lib/helpers/access_and_rights'
 

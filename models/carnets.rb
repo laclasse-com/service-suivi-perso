@@ -36,7 +36,7 @@ class Carnet < Sequel::Model(:carnets)
 
   def allow?( user, right )
     droit = droits_dataset[uid: user[:uid]]
-    return droit[ right ] if !droit.nil? && droit.key?( right )
+    return droit[ right ] unless droit.nil?
 
     droit = droits_dataset[profil_id: user[:user_detailed]['profil_actif']['profil_id']]
     return droit[ right ] unless droit.nil?

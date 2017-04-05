@@ -19,6 +19,7 @@ Sequel.migration do
       drop_column :hopital
       drop_column :evignal
       drop_column :admin
+      drop_column :date_creation
       rename_column :profil, :profil_id
       set_column_allow_null :carnet_id
     end

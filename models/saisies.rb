@@ -6,7 +6,6 @@ class Saisie < Sequel::Model(:saisies)
   plugin :composition
 
   many_to_one :onglets, class: :Onglet, key: :onglet_id
-  one_to_many :ressources
   one_to_many :droits
 
   def before_destroy
@@ -14,11 +13,11 @@ class Saisie < Sequel::Model(:saisies)
     Ressource.where(saisie_id: id).destroy
   end
 
-  def init_droits( default_rights, uid_creator )
+  def init_droits( default_rights, user_creator )
     default_rights.each do |default_right|
       add_droit( default_right )
     end
-    add_droit( uid: uid_creator, read: true, write: true )
+    add_droit( uid: user_creator[:uid], read: true, write: true )
   end
 
   def allow?( user, right )
