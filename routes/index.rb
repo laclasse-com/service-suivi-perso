@@ -4,7 +4,7 @@ module Suivi
   module Routes
     module Index
       def self.registered( app )
-        app.get "#{APP_PATH}/?" do
+        app.get '/?' do
           erb :app
         end
       end

@@ -5,7 +5,7 @@ module Suivi
     module Api
       module Onglets
         def self.registered( app )
-          app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/?" do
+          app.get 'api/carnets/:uid_eleve/onglets/?' do
             param :uid_eleve, String, required: true
 
             json( get_and_check_carnet( params['uid_eleve'], user, :read )
@@ -19,7 +19,7 @@ module Suivi
                   } )
           end
 
-          app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id" do
+          app.get 'api/carnets/:uid_eleve/onglets/:onglet_id' do
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
 
@@ -32,7 +32,7 @@ module Suivi
             json( onglet_hash )
           end
 
-          app.post "#{APP_PATH}/api/carnets/:uid_eleve/onglets/?" do
+          app.post 'api/carnets/:uid_eleve/onglets/?' do
             param :uid_eleve, String, required: true
             param :nom, String, required: true
             param :ordre, Integer, required: false
@@ -53,7 +53,7 @@ module Suivi
             json( onglet )
           end
 
-          app.put "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id" do
+          app.put 'api/carnets/:uid_eleve/onglets/:onglet_id' do
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :nom, String, required: false
@@ -71,7 +71,7 @@ module Suivi
             json( onglet )
           end
 
-          app.delete "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id" do
+          app.delete 'api/carnets/:uid_eleve/onglets/:onglet_id' do
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
 

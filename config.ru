@@ -12,10 +12,6 @@ require 'laclasse/helpers/rack'
 
 require_relative './app'
 
-use Rack::Rewrite do
-  rewrite %r{/.*/(app)/(.*)}, '/$1/$2'
-end
-
 Laclasse::Helpers::Rack.configure_rake self
 
 use OmniAuth::Builder do
@@ -25,4 +21,6 @@ use OmniAuth::Builder do
   provider :cas, CASAUTH::CONFIG
 end
 
-run SinatraApp
+map "#{APP_PATH}" do
+  run SinatraApp
+end

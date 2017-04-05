@@ -5,7 +5,7 @@ module Suivi
     module Api
       module Saisies
         def self.registered( app )
-          app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/?" do
+          app.get 'api/carnets/:uid_eleve/onglets/:onglet_id/saisies/?' do
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
 
@@ -15,7 +15,7 @@ module Suivi
             json onglet.saisies
           end
 
-          app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id" do
+          app.get 'api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id' do
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :id, Integer, required: true
@@ -26,7 +26,7 @@ module Suivi
             json get_and_check_saisie( params['id'] )
           end
 
-          app.post "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/?" do
+          app.post 'api/carnets/:uid_eleve/onglets/:onglet_id/saisies/?' do
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :contenu, String, required: true
@@ -44,7 +44,7 @@ module Suivi
             json saisie
           end
 
-          app.put "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id" do
+          app.put 'api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id' do
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :id, Integer, required: true
@@ -73,7 +73,7 @@ module Suivi
             json saisie
           end
 
-          app.delete "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id" do
+          app.delete 'api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id' do
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :id, Integer, required: true

@@ -5,7 +5,7 @@ module Suivi
     module Api
       module Carnets
         def self.registered( app )
-          app.get "#{APP_PATH}/api/carnets/contributed/:uid" do
+          app.get 'api/carnets/contributed/:uid' do
             param :uid, String, required: true
 
             error!( '401', 401 ) if params['uid'] != user[:uid]
@@ -20,13 +20,13 @@ module Suivi
                         .all )
           end
 
-          app.get "#{APP_PATH}/api/carnets/:uid_eleve" do
+          app.get 'api/carnets/:uid_eleve' do
             param :uid_eleve, String, required: true
 
             json get_and_check_carnet( params['uid_eleve'], user, :read )
           end
 
-          app.put "#{APP_PATH}/api/carnets/:uid_eleve" do
+          app.put 'api/carnets/:uid_eleve' do
             param :uid_eleve, String, required: true
             param :sharable_id, String, required: false
 
@@ -43,7 +43,7 @@ module Suivi
   end
 end
 
-# app.get "#{APP_PATH}/api/carnets/:uid_eleve/pdf" do
+# app.get 'api/carnets/:uid_eleve/pdf' do
 #   param :uid_eleve, String, required: true
 #   param :onglets_ids, Array, required: true
 #   param :evignal, Boolean, required: false, default: false

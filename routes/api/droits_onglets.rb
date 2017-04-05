@@ -6,7 +6,7 @@ module Suivi
       module Onglets
         module Droits
           def self.registered( app )
-            app.get "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/droits/?" do
+            app.get 'api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
               param :uid_eleve, String, required: true
               param :onglet_id, Integer, required: true
 
@@ -14,10 +14,10 @@ module Suivi
 
               onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
-              json onglet.droits
+              json( onglet.droits )
             end
 
-            app.post "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/droits/?" do
+            app.post 'api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
               param :uid_eleve, String, required: true
               param :onglet_id, Integer, required: true
 
@@ -31,15 +31,18 @@ module Suivi
               get_and_check_carnet( params['uid_eleve'], user, :write )
               onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
+              droit = Droit[uid: params['uid'], profil_id: params['profil_id'], read: params['read'], write: params['write']]
+              return json( droit ) unless droit.nil?
+
               new_right = {}
-              [ 'uid', 'profil_id', 'read', 'write' ].each do |key|
+              %w(uid profil_id read write).each do |key|
                 new_right[ key ] = params[ key ] if params.key?( key )
               end
 
-              json onglet.add_droit( new_right )
+              json( onglet.add_droit( new_right ) )
             end
 
-            app.put "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id" do
+            app.put 'api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
               param :uid_eleve, String, required: true
               param :onglet_id, Integer, required: true
               param :droit_id, Integer, required: true
@@ -62,10 +65,10 @@ module Suivi
               end
               droit.save
 
-              json droit
+              json( droit )
             end
 
-            app.delete "#{APP_PATH}/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id" do
+            app.delete 'api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
               param :uid_eleve, String, required: true
               param :onglet_id, Integer, required: true
               param :droit_id, Integer, required: true
@@ -76,7 +79,7 @@ module Suivi
               droit = Droit[params['droit_id']]
               error!( '404 Unknown droit', 404 ) if droit.nil?
 
-              json droit.destroy
+              json( droit.destroy )
             end
           end
         end

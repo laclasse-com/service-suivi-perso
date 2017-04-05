@@ -5,7 +5,6 @@ angular.module( 'suiviApp',
                 [ 'ngResource',
                   'textAngular',
                   'ui.bootstrap',
-                  'ui.checkbox',
                   'ui.router' ] )
     .config( [ '$httpProvider',
                function( $httpProvider ) {
