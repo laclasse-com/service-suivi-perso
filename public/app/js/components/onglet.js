@@ -4,13 +4,7 @@ angular.module( 'suiviApp' )
     .component( 'onglet',
                 { bindings: { uid: '<',
                               onglet: '<' },
-                  template: '<button class="btn btn-default" type="button" ng:click="$ctrl.popup_saisie( $ctrl.uid, $ctrl.onglet, null, $ctrl.$onInit )" ng:if="onglet.writable"><span class="glyphicon glyphicon-plus-sign"></span></button>' +
-                  '          <ul>' +
-                  '            <li ng:repeat="saisie in $ctrl.saisies">' +
-                  '              <button class="btn btn-default" type="button" ng:click="$ctrl.popup_saisie( $ctrl.uid, $ctrl.onglet, saisie, $ctrl.$onInit )"><span class="glyphicon glyphicon-edit"></span></button>' +
-                  '              <saisie uid="$ctrl.uid" onglet="$ctrl.onglet" saisie="saisie"></saisie>' +
-                  '            </li>' +
-                  '          </ul>',
+                  templateUrl: 'app/js/components/onglet.html',
                   controller: [ '$uibModal', 'Onglets', 'Saisies', 'Popups',
                                 function( $uibModal, Onglets, Saisies, Popups ) {
                                     var ctrl = this;

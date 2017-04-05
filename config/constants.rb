@@ -45,3 +45,5 @@ DEFAULT_RIGHTS = { Carnet: [ { profil_id: 'ELV', read: false, write: false },
                              { profil_id: 'EVS', read: true, write: false },
                              { profil_id: 'DOC', read: true, write: false },
                              { profil_id: 'DIR', read: true, write: false } ] }.freeze
+
+CACHE_BUSTER = Time.now.to_i.to_s

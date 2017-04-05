@@ -1,0 +1,22 @@
+<div>
+    <ul>
+        <li ng:repeat="droit in $ctrl.droits">
+            <input type="text" ng:model="droit.uid" ng:if="droit.uid" ng:change="$ctrl.save( droit )" />
+            <input type="text" ng:model="droit.profil_id" ng:if="droit.profil_id" ng:change="$ctrl.save( droit )" />
+            <input type="checkbox" ng:model="droit.read" ng:change="$ctrl.save( droit )" />
+            <input type="checkbox" ng:model="droit.write" ng:change="$ctrl.save( droit )" />
+
+            <button ng:click="$ctrl.delete( droit )"><span class="glyphicon glyphicon-trash"></span></button>
+        </li>
+    </ul>
+
+    <button class="btn btn-default" type="button"
+            ng:click="$ctrl.add({ uid: $ctrl.UID, profil_id: '', read: true, write: true, uid_eleve: $ctrl.uid, onglet_id: $ctrl.onglet.id })">
+        <span class="glyphicon glyphicon-plus-sign"></span> moi-même
+    </button>
+
+    <button class="btn btn-default" type="button"
+            ng:click="$ctrl.add({ uid: '', profil_id: '', read: false, write: false, uid_eleve: $ctrl.uid, onglet_id: $ctrl.onglet.id })">
+        <span class="glyphicon glyphicon-plus-sign"></span>
+    </button>
+</div>

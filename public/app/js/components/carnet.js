@@ -3,13 +3,7 @@
 angular.module( 'suiviApp' )
     .component( 'carnet',
                 { bindings: { uid: '<' },
-                  template: '<uib-tabset active="0">' +
-                  '            <uib-tab index="$index + 1" ng:repeat="onglet in $ctrl.onglets">' +
-                  '              <uib-tab-heading>{{onglet.nom}} <button class="btn btn-default" ng:click="$ctrl.popup_onglet( $ctrl.uid, onglet, $ctrl.$onInit )"><span class="glyphicon glyphicon-edit"></span></button></uib-tab-heading>' +
-                  '              <onglet uid="$ctrl.uid" onglet="onglet"></onglet>' +
-                  '            </uib-tab>' +
-                  '            <li><input class="btn btn-default" type="button" ng:click="$ctrl.popup_onglet( $ctrl.uid, null, $ctrl.$onInit )" value="+" /></li>' +
-                  '          </uib-tabset>',
+                  templateUrl: 'app/js/components/carnet.html',
                   controller: [ '$uibModal', 'Carnets', 'Onglets', 'Popups',
                                 function( $uibModal, Carnets, Onglets, Popups ) {
                                     var ctrl = this;

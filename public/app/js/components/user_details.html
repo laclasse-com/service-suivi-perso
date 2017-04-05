@@ -1,0 +1,44 @@
+<img ng:src="{{$ctrl.URL_ENT + $ctrl.user.avatar}}" style="background-color: #baddad;" ng:if="$ctrl.showAvatar" />
+
+<span ng:style="{'font-size': $ctrl.small ? '100%' : '150%'}">{{$ctrl.user.prenom}}</span>
+<span ng:style="{'font-size': $ctrl.small ? '100%' : '175%'}"> {{$ctrl.user.nom}}</span>
+
+<uib-accordion close-others="false">
+    <div uib-accordion-group heading="Adresse" ng:if="$ctrl.showAddress" is-open="true">
+        {{$ctrl.user.adresse}}
+        <br>
+        {{$ctrl.user.code_postal}} {{$ctrl.user.ville}}
+    </div>
+
+    <div uib-accordion-group heading="Téléphones" ng:if="$ctrl.showPhones" is-open="true">
+        <ul>
+            <li ng:repeat="phone in $ctrl.user.telephones">
+                {{phone.type_telephone_id}}: {{phone.numero}}
+            </li>
+        </ul>
+    </div>
+
+    <div uib-accordion-group heading="Emails" ng:if="$ctrl.showEmails" is-open="true">
+        <ul>
+            <li ng:repeat="email in $ctrl.user.emails">
+                <a href="mailto:{{email.adresse}}">{{email.adresse}}</a>
+            </li>
+        </ul>
+    </div>
+
+    <div uib-accordion-group heading="Responsables"  ng:if="$ctrl.showResponsables">
+        <ul>
+            <li ng:repeat="adulte in $ctrl.user.relations_adultes">
+                {{adulte.description}}: <user-details uid="adulte.id_ent" small="true" show-childrens="true" show-address="true" show-phones="true" show-emails="true"></user-details>
+            </li>
+        </ul>
+    </div>
+
+    <div uib-accordion-group heading="Enfants" ng:if="$ctrl.showChildrens">
+        <ul>
+            <li ng:repeat="enfant in $ctrl.user.relations_eleves">
+                {{enfant.description}}: <a ui:sref="carnet({uid_eleve: enfant.id_ent})"><user-details uid="enfant.id_ent" small="true"></user-details></a>
+            </li>
+        </ul>
+    </div>
+</uib-accordion>

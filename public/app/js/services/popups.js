@@ -7,33 +7,7 @@ angular.module( 'suiviApp' )
                     service.onglet = function( uid, onglet, callback ) {
                         $uibModal.open( { resolve: { uid: function() { return uid; },
                                                      onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; } },
-                                          template: '<div class="modal-header">' +
-                                          '            <h3 class="modal-title"><span ng:if="onglet.id">Éditer</span><span ng:if="!onglet.id">Ajouter</span> un onglet</h3>' +
-                                          '          </div>' +
-                                          '          <div class="modal-body available-apps">' +
-                                          '            <input type="text" ng:model="onglet.nom" />' +
-                                          '            <droits-onglets uid="uid" onglet="onglet"></droits-onglets>' +
-                                          '            <div class="clearfix"></div>' +
-                                          '          </div>' +
-                                          '          <div class="modal-footer">' +
-                                          '            <button class="btn btn-danger pull-left"' +
-                                          '                    ng:click="delete()"' +
-                                          '                    ng:if="onglet.id">' +
-                                          '              <span class="glyphicon glyphicon-trash"></span>' +
-                                          '              <span> Supprimer l\'onglet</span>' +
-                                          '            </button>' +
-                                          '            <button class="btn btn-default"' +
-                                          '                    ng:click="cancel()">' +
-                                          '              <span class="glyphicon glyphicon-remove-sign"></span>' +
-                                          '              <span ng:if="onglet.nom"> Annuler</span>' +
-                                          '              <span ng:if="!onglet.nom"> Fermer</span>' +
-                                          '            </button>' +
-                                          '            <button class="btn btn-success"' +
-                                          '                    ng:click="ok()"' +
-                                          '                    ng:disabled="!onglet.nom">' +
-                                          '              <span class="glyphicon glyphicon-ok-sign"></span> Valider' +
-                                          '            </button>' +
-                                          '          </div>',
+                                          templateUrl: 'app/views/popup_onglet.html',
                                           controller: [ '$scope', '$uibModalInstance', 'uid', 'onglet',
                                                         function PopupOngletCtrl( $scope, $uibModalInstance, uid, onglet ) {
                                                             var ctrl = $scope;
@@ -91,32 +65,7 @@ angular.module( 'suiviApp' )
 
                     service.saisie = function( uid, onglet, saisie, callback ) {
                         $uibModal.open( { resolve: { saisie: function() { return _(saisie).isNull() ? { contenu: '', background_color: '#baddad' } : saisie; } },
-                                          template: '<div class="modal-header">' +
-                                          '            <h3 class="modal-title"><span ng:if="saisie.id">Éditer</span><span ng:if="!saisie.id">Ajouter</span> une saisie</h3>' +
-                                          '          </div>' +
-                                          '          <div class="modal-body available-apps">' +
-                                          '            <input type="text" ng:model="saisie.contenu" />' +
-                                          '            <div class="clearfix"></div>' +
-                                          '          </div>' +
-                                          '          <div class="modal-footer">' +
-                                          '            <button class="btn btn-danger pull-left"' +
-                                          '                    ng:click="delete()"' +
-                                          '                    ng:if="saisie.id">' +
-                                          '              <span class="glyphicon glyphicon-trash"></span>' +
-                                          '              <span> Supprimer l\'saisie</span>' +
-                                          '            </button>' +
-                                          '            <button class="btn btn-default"' +
-                                          '                    ng:click="cancel()">' +
-                                          '              <span class="glyphicon glyphicon-remove-sign"></span>' +
-                                          '              <span ng:if="saisie.contenu"> Annuler</span>' +
-                                          '              <span ng:if="!saisie.contenu"> Fermer</span>' +
-                                          '            </button>' +
-                                          '            <button class="btn btn-success"' +
-                                          '                    ng:click="ok()"' +
-                                          '                    ng:disabled="!saisie.contenu">' +
-                                          '              <span class="glyphicon glyphicon-ok-sign"></span> Valider' +
-                                          '            </button>' +
-                                          '          </div>',
+                                          templateUrl: 'app/views/popup_saisie.html',
                                           controller: [ '$scope', '$uibModalInstance', 'saisie',
                                                         function PopupSaisieCtrl( $scope, $uibModalInstance, saisie ) {
                                                             var ctrl = $scope;

@@ -23,8 +23,8 @@ module Suivi
 
               param :uid, String, required: false
               param :profil_id, String, required: false
-              param :read, Boolean, required: false
-              param :write, Boolean, required: false
+              param :read, :boolean, required: false
+              param :write, :boolean, required: false
 
               error!( '400 missing parameter', 400 ) unless ( params.key?('uid') || params.key?('profil_id') ) && ( params.key?('read') || params.key?('write') )
 
@@ -32,7 +32,7 @@ module Suivi
               onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
               new_right = {}
-              [ :uid, :profil_id, :read, :write ].each do |key|
+              [ 'uid', 'profil_id', 'read', 'write' ].each do |key|
                 new_right[ key ] = params[ key ] if params.key?( key )
               end
 
@@ -46,8 +46,8 @@ module Suivi
 
               param :uid, String, required: false
               param :profil_id, String, required: false
-              param :read, Boolean, required: false
-              param :write, Boolean, required: false
+              param :read, :boolean, required: false
+              param :write, :boolean, required: false
 
               error!( '400 missing parameter', 400 ) unless ( params.key?('uid') || params.key?('profil_id') ) && ( params.key?('read') || params.key?('write') )
 

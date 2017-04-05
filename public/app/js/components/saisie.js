@@ -5,14 +5,13 @@ angular.module( 'suiviApp' )
                 { bindings: { uid: '<',
                               onglet: '<',
                               saisie: '<' },
-                  template: '<fieldset>' +
-                  '            <legend>{{$ctrl.saisie.uid}}</legend>' +
-                  '            <h6>{{$ctrl.saisie.date_creation}}</h6>' +
-                  '            <div>{{$ctrl.saisie.contenu}}</div>' +
-                  '          </fieldset>',
-                  controller: [ function() {
-                      var ctrl = this;
+                  templateUrl: 'app/js/components/saisie.html',
+                  controller: [ '$sce',
+                                function( $sce ) {
+                                    var ctrl = this;
 
-                      ctrl.$onInit = function() {};
-                  } ]
+                                    ctrl.$onInit = function() {
+                                        ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
+                                    };
+                                } ]
                 } );
