@@ -10,7 +10,6 @@ class Saisie < Sequel::Model(:saisies)
 
   def before_destroy
     Droit.where(saisie_id: id).destroy
-    Ressource.where(saisie_id: id).destroy
   end
 
   def init_droits( default_rights, user_creator )
