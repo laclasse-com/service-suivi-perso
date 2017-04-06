@@ -6,7 +6,7 @@ module Suivi
       module Onglets
         module Droits
           def self.registered( app )
-            app.get 'api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
+            app.get '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
               param :uid_eleve, String, required: true
               param :onglet_id, Integer, required: true
 
@@ -17,7 +17,7 @@ module Suivi
               json( onglet.droits )
             end
 
-            app.post 'api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
+            app.post '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
               param :uid_eleve, String, required: true
               param :onglet_id, Integer, required: true
 
@@ -42,7 +42,7 @@ module Suivi
               json( onglet.add_droit( new_right ) )
             end
 
-            app.put 'api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
+            app.put '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
               param :uid_eleve, String, required: true
               param :onglet_id, Integer, required: true
               param :droit_id, Integer, required: true
@@ -68,7 +68,7 @@ module Suivi
               json( droit )
             end
 
-            app.delete 'api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
+            app.delete '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
               param :uid_eleve, String, required: true
               param :onglet_id, Integer, required: true
               param :droit_id, Integer, required: true

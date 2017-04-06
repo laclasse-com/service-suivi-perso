@@ -3,8 +3,7 @@
 require 'rubygems'
 require 'bundler'
 
-Bundler.require(:default, :development) # require tout les gems définis dans Gemfile
-require 'sinatra/reloader' if ENV['RACK_ENV'] == 'development'
+Bundler.require(:default, ENV['RACK_ENV'].to_sym )
 
 require_relative './config/init'
 
@@ -40,12 +39,7 @@ class SinatraApp < Sinatra::Base
     set :inline_templates, true
     set :protection, true
     set :lock, true
-  end
-
-  configure :development do
-    register Sinatra::Reloader
-    # also_reload '/path/to/some/file'
-    # dont_reload '/path/to/other/file'
+    set :raise_errors, false
   end
 
   helpers Sinatra::Param
@@ -56,17 +50,19 @@ class SinatraApp < Sinatra::Base
 
   helpers Suivi::Helpers::AccessAndRights
 
-  # Routes nécessitant une authentification
-  [ '/?', '/login' ].each do |route|
-    before "#{APP_PATH}#{route}" do
-      login!( env['REQUEST_PATH'] ) unless logged?
+  before  do
+    request.path.match( %r{#{APP_PATH}/(auth|login|status|__sinatra__)[/]?.*} ) do
+      pass
     end
+
+    login!( request.path ) unless logged?
   end
+
+  register Suivi::Routes::Auth
 
   register Suivi::Routes::Index
   register Suivi::Routes::PublicUrl
   register Suivi::Routes::Status
-  register Suivi::Routes::Auth
 
   register Suivi::Routes::Api::Carnets
   register Suivi::Routes::Api::Onglets

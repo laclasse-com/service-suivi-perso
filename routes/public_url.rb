@@ -4,7 +4,7 @@ module Suivi
   module Routes
     module PublicUrl
       def self.registered( app )
-        app.get 'public/:url' do
+        app.get '/public/:url' do
           begin
             carnet = Carnet[url_publique: params[:url]]
             tabs = CarnetsLib.tab_list( carnet.uid_elv, nil, params[:url] )

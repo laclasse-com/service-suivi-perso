@@ -4,7 +4,10 @@ module Suivi
   module Routes
     module Auth
       def self.registered( app )
-        app.get 'auth/:provider/callback' do
+        app.get '/auth/:provider/callback/?' do
+          param :provider, String, required: true
+          param :url, String, required: false
+
           init_session( request.env )
 
           protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
@@ -12,24 +15,24 @@ module Suivi
           redirect "#{APP_PATH}/"
         end
 
-        app.get 'auth/failure' do
+        app.get '/auth/failure/?' do
           erb :auth_failure
         end
 
-        app.get 'auth/:provider/deauthorized' do
+        app.get '/auth/:provider/deauthorized/?' do
           erb :auth_deauthorized
         end
 
-        app.get 'protected' do
+        app.get '/protected/?' do
           throw( :halt, [ 401, "Not authorized\n" ] ) unless logged?
           erb :auth_protected
         end
 
-        app.get 'login' do
+        app.get '/login/?' do
           login! "#{APP_PATH}/"
         end
 
-        app.get 'logout' do
+        app.get '/logout/?' do
           protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
           logout! "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"
         end
