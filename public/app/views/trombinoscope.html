@@ -1,10 +1,12 @@
-<div class="col-md-4">
-    <input type="text" ng:model="search" />
+<div class="col-md-4 gris1-moins aside">
+    <label for="search"> Filtrage des élèves affichés : </label>
+    <input  class="form-control input-sm"
+            type="text" name="search" ng:model="search" />
 
+    <label ng:if="eleves_contributed.length > 0"> Carnet<span ng:if="eleves_contributed.length > 1">s</span> <span ng:if="eleves_contributed.length > 1">auxquels</span><span ng:if="eleves_contributed.length < 2">auquel</span> vous avez contribué : </label>
     <ul>
         <li ng:repeat="eleve in eleves_contributed"><a ui:sref="carnet({uid: eleve.id_ent})">{{eleve.prenom}} {{eleve.nom}}</a></li>
     </ul>
-    {{carnets_contributed}}
 </div>
 
 <div class="col-md-8 damier">

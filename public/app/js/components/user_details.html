@@ -1,16 +1,28 @@
-<img ng:src="{{$ctrl.URL_ENT + $ctrl.user.avatar}}" style="background-color: #baddad;" ng:if="$ctrl.showAvatar" />
+<img ng:src="{{$ctrl.URL_ENT + $ctrl.user.avatar}}" class="col-md-4 avatar" ng:if="$ctrl.showAvatar" />
 
-<span ng:style="{'font-size': $ctrl.small ? '100%' : '150%'}">{{$ctrl.user.prenom}}</span>
-<span ng:style="{'font-size': $ctrl.small ? '100%' : '175%'}"> {{$ctrl.user.nom}}</span>
+<span class="col-md-8 details">
+    <div class="col-md-12">
+        <span class="first-name" ng:style="{'font-size': $ctrl.small ? '100%' : '150%'}">{{$ctrl.user.prenom}}</span>
+        <span class="last-name" ng:style="{'font-size': $ctrl.small ? '100%' : '175%'}"> {{$ctrl.user.nom}}</span>
+    </div>
+    <div class="col-md-12">
+        <span class="classe">{{$ctrl.user.classes[0].classe_libelle}}</span> - <span class="etablissement">{{$ctrl.user.classes[0].etablissement_nom}}</span>
+    </div>
+    <div class="col-md-12">
+        <span class="birthdate">
+            né<span ng:if="$ctrl.user.sexe === 'F'">e</span> le {{$ctrl.user.date_naissance | date}}
+        </span>
+    </div>
+</span>
 
-<uib-accordion close-others="false">
-    <div uib-accordion-group heading="Adresse" ng:if="$ctrl.showAddress" is-open="true">
+<uib-accordion class="col-md-12 informations" close-others="false">
+    <div uib-accordion-group class="address" heading="Adresse" ng:if="$ctrl.showAddress" is-open="true">
         {{$ctrl.user.adresse}}
         <br>
         {{$ctrl.user.code_postal}} {{$ctrl.user.ville}}
     </div>
 
-    <div uib-accordion-group heading="Téléphones" ng:if="$ctrl.showPhones" is-open="true">
+    <div uib-accordion-group class="phones" heading="Téléphones" ng:if="$ctrl.showPhones" is-open="true">
         <ul>
             <li ng:repeat="phone in $ctrl.user.telephones">
                 {{phone.type_telephone_id}}: {{phone.numero}}
@@ -18,7 +30,7 @@
         </ul>
     </div>
 
-    <div uib-accordion-group heading="Emails" ng:if="$ctrl.showEmails" is-open="true">
+    <div uib-accordion-group class="emails" heading="Emails" ng:if="$ctrl.showEmails" is-open="true">
         <ul>
             <li ng:repeat="email in $ctrl.user.emails">
                 <a href="mailto:{{email.adresse}}">{{email.adresse}}</a>
@@ -26,7 +38,7 @@
         </ul>
     </div>
 
-    <div uib-accordion-group heading="Responsables"  ng:if="$ctrl.showResponsables">
+    <div uib-accordion-group class="parents" heading="Responsables"  ng:if="$ctrl.showResponsables">
         <ul>
             <li ng:repeat="adulte in $ctrl.user.relations_adultes">
                 {{adulte.description}}: <user-details uid="adulte.id_ent" small="true" show-childrens="true" show-address="true" show-phones="true" show-emails="true"></user-details>
@@ -34,7 +46,7 @@
         </ul>
     </div>
 
-    <div uib-accordion-group heading="Enfants" ng:if="$ctrl.showChildrens">
+    <div uib-accordion-group class="childrens" heading="Enfants" ng:if="$ctrl.showChildrens">
         <ul>
             <li ng:repeat="enfant in $ctrl.user.relations_eleves">
                 {{enfant.description}}: <a ui:sref="carnet({uid_eleve: enfant.id_ent})"><user-details uid="enfant.id_ent" small="true"></user-details></a>

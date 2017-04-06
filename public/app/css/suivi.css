@@ -1,1 +1,26 @@
-.container-fluid { padding: 0 }
+#main-ui-view { position: absolute;
+                height: 100%;
+                width: 100%; }
+
+#main-ui-view .aside,
+#main-ui-view .damier,
+#main-ui-view .carnet { height: 100%;
+                        overflow: auto; }
+
+#main-ui-view .aside { padding: 20px; }
+
+#main-ui-view .damier { padding: 0; }
+
+#main-ui-view .aside .go-back { height: 40px;
+                                margin-bottom: 20px;
+                                color: #eee;
+                                text-decoration: none;
+                                font-size: 24px;
+                                line-height: 1; }
+
+#main-ui-view .aside .user-details.eleve .avatar { background-color: #333;
+                                                   margin-bottom: 20px;
+                                                   padding: 0; }
+#main-ui-view .aside .user-details.eleve .details { height: 125px;
+                                                    margin-bottom: 20px; }
+#main-ui-view .aside .user-details.eleve .informations { padding: 0; }

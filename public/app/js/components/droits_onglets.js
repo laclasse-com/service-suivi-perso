@@ -22,7 +22,7 @@ angular.module( 'suiviApp' )
                                         var post_delete = function() {
                                             ctrl.droits = _(ctrl.droits).without( droit );
                                         };
-                                        console.log(droit)
+
                                         if ( _(droit).has('id') ) {
                                             droit.$delete()
                                                 .then( function success( response ) {

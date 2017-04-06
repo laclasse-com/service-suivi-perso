@@ -1,12 +1,14 @@
-<div class="col-md-4">
-    <user-details uid="uid"
+<div class="col-md-4 gris1-moins aside aside-carnet">
+    <a class="col-md-12 btn noir-moins go-back" ui:sref="trombinoscope()"> ↰ Retour au trombinoscope </a>
+
+    <user-details class="user-details eleve"
+                  uid="uid"
                   show-avatar="true"
                   show-responsables="true"
                   show-emails="true"
                   show-address="true"></user-details>
 </div>
 
-<div class="col-md-8">
-    <carnet
-        uid="uid"></carnet>
+<div class="col-md-8 carnet">
+    <carnet uid="uid"></carnet>
 </div>
