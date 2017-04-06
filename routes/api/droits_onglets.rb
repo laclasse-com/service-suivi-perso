@@ -26,7 +26,7 @@ module Suivi
               param :read, :boolean, required: false
               param :write, :boolean, required: false
 
-              error!( '400 missing parameter', 400 ) unless ( params.key?('uid') || params.key?('profil_id') ) && ( params.key?('read') || params.key?('write') )
+              halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') ) && ( params.key?('read') || params.key?('write') )
 
               get_and_check_carnet( params['uid_eleve'], user, :write )
               onglet = get_and_check_onglet( params['onglet_id'], user, :write )
@@ -52,13 +52,13 @@ module Suivi
               param :read, :boolean, required: false
               param :write, :boolean, required: false
 
-              error!( '400 missing parameter', 400 ) unless ( params.key?('uid') || params.key?('profil_id') ) && ( params.key?('read') || params.key?('write') )
+              halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') ) && ( params.key?('read') || params.key?('write') )
 
               get_and_check_carnet( params['uid_eleve'], user, :write )
               get_and_check_onglet( params['onglet_id'], user, :write )
 
               droit = Droit[params['droit_id']]
-              error!( '404 Unknown droit', 404 ) if droit.nil?
+              halt( 404, '404 Unknown droit' ) if droit.nil?
 
               [ :uid, :profil_id, :read, :write ].each do |key|
                 droit[ key ] = params[ key ]
@@ -77,7 +77,7 @@ module Suivi
               get_and_check_onglet( params['onglet_id'], user, :write )
 
               droit = Droit[params['droit_id']]
-              error!( '404 Unknown droit', 404 ) if droit.nil?
+              halt( 404, '404 Unknown droit' ) if droit.nil?
 
               json( droit.destroy )
             end

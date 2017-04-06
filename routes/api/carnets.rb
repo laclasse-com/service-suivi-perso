@@ -8,7 +8,7 @@ module Suivi
           app.get 'api/carnets/contributed/:uid' do
             param :uid, String, required: true
 
-            error!( '401', 401 ) if params['uid'] != user[:uid]
+            halt( 401, '401' ) if params['uid'] != user[:uid]
 
             json( Carnet.where( id: Onglet.where( id: Saisie.where( uid: params['uid'] )
                                                             .select( :onglet_id )
@@ -48,7 +48,7 @@ end
 #   param :onglets_ids, Array, required: true
 #   param :evignal, Boolean, required: false, default: false
 
-#   # TODO: error!( 'Unknown Carnet', 404 ) if invalid_uid_eleve
+#   # TODO: halt( 404, 'Unknown Carnet' ) if invalid_uid_eleve
 #   # TODO: check read rights of onglets
 #   carnet = Carnet[ uid_eleve: params[:uid_eleve] ]
 
