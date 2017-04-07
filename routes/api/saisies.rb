@@ -12,7 +12,7 @@ module Suivi
             get_and_check_carnet( params['uid_eleve'], user, :read )
             onglet = get_and_check_onglet( params['onglet_id'], user, :read )
 
-            json onglet.saisies
+            json( onglet.saisies )
           end
 
           app.get '/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id' do
@@ -23,7 +23,7 @@ module Suivi
             get_and_check_carnet( params['uid_eleve'], user, :read )
             get_and_check_onglet( params['onglet_id'], user, :read )
 
-            json get_and_check_saisie( params['id'] )
+            json( get_and_check_saisie( params['id'] ) )
           end
 
           app.post '/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/?' do
@@ -41,7 +41,7 @@ module Suivi
                                        back_color: params['background_color'] )
             saisie.init_droits( DEFAULT_RIGHTS[:Saisie], user )
 
-            json saisie
+            json( saisie )
           end
 
           app.put '/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id' do
@@ -70,7 +70,7 @@ module Suivi
               saisie.save
             end
 
-            json saisie
+            json( saisie )
           end
 
           app.delete '/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id' do
@@ -82,7 +82,7 @@ module Suivi
             get_and_check_onglet( params['onglet_id'], user, :write )
             saisie = get_and_check_saisie( params['id'], user, :write )
 
-            json saisie.destroy
+            json( saisie.destroy )
           end
         end
       end

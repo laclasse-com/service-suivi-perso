@@ -1,5 +1,53 @@
-<fieldset>
-    <legend>{{$ctrl.saisie.uid}}</legend>
-    <h6>{{$ctrl.saisie.date_creation}}</h6>
-    <div ng:bind="$ctrl.saisie.trusted_contenu"></div>
-</fieldset>
+<div class="panel panel-default saisie-display">
+    <div class="panel-heading" ng:if="$ctrl.saisie.id">{{$ctrl.saisie.date_creation}}</div>
+
+    <div class="panel-body" ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit'}">
+        <user-details class="col-md-4"
+                      ng:if="$ctrl.showAuthor"
+                      uid="$ctrl.saisie.uid"
+                      small="true"
+                      show-avatar="true"></user-details>
+
+        <div ng:class="{'col-md-8': $ctrl.showAuthor, 'col-md-12': !$ctrl.showAuthor}"
+             ng:bind="$ctrl.saisie.trusted_contenu"
+             ng:if="!$ctrl.edition"></div>
+
+        <div ng:class="{'col-md-8': $ctrl.showAuthor, 'col-md-12': !$ctrl.showAuthor}"
+             ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit'}"
+             ng:if="$ctrl.edition">
+            <text-angular ta:target-toolbars="main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}"
+                          ng:model="$ctrl.saisie.contenu"></text-angular>
+            <div class="suivi-ta-toolbar gris2-moins">
+                <text-angular-toolbar class="pull-left"
+                                      style="margin-left: 0;"
+                                      name="main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}"></text-angular-toolbar>
+                <button class="btn btn-success pull-right"
+                        ng:click="$ctrl.save()">
+                    <span class="glyphicon glyphicon-save" ></span> Publier
+                </button>
+                <button class="btn btn-default pull-right"
+                        ng:click="$ctrl.cancel()"
+                        ng:if="$ctrl.saisie.id">
+                    <span class="glyphicon glyphicon-edit" ></span> Annuler
+                </button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-footer" ng:if="!$ctrl.edition">
+        <div class="pull-right buttons">
+            <button class="btn btn-default"
+                    ng:click="$ctrl.toggle_edit()">
+                <span class="glyphicon glyphicon-edit" ></span> Éditer
+            </button>
+
+            <button class="btn btn-danger"
+                    ng:click="$ctrl.delete()"
+                    ng:if="$ctrl.saisie.id">
+                <span class="glyphicon glyphicon-trash"></span> Supprimer
+            </button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

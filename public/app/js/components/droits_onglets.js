@@ -19,6 +19,7 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.delete = function( droit ) {
+                                        droit.uid_eleve = ctrl.uid;
                                         var post_delete = function() {
                                             ctrl.droits = _(ctrl.droits).without( droit );
                                         };
@@ -35,6 +36,7 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.save = function( droit ) {
+                                        droit.uid_eleve = ctrl.uid;
                                         if ( _(droit).has('id') ) {
                                             droit.$update();
                                         } else {

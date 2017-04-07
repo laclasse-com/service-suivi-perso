@@ -36,8 +36,9 @@
     "jquery": "^3.2.1",
     "jquery-ui-dist": "^1.12.1",
     "laclasse-common-client": "git+https://github.com/laclasse-com/laclasse-common-client.git",
-    "sweetalert2": "^6.5.5",
-    "textangular": "^1.5.16",
-    "underscore": "^1.8.3"
+      "ng-color-picker": "git+https://github.com/cycojesus/ng-color-picker.git",
+      "sweetalert2": "^6.5.5",
+      "textangular": "^1.5.16",
+      "underscore": "^1.8.3"
   }
 }

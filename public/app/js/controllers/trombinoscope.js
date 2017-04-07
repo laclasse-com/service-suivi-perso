@@ -36,10 +36,7 @@ angular.module( 'suiviApp' )
                                                $http.get( 'api/carnets/contributed/' + current_user.id_ent )
                                                    .then( function success( response ) {
                                                        ctrl.eleves_contributed = _.chain(response.data).map( function( carnet ) {
-                                                           var eleve = _(ctrl.eleves).findWhere({ id_ent: carnet.uid_elv });
-                                                           console.log(carnet)
-                                                           console.log(eleve)
-                                                           return eleve;
+                                                           return _(ctrl.eleves).findWhere({ id_ent: carnet.uid_elv });
                                                        }).compact().value();
                                                    },
                                                           function error( response ) {} );

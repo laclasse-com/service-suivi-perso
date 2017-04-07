@@ -12,6 +12,8 @@ angular.module( 'suiviApp' )
                                     ctrl.popup_saisie = Popups.saisie;
 
                                     ctrl.$onInit = function() {
+                                        ctrl.new_saisie = { create_me: true };
+
                                         Saisies.query({ uid_eleve: ctrl.uid,
                                                         onglet_id: ctrl.onglet.id }).$promise
                                             .then( function success( response ) {

@@ -9,7 +9,8 @@ angular.module( 'suiviApp' )
                               showChildrens: '<',
                               showPhones: '<',
                               showEmails: '<',
-                              showAddress: '<' },
+                              showClasse: '<',
+                              showBirthdate: '<' },
                   templateUrl: 'app/js/components/user_details.html',
                   controller: [ '$http', 'URL_ENT',
                                 function( $http, URL_ENT ) {

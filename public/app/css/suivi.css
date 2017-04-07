@@ -1,3 +1,6 @@
+.btn,
+.panel { border-radius: 0; }
+
 #main-ui-view { position: absolute;
                 height: 100%;
                 width: 100%; }
@@ -24,3 +27,25 @@
 #main-ui-view .aside .user-details.eleve .details { height: 125px;
                                                     margin-bottom: 20px; }
 #main-ui-view .aside .user-details.eleve .informations { padding: 0; }
+
+/* textAngular */
+/* textAngular */
+.ta-root {
+    padding: 0;
+}
+
+.ta-toolbar {
+    background-color: #eee;
+}
+.ta-toolbar button.btn {
+    padding: 6px 7px;
+}
+
+.ta-scroll-window.ta-text.ta-editor,
+.ta-scroll-window > .ta-bind {
+    min-height: 150px;
+}
+
+.ta-text td {
+    border: 1px solid #16161d;
+}

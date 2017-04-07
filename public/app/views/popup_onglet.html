@@ -3,10 +3,14 @@
         <input type="text" ng:model="onglet.nom" />
     </h3>
 </div>
-<div class="modal-body available-apps">
+
+<div class="modal-body">
+
     <droits-onglets uid="uid" onglet="onglet" ng:if="onglet.id"></droits-onglets>
+
     <div class="clearfix"></div>
 </div>
+
 <div class="modal-footer">
     <button class="btn btn-danger pull-left"
             ng:click="delete()"
