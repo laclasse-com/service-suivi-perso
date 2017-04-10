@@ -9,15 +9,20 @@
     </ul>
 </div>
 
-<div class="col-md-8 damier">
+<div class="col-md-8 damier trombinoscope">
     <ul>
         <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins"
             style="background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
             ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
             ng:repeat="eleve in eleves | filter:search">
-            <a ui:sref="carnet({uid: eleve.id_ent})">
-                <h4>{{eleve.prenom}}</h4>
-                <h3>{{eleve.nom}}</h3>
+            <a class="eleve"
+               ui:sref="carnet({uid: eleve.id_ent})">
+                <h5 class="regroupement">{{eleve.regroupement.libelle}}</h5>
+
+                <div class="full-name">
+                    <h4 class="first-name">{{eleve.prenom}}</h4>
+                    <h3 class="last-name">{{eleve.nom}}</h3>
+                </div>
             </a>
         </li>
     </ul>

@@ -42,13 +42,19 @@ angular.module( 'suiviApp' )
                                                         } ] } )
                             .result.then( function success( new_onglet ) {
                                 var promise = null;
+                                var action = 'rien';
+
                                 if ( _(onglet).isNull() ) {
+                                    action = 'created';
+
                                     promise = new Onglets({ uid_eleve: uid,
                                                             nom: new_onglet.nom })
                                         .$save();
                                 } else {
                                     new_onglet.uid_eleve = uid;
                                     if ( new_onglet.delete ) {
+                                        action = 'deleted';
+
                                         promise = new Onglets( new_onglet )
                                             .$delete();
                                     } else {
@@ -56,8 +62,10 @@ angular.module( 'suiviApp' )
                                             .$update();
                                     }
                                 }
-                                promise.then( function success() {
-                                    callback();
+                                promise.then( function success( response ) {
+                                    response[ action ] = true;
+
+                                    callback( response );
                                 },
                                               function error() {} );
                             }, function error() {  } );

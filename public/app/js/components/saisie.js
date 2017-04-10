@@ -15,6 +15,10 @@ angular.module( 'suiviApp' )
 
                                     ctrl.toggle_edit = function() {
                                         ctrl.edition = !ctrl.edition;
+
+                                        if ( !ctrl.edition ) {
+                                            ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
+                                        }
                                     };
 
                                     ctrl.cancel = function() {
@@ -71,6 +75,6 @@ angular.module( 'suiviApp' )
                                         }
 
                                         ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
-                                        };
+                                    };
                                 } ]
                 } );

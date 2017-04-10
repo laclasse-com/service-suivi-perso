@@ -28,24 +28,47 @@
                                                     margin-bottom: 20px; }
 #main-ui-view .aside .user-details.eleve .informations { padding: 0; }
 
+.trombinoscope .eleve { position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        display: table-cell; }
+.trombinoscope .eleve .regroupement { position: absolute;
+                                      top: 0;
+                                      right: 0;
+                                      background-color: rgba(0, 0, 0, 0.33);
+                                      color: #fff;
+                                      padding: 5px;
+                                      margin: 0; }
+.trombinoscope .eleve .full-name { position: absolute;
+                                   bottom: 0;
+                                   width: 100%;
+                                   height: 50%;
+                                   padding: 5px;
+                                   color: #fff;
+                                   background: rgba(0, 0, 0, 0.25); }
+.trombinoscope .eleve .full-name .first-name,
+.trombinoscope .eleve .full-name .last-name { font-weight: bold; }
+
+.carnet { padding: 0; }
+.carnet .tab-content { padding: 15px; }
+
+.carnet .nav-tabs > li.active > a,
+.carnet .nav-tabs > li.active > a:focus,
+.carnet .nav-tabs > li.active > a:hover { background-color: #e1e1e1; }
+
+.saisie-display .panel-footer { padding: 0; }
+
 /* textAngular */
-/* textAngular */
-.ta-root {
-    padding: 0;
-}
+.ta-root { padding: 0; }
 
-.ta-toolbar {
-    background-color: #eee;
-}
-.ta-toolbar button.btn {
-    padding: 6px 7px;
-}
+.ta-toolbar { background-color: #eee; }
+.ta-toolbar button.btn { padding: 6px 7px; }
 
-.ta-scroll-window.ta-text.ta-editor,
-.ta-scroll-window > .ta-bind {
-    min-height: 150px;
-}
+.ta-scroll-window { min-height: 150px;
+                    max-height: 300px;
+                    overflow: auto; }
+.ta-scroll-window .ta-bind { height: 100%; }
 
-.ta-text td {
-    border: 1px solid #16161d;
-}
+.ta-text td { border: 1px solid #16161d; }

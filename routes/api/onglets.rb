@@ -50,7 +50,11 @@ module Suivi
               onglet.init_droits( DEFAULT_RIGHTS[:Onglet], user )
             end
 
-            json( onglet )
+            onglet_hash = onglet.to_hash
+            onglet_hash[:writable] = onglet.allow?( user, :write )
+            onglet_hash[:created] = true
+
+            json( onglet_hash )
           end
 
           app.put '/api/carnets/:uid_eleve/onglets/:onglet_id' do
@@ -68,7 +72,10 @@ module Suivi
             onglet.sharable_id = params['sharable_id'] if params.key?( 'sharable_id' )
             onglet.save
 
-            json( onglet )
+            onglet_hash = onglet.to_hash
+            onglet_hash[:writable] = onglet.allow?( user, :write )
+
+            json( onglet_hash )
           end
 
           app.delete '/api/carnets/:uid_eleve/onglets/:onglet_id' do
@@ -78,7 +85,10 @@ module Suivi
             get_and_check_carnet( params['uid_eleve'], user, :write )
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
-            json( onglet.destroy )
+            onglet_hash = onglet.destroy
+            onglet_hash[:deleted] = true
+
+            json( onglet_hash )
           end
         end
       end

@@ -21,27 +21,36 @@ angular.module( 'suiviApp' )
                                                .map( function( regroupement_id ) {
                                                    return $http.get( URL_ENT + '/api/app/regroupements/' + regroupement_id, { params: { expand: 'true' } } );
                                                } )
-                                               .value() )
-                                           .then( function success( response ) {
-                                               ctrl.eleves = _.chain(response)
-                                                   .pluck('data')
-                                                   .pluck('eleves')
-                                                   .flatten()
-                                                   .uniq()
-                                                   .each( function( eleve ) {
-                                                       eleve.avatar = URL_ENT + ( _(eleve.avatar.match(/^user/)).isNull() ? '' : 'api/avatar/' ) + eleve.avatar;
-                                                   } )
-                                                   .value();
+                                               .value()
+                                         )
+                                       .then( function success( response ) {
+                                           ctrl.eleves = _.chain(response)
+                                               .pluck('data')
+                                               .map( function( regroupement ) {
+                                                   return _(regroupement.eleves)
+                                                       .map( function( eleve ) {
+                                                           eleve.avatar = URL_ENT + ( _(eleve.avatar.match(/^user/)).isNull() ? '' : 'api/avatar/' ) + eleve.avatar;
+                                                           eleve.regroupement = { id: regroupement.id,
+                                                                                  libelle: regroupement.libelle_aaf,
+                                                                                  type: regroupement.type_regroupement_id };
+                                                           eleve.etablissement = regroupement.etablissement;
+                                                           eleve.enseignants = regroupement.profs;
 
-                                               $http.get( 'api/carnets/contributed/' + current_user.id_ent )
-                                                   .then( function success( response ) {
-                                                       ctrl.eleves_contributed = _.chain(response.data).map( function( carnet ) {
-                                                           return _(ctrl.eleves).findWhere({ id_ent: carnet.uid_elv });
-                                                       }).compact().value();
-                                                   },
-                                                          function error( response ) {} );
-                                           },
-                                                  function error( response ) {} );
+                                                           return eleve;
+                                                       } );
+                                               } )
+                                               .flatten()
+                                               .value();
+
+                                           $http.get( 'api/carnets/contributed/' + current_user.id_ent )
+                                               .then( function success( response ) {
+                                                   ctrl.eleves_contributed = _.chain(response.data).map( function( carnet ) {
+                                                       return _(ctrl.eleves).findWhere({ id_ent: carnet.uid_elv });
+                                                   }).compact().value();
+                                               },
+                                                      function error( response ) {} );
+                                       },
+                                              function error( response ) {} );
                                }
                            } );
                    } ] );

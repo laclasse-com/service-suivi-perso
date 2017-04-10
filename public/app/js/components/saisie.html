@@ -9,7 +9,7 @@
                       show-avatar="true"></user-details>
 
         <div ng:class="{'col-md-8': $ctrl.showAuthor, 'col-md-12': !$ctrl.showAuthor}"
-             ng:bind="$ctrl.saisie.trusted_contenu"
+             ng:bind-html="$ctrl.saisie.trusted_contenu"
              ng:if="!$ctrl.edition"></div>
 
         <div ng:class="{'col-md-8': $ctrl.showAuthor, 'col-md-12': !$ctrl.showAuthor}"
