@@ -14,15 +14,38 @@ angular.module( 'suiviApp',
 // textAngular
     .config( [ '$provide',
                function( $provide ) {
+                   //traduction de textAngular
+                   $provide.decorator( 'taTranslations',
+                                       function( $delegate ) {
+                                           $delegate.html.tooltip = 'Basculer entre les vues HTML et texte enrichi';
+                                           $delegate.justifyLeft.tooltip = 'Justifier à gauche';
+                                           $delegate.justifyCenter.tooltip = 'Centrer';
+                                           $delegate.justifyRight.tooltip = 'Justifier à droite';
+                                           $delegate.bold.tooltip = 'Mettre en gras';
+                                           $delegate.italic.tooltip = 'Mettre en italique';
+                                           $delegate.underline.tooltip = 'Souligner';
+                                           $delegate.insertLink.tooltip = 'Insérer un lien';
+                                           $delegate.insertLink.dialogPrompt = 'Lien à insérer';
+                                           $delegate.editLink.targetToggle.buttontext = 'Le lien s\'ouvrira dans une nouvelle fenêtre';
+                                           $delegate.editLink.reLinkButton.tooltip = 'Éditer le lien';
+                                           $delegate.editLink.unLinkButton.tooltip = 'Enlever le lien';
+                                           $delegate.insertVideo.tooltip = 'Insérer une vidéo';
+                                           //$delegate.insertVideo.dialogPrompt = 'Skriv Youtube video URL, der skal indsættes';
+                                           $delegate.clear.tooltip = 'Enlever le formattage';
+                                           $delegate.ul.tooltip = 'Liste';
+                                           $delegate.ol.tooltip = 'Liste numérotée';
+                                           $delegate.quote.tooltip = 'Citation';
+                                           $delegate.undo.tooltip = 'Annuler';
+                                           $delegate.redo.tooltip = 'Rétablir';
+
+                                           return $delegate;
+                                       } );
+
                    // configuration de textAngular
                    $provide.decorator( 'taOptions',
                                        [ '$delegate', 'taRegisterTool',
-                                         function( taOptions, taRegisterTool ){
-                                             taOptions.toolbar = [
-                                                 [ 'bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'justifyLeft', 'justifyCenter', 'justifyRight', 'insertLink', 'html', 'redo', 'undo' ]
-                                             ];
-
-                                             var colorpicker_taTool = function( type ) {
+                                         function( taOptions, taRegisterTool ) {
+                                             var colorpicker_taTool = function( type, tooltiptext ) {
                                                  var style = ( type === 'backcolor' ) ? 'background-' : '';
                                                  var couleurs = [ '#7bd148', '#5484ed', '#a4bdfc', '#46d6db', '#7ae7bf', '#51b749', '#fbd75b', '#ffb878', '#ff887c', '#dc2127', '#dbadff', '#e1e1e1' ];
                                                  if ( type === 'backcolor' ) {
@@ -31,17 +54,16 @@ angular.module( 'suiviApp',
 
                                                  return { couleurs: couleurs,
                                                           display: '<span uib-dropdown><a uib-dropdown-toggle><i class="fa fa-font" data-ng-style="{\'' + style + 'color\': selected }"></i> <i class="fa fa-caret-down"></i></a><ng-color-picker uib-dropdown-menu selected="selected" colors="couleurs"></ng-color-picker></span>',
+                                                          tooltiptext: tooltiptext,
                                                           action: function( ) {
                                                               return ( this.selected === 'nil' ) ? false : this.$editor().wrapSelection( type, this.selected );
                                                           }
                                                         };
                                              };
 
-                                             taRegisterTool( 'fontColor', colorpicker_taTool( 'forecolor' ) );
-                                             taOptions.toolbar[0].push( 'fontColor' );
+                                             taRegisterTool( 'fontColor', colorpicker_taTool( 'forecolor' ), 'Changer la couleur du texte' );
 
-                                             taRegisterTool( 'backgroundColor', colorpicker_taTool( 'backcolor' ) );
-                                             taOptions.toolbar[0].push( 'backgroundColor' );
+                                             taRegisterTool( 'backgroundColor', colorpicker_taTool( 'backcolor' ), 'Changer la couleur de fonds' );
 
                                              taRegisterTool( 'table', { columns: { value: 1,
                                                                                    hovered: 1 },
@@ -73,7 +95,8 @@ angular.module( 'suiviApp',
                                                                             this.deferration = deferred;
                                                                             return false;
                                                                         } } );
-                                             taOptions.toolbar[0].push( 'table' );
+
+                                             taOptions.toolbar = [ [ 'bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'fontColor', 'backgroundColor', 'table', 'justifyLeft', 'justifyCenter', 'justifyRight', 'insertLink', 'html', 'undo', 'redo', 'charcount' ] ];
 
                                              taOptions.classes = {
                                                  focussed: 'focussed',
@@ -85,6 +108,7 @@ angular.module( 'suiviApp',
                                                  textEditor: 'form-control',
                                                  htmlEditor: 'form-control'
                                              };
+
                                              return taOptions;
                                          } ] );
 
