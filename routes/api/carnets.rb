@@ -25,18 +25,6 @@ module Suivi
 
             json get_and_check_carnet( params['uid_eleve'], user, :read )
           end
-
-          app.put '/api/carnets/:uid_eleve' do
-            param :uid_eleve, String, required: true
-            param :sharable_id, String, required: false
-
-            carnet = get_and_check_carnet( params['uid_eleve'], user, :write )
-
-            carnet.sharable_id = params['sharable_id'] if params.key?( 'sharable_id' )
-            carnet.save
-
-            json( carnet )
-          end
         end
       end
     end

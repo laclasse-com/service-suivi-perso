@@ -2,57 +2,46 @@
 
 angular.module( 'suiviApp' )
     .component( 'droitsOnglets',
-                { bindings: { uid: '<',
-                              onglet: '=' },
+                { bindings: { droits: '=',
+                              concernedPeople: '<' },
                   templateUrl: 'app/js/components/droits_onglets.html',
-                  controller: [ 'DroitsOnglets', 'UID',
-                                function( DroitsOnglets, UID ) {
+                  controller: [ '$http', 'DroitsOnglets', 'UID', 'URL_ENT',
+                                function( $http, DroitsOnglets, UID, URL_ENT ) {
                                     var ctrl = this;
-                                    ctrl.UID = UID;
+
+                                    var gen_pseudo_UUID = function() {
+                                        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                                            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                                            return v.toString(16);
+                                        });
+                                    };
+
+                                    ctrl.have_own_right = function() {
+                                        return _.chain(ctrl.droits).findWhere({ own: true }).isUndefined();
+                                    };
 
                                     ctrl.add = function( droit ) {
-                                        new DroitsOnglets( droit ).$save()
-                                            .then( function success( response ) {
-                                                ctrl.droits.push( response );
-                                            },
-                                                   function error( response ) {} );
+                                        droit.new = true;
+                                        droit.dirty = { uid: _(droit).has('uid'),
+                                                        profil_id: _(droit).has('profil_id'),
+                                                        sharable_id: _(droit).has('sharable_id'),
+                                                        read: true,
+                                                        write: true };
+
+                                        ctrl.droits.push( new DroitsOnglets( droit ) );
                                     };
 
-                                    ctrl.delete = function( droit ) {
-                                        droit.uid_eleve = ctrl.uid;
-                                        var post_delete = function() {
-                                            ctrl.droits = _(ctrl.droits).without( droit );
-                                        };
-
-                                        if ( _(droit).has('id') ) {
-                                            droit.$delete()
-                                                .then( function success( response ) {
-                                                    post_delete();
-                                                },
-                                                       function error( response ) {} );
-                                        } else {
-                                            post_delete();
-                                        }
-                                    };
-
-                                    ctrl.save = function( droit ) {
-                                        droit.uid_eleve = ctrl.uid;
-                                        if ( _(droit).has('id') ) {
-                                            droit.$update();
-                                        } else {
-                                            droit.$save();
-                                        }
+                                    ctrl.add_sharable = function( droit ) {
+                                        droit.sharable_id = gen_pseudo_UUID();
+                                        ctrl.add( droit );
                                     };
 
                                     ctrl.$onInit = function() {
-                                        DroitsOnglets.query({ uid_eleve: ctrl.uid,
-                                                              onglet_id: ctrl.onglet.id }).$promise
-                                            .then( function success( response ) {
-                                                ctrl.droits = _(response).map( function( droit ) {
-                                                    droit.uid_eleve = ctrl.uid;
+                                        ctrl.UID = UID;
 
-                                                    return new DroitsOnglets( droit );
-                                                } );
+                                        $http.get( URL_ENT + 'api/app/profils' )
+                                            .then( function success( response ) {
+                                                ctrl.profils = response.data;
                                             },
                                                    function error( response ) {} );
                                     };

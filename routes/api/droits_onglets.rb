@@ -25,8 +25,9 @@ module Suivi
               param :profil_id, String, required: false
               param :read, :boolean, required: false
               param :write, :boolean, required: false
+              param :sharable_id, String, required: false
 
-              halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') ) && ( params.key?('read') || params.key?('write') )
+              halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') || params.key?('sharable_id') ) && ( params.key?('read') || params.key?('write') )
 
               get_and_check_carnet( params['uid_eleve'], user, :write )
               onglet = get_and_check_onglet( params['onglet_id'], user, :write )
@@ -34,12 +35,13 @@ module Suivi
               droit = Droit[uid: params['uid'], profil_id: params['profil_id'], read: params['read'], write: params['write']]
               return json( droit ) unless droit.nil?
 
-              new_right = {}
-              %w(uid profil_id read write).each do |key|
-                new_right[ key ] = params[ key ] if params.key?( key )
+              droit = {}
+              %w[ uid profil_id read write ].each do |key|
+                droit[ key ] = params[ key ] if params.key?( key )
               end
+              droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
 
-              json( onglet.add_droit( new_right ) )
+              json( onglet.add_droit( droit ) )
             end
 
             app.put '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
@@ -51,8 +53,9 @@ module Suivi
               param :profil_id, String, required: false
               param :read, :boolean, required: false
               param :write, :boolean, required: false
+              param :sharable_id, String, required: false
 
-              halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') ) && ( params.key?('read') || params.key?('write') )
+              halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') || params.key?('sharable_id') ) && ( params.key?('read') || params.key?('write') )
 
               get_and_check_carnet( params['uid_eleve'], user, :write )
               get_and_check_onglet( params['onglet_id'], user, :write )
@@ -60,9 +63,10 @@ module Suivi
               droit = Droit[params['droit_id']]
               halt( 404, '404 Unknown droit' ) if droit.nil?
 
-              [ :uid, :profil_id, :read, :write ].each do |key|
-                droit[ key ] = params[ key ]
+              %w[uid profil_id read write].each do |key|
+                droit.update( key => params[ key ] ) if params.key?( key )
               end
+              droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
               droit.save
 
               json( droit )

@@ -1,12 +1,15 @@
 <div class="modal-header">
     <h3 class="modal-title">
-        <input type="text" ng:model="onglet.nom" />
+        Propriétés de l'onglet
     </h3>
 </div>
 
 <div class="modal-body">
+    <label>Titre : <input type="text" ng:model="onglet.nom" /></label>
 
-    <droits-onglets uid="uid" onglet="onglet" ng:if="onglet.id"></droits-onglets>
+    <droits-onglets droits="droits"
+                    concerned-people="concerned_people"
+                    ng:if="onglet.id"></droits-onglets>
 
     <div class="clearfix"></div>
 </div>

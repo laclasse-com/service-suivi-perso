@@ -8,6 +8,7 @@ angular.module( 'suiviApp' )
                                         id: '@id',
                                         uid: '@uid',
                                         profil_id: '@profil_id',
+                                        sharable_id: '@sharable_id',
                                         read: '@read',
                                         write: '@write' },
                                       { update: { method: 'PUT' } } );

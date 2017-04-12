@@ -21,7 +21,6 @@ require_relative './models/saisies'
 require_relative './lib/helpers/access_and_rights'
 
 require_relative './routes/index'
-require_relative './routes/public_url'
 require_relative './routes/auth'
 require_relative './routes/status'
 
@@ -29,13 +28,14 @@ require_relative './routes/api/carnets'
 require_relative './routes/api/onglets'
 require_relative './routes/api/droits_onglets'
 require_relative './routes/api/saisies'
+require_relative './routes/api/sharable'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
   configure do
     set :app_file, __FILE__
     set :root, APP_ROOT
-    set :public_folder, proc { File.join( root, 'public' ) }
+    set :public_folder, ( proc { File.join( root, 'public' ) } )
     set :inline_templates, true
     set :protection, true
     set :lock, true
@@ -61,11 +61,11 @@ class SinatraApp < Sinatra::Base
   register Suivi::Routes::Auth
 
   register Suivi::Routes::Index
-  register Suivi::Routes::PublicUrl
   register Suivi::Routes::Status
 
   register Suivi::Routes::Api::Carnets
   register Suivi::Routes::Api::Onglets
   register Suivi::Routes::Api::Onglets::Droits
   register Suivi::Routes::Api::Saisies
+  register Suivi::Routes::Api::Sharable
 end

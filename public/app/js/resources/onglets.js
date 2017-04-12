@@ -6,7 +6,6 @@ angular.module( 'suiviApp' )
                                       { uid_eleve: '@uid_eleve',
                                         id: '@id',
                                         nom: '@nom',
-                                        ordre: '@ordre',
-                                        sharable_id: '@sharable_id' },
+                                        ordre: '@ordre' },
                                       { update: { method: 'PUT' } } );
                 } ] );

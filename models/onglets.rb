@@ -17,7 +17,7 @@ class Onglet < Sequel::Model(:onglets)
   end
 
   def init_droits( default_rights, user_creator )
-    add_droit( uid: user_creator[:uid], read: true, write: true )
+    add_droit( uid: user_creator[:uid], profil_id: nil, sharable_id: nil, read: true, write: true )
     return if carnets.uid_elv == user_creator[:uid]
     default_rights.each do |default_right|
       add_droit( default_right )

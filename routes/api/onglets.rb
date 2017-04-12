@@ -44,7 +44,6 @@ module Suivi
               onglet = Onglet.create( carnet_id: carnet.id,
                                       nom: params['nom'],
                                       ordre: params['ordre'],
-                                      sharable_id: nil,
                                       date_creation: DateTime.now )
 
               onglet.init_droits( DEFAULT_RIGHTS[:Onglet], user )
@@ -62,14 +61,12 @@ module Suivi
             param :onglet_id, Integer, required: true
             param :nom, String, required: false
             param :ordre, Integer, required: false
-            param :sharable_id, String, required: false
 
             get_and_check_carnet( params['uid_eleve'], user, :write )
 
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
             onglet.nom = params['nom'] if params.key?( 'nom' )
             onglet.ordre = params['ordre'] if params.key?( 'ordre' )
-            onglet.sharable_id = params['sharable_id'] if params.key?( 'sharable_id' )
             onglet.save
 
             onglet_hash = onglet.to_hash

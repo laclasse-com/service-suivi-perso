@@ -1,30 +1,93 @@
 <div>
-    <table>
+    <label>Gestion des droits</label>
+    <table style="width: 100%;">
         <thead>
             <tr>
-                <th>utilisateur</th>
-                <th>profil</th>
+                <th>Type et critère</th>
                 <th>visualisation</th>
                 <th>modification</th>
                 <th></th>
             </tr>
         </thead>
         <tr ng:repeat="droit in $ctrl.droits">
-            <td><input type="text" ng:model="droit.uid" ng:change="$ctrl.save( droit )" /></td>
-            <td><input type="text" ng:model="droit.profil_id" ng:change="$ctrl.save( droit )" /></td>
-            <td><input type="checkbox" ng:model="droit.read" ng:change="$ctrl.save( droit )" /></td>
-            <td><input type="checkbox" ng:model="droit.write" ng:change="$ctrl.save( droit )" /></td>
-            <td><button ng:click="$ctrl.delete( droit )"><span class="glyphicon glyphicon-trash"></span></button></td>
+            <td>
+                <label ng:if="droit.uid">Personne :
+                    <select style="width: 172px;"
+                            ng:model="droit.uid"
+                            ng:change="droit.dirty.uid = true"
+                            ng:disabled="droit.to_delete"
+                            ng:options="people.uid as people.display group by people.type for people in $ctrl.concernedPeople">
+                    </select>
+                </label>
+                <label ng:if="droit.profil_id">Profil :
+                    <select style="width: 172px;"
+                            ng:model="droit.profil_id"
+                            ng:change="droit.dirty.profil_id = true"
+                            ng:disabled="droit.to_delete">
+                        <option ng:repeat="profil in $ctrl.profils track by profil.id"
+                                ng:value="profil.id">{{profil.description}}</option>
+                    </select>
+                </label>
+                <label ng:if="droit.sharable_id">Sharable :
+                    <input style="width: 172px;"
+                           type="text"
+                           ng:model="droit.sharable_id"
+                           ng:change="droit.dirty.sharable_id = true"
+                           ng:disabled="droit.to_delete" />
+                </label>
+            </td>
+            <td>
+                <button type="button" class="btn"
+                        ng:class="{'btn-default': !droit.read, 'btn-success': droit.read}"
+                        ng:model="droit.read"
+                        ng:change="droit.dirty.read = true"
+                        ng:disabled="droit.to_delete"
+                        uib:btn-checkbox
+                        btn-checkbox-true="true"
+                        btn-checkbox-false="false">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                </button>
+            </td>
+            <td>
+                <button type="button" class="btn"
+                        ng:class="{'btn-default': !droit.write, 'btn-success': droit.write}"
+                        ng:model="droit.write"
+                        ng:change="droit.dirty.write = true"
+                        ng:disabled="droit.to_delete"
+                        uib:btn-checkbox
+                        btn-checkbox-true="true"
+                        btn-checkbox-false="false">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </button>
+            </td>
+            <td>
+                <button type="button" class="btn"
+                        ng:class="{'btn-default': !droit.to_delete, 'btn-warning': droit.to_delete}"
+                        ng:model="droit.to_delete"
+                        uib:btn-checkbox
+                        btn-checkbox-true="true"
+                        btn-checkbox-false="false">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </td>
         </tr>
+        <tfoot>
+            <td colspan="3">
+                <button class="btn btn-default" type="button"
+                        ng:click="$ctrl.add({ uid: '...', read: true, write: true })">
+                    <span class="glyphicon glyphicon-plus-sign"></span> par UID
+                </button>
+
+                <button class="btn btn-default" type="button"
+                        ng:click="$ctrl.add({ profil_id: '...', read: true, write: false })">
+                    <span class="glyphicon glyphicon-plus-sign"></span> par profil
+                </button>
+
+                <button class="btn btn-default" type="button"
+                        ng:click="$ctrl.add_sharable({ read: true, write: false })">
+                    <span class="glyphicon glyphicon-plus-sign"></span> sharable
+                </button>
+            </td>
+        </tfoot>
     </table>
-
-    <button class="btn btn-default" type="button"
-            ng:click="$ctrl.add({ uid: $ctrl.UID, profil_id: '', read: true, write: true, uid_eleve: $ctrl.uid, onglet_id: $ctrl.onglet.id })">
-        <span class="glyphicon glyphicon-plus-sign"></span> moi-même
-    </button>
-
-    <button class="btn btn-default" type="button"
-            ng:click="$ctrl.add({ uid: '', profil_id: '', read: false, write: false, uid_eleve: $ctrl.uid, onglet_id: $ctrl.onglet.id })">
-        <span class="glyphicon glyphicon-plus-sign"></span>
-    </button>
 </div>

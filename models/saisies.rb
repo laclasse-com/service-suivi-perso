@@ -16,7 +16,7 @@ class Saisie < Sequel::Model(:saisies)
     default_rights.each do |default_right|
       add_droit( default_right )
     end
-    add_droit( uid: user_creator[:uid], read: true, write: true )
+    add_droit( uid: user_creator[:uid], profil_id: nil, sharable_id: nil, read: true, write: true )
   end
 
   def allow?( user, right )

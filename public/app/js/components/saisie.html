@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <div class="panel-footer" ng:if="!$ctrl.edition">
+    <div class="panel-footer" ng:if="$ctrl.onglet.writable && !$ctrl.edition">
         <div class="pull-right buttons">
             <button class="btn btn-default"
                     ng:click="$ctrl.toggle_edit()">

@@ -63,7 +63,7 @@ angular.module( 'suiviApp',
 
                                              taRegisterTool( 'fontColor', colorpicker_taTool( 'forecolor' ), 'Changer la couleur du texte' );
 
-                                             taRegisterTool( 'backgroundColor', colorpicker_taTool( 'backcolor' ), 'Changer la couleur de fonds' );
+                                             // taRegisterTool( 'backgroundColor', colorpicker_taTool( 'backcolor' ), 'Changer la couleur de fonds' );
 
                                              taRegisterTool( 'table', { columns: { value: 1,
                                                                                    hovered: 1 },
