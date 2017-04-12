@@ -35,7 +35,6 @@ module Suivi
           app.post '/api/carnets/:uid_eleve/onglets/?' do
             param :uid_eleve, String, required: true
             param :nom, String, required: true
-            param :ordre, Integer, required: false
 
             carnet = get_and_check_carnet( params['uid_eleve'], user, :write )
             onglet = carnet.onglets_dataset[nom: params['nom']]
@@ -43,7 +42,6 @@ module Suivi
             if onglet.nil?
               onglet = Onglet.create( carnet_id: carnet.id,
                                       nom: params['nom'],
-                                      ordre: params['ordre'],
                                       date_creation: DateTime.now )
 
               onglet.init_droits( DEFAULT_RIGHTS[:Onglet], user )
@@ -60,13 +58,11 @@ module Suivi
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :nom, String, required: false
-            param :ordre, Integer, required: false
 
             get_and_check_carnet( params['uid_eleve'], user, :write )
 
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
             onglet.nom = params['nom'] if params.key?( 'nom' )
-            onglet.ordre = params['ordre'] if params.key?( 'ordre' )
             onglet.save
 
             onglet_hash = onglet.to_hash

@@ -49,5 +49,10 @@ Sequel.migration do
     alter_table(:droits) do
       add_foreign_key [:carnet_id], :carnets
     end
+
+    # droits.id
+    alter_table(:droits) do
+      set_column_type :id, Integer
+    end
   end
 end

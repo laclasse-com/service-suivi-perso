@@ -5,7 +5,6 @@ angular.module( 'suiviApp' )
                     return $resource( APP_PATH + '/api/carnets/:uid_eleve/onglets/:id',
                                       { uid_eleve: '@uid_eleve',
                                         id: '@id',
-                                        nom: '@nom',
-                                        ordre: '@ordre' },
+                                        nom: '@nom' },
                                       { update: { method: 'PUT' } } );
                 } ] );

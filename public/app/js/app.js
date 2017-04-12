@@ -45,15 +45,14 @@ angular.module( 'suiviApp',
                    $provide.decorator( 'taOptions',
                                        [ '$delegate', 'taRegisterTool',
                                          function( taOptions, taRegisterTool ) {
-                                             var colorpicker_taTool = function( type, tooltiptext ) {
-                                                 var style = ( type === 'backcolor' ) ? 'background-' : '';
+                                             var colorpicker_taTool = function( attribute, tooltiptext ) {
                                                  var couleurs = [ '#7bd148', '#5484ed', '#a4bdfc', '#46d6db', '#7ae7bf', '#51b749', '#fbd75b', '#ffb878', '#ff887c', '#dc2127', '#dbadff', '#e1e1e1' ];
-                                                 if ( type === 'backcolor' ) {
+                                                 if ( attribute === 'background-color' ) {
                                                      couleurs.push( 'transparent' );
                                                  }
 
                                                  return { couleurs: couleurs,
-                                                          display: '<span uib-dropdown><a uib-dropdown-toggle><i class="fa fa-font" data-ng-style="{\'' + style + 'color\': selected }"></i> <i class="fa fa-caret-down"></i></a><ng-color-picker uib-dropdown-menu selected="selected" colors="couleurs"></ng-color-picker></span>',
+                                                          display: '<span uib-dropdown><a uib-dropdown-toggle><i class="fa fa-font" data-ng-style="{\'' + attribute + '\': selected }"></i> <i class="fa fa-caret-down"></i></a><ng-color-picker uib-dropdown-menu selected="selected" colors="couleurs"></ng-color-picker></span>',
                                                           tooltiptext: tooltiptext,
                                                           action: function( ) {
                                                               return ( this.selected === 'nil' ) ? false : this.$editor().wrapSelection( type, this.selected );
@@ -61,9 +60,9 @@ angular.module( 'suiviApp',
                                                         };
                                              };
 
-                                             taRegisterTool( 'fontColor', colorpicker_taTool( 'forecolor' ), 'Changer la couleur du texte' );
+                                             taRegisterTool( 'fontColor', colorpicker_taTool( 'color' ), 'Changer la couleur du texte' );
 
-                                             // taRegisterTool( 'backgroundColor', colorpicker_taTool( 'backcolor' ), 'Changer la couleur de fonds' );
+                                             // taRegisterTool( 'backgroundColor', colorpicker_taTool( 'background-color' ), 'Changer la couleur de fonds' );
 
                                              taRegisterTool( 'table', { columns: { value: 1,
                                                                                    hovered: 1 },
@@ -96,7 +95,7 @@ angular.module( 'suiviApp',
                                                                             return false;
                                                                         } } );
 
-                                             taOptions.toolbar = [ [ 'bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'fontColor', 'backgroundColor', 'table', 'justifyLeft', 'justifyCenter', 'justifyRight', 'insertLink', 'html', 'undo', 'redo', 'charcount' ] ];
+                                             taOptions.toolbar = [ [ 'bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'fontColor', 'table', 'justifyLeft', 'justifyCenter', 'justifyRight', 'insertLink', 'html', 'undo', 'redo', 'charcount' ] ];
 
                                              taOptions.classes = {
                                                  focussed: 'focussed',

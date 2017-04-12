@@ -87,9 +87,9 @@ angular.module( 'suiviApp' )
                                                                     ctrl.personnels = _.chain(response.data)
                                                                         .reject( function( people ) { return people.profil_id === 'ENS'; } )
                                                                         .map( function( people ) {
-                                                                            return { type: 'Personnel de l\'établissement',
+                                                                            return { type: _(ctrl.profils).findWhere({id: people.profil_id}).description,
                                                                                      uid: people.id_ent,
-                                                                                     display: people.prenom + ' ' + people.nom + '( ' + _(ctrl.profils).findWhere({id: people.profil_id}).description + ' )'};
+                                                                                     display: people.prenom + ' ' + people.nom };
                                                                         } )
                                                                         .value();
                                                                     ctrl.concerned_people.push( ctrl.personnels );
