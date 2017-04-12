@@ -55,7 +55,7 @@ angular.module( 'suiviApp',
                                                           display: '<span uib-dropdown><a uib-dropdown-toggle><i class="fa fa-font" data-ng-style="{\'' + attribute + '\': selected }"></i> <i class="fa fa-caret-down"></i></a><ng-color-picker uib-dropdown-menu selected="selected" colors="couleurs"></ng-color-picker></span>',
                                                           tooltiptext: tooltiptext,
                                                           action: function( ) {
-                                                              return ( this.selected === 'nil' ) ? false : this.$editor().wrapSelection( type, this.selected );
+                                                              return ( this.selected === 'nil' ) ? false : this.$editor().wrapSelection( attribute, this.selected );
                                                           }
                                                         };
                                              };
