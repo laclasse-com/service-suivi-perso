@@ -8,8 +8,8 @@ angular.module( 'suiviApp' )
                         $uibModal.open( { resolve: { uid: function() { return uid; },
                                                      onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; } },
                                           templateUrl: 'app/views/popup_onglet.html',
-                                          controller: [ '$scope', '$uibModalInstance', '$http', '$q', 'DroitsOnglets', 'URL_ENT', 'uid', 'onglet',
-                                                        function PopupOngletCtrl( $scope, $uibModalInstance, $http, $q, DroitsOnglets, URL_ENT, uid, onglet ) {
+                                          controller: [ '$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uid', 'onglet',
+                                                        function PopupOngletCtrl( $scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uid, onglet ) {
                                                             var ctrl = $scope;
 
                                                             ctrl.uid = uid;
@@ -30,78 +30,16 @@ angular.module( 'suiviApp' )
                                                                            function error( response ) {} );
                                                             }
 
-                                                            $http.get( URL_ENT + 'api/app/users/' + uid, { params: { expand: true } } )
+                                                            APIs.get_user( uid )
                                                                 .then( function success( response ) {
                                                                     ctrl.eleve = response.data;
-                                                                    ctrl.concerned_people = [];
-                                                                    ctrl.concerned_people.push( _([ ctrl.eleve ]).map( function( people ) {
-                                                                        return { type: 'Élève',
-                                                                                 uid: people.id_ent,
-                                                                                 display: people.prenom + ' ' + people.nom };
-                                                                    } ) );
-                                                                    ctrl.concerned_people.push( _(ctrl.eleve.relations_adultes).map( function( people ) {
-                                                                        return { type: 'Reponsable',
-                                                                                 uid: people.id_ent,
-                                                                                 display: people.prenom + ' ' + people.nom };
-                                                                    } ) );
-
-                                                                    return $q.all( _.chain( ctrl.eleve.classes.concat( ctrl.eleve.groues_eleves ) ) // add groupes_libres
-                                                                                   .select( function( regroupement ) {
-                                                                                       return _(regroupement).has('etablissement_code') && regroupement.etablissement_code === ctrl.eleve.profil_actif.etablissement_code_uai;
-                                                                                   } )
-                                                                            .map( function( regroupement ) {
-                                                                                return _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id;
-                                                                            } )
-                                                                            .uniq()
-                                                                            .map( function( regroupement_id ) {
-                                                                                return $http.get( URL_ENT + '/api/app/regroupements/' + regroupement_id, { params: { expand: 'true' } } );
-                                                                            } )
-                                                                                   .value() );
-                                                                },
-                                                                       function error( response ) {} )
-                                                                .then( function success( response ) {
-                                                                    ctrl.enseignants = _.chain(response)
-                                                                        .pluck('data')
-                                                                        .map( function( regroupement ) {
-                                                                            return _(regroupement.profs)
-                                                                                .map( function( people ) {
-                                                                                    return { type: 'Enseignant',
-                                                                                             uid: people.id_ent,
-                                                                                             display: people.prenom + ' ' + people.nom + ' (' + people.matieres.map( function( matiere ) { return matiere.libelle_long; } ).join(', ') + ' )'};
-                                                                                } );
-                                                                        } )
-                                                                        .flatten()
-                                                                        .value();
-                                                                    ctrl.concerned_people.push( ctrl.enseignants );
-
-                                                                    return $http.get( URL_ENT + 'api/app/profils' );
-                                                                },
-                                                                       function error( response ) {} )
-                                                                .then( function success( response ) {
-                                                                    ctrl.profils = response.data;
-
-                                                                    return $http.get( URL_ENT + 'api/app/etablissements/' + ctrl.eleve.profil_actif.etablissement_code_uai + '/personnel' );
-                                                                },
-                                                                       function error( response ) {} )
-                                                                .then( function success( response ) {
-                                                                    ctrl.personnels = _.chain(response.data)
-                                                                        .reject( function( people ) { return people.profil_id === 'ENS'; } )
-                                                                        .map( function( people ) {
-                                                                            return { type: _(ctrl.profils).findWhere({id: people.profil_id}).description,
-                                                                                     uid: people.id_ent,
-                                                                                     display: people.prenom + ' ' + people.nom };
-                                                                        } )
-                                                                        .value();
-                                                                    ctrl.concerned_people.push( ctrl.personnels );
-
-                                                                    ctrl.concerned_people = _.chain(ctrl.concerned_people)
-                                                                        .flatten()
-                                                                        .uniq( function( people ) {
-                                                                            return people.uid;
-                                                                        } )
-                                                                        .value();
-                                                                },
-                                                                       function error( response ) {} );
+                                                                    APIs.query_people_concerned_about( uid )
+                                                                        .then( function success( response ) {
+                                                                            console.log(response)
+                                                                            ctrl.concerned_people = response;
+                                                                        },
+                                                                               function error( response ) {} );
+                                                                } );
 
                                                             ctrl.ok = function() {
                                                                 $uibModalInstance.close( { onglet: ctrl.onglet,

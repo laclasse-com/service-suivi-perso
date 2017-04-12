@@ -5,24 +5,31 @@ angular.module( 'suiviApp' )
                 { bindings: { uid: '<',
                               small: '<',
                               showAvatar: '<',
-                              showResponsables: '<',
-                              showChildrens: '<',
+                              showConcernedPeople: '<',
                               showPhones: '<',
                               showEmails: '<',
                               showClasse: '<',
                               showBirthdate: '<' },
                   templateUrl: 'app/js/components/user_details.html',
-                  controller: [ '$http', 'URL_ENT',
-                                function( $http, URL_ENT ) {
+                  controller: [ 'APIs', 'URL_ENT',
+                                function( APIs, URL_ENT ) {
                                     var ctrl = this;
 
                                     ctrl.URL_ENT  = URL_ENT;
 
                                     ctrl.$onInit = function() {
-                                        $http.get( URL_ENT + '/api/app/users/' + ctrl.uid, { params: { expand: 'true' } } )
+                                        APIs.get_user( ctrl.uid )
                                             .then( function( response ) {
                                                 ctrl.user = response.data;
                                             } );
+                                        if ( ctrl.showConcernedPeople ) {
+                                            APIs.query_people_concerned_about( ctrl.uid )
+                                            .then( function success( response ) {
+                                                ctrl.concerned_people = _(response).groupBy('type');
+                                                delete ctrl.concerned_people['Élève'];
+                                            },
+                                                   function error( response ) {} );
+                                        }
                                     };
                                 } ]
                 } );

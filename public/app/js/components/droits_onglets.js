@@ -5,8 +5,8 @@ angular.module( 'suiviApp' )
                 { bindings: { droits: '=',
                               concernedPeople: '<' },
                   templateUrl: 'app/js/components/droits_onglets.html',
-                  controller: [ '$http', 'DroitsOnglets', 'UID', 'URL_ENT',
-                                function( $http, DroitsOnglets, UID, URL_ENT ) {
+                  controller: [ 'DroitsOnglets', 'APIs', 'UID', 'URL_ENT',
+                                function( DroitsOnglets, APIs, UID, URL_ENT ) {
                                     var ctrl = this;
 
                                     var gen_pseudo_UUID = function() {
@@ -39,7 +39,7 @@ angular.module( 'suiviApp' )
                                     ctrl.$onInit = function() {
                                         ctrl.UID = UID;
 
-                                        $http.get( URL_ENT + 'api/app/profils' )
+                                        APIs.query_profils()
                                             .then( function success( response ) {
                                                 ctrl.profils = response.data;
                                             },

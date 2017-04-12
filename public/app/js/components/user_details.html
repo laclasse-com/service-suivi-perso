@@ -43,23 +43,14 @@
     </div>
 </div>
 
-<fieldset class="pull-left col-md-12 parents" ng:if="$ctrl.showResponsables">
-    <legend>Responsables</legend>
+<fieldset class="pull-left col-md-12 parents" ng:if="$ctrl.showConcernedPeople">
+    <legend>Personnes concernées</legend>
     <ul>
-        <li ng:repeat="adulte in $ctrl.user.relations_adultes">
-            {{adulte.description}} : <user-details uid="adulte.id_ent"
-                                                   small="true"
-                                                   show-childrens="true"
-                                                   show-emails="true"></user-details>
-        </li>
-    </ul>
-</fieldset>
-
-<fieldset class="pull-left col-md-12 childrens" ng:if="$ctrl.showChildrens">
-    <legend>Enfants</legend>
-    <ul>
-        <li ng:repeat="enfant in $ctrl.user.relations_eleves">
-            {{enfant.description}}: <a ui:sref="carnet({uid_eleve: enfant.id_ent})"><user-details uid="enfant.id_ent" small="true"></user-details></a>
+        <li ng:repeat="(type, peoples) in $ctrl.concerned_people">
+            {{type}}
+            <ul>
+                <li ng:repeat="people in peoples">{{people.display}}</li>
+            </ul>
         </li>
     </ul>
 </fieldset>

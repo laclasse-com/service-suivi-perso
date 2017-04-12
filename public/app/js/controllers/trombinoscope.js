@@ -1,7 +1,7 @@
 angular.module( 'suiviApp' )
     .controller( 'TrombinoscopeCtrl',
-                 [ '$scope', '$http', '$q', 'URL_ENT', 'APP_PATH', 'User',
-                   function( $scope, $http, $q, URL_ENT, APP_PATH, User ) {
+                 [ '$scope', '$q', 'URL_ENT', 'APP_PATH', 'User', 'APIs',
+                   function( $scope, $q, URL_ENT, APP_PATH, User, APIs ) {
                        var ctrl = $scope;
                        ctrl.search = '';
 
@@ -19,7 +19,7 @@ angular.module( 'suiviApp' )
                                                } )
                                                .uniq()
                                                .map( function( regroupement_id ) {
-                                                   return $http.get( URL_ENT + '/api/app/regroupements/' + regroupement_id, { params: { expand: 'true' } } );
+                                                   return APIs.get_regroupement( regroupement_id );
                                                } )
                                                .value()
                                          )
@@ -42,7 +42,7 @@ angular.module( 'suiviApp' )
                                                .flatten()
                                                .value();
 
-                                           $http.get( 'api/carnets/contributed/' + current_user.id_ent )
+                                           APIs.query_carnets_contributed_to( current_user.id_ent )
                                                .then( function success( response ) {
                                                    ctrl.eleves_contributed = _.chain(response.data).map( function( carnet ) {
                                                        return _(ctrl.eleves).findWhere({ id_ent: carnet.uid_elv });
