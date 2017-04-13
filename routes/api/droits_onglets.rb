@@ -32,11 +32,15 @@ module Suivi
               get_and_check_carnet( params['uid_eleve'], user, :write )
               onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
-              droit = Droit[uid: params['uid'], profil_id: params['profil_id'], read: params['read'], write: params['write']]
+              droit = Droit[ uid: params['uid'],
+                             profil_id: params['profil_id'],
+                             sharable_id: params['sharable_id'],
+                             read: params['read'],
+                             write: params['write'] ]
               return json( droit ) unless droit.nil?
 
               droit = {}
-              %w[ uid profil_id read write ].each do |key|
+              %w[uid profil_id read write].each do |key|
                 droit[ key ] = params[ key ] if params.key?( key )
               end
               droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
