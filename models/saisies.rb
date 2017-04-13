@@ -7,6 +7,7 @@ class Saisie < Sequel::Model(:saisies)
 
   many_to_one :onglets, class: :Onglet, key: :onglet_id
   one_to_many :droits
+  one_to_many :ressources
 
   def before_destroy
     Droit.where(saisie_id: id).destroy
