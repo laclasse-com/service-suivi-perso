@@ -32,13 +32,14 @@
     "bootstrap": "^3.3.7",
     "bootstrap-css-only": "^2.3.2-1",
     "es5-shim": "^4.5.9",
+    "es6-promise": "^4.1.0",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
     "jquery-ui-dist": "^1.12.1",
     "laclasse-common-client": "git+https://github.com/laclasse-com/laclasse-common-client.git",
-      "ng-color-picker": "git+https://github.com/cycojesus/ng-color-picker.git",
-      "sweetalert2": "^6.5.5",
-      "textangular": "^1.5.16",
-      "underscore": "^1.8.3"
+    "ng-color-picker": "git+https://github.com/cycojesus/ng-color-picker.git",
+    "sweetalert2": "^6.5.5",
+    "textangular": "^1.5.16",
+    "underscore": "^1.8.3"
   }
 }
