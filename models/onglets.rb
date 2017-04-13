@@ -1,19 +1,15 @@
 # coding: utf-8
 
 class Onglet < Sequel::Model(:onglets)
-  # Plugins
-  plugin :validation_helpers
-  plugin :json_serializer
-  plugin :composition
-
-  # Referential integrity
   many_to_one :carnets, class: :Carnet, key: :carnet_id
   one_to_many :saisies, class: :Saisie
   one_to_many :droits
+  one_to_many :ressources
 
   def before_destroy
     Droit.where(onglet_id: id).destroy
     Saisie.where(onglet_id: id).destroy
+    Ressource.where(onglet_id: id).destroy
   end
 
   def init_droits( default_rights, user_creator )

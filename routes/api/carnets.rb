@@ -23,7 +23,7 @@ module Suivi
           app.get '/api/carnets/:uid_eleve' do
             param :uid_eleve, String, required: true
 
-            json get_and_check_carnet( params['uid_eleve'], user, :read )
+            json( get_and_check_carnet( params['uid_eleve'], user, :read ) )
           end
         end
       end

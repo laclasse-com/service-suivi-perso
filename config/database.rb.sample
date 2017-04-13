@@ -1,25 +1,16 @@
 # coding: utf-8
 #
 # Configuration de la base de données de Backend
-#
-if ENV['RACK_ENV'] == 'development' || ENV['RACK_ENV'].nil?
-  DB = Sequel.mysql2( 'suivi',
-                      host: '192.168.123.2',
-                      user: 'laclasse',
-                      password: 'vagrant',
-                      charset: 'utf8')
-end
 
-if ENV['RACK_ENV'] == 'test'
-  DB = Sequel.mysql2( 'suivi',
-                      host: '127.0.0.1',
-                      user: 'root',
-                      password: '',
-                      charset: 'utf8')
-end
+DB = Sequel.mysql2( 'suivi',
+                    host: '127.0.0.1',
+                    user: 'root',
+                    password: '',
+                    charset: 'utf8')
 
-Sequel.extension(:pagination)
 Sequel.extension(:migration)
+
+Sequel::Model.plugin :json_serializer
 
 # Uncomment this if you want to log all DB queries
 # DB.loggers << Logger.new($stdout)
