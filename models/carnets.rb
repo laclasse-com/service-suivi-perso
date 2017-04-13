@@ -9,10 +9,10 @@ class Carnet < Sequel::Model(:carnets)
   one_to_many :droits
 
   def self.of( uid_eleve )
-    carnet = Carnet[ uid_elv: uid_eleve ]
+    carnet = Carnet[ uid_eleve: uid_eleve ]
     if carnet.nil?
       # FIXME: check that uid_eleve is actually an eleve
-      carnet = Carnet.create( uid_elv: uid_eleve,
+      carnet = Carnet.create( uid_eleve: uid_eleve,
                               date_creation: DateTime.now )
 
       carnet.init_droits( DEFAULT_RIGHTS[ :Carnet ] )
@@ -30,7 +30,7 @@ class Carnet < Sequel::Model(:carnets)
     default_rights.each do |default_right|
       add_droit( default_right )
     end
-    add_droit( uid: uid_elv, profil_id: nil, sharable_id: nil, read: true, write: true )
+    add_droit( uid: uid_eleve, profil_id: nil, sharable_id: nil, read: true, write: true )
   end
 
   def allow?( user, right )

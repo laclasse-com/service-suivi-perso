@@ -45,7 +45,7 @@ angular.module( 'suiviApp' )
                                            APIs.query_carnets_contributed_to( current_user.id_ent )
                                                .then( function success( response ) {
                                                    ctrl.eleves_contributed = _.chain(response.data).map( function( carnet ) {
-                                                       return _(ctrl.eleves).findWhere({ id_ent: carnet.uid_elv });
+                                                       return _(ctrl.eleves).findWhere({ id_ent: carnet.uid_eleve });
                                                    }).compact().value();
                                                },
                                                       function error( response ) {} );
