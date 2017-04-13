@@ -28,9 +28,12 @@
         </div>
         <span class="col-md-12 address"
               ng:if="$ctrl.user.adresse">
-            {{$ctrl.user.adresse}}
-            <br>
-            {{$ctrl.user.code_postal}} {{$ctrl.user.ville}}
+            <span class="glyphicon glyphicon-home"></span>
+            <span style="display: inline-table;">
+                {{$ctrl.user.adresse}}
+                <br>
+                {{$ctrl.user.code_postal}} {{$ctrl.user.ville}}
+            </span>
         </span>
         <div class="col-md-12 phone"
              ng:repeat="phone in $ctrl.user.telephones"

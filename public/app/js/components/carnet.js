@@ -4,11 +4,11 @@ angular.module( 'suiviApp' )
     .component( 'carnet',
                 { bindings: { uid: '<' },
                   templateUrl: 'app/js/components/carnet.html',
-                  controller: [ '$uibModal', 'Carnets', 'Onglets', 'Popups',
-                                function( $uibModal, Carnets, Onglets, Popups ) {
+                  controller: [ '$uibModal', 'Carnets', 'Onglets', 'Popups', 'GeneratePDF',
+                                function( $uibModal, Carnets, Onglets, Popups, GeneratePDF ) {
                                     var ctrl = this;
                                     ctrl.popup_onglet = Popups.onglet;
-                                    ctrl.onglet_actif = 1;
+                                    ctrl.print_onglet = GeneratePDF.onglet;
 
                                     var activate_first_onglet = function() {
                                         _(ctrl.onglets).each( function( onglet, index ) {
@@ -27,7 +27,7 @@ angular.module( 'suiviApp' )
                                             ctrl.$onInit();
                                         } else if ( onglet.created ) {
                                             ctrl.onglets.push( onglet );
-                                            ctrl.onglet_actif = ctrl.onglets.length;
+                                            activate_last_onglet();
                                         }
                                     };
 
