@@ -35,7 +35,6 @@ angular.module( 'suiviApp' )
                                                                     ctrl.eleve = response.data;
                                                                     APIs.query_people_concerned_about( uid )
                                                                         .then( function success( response ) {
-                                                                            console.log(response)
                                                                             ctrl.concerned_people = response;
                                                                         },
                                                                                function error( response ) {} );
@@ -92,12 +91,18 @@ angular.module( 'suiviApp' )
                                     _.chain(response_popup.droits)
                                         .each( function( droit ) {
                                             if ( droit.to_delete ) {
-                                                droit.$delete();
+                                                if ( _(droit).has('id') ) {
+                                                    droit.$delete()
+                                                        .then( function success( response ) {},
+                                                               function error( response ) {} );
+                                                }
                                             } else if ( droit.dirty ) {
                                                 droit.uid_eleve = uid;
                                                 droit.onglet_id = response_popup.onglet.id;
 
-                                                _(droit).has('id') ? droit.$update() : droit.$save();
+                                                ( _(droit).has('id') ? droit.$update() : droit.$save() )
+                                                    .then( function success( response ) {},
+                                                           function error( response ) {} );
                                             }
                                         } );
 
