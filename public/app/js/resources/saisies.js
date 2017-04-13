@@ -6,7 +6,6 @@ angular.module( 'suiviApp' )
                                       { uid_eleve: '@uid_eleve',
                                         onglet_id: '@onglet_id',
                                         id: '@id',
-                                        contenu: '@contenu',
-                                        background_color: '@background_color' },
+                                        contenu: '@contenu' },
                                       { update: { method: 'PUT' } } );
                 } ] );

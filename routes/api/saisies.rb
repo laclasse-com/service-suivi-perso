@@ -30,15 +30,14 @@ module Suivi
             param :uid_eleve, String, required: true
             param :onglet_id, Integer, required: true
             param :contenu, String, required: true
-            param :background_color, String, required: true
 
             get_and_check_carnet( params['uid_eleve'], user, :write )
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
             saisie = onglet.add_saisy( uid: user[:uid],
                                        date_creation: DateTime.now,
-                                       contenu: params['contenu'],
-                                       back_color: params['background_color'] )
+                                       date_modification: DateTime.now,
+                                       contenu: params['contenu'] )
             saisie.init_droits( DEFAULT_RIGHTS[:Saisie], user )
 
             json( saisie )
@@ -49,7 +48,6 @@ module Suivi
             param :onglet_id, Integer, required: true
             param :id, Integer, required: true
             param :contenu, String, required: false
-            param :background_color, String, required: false
 
             get_and_check_carnet( params['uid_eleve'], user, :write )
             get_and_check_onglet( params['onglet_id'], user, :write )
@@ -58,10 +56,6 @@ module Suivi
             changed = false
             if params.key?('contenu')
               saisie.contenu = params['contenu']
-              changed = true
-            end
-            if params.key?('background_color')
-              saisie.back_color = params['background_color']
               changed = true
             end
 

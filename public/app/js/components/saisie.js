@@ -62,8 +62,7 @@ angular.module( 'suiviApp' )
                                         ctrl.saisie = new Saisies({ new_saisie: true,
                                                                     uid_eleve: ctrl.uid,
                                                                     onglet_id: ctrl.onglet.id,
-                                                                    contenu: '',
-                                                                    background_color: '#baddad' });
+                                                                    contenu: '' });
                                     };
 
                                     ctrl.$onInit = function() {

@@ -1,18 +1,21 @@
 <div class="panel panel-default saisie-display">
-    <div class="panel-heading" ng:if="$ctrl.saisie.id">{{$ctrl.saisie.date_creation}}</div>
-
-    <div class="panel-body" ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit'}">
+    <div class="panel-heading" ng:if="$ctrl.saisie.id">
         <user-details class="col-md-4"
                       ng:if="$ctrl.showAuthor"
                       uid="$ctrl.saisie.uid"
                       small="true"
                       show-avatar="true"></user-details>
+        {{$ctrl.saisie.date_creation}}
+        <div class="clearfix"></div>
+    </div>
 
-        <div ng:class="{'col-md-8': $ctrl.showAuthor, 'col-md-12': !$ctrl.showAuthor}"
+    <div class="panel-body" ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit', 'border': $ctrl.new_saisie ? 0 : 'inherit'}">
+
+        <div class="col-md-12"
              ng:bind-html="$ctrl.saisie.trusted_contenu"
              ng:if="!$ctrl.edition"></div>
 
-        <div ng:class="{'col-md-8': $ctrl.showAuthor, 'col-md-12': !$ctrl.showAuthor}"
+        <div class="col-md-12"
              ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit'}"
              ng:if="$ctrl.edition">
             <text-angular ta:target-toolbars="main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}"

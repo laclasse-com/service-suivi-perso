@@ -45,12 +45,17 @@
 
 <fieldset class="pull-left col-md-12 parents" ng:if="$ctrl.showConcernedPeople">
     <legend>Personnes concernées</legend>
-    <ul>
-        <li ng:repeat="(type, peoples) in $ctrl.concerned_people">
-            {{type}}
+    <uib-accordion>
+        <div uib-accordion-group
+             class="panel-default"
+             is-open="type.is_open"
+             ng:repeat="(type, peoples) in $ctrl.concerned_people">
+            <uib-accordion-heading>
+                <span class="glyphicon" ng:class="{'glyphicon-menu-down': type.is_open, 'glyphicon-menu-right': !type.is_open}"></span> {{type}}
+            </uib-accordion-heading>
             <ul>
                 <li ng:repeat="people in peoples">{{people.display}}</li>
             </ul>
-        </li>
-    </ul>
+        </div>
+    </uib-accordion>
 </fieldset>
