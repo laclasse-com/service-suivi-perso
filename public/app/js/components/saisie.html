@@ -5,7 +5,7 @@
                       uid="$ctrl.saisie.uid"
                       small="true"
                       show-avatar="true"></user-details>
-        {{$ctrl.saisie.date_creation}}
+        {{$ctrl.saisie.date_creation | date:'fullDate'}}
         <div class="clearfix"></div>
     </div>
 
