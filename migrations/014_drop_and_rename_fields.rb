@@ -1,6 +1,5 @@
 Sequel.migration do
   change do
-
     alter_table(:carnets) do
       drop_column :uid_adm
       drop_column :droits_pre

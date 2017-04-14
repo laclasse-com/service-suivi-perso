@@ -27,17 +27,16 @@ task :todo do
 
       color = undercolor.tr('4', '0')
 
-      if todo
-        unless lastline && lastline + 1 == lineno
-          puts
-          puts undercolor % "#{file}# #{lineno} : "
-        end
-
-        l = '  . ' + line.strip.gsub(/^#\s*/, '')
-        # print '  . ' unless l =~ /^-/
-        puts color % l
-        lastline = lineno
+      next unless todo
+      unless lastline && lastline + 1 == lineno
+        puts
+        puts undercolor % "#{file}# #{lineno} : "
       end
+
+      l = '  . ' + line.strip.gsub(/^#\s*/, '')
+      # print '  . ' unless l =~ /^-/
+      puts color % l
+      lastline = lineno
     end # File.readlines
   end
 end # task :todo

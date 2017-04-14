@@ -11,12 +11,12 @@ module Suivi
             json( get_and_check_carnet( params['uid_eleve'], user, :read )
                     .onglets
                     .select { |onglet| onglet.allow?( user, :read ) }
-                    .map { |onglet|
+                    .map do |onglet|
                     onglet_hash = onglet.to_hash
                     onglet_hash[:writable] = onglet.allow?( user, :write )
 
                     onglet_hash
-                  } )
+                  end )
           end
 
           app.get '/api/carnets/:uid_eleve/onglets/:onglet_id' do

@@ -1,4 +1,5 @@
 # coding: utf-8
+
 module Suivi
   module Helpers
     module AccessAndRights
@@ -19,7 +20,7 @@ module Suivi
         onglet
       end
 
-      def get_and_check_saisie( id, user, right )
+      def get_and_check_saisie( _id, user, right )
         saisie = Saisie[id: params[:id]]
         halt( 404, '404 Unknown saisie' ) if saisie.nil?
         halt( 403, '403 Forbidden' ) unless saisie.allow?( user, right )

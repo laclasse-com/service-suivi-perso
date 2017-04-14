@@ -1,4 +1,5 @@
 # coding: utf-8
+
 # APP_ROOT_RAKE = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 namespace :db do
