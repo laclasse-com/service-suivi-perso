@@ -6,13 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Lint/UnifiedInteger:
-  Exclude:
-    - 'migrations/001_create_tables.rb'
-    - 'migrations/005_create_table_docs.rb'
-
 # Offense count: 9
 Metrics/AbcSize:
   Max: 138

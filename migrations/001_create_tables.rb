@@ -4,7 +4,7 @@
 Sequel.migration do
   change do
     create_table(:carnets, ignore_index_errors: true) do
-      primary_key :id, type: Bignum
+      primary_key :id, type: Integer
       String :uid_elv, size: 8, null: false
       String :uid_adm, size: 8, null: false
       String :uai, size: 8, null: false
@@ -19,7 +19,7 @@ Sequel.migration do
     end
 
     create_table(:onglets, ignore_index_errors: true) do
-      primary_key :id, type: Bignum
+      primary_key :id, type: Integer
       String :nom, size: 45, null: false
       String :uid_own, size: 8, null: false
       Date :date_creation, default: nil, null: true
@@ -39,7 +39,7 @@ Sequel.migration do
     end
 
     create_table(:droits_specifiques, ignore_index_errors: true) do
-      primary_key :id, type: Bignum
+      primary_key :id, type: Integer
       String :uid, size: 8, null: false
       String :full_name, size: 200, null: false
       String :profil, size: 45, null: false
@@ -54,7 +54,7 @@ Sequel.migration do
     end
 
     create_table(:saisies, ignore_index_errors: true) do
-      primary_key :id, type: Bignum
+      primary_key :id, type: Integer
       String :uid, size: 8, null: false
       Date :date_creation, default: nil, null: true
       String :contenu, default: nil, null: true

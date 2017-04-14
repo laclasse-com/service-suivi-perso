@@ -1,7 +1,7 @@
 Sequel.migration do
   change do
     create_table(:docs, ignore_index_errors: true) do
-      primary_key :id, type: Bignum
+      primary_key :id, type: Integer
       Bignum :saisies_id, null: false
       String :nom, size: 250, null: false
       String :url, size: 2000, null: false
