@@ -38,4 +38,11 @@ class Onglet < Sequel::Model(:onglets)
     # by default etablissement's admins and super-admins have all rights
     is_admin || is_super_admin
   end
+
+  def to_json( arg )
+    h = to_hash
+    h[:date_creation] = DateTime.parse( h[:date_creation].to_s ) unless h[:date_creation].nil?
+
+    h.to_json( arg )
+  end
 end
