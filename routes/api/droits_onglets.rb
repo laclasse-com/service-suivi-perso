@@ -34,13 +34,14 @@ module Suivi
 
               droit = Droit[ uid: params['uid'],
                              profil_id: params['profil_id'],
+                             onglet_id: params['onglet_id'],
                              sharable_id: params['sharable_id'],
                              read: params['read'],
                              write: params['write'] ]
               return json( droit ) unless droit.nil?
 
               droit = {}
-              %w(uid profil_id read write).each do |key|
+              %w[uid profil_id read write].each do |key|
                 droit[ key ] = params[ key ] if params.key?( key )
               end
               droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
@@ -67,7 +68,7 @@ module Suivi
               droit = Droit[params['droit_id']]
               halt( 404, '404 Unknown droit' ) if droit.nil?
 
-              %w(uid profil_id read write).each do |key|
+              %w[uid profil_id read write].each do |key|
                 droit.update( key => params[ key ] ) if params.key?( key )
               end
               droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
