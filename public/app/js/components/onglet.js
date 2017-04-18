@@ -2,19 +2,26 @@
 
 angular.module( 'suiviApp' )
     .component( 'onglet',
-                { bindings: { uid: '<',
-                              onglet: '<' },
+                { bindings: { uidEleve: '<',
+                              onglet: '=' },
                   templateUrl: 'app/js/components/onglet.html',
-                  controller: [ '$uibModal', 'Onglets', 'Saisies', 'Popups',
-                                function( $uibModal, Onglets, Saisies, Popups ) {
+                  controller: [ '$uibModal', '$state', 'Onglets', 'Saisies', 'Popups', 'GeneratePDF',
+                                function( $uibModal, $state, Onglets, Saisies, Popups, GeneratePDF ) {
                                     var ctrl = this;
 
-                                    ctrl.popup_saisie = Popups.saisie;
+                                    ctrl.manage_onglet = Popups.onglet;
+                                    ctrl.print_onglet = GeneratePDF.onglet;
+
+                                    ctrl.callback_popup_onglet = function( onglet ) {
+                                        if ( onglet.deleted ) {
+                                            $state.go( 'carnet', { uid_eleve: ctrl.uidEleve } );
+                                        }
+                                    };
 
                                     ctrl.$onInit = function() {
                                         ctrl.new_saisie = { create_me: true };
 
-                                        Saisies.query({ uid_eleve: ctrl.uid,
+                                        Saisies.query({ uid_eleve: ctrl.uidEleve,
                                                         onglet_id: ctrl.onglet.id }).$promise
                                             .then( function success( response ) {
                                                 ctrl.saisies = response;

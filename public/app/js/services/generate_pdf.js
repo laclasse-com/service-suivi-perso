@@ -5,7 +5,6 @@ angular.module( 'suiviApp' )
               [ 'APIs', 'Saisies',
                 function( APIs, Saisies ) {
                     var service = this;
-                    var pdfMake = pdfMake;
 
                     service.onglet = function( uid, onglet ) {
                         var eleve = null;
@@ -17,6 +16,8 @@ angular.module( 'suiviApp' )
                                                         nom: {  },
                                                         'classe-etablissement': { fontSize: 10 },
                                                         saisie: { fontSize: 14 },
+                                                        author: { italics: true },
+                                                        date: { fontSize: 10 },
                                                         contenu: {  }
                                                       }
                                             };
@@ -37,12 +38,21 @@ angular.module( 'suiviApp' )
                             } ,
                                    function error( response ) {} )
                             .then( function success( response ) {
-                                _(response).each( function( saisie, index ) {
-                                    docDefinition.content.push( { text: saisie.contenu,
+                                _(response).each( function( saisie ) {
+                                    docDefinition.content.push( { text: '\n\n' } );
+                                    docDefinition.content.push( { text: [ { text: saisie.uid,
+                                                                            style: [ 'saisie', 'author' ] },
+                                                                          { text: saisie.date_creation,
+                                                                            style: [ 'saisie', 'date' ] } ]
+                                                                } );
+                                    console.log( html2pdfmake )
+                                    console.log( saisie.contenu )
+
+                                    docDefinition.content.push( { text: html2pdfmake( saisie.contenu )[0].stack,
                                                                   style: [ 'saisie', 'contenu' ] } );
                                 } );
 
-                                pdfMake.createPdf(docDefinition).download();
+                                //pdfMake.createPdf(docDefinition).download();
                             },
                                    function error( response ) {} );
                     };

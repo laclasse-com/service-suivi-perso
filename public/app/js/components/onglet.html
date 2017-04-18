@@ -1,15 +1,30 @@
-<div class="col-md-8"
+<div class="col-md-3 pull-right"
+     style="text-align: right;">
+    <button class="btn btn-lg btn-warning"
+            style="width: 100%;"
+            ng:if="$ctrl.onglet.writable"
+            ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.callback_popup_onglet )">
+        <span class="glyphicon glyphicon-cog"></span> Configuration de l'onglet
+    </button>
+    <button class="btn btn-lg btn-primary"
+            style="width: 100%;"
+            ng:click="$ctrl.print_onglet( $ctrl.uidEleve, $ctrl.onglet )">
+        <span class="glyphicon glyphicon-print"></span> Exporter en PDF
+    </button>
+</div>
+
+<div class="col-md-9"
      ng:if="$ctrl.onglet.writable">
-    <saisie uid="$ctrl.uid"
+    <saisie uid-eleve="$ctrl.uidEleve"
             onglet="$ctrl.onglet"
             saisie="$ctrl.new_saisie"
             saisies="$ctrl.saisies"
             edition="true"></saisie>
 </div>
 
-<saisie ng:repeat="saisie in $ctrl.saisies"
-        class="col-md-8"
-        uid="$ctrl.uid"
+<saisie class="col-md-9"
+        ng:repeat="saisie in $ctrl.saisies"
+        uid-eleve="$ctrl.uidEleve"
         onglet="$ctrl.onglet"
         saisie="saisie"
         show-author="true"

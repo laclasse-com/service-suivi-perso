@@ -4,5 +4,5 @@ angular.module( 'suiviApp' )
                    function( $scope, $stateParams ) {
                        var ctrl = $scope;
 
-                       ctrl.uid = $stateParams.uid;
+                       ctrl.uid_eleve = $stateParams.uid_eleve;
                    } ] );

@@ -1,27 +1,17 @@
 <uib-tabset>
 
-    <uib-tab index="$index + 1" ng:repeat="onglet in $ctrl.onglets" active="onglet.active">
-        <uib-tab-heading>{{onglet.nom}}
-            <button class="btn btn-xs btn-warning"
-                    style="margin: -23px -16px 0 10px; border-radius: 0 0 0 12px;"
-                    ng:if="onglet.writable"
-                    ng:click="$ctrl.popup_onglet( $ctrl.uid, onglet, $ctrl.callback_popup_onglet )">
-                <span class="glyphicon glyphicon-cog"></span>
-            </button>
+    <uib-tab ng:repeat="onglet in $ctrl.onglets"
+             active="onglet.active">
+        <uib-tab-heading> {{onglet.nom}} </uib-tab-heading>
 
-            <button class="btn btn-xs btn-success"
-                    style="margin: -23px -16px 0 10px; border-radius: 0 0 0 12px;"
-                    ng:click="$ctrl.print_onglet( $ctrl.uid, onglet )">
-                <span class="glyphicon glyphicon-print"></span>
-            </button>
-        </uib-tab-heading>
-
-        <onglet uid="$ctrl.uid" onglet="onglet"></onglet>
+        <onglet uid-eleve="$ctrl.uidEleve"
+                onglet="onglet"
+                ng:if="onglet.active"></onglet>
     </uib-tab>
 
     <li class="uib-tab nav-item">
         <a class="nav-link" href=""
-           ng:click="$ctrl.popup_onglet( $ctrl.uid, null, $ctrl.callback_popup_onglet )">
+           ng:click="$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.callback_popup_onglet )">
             <span class="glyphicon glyphicon-plus"></span>
         </a>
     </li>

@@ -17,7 +17,7 @@
             ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
             ng:repeat="eleve in eleves | filter:search">
             <a class="eleve"
-               ui:sref="carnet({uid: eleve.id_ent})">
+               ui:sref="carnet({uid_eleve: eleve.id_ent})">
                 <h5 class="regroupement">{{eleve.regroupement.libelle}}</h5>
 
                 <div class="full-name">

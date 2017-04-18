@@ -9,7 +9,7 @@ angular.module( 'suiviApp' )
                                  templateUrl: 'app/views/trombinoscope.html',
                                  controller: 'TrombinoscopeCtrl' } )
                        .state( 'carnet',
-                               { url: '/carnet/:uid',
+                               { url: '/carnet/:uid_eleve',
                                  templateUrl: 'app/views/carnet.html',
                                  controller: 'CarnetCtrl' } )
                        .state( 'erreur',

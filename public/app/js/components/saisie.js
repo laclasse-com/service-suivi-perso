@@ -2,7 +2,7 @@
 
 angular.module( 'suiviApp' )
     .component( 'saisie',
-                { bindings: { uid: '<',
+                { bindings: { uidEleve: '<',
                               onglet: '<',
                               saisie: '=',
                               saisies: '=',
@@ -26,7 +26,7 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.save = function() {
-                                        ctrl.saisie.uid_eleve = ctrl.uid;
+                                        ctrl.saisie.uid_eleve = ctrl.uidEleve;
 
                                         var promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
 
@@ -60,7 +60,7 @@ angular.module( 'suiviApp' )
                                     var new_saisie = function() {
                                         ctrl.new_saisie = true;
                                         ctrl.saisie = new Saisies({ new_saisie: true,
-                                                                    uid_eleve: ctrl.uid,
+                                                                    uid_eleve: ctrl.uidEleve,
                                                                     onglet_id: ctrl.onglet.id,
                                                                     contenu: '' });
                                     };

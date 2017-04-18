@@ -2,13 +2,12 @@
 
 angular.module( 'suiviApp' )
     .component( 'carnet',
-                { bindings: { uid: '<' },
+                { bindings: { uidEleve: '<' },
                   templateUrl: 'app/js/components/carnet.html',
-                  controller: [ '$uibModal', 'Carnets', 'Onglets', 'Popups', 'GeneratePDF',
-                                function( $uibModal, Carnets, Onglets, Popups, GeneratePDF ) {
+                  controller: [ '$uibModal', 'Carnets', 'Onglets', 'Popups',
+                                function( $uibModal, Carnets, Onglets, Popups ) {
                                     var ctrl = this;
                                     ctrl.popup_onglet = Popups.onglet;
-                                    ctrl.print_onglet = GeneratePDF.onglet;
 
                                     var activate_first_onglet = function() {
                                         _(ctrl.onglets).each( function( onglet, index ) {
@@ -23,20 +22,16 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.callback_popup_onglet = function( onglet ) {
-                                        if ( onglet.deleted ) {
-                                            ctrl.$onInit();
-                                        } else if ( onglet.created ) {
-                                            ctrl.onglets.push( onglet );
-                                            activate_last_onglet();
-                                        }
+                                        ctrl.onglets.push( onglet );
+                                        activate_last_onglet();
                                     };
 
                                     ctrl.$onInit = function() {
-                                        Carnets.get({ uid_eleve: ctrl.uid }).$promise
+                                        Carnets.get({ uid_eleve: ctrl.uidEleve }).$promise
                                             .then( function success( response ) {
                                                 ctrl.carnet = response;
 
-                                                Onglets.query({ uid_eleve: ctrl.uid }).$promise
+                                                Onglets.query({ uid_eleve: ctrl.uidEleve }).$promise
                                                     .then( function success( response ) {
                                                         ctrl.onglets = response;
                                                         activate_first_onglet();
