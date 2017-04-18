@@ -75,7 +75,6 @@ angular.module( 'suiviApp' )
 
                                         User.get().$promise
                                             .then( function( current_user ) {
-                                                console.log(current_user)
                                                 ctrl.editable = current_user.is_admin() || ( ctrl.onglet.writable && ctrl.saisie.uid_author === current_user.uid );
                                                 ctrl.edition = _(ctrl).has('edition') ? ctrl.edition : false;
                                         } );

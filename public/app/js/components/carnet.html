@@ -1,16 +1,14 @@
 <uib-tabset>
-
-    <uib-tab ng:repeat="onglet in $ctrl.onglets"
-             active="onglet.active">
+    <uib-tab ng:repeat="onglet in $ctrl.onglets">
         <uib-tab-heading> {{onglet.nom}} </uib-tab-heading>
 
         <onglet uid-eleve="$ctrl.uidEleve"
-                onglet="onglet"
-                ng:if="onglet.active"></onglet>
+                onglet="onglet"></onglet>
     </uib-tab>
 
-    <li class="uib-tab nav-item">
-        <a class="nav-link" href=""
+    <li>
+        <a href
+           class="bleu add-onglet"
            ng:click="$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.callback_popup_onglet )">
             <span class="glyphicon glyphicon-plus"></span>
         </a>
