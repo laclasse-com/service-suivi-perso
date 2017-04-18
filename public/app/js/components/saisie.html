@@ -2,7 +2,7 @@
     <div class="panel-heading" ng:if="$ctrl.saisie.id">
         <user-details class="col-md-4"
                       ng:if="$ctrl.showAuthor"
-                      uid="$ctrl.saisie.uid"
+                      uid="$ctrl.saisie.uid_author"
                       small="true"
                       show-avatar="true"></user-details>
         {{$ctrl.saisie.date_creation | date:'medium'}}
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <div class="panel-footer" ng:if="$ctrl.onglet.writable && !$ctrl.edition">
+    <div class="panel-footer" ng:if="$ctrl.editable && !$ctrl.edition">
         <div class="pull-right buttons">
             <button class="btn btn-default"
                     ng:click="$ctrl.toggle_edit()">

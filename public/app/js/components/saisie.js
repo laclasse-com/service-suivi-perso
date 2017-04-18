@@ -9,8 +9,8 @@ angular.module( 'suiviApp' )
                               edition: '=',
                               showAuthor: '<' },
                   templateUrl: 'app/js/components/saisie.html',
-                  controller: [ '$sce', 'Saisies',
-                                function( $sce, Saisies ) {
+                  controller: [ '$sce', 'Saisies', 'User',
+                                function( $sce, Saisies, User ) {
                                     var ctrl = this;
 
                                     ctrl.toggle_edit = function() {
@@ -66,14 +66,19 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.$onInit = function() {
-                                        ctrl.edition = _(ctrl).has('edition') ? ctrl.edition : false;
                                         if ( ctrl.saisie.create_me ) {
                                             new_saisie();
                                         } else {
                                             ctrl.saisie = new Saisies( ctrl.saisie );
+                                            ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
                                         }
 
-                                        ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
+                                        User.get().$promise
+                                            .then( function( current_user ) {
+                                                console.log(current_user)
+                                                ctrl.editable = current_user.is_admin() || ( ctrl.onglet.writable && ctrl.saisie.uid_author === current_user.uid );
+                                                ctrl.edition = _(ctrl).has('edition') ? ctrl.edition : false;
+                                        } );
                                     };
                                 } ]
                 } );

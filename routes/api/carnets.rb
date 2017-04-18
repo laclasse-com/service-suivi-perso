@@ -10,7 +10,7 @@ module Suivi
 
             halt( 401, '401' ) if params['uid'] != user[:uid]
 
-            json( Carnet.where( id: Onglet.where( id: Saisie.where( uid: params['uid'] )
+            json( Carnet.where( id: Onglet.where( id: Saisie.where( uid_author: params['uid'] )
                                                             .select( :onglet_id )
                                                             .all
                                                             .map(&:onglet_id) )

@@ -34,7 +34,7 @@ module Suivi
             get_and_check_carnet( params['uid_eleve'], user, :write )
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
-            saisie = onglet.add_saisy( uid: user[:uid],
+            saisie = onglet.add_saisy( uid_author: user[:uid],
                                        date_creation: DateTime.now,
                                        date_modification: DateTime.now,
                                        contenu: params['contenu'] )

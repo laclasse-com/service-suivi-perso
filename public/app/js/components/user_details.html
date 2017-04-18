@@ -27,7 +27,7 @@
             <a href="mailto:{{email.adresse}}">{{email.adresse}}</a>
         </div>
         <span class="col-md-12 address"
-              ng:if="$ctrl.user.adresse">
+              ng:if="$ctrl.showAddress && $ctrl.user.adresse">
             <span class="glyphicon glyphicon-home"></span>
             <span style="display: inline-table;">
                 {{$ctrl.user.adresse}}
