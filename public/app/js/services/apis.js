@@ -1,7 +1,7 @@
 angular.module( 'suiviApp' )
     .service( 'APIs',
-              [ '$http', '$q', 'URL_ENT',
-                function( $http, $q, URL_ENT ) {
+              [ '$http', '$q', 'User', 'URL_ENT',
+                function( $http, $q, User, URL_ENT ) {
                     var service = this;
 
                     service.query_profils = _.memoize( function() {
@@ -10,6 +10,10 @@ angular.module( 'suiviApp' )
 
                     service.get_user = _.memoize( function( uid ) {
                         return $http.get( URL_ENT + '/api/app/users/' + uid, { params: { expand: 'true' } } );
+                    } );
+
+                    service.get_current_user = _.memoize( function(  ) {
+                        return User.get().$promise;
                     } );
 
                     service.get_regroupement = _.memoize( function( regroupement_id ) {

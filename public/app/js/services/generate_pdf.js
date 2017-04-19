@@ -7,8 +7,8 @@ angular.module( 'suiviApp' )
                     var service = this;
 
                     var substitute_in_string = function( string, substitutions ) {
-                        return substitutions.reduce( function( new_string, substitution ) {
-                            return new_string.replace( substitution.before, substitution.after );
+                        return substitutions.reduce( function( acc_string, substitution ) {
+                            return acc_string.replace( substitution.before, substitution.after );
                         }, string );
                     };
 
@@ -21,6 +21,8 @@ angular.module( 'suiviApp' )
                     };
 
                     var html2pdfmake = function( html ) {
+                        // FIXME: should use html2json or html2pdfmake instead
+                        // console.log( html2json( html ) )
                         return substitute_in_string( html, [ { before: '<br/>', after: '\n' },
                                                              { before: '<p>',   after: '' },
                                                              { before: '</p>',  after: '\n\n' } ] );
@@ -28,7 +30,6 @@ angular.module( 'suiviApp' )
 
                     service.onglet = function( uid, onglet ) {
                         var eleve = null;
-                        var saisies = [];
 
                         var docDefinition = { content: [],
                                               styles: { eleve: { fontSize: 18,
@@ -45,8 +46,6 @@ angular.module( 'suiviApp' )
                                                         contenu: {  }
                                                       }
                                             };
-
-                        // TODO: embed fonts
 
                         APIs.get_user( uid )
                             .then( function success( response ) {

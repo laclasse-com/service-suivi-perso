@@ -11,9 +11,5 @@ angular.module( 'suiviApp' )
                        .state( 'carnet',
                                { url: '/carnet/:uid_eleve',
                                  templateUrl: 'app/views/carnet.html',
-                                 controller: 'CarnetCtrl' } )
-                       .state( 'erreur',
-                               { url: '/erreur/:code?message',
-                                 templateUrl: 'app/views/erreur.html',
-                                 controller: 'ErreurCtrl' } );
+                                 controller: 'CarnetCtrl' } );
                } ] );

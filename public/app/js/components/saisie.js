@@ -9,8 +9,8 @@ angular.module( 'suiviApp' )
                               edition: '=',
                               showAuthor: '<' },
                   templateUrl: 'app/js/components/saisie.html',
-                  controller: [ '$sce', 'Saisies', 'User',
-                                function( $sce, Saisies, User ) {
+                  controller: [ '$sce', 'Saisies', 'APIs',
+                                function( $sce, Saisies, APIs ) {
                                     var ctrl = this;
 
                                     ctrl.toggle_edit = function() {
@@ -73,7 +73,7 @@ angular.module( 'suiviApp' )
                                         }
                                         ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
 
-                                        User.get().$promise
+                                        APIs.get_current_user()
                                             .then( function( current_user ) {
                                                 ctrl.editable = current_user.is_admin() || ( ctrl.onglet.writable && ctrl.saisie.uid_author === current_user.uid );
                                                 ctrl.edition = _(ctrl).has('edition') ? ctrl.edition : false;

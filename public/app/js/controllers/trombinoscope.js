@@ -1,12 +1,12 @@
 angular.module( 'suiviApp' )
     .controller( 'TrombinoscopeCtrl',
-                 [ '$scope', '$state', '$q', 'URL_ENT', 'APP_PATH', 'User', 'APIs',
-                   function( $scope, $state, $q, URL_ENT, APP_PATH, User, APIs ) {
+                 [ '$scope', '$state', '$q', 'URL_ENT', 'APP_PATH', 'APIs',
+                   function( $scope, $state, $q, URL_ENT, APP_PATH, APIs ) {
                        var ctrl = $scope;
                        ctrl.search = '';
                        ctrl.only_display_contributed_to = false;
 
-                       User.get().$promise
+                       APIs.get_current_user()
                            .then( function( current_user ) {
                                if ( current_user.profil_actif.profil_id === 'ELV' ) {
                                    // ctrl.eleves = [ current_user ];
