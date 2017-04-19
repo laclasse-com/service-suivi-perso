@@ -3,6 +3,7 @@ angular.module( 'suiviApp' )
                function( $stateProvider, $urlRouterProvider ) {
                    $urlRouterProvider.otherwise('/');
 
+                   // TODO: after ui-router@1.0.0, do https://ui-router.github.io/guide/ng1/route-to-component
                    $stateProvider
                        .state( 'trombinoscope',
                                { url: '/',
