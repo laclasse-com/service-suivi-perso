@@ -1,27 +1,29 @@
 angular.module( 'suiviApp' )
     .controller( 'TrombinoscopeCtrl',
-                 [ '$scope', '$q', 'URL_ENT', 'APP_PATH', 'User', 'APIs',
-                   function( $scope, $q, URL_ENT, APP_PATH, User, APIs ) {
+                 [ '$scope', '$state', '$q', 'URL_ENT', 'APP_PATH', 'User', 'APIs',
+                   function( $scope, $state, $q, URL_ENT, APP_PATH, User, APIs ) {
                        var ctrl = $scope;
                        ctrl.search = '';
+                       ctrl.only_display_contributed_to = false;
 
                        User.get().$promise
                            .then( function( current_user ) {
                                if ( current_user.profil_actif.profil_id === 'ELV' ) {
-                                   ctrl.eleves = [ current_user ];
+                                   // ctrl.eleves = [ current_user ];
+                                   $state.go( 'carnet', {uid_eleve: current_user.id_ent} );
                                } else {
                                    $q.all( _.chain( current_user.classes )
                                            .select( function( regroupement ) {
                                                return _(regroupement).has('etablissement_code') && regroupement.etablissement_code === current_user.profil_actif.etablissement_code_uai;
-                                               } )
-                                               .map( function( regroupement ) {
-                                                   return _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id;
-                                               } )
-                                               .uniq()
-                                               .map( function( regroupement_id ) {
-                                                   return APIs.get_regroupement( regroupement_id );
-                                               } )
-                                               .value()
+                                           } )
+                                           .map( function( regroupement ) {
+                                               return _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id;
+                                           } )
+                                           .uniq()
+                                           .map( function( regroupement_id ) {
+                                               return APIs.get_regroupement( regroupement_id );
+                                           } )
+                                           .value()
                                          )
                                        .then( function success( response ) {
                                            ctrl.eleves = _.chain(response)
@@ -47,6 +49,12 @@ angular.module( 'suiviApp' )
                                                    ctrl.eleves_contributed = _.chain(response.data).map( function( carnet ) {
                                                        return _(ctrl.eleves).findWhere({ id_ent: carnet.uid_eleve });
                                                    }).compact().value();
+
+                                                   // var eleves_contributed_uids = _(ctrl.eleves_contributed).pluck('id_ent');
+
+                                                   // _(ctrl.eleves).each( function( eleve ) {
+                                                   //     eleve.contributed = _(eleves_contributed_uids).contains( eleve.id_ent );
+                                                   // } );
                                                },
                                                       function error( response ) {} );
                                        },
