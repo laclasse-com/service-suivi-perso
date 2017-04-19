@@ -6,10 +6,15 @@ angular.module( 'suiviApp' )
                    $stateProvider
                        .state( 'trombinoscope',
                                { url: '/',
-                                 templateUrl: 'app/views/trombinoscope.html',
-                                 controller: 'TrombinoscopeCtrl' } )
+                                 template: '<trombinoscope></trombinoscope>' } )
                        .state( 'carnet',
                                { url: '/carnet/:uid_eleve',
-                                 templateUrl: 'app/views/carnet.html',
-                                 controller: 'CarnetCtrl' } );
+                                 template: '<carnet uid-eleve="$ctrl.uidEleve"></carnet>',
+                                 controller: [ '$scope', '$stateParams',
+                                               function( $scope, $stateParams ) {
+                                                   $scope.$ctrl = $scope;
+
+                                                   $scope.$ctrl.uidEleve = $stateParams.uid_eleve;
+                                               } ]
+                               } );
                } ] );

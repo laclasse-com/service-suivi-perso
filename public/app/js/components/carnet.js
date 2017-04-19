@@ -4,27 +4,9 @@ angular.module( 'suiviApp' )
     .component( 'carnet',
                 { bindings: { uidEleve: '<' },
                   templateUrl: 'app/js/components/carnet.html',
-                  controller: [ '$uibModal', 'Carnets', 'Onglets', 'Popups',
-                                function( $uibModal, Carnets, Onglets, Popups ) {
-                                    var ctrl = this;
-                                    ctrl.popup_onglet = Popups.onglet;
+                  controller: [ function(  ) {
+                      var ctrl = this;
 
-                                    ctrl.callback_popup_onglet = function( onglet ) {
-                                        ctrl.onglets.push( onglet );
-                                    };
-
-                                    ctrl.$onInit = function() {
-                                        Carnets.get({ uid_eleve: ctrl.uidEleve }).$promise
-                                            .then( function success( response ) {
-                                                ctrl.carnet = response;
-
-                                                Onglets.query({ uid_eleve: ctrl.uidEleve }).$promise
-                                                    .then( function success( response ) {
-                                                        ctrl.onglets = response;
-                                                    },
-                                                           function error( response ) {} );
-                                            },
-                                                   function error( response ) {} );
-                                    };
-                                } ]
+                      ctrl.$onInit = function() {};
+                  } ]
                 } );

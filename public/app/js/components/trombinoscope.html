@@ -3,11 +3,11 @@
     <input  class="form-control input-sm"
             style="display: inline; max-width: 300px;"
             type="text" name="search"
-            ng:model="search" />
+            ng:model="$ctrl.search" />
 
     <label ng:if="eleves_contributed.length > 0"> Carnet<span ng:if="eleves_contributed.length > 1">s</span> <span ng:if="eleves_contributed.length > 1">auxquels</span><span ng:if="eleves_contributed.length < 2">auquel</span> vous avez contribué : </label>
     <ul>
-        <li ng:repeat="eleve in eleves_contributed"><a ui:sref="carnet({uid_eleve: eleve.id_ent})">{{eleve.prenom}} {{eleve.nom}}</a></li>
+        <li ng:repeat="eleve in $ctrl.eleves_contributed"><a ui:sref="carnet({uid_eleve: eleve.id_ent})">{{eleve.prenom}} {{eleve.nom}}</a></li>
     </ul>
 </div>
 
@@ -16,7 +16,7 @@
         <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins"
             style="background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
             ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
-            ng:repeat="eleve in eleves | filter:search">
+            ng:repeat="eleve in $ctrl.eleves | filter:search">
             <a class="eleve"
                ui:sref="carnet({uid_eleve: eleve.id_ent})">
                 <h5 class="regroupement">{{eleve.regroupement.libelle}}</h5>
