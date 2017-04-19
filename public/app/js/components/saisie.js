@@ -70,8 +70,8 @@ angular.module( 'suiviApp' )
                                             new_saisie();
                                         } else {
                                             ctrl.saisie = new Saisies( ctrl.saisie );
-                                            ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
                                         }
+                                        ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
 
                                         User.get().$promise
                                             .then( function( current_user ) {
