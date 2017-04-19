@@ -27,15 +27,11 @@ UAI_EVIGNAL = '0692165D'.freeze
 MAIL_DOMAINE = '@laclasse.com'.freeze
 
 # Gestion des droits
-DEFAULT_RIGHTS = { Carnet: [ { profil_id: 'ELV', read: false, write: false },
-                             { profil_id: 'TUT', read: false, write: false },
-                             { profil_id: 'ENS', read: true, write: true },
+DEFAULT_RIGHTS = { Carnet: [ { profil_id: 'ENS', read: true, write: true },
                              { profil_id: 'EVS', read: true, write: true },
                              { profil_id: 'DOC', read: true, write: true },
                              { profil_id: 'DIR', read: true, write: true } ],
-                   Onglet: [ { profil_id: 'ELV', read: false, write: false },
-                             { profil_id: 'TUT', read: false, write: false },
-                             { profil_id: 'ENS', read: true, write: true },
+                   Onglet: [ { profil_id: 'ENS', read: true, write: true },
                              { profil_id: 'EVS', read: true, write: true },
                              { profil_id: 'DOC', read: true, write: true },
                              { profil_id: 'DIR', read: true, write: true } ],
