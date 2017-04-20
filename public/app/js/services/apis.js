@@ -39,12 +39,14 @@ angular.module( 'suiviApp' )
 
                                 concerned_people.push( { type: 'Élève',
                                                          uid: eleve.id_ent,
-                                                         display: eleve.prenom + ' ' + eleve.nom } );
+                                                         nom: eleve.nom,
+                                                         prenom: eleve.prenom } );
 
                                 concerned_people.push( _(eleve.relations_adultes).map( function( people ) {
                                     return { type: 'Reponsable',
                                              uid: people.id_ent,
-                                             display: people.prenom + ' ' + people.nom };
+                                             nom: people.nom,
+                                             prenom: people.prenom };
                                 } ) );
 
                                 return $q.all( _.chain( eleve.classes.concat( eleve.groues_eleves ) ) // add groupes_libres
@@ -59,12 +61,23 @@ angular.module( 'suiviApp' )
                                 concerned_people.push( _.chain(response)
                                                        .pluck('data')
                                                        .map( function( regroupement ) {
+                                                           console.log(regroupement)
                                                            return _(regroupement.profs)
                                                                .map( function( people ) {
                                                                    return { type: 'Enseignant',
                                                                             uid: people.id_ent,
-                                                                            display: people.prenom + ' ' + people.nom + ' (' + people.matieres.map( function( matiere ) { return matiere.libelle_long; } ).join(', ') + ' )'};
-                                                               } );
+                                                                            nom: people.nom,
+                                                                            prenom: people.prenom,
+                                                                            matieres: people.matieres.map( function( matiere ) { return matiere.libelle_long; } ).join(', '),
+                                                                            prof_principal: people.prof_principal === 'O' };
+                                                               } )
+                                                               .concat( _(regroupement.eleves)
+                                                                        .map( function( people ) {
+                                                                            return { type: 'Autre Élève',
+                                                                                     uid: people.id_ent,
+                                                                                     nom: people.nom,
+                                                                                     prenom: people.prenom };
+                                                                        } ) );
                                                        } )
                                                        .flatten()
                                                        .value() );
@@ -84,7 +97,9 @@ angular.module( 'suiviApp' )
                                                        .map( function( people ) {
                                                            return { type: _(profils).findWhere({id: people.profil_id}).description,
                                                                     uid: people.id_ent,
-                                                                    display: people.prenom + ' ' + people.nom };
+                                                                    nom: people.nom,
+                                                                    prenom: people.prenom,
+                                                                    email: people.email_principal };
                                                        } )
                                                        .value() );
 
