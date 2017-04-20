@@ -21,7 +21,7 @@ module Suivi
 
             get_and_check_onglet( params['onglet_id'], user, :read )
 
-            json( get_and_check_saisie( params['id'] ) )
+            json( get_and_check_saisie( params['id'], user, :read ) )
           end
 
           app.post '/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/?' do
@@ -46,7 +46,7 @@ module Suivi
             param :contenu, String, required: false
 
             get_and_check_onglet( params['onglet_id'], user, :write )
-            saisie = get_and_check_saisie( params['id'] )
+            saisie = get_and_check_saisie( params['id'], user, :write )
 
             changed = false
             if params.key?('contenu')
@@ -68,7 +68,7 @@ module Suivi
             param :id, Integer, required: true
 
             get_and_check_onglet( params['onglet_id'], user, :write )
-            saisie = get_and_check_saisie( params['id'] )
+            saisie = get_and_check_saisie( params['id'], user, :write )
 
             json( saisie.destroy )
           end
