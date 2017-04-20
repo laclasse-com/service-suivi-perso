@@ -35,7 +35,6 @@ module Suivi
                                        date_creation: DateTime.now,
                                        date_modification: DateTime.now,
                                        contenu: params['contenu'] )
-            saisie.init_droits( DEFAULT_RIGHTS[:Saisie], user )
 
             json( saisie )
           end
@@ -47,7 +46,7 @@ module Suivi
             param :contenu, String, required: false
 
             get_and_check_onglet( params['onglet_id'], user, :write )
-            saisie = get_and_check_saisie( params['id'], user, :write )
+            saisie = get_and_check_saisie( params['id'] )
 
             changed = false
             if params.key?('contenu')
@@ -69,7 +68,7 @@ module Suivi
             param :id, Integer, required: true
 
             get_and_check_onglet( params['onglet_id'], user, :write )
-            saisie = get_and_check_saisie( params['id'], user, :write )
+            saisie = get_and_check_saisie( params['id'] )
 
             json( saisie.destroy )
           end
