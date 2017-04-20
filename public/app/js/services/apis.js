@@ -32,8 +32,22 @@ angular.module( 'suiviApp' )
                         var eleve = null;
                         var concerned_people = [];
                         var profils = [];
+                        var contributed_to = [];
+                        var current_user = null;
 
-                        return service.get_user( uid )
+                        return service.get_current_user()
+                            .then( function success( response ) {
+                                current_user = response;
+
+                                return service.query_carnets_contributed_to( current_user.id_ent );
+                            },
+                                   function error( response ) {} )
+                            .then( function success( response ) {
+                                contributed_to = _(response.data).pluck('uid_eleve');
+
+                                return service.get_user( uid );
+                            },
+                                   function error( response ) {} )
                             .then( function success( response ) {
                                 eleve = response.data;
 
@@ -49,7 +63,7 @@ angular.module( 'suiviApp' )
                                              prenom: people.prenom };
                                 } ) );
 
-                                return $q.all( _.chain( eleve.classes.concat( eleve.groues_eleves ) ) // add groupes_libres
+                                return $q.all( _.chain( eleve.classes.concat( eleve.groupes_eleves ) ) // add groupes_libres
                                                .select( function( regroupement ) { return _(regroupement).has('etablissement_code') && regroupement.etablissement_code === eleve.profil_actif.etablissement_code_uai; } )
                                                .map( function( regroupement ) { return _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id; } )
                                                .uniq()
@@ -61,7 +75,6 @@ angular.module( 'suiviApp' )
                                 concerned_people.push( _.chain(response)
                                                        .pluck('data')
                                                        .map( function( regroupement ) {
-                                                           console.log(regroupement)
                                                            return _(regroupement.profs)
                                                                .map( function( people ) {
                                                                    return { type: 'Enseignant',
@@ -76,7 +89,8 @@ angular.module( 'suiviApp' )
                                                                             return { type: 'Autre Élève',
                                                                                      uid: people.id_ent,
                                                                                      nom: people.nom,
-                                                                                     prenom: people.prenom };
+                                                                                     prenom: people.prenom,
+                                                                                     contributed_to: !_(['ELV', 'TUT']).contains( current_user.profil_actif.profil_id ) || _(contributed_to).contains( people.id_ent ) };
                                                                         } ) );
                                                        } )
                                                        .flatten()

@@ -20,9 +20,11 @@ angular.module( 'suiviApp' )
 
                                     ctrl.$onInit = function() {
                                         APIs.get_user( ctrl.uid )
-                                            .then( function( response ) {
+                                            .then( function success( response ) {
                                                 ctrl.user = response.data;
-                                            } );
+                                            },
+                                                   function error( response ) {} );
+
                                         if ( ctrl.showConcernedPeople ) {
                                             APIs.query_people_concerned_about( ctrl.uid )
                                             .then( function success( response ) {

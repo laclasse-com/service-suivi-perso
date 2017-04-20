@@ -9,7 +9,7 @@
                             ng:model="droit.uid"
                             ng:change="droit.dirty.uid = true"
                             ng:disabled="droit.to_delete"
-                            ng:options="people.uid as people.display group by people.type for people in $ctrl.concernedPeople">
+                            ng:options="people.uid as people.prenom + ' ' + people.nom group by people.type for people in $ctrl.concernedPeople">
                     </select>
                 </label>
                 <label ng:if="droit.profil_id">Profil :

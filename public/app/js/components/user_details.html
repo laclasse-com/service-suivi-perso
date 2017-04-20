@@ -57,8 +57,8 @@
             </uib-accordion-heading>
             <ul>
                 <li ng:repeat="people in peoples | orderBy:'nom'">
-                    <span ng:if="type !== 'Autre Élève'">{{people.prenom}} {{people.nom}}</span>
-                    <span ng:if="type === 'Autre Élève'"><a ui:sref="carnet({uid_eleve: people.uid})">{{people.prenom}} {{people.nom}}</a></span>
+                    <span ng:if="!people.contributed_to">{{people.prenom}} {{people.nom}}</span>
+                    <span ng:if="people.contributed_to"><a ui:sref="carnet({uid_eleve: people.uid})">{{people.prenom}} {{people.nom}}</a></span>
                     <span ng:if="people.prof_principal"> (enseignant principal)</span>
                     <span ng:if="people.matieres">
                         <br/>

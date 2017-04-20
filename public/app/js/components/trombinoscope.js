@@ -52,17 +52,22 @@ angular.module( 'suiviApp' )
                                                             } )
                                                             .flatten()
                                                             .value();
-
-                                                        APIs.query_carnets_contributed_to( current_user.id_ent )
-                                                            .then( function success( response ) {
-                                                                ctrl.eleves_contributed = _.chain(response.data).map( function( carnet ) {
-                                                                    return _(ctrl.eleves).findWhere({ id_ent: carnet.uid_eleve });
-                                                                }).compact().value();
-                                                            },
-                                                                   function error( response ) {} );
                                                     },
                                                            function error( response ) {} );
                                             }
+
+                                            APIs.query_carnets_contributed_to( current_user.id_ent )
+                                                .then( function success( response ) {
+                                                    ctrl.contributed_to = response.data;
+                                                    _(ctrl.contributed_to).each( function( carnet ) {
+                                                        APIs.get_user( carnet.uid_eleve )
+                                                            .then( function success( response ) {
+                                                                carnet.eleve = response.data;
+                                                            },
+                                                                   function error( response ) {} );
+                                                    });
+                                                },
+                                                       function error( response ) {} );
                                         } );
                                 } ]
                 } );

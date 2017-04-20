@@ -5,9 +5,9 @@
             type="text" name="search"
             ng:model="$ctrl.search" />
 
-    <label ng:if="eleves_contributed.length > 0"> Carnet<span ng:if="eleves_contributed.length > 1">s</span> <span ng:if="eleves_contributed.length > 1">auxquels</span><span ng:if="eleves_contributed.length < 2">auquel</span> vous avez contribué : </label>
+    <label ng:if="contributed_to.length > 0"> Carnet<span ng:if="contributed_to.length > 1">s</span> <span ng:if="contributed_to.length > 1">auxquels</span><span ng:if="contributed_to.length < 2">auquel</span> vous avez contribué : </label>
     <ul>
-        <li ng:repeat="eleve in $ctrl.eleves_contributed"><a ui:sref="carnet({uid_eleve: eleve.id_ent})">{{eleve.prenom}} {{eleve.nom}}</a></li>
+        <li ng:repeat="carnet in $ctrl.contributed_to"><a ui:sref="carnet({uid_eleve: carnet.eleve.id_ent})">{{carnet.eleve.prenom}} {{carnet.eleve.nom}}</a></li>
     </ul>
 </div>
 
