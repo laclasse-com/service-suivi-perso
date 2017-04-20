@@ -13,7 +13,11 @@ module Suivi
             json( Carnet.where( id: Onglet.where( id: Saisie.where( uid_author: params['uid'] )
                                                             .select( :onglet_id )
                                                             .all
-                                                            .map(&:onglet_id) )
+                                                            .map(&:onglet_id)
+                                                            .concat( Droit.where( uid: params['uid'] )
+                                                                          .select( :onglet_id )
+                                                                          .all
+                                                                          .map(&:onglet_id) ) )
                                           .select( :carnet_id )
                                           .all
                                           .map(&:carnet_id) )
