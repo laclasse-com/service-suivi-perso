@@ -1,8 +1,6 @@
 # Liste des constantes de l'application
 require 'logger'
 
-URL_REQUEST_TEST = ''.freeze
-
 LOGGER = Logger.new(STDOUT)
 
 # Gestion des droits
