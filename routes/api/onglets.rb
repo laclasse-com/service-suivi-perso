@@ -8,7 +8,7 @@ module Suivi
           app.get '/api/carnets/:uid_eleve/onglets/?' do
             param :uid_eleve, String, required: true
 
-            json( get_and_check_carnet( params['uid_eleve'], user, :read )
+            json( get_and_check_carnet( params['uid_eleve'] )
                     .onglets
                     .select { |onglet| onglet.allow?( user, :read ) }
                     .map do |onglet|
@@ -20,10 +20,8 @@ module Suivi
           end
 
           app.get '/api/carnets/:uid_eleve/onglets/:onglet_id' do
-            param :uid_eleve, String, required: true
+            param :uid_eleve, String, required: true # unused
             param :onglet_id, Integer, required: true
-
-            get_and_check_carnet( params['uid_eleve'], user, :read )
 
             onglet = get_and_check_onglet( params['onglet_id'], user, :read )
             onglet_hash = onglet.to_hash
@@ -36,7 +34,7 @@ module Suivi
             param :uid_eleve, String, required: true
             param :nom, String, required: true
 
-            carnet = get_and_check_carnet( params['uid_eleve'], user, :write )
+            carnet = get_and_check_carnet( params['uid_eleve'] )
             onglet = carnet.onglets_dataset[nom: params['nom']]
 
             if onglet.nil?
@@ -55,11 +53,9 @@ module Suivi
           end
 
           app.put '/api/carnets/:uid_eleve/onglets/:onglet_id' do
-            param :uid_eleve, String, required: true
+            param :uid_eleve, String, required: true # unused
             param :onglet_id, Integer, required: true
             param :nom, String, required: false
-
-            get_and_check_carnet( params['uid_eleve'], user, :write )
 
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
             onglet.nom = params['nom'] if params.key?( 'nom' )
@@ -72,10 +68,9 @@ module Suivi
           end
 
           app.delete '/api/carnets/:uid_eleve/onglets/:onglet_id' do
-            param :uid_eleve, String, required: true
+            param :uid_eleve, String, required: true # unused
             param :onglet_id, Integer, required: true
 
-            get_and_check_carnet( params['uid_eleve'], user, :write )
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
             onglet_hash = onglet.destroy

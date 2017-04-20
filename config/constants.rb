@@ -4,11 +4,7 @@ require 'logger'
 LOGGER = Logger.new(STDOUT)
 
 # Gestion des droits
-DEFAULT_RIGHTS = { Carnet: [ { profil_id: 'ENS', read: true, write: true },
-                             { profil_id: 'EVS', read: true, write: true },
-                             { profil_id: 'DOC', read: true, write: true },
-                             { profil_id: 'DIR', read: true, write: true } ],
-                   Onglet: [ { profil_id: 'ENS', read: true, write: true },
+DEFAULT_RIGHTS = { Onglet: [ { profil_id: 'ENS', read: true, write: true },
                              { profil_id: 'EVS', read: true, write: true },
                              { profil_id: 'DOC', read: true, write: true },
                              { profil_id: 'DIR', read: true, write: true } ],
