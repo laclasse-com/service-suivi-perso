@@ -20,13 +20,30 @@ angular.module( 'suiviApp' )
                                         }
                                     };
 
-                                    ctrl.$onInit = function() {
-                                        ctrl.new_saisie = { create_me: true };
+                                    ctrl.saisie_callback = function( saisie ) {
+                                        console.log(saisie)
+                                        switch( saisie.action ) {
+                                        case 'created':
+                                            ctrl.saisies.push( saisie );
+                                            //ctrl.saisies.unshift( { create_me: true } );
+                                            break;
+                                        case 'deleted':
+                                            ctrl.saisies = _(ctrl.saisies).reject( function( s ) { return s.id === saisie.id; } );
+                                            break;
+                                        default:
+                                            console.log('What to do with this?')
+                                            console.log(saisie)
+                                        }
 
+                                    };
+
+                                    ctrl.$onInit = function() {
                                         Saisies.query({ uid_eleve: ctrl.uidEleve,
                                                         onglet_id: ctrl.onglet.id }).$promise
                                             .then( function success( response ) {
-                                                ctrl.saisies = response;
+                                                ctrl.saisies = ctrl.onglet.writable ? [ { create_me: true } ] : [];
+
+                                                ctrl.saisies = ctrl.saisies.concat( response );
                                             },
                                                    function error( response ) {} );
                                     };

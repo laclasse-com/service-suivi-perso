@@ -13,19 +13,9 @@
     </button>
 </div>
 
-<div class="col-md-9"
-     ng:if="$ctrl.onglet.writable">
-    <saisie uid-eleve="$ctrl.uidEleve"
-            onglet="$ctrl.onglet"
-            saisie="$ctrl.new_saisie"
-            saisies="$ctrl.saisies"
-            edition="true"></saisie>
-</div>
-
-<saisie class="col-md-9"
-        ng:repeat="saisie in $ctrl.saisies"
+<saisie ng:repeat="saisie in $ctrl.saisies"
+        class="col-md-9"
         uid-eleve="$ctrl.uidEleve"
         onglet="$ctrl.onglet"
         saisie="saisie"
-        show-author="true"
-        edition="false"></saisie>
+        callback="$ctrl.saisie_callback( saisie )"></saisie>

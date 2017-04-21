@@ -5,9 +5,7 @@ angular.module( 'suiviApp' )
                 { bindings: { uidEleve: '<',
                               onglet: '<',
                               saisie: '=',
-                              saisies: '=',
-                              edition: '=',
-                              showAuthor: '<' },
+                              callback: '&' },
                   templateUrl: 'app/js/components/saisie.html',
                   controller: [ '$sce', 'Saisies', 'APIs',
                                 function( $sce, Saisies, APIs ) {
@@ -26,18 +24,15 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.save = function() {
-                                        ctrl.saisie.uid_eleve = ctrl.uidEleve;
-
+                                        console.log(ctrl.saisie)
                                         var promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
 
                                         promise.then( function success( response ) {
-                                            if ( ctrl.new_saisie ) {
-                                                ctrl.saisies.push( response );
-
-                                                new_saisie();
-                                            } else {
+                                            if ( !ctrl.new_saisie ) {
                                                 ctrl.toggle_edit();
                                             }
+                                            ctrl.saisie.action = ctrl.new_saisie ? 'created' : 'updated';
+                                            ctrl.callback();
                                         },
                                                       function error( response ) { console.log( response ) });
                                     };
@@ -53,7 +48,11 @@ angular.module( 'suiviApp' )
                                                cancelButtonText: 'Annuler'
                                              })
                                             .then( function() {
-                                                ctrl.saisie.$delete();
+                                                ctrl.saisie.$delete()
+                                                    .then( function(  ) {
+                                                        ctrl.saisie.action = 'deleted';
+                                                        ctrl.callback();
+                                                    });
                                             } );
                                     };
 
@@ -66,18 +65,25 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.$onInit = function() {
+                                        ctrl.edition = ctrl.saisie.create_me;
+
                                         if ( ctrl.saisie.create_me ) {
                                             new_saisie();
                                         } else {
                                             ctrl.saisie = new Saisies( ctrl.saisie );
                                         }
+                                        ctrl.saisie.uid_eleve = ctrl.uidEleve;
                                         ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
 
                                         APIs.get_current_user()
                                             .then( function( current_user ) {
-                                                ctrl.editable = current_user.is_admin() || ( ctrl.onglet.writable && ctrl.saisie.uid_author === current_user.uid );
-                                                ctrl.edition = _(ctrl).has('edition') ? ctrl.edition : false;
-                                        } );
+                                                ctrl.editable = current_user.is_admin() || ( ctrl.onglet.writable && ctrl.saisie.uid_author === current_user.id_ent );
+                                            } );
+                                    };
+
+                                    ctrl.$onChanges = function( changes ) {
+                                        ctrl.saisie.uid_eleve = ctrl.uidEleve;
+                                        ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
                                     };
                                 } ]
                 } );

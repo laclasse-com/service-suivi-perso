@@ -1,7 +1,7 @@
 <div class="panel panel-default saisie-display">
     <div class="panel-heading" ng:if="$ctrl.saisie.id">
         <user-details class="col-md-4"
-                      ng:if="$ctrl.showAuthor"
+                      ng:if="!$ctrl.saisie.new_saisie"
                       uid="$ctrl.saisie.uid_author"
                       small="true"
                       show-avatar="true"></user-details>

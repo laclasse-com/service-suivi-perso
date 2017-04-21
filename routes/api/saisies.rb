@@ -48,14 +48,10 @@ module Suivi
             get_and_check_onglet( params['onglet_id'], user, :write )
             saisie = get_and_check_saisie( params['id'], user, :write )
 
-            changed = false
             if params.key?('contenu')
               saisie.contenu = params['contenu']
-              changed = true
-            end
-
-            if changed
               saisie.date_modification = DateTime.now
+
               saisie.save
             end
 
