@@ -3,7 +3,6 @@
 module Suivi
   module Helpers
     module AccessAndRights
-      # trouver le role maximum sur l'étab actif
       def get_and_check_carnet( uid_eleve )
         carnet = Carnet.of( uid_eleve )
         halt( 404, '404 Unknown carnet' ) if carnet.nil?
