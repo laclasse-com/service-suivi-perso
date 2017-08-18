@@ -4,8 +4,6 @@ module Suivi
       module Sharable
         def self.registered( app )
           app.get '/api/sharable/:sharable_id/?' do
-            param :sharable_id, String, required: true
-
             json( Onglet.where(id: Droit.where(sharable_id: params[:sharable_id] )
                                         .select(:onglet_id)
                                         .all

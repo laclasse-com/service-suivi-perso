@@ -4,7 +4,6 @@ angular.module( 'suiviApp' )
     .component( 'onglet',
                 { bindings: { uidEleve: '<',
                               onglet: '=' },
-                  templateUrl: 'app/js/components/onglet.html',
                   controller: [ '$uibModal', '$state', 'Onglets', 'Saisies', 'Popups', 'GeneratePDF',
                                 function( $uibModal, $state, Onglets, Saisies, Popups, GeneratePDF ) {
                                     var ctrl = this;
@@ -47,5 +46,28 @@ angular.module( 'suiviApp' )
                                             },
                                                    function error( response ) {} );
                                     };
-                                } ]
+                                } ],
+                  template: `
+<div class="col-md-3 pull-right"
+     style="text-align: right;">
+    <button class="btn btn-lg btn-warning"
+            style="width: 100%;"
+            ng:if="$ctrl.onglet.writable"
+            ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.callback_popup_onglet )">
+        <span class="glyphicon glyphicon-cog"></span> Configuration de l'onglet
+    </button>
+    <button class="btn btn-lg btn-primary"
+            style="width: 100%;"
+            ng:click="$ctrl.print_onglet( $ctrl.uidEleve, $ctrl.onglet )">
+        <span class="glyphicon glyphicon-print"></span> Exporter en PDF
+    </button>
+</div>
+
+<saisie ng:repeat="saisie in $ctrl.saisies"
+        class="col-md-9"
+        uid-eleve="$ctrl.uidEleve"
+        onglet="$ctrl.onglet"
+        saisie="saisie"
+        callback="$ctrl.saisie_callback( saisie )"></saisie>
+`
                 } );

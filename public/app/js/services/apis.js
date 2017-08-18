@@ -1,15 +1,15 @@
 angular.module( 'suiviApp' )
     .service( 'APIs',
-              [ '$http', '$q', 'User', 'URL_ENT',
-                function( $http, $q, User, URL_ENT ) {
+              [ '$http', '$q', 'User', 'URL_ENT', 'APP_PATH',
+                function( $http, $q, User, URL_ENT, APP_PATH ) {
                     var service = this;
 
                     service.query_profils = _.memoize( function() {
-                        return $http.get( URL_ENT + 'api/app/profils' );
+                        return $http.get( URL_ENT + 'api/profiles' );
                     } );
 
                     service.get_user = _.memoize( function( uid ) {
-                        return $http.get( URL_ENT + '/api/app/users/' + uid, { params: { expand: 'true' } } );
+                        return $http.get( URL_ENT + '/api/users/' + uid, { params: { expand: 'true' } } );
                     } );
 
                     service.get_current_user = _.memoize( function(  ) {
@@ -17,15 +17,15 @@ angular.module( 'suiviApp' )
                     } );
 
                     service.get_regroupement = _.memoize( function( regroupement_id ) {
-                        return $http.get( URL_ENT + '/api/app/regroupements/' + regroupement_id, { params: { expand: 'true' } } );
+                        return $http.get( URL_ENT + '/api/groups/' + regroupement_id, { params: { expand: 'true' } } );
                     } );
 
                     service.query_carnets_contributed_to = function( uid ) {
-                        return $http.get( 'api/carnets/contributed/' + uid );
+                        return $http.get( APP_PATH + '/api/carnets/contributed/' + uid );
                     };
 
                     service.query_etablissement_personnel = _.memoize( function( uai ) {
-                        return $http.get( URL_ENT + 'api/app/etablissements/' + uai + '/personnel' );
+                        return $http.get( URL_ENT + 'api/structures/' + uai + '/personnel' );
                     } );
 
                     service.query_people_concerned_about = _.memoize( function( uid ) {
@@ -39,7 +39,7 @@ angular.module( 'suiviApp' )
                             .then( function success( response ) {
                                 current_user = response;
 
-                                return service.query_carnets_contributed_to( current_user.id_ent );
+                                return service.query_carnets_contributed_to( current_user.id );
                             },
                                    function error( response ) {} )
                             .then( function success( response ) {
@@ -52,15 +52,15 @@ angular.module( 'suiviApp' )
                                 eleve = response.data;
 
                                 concerned_people.push( { type: 'Élève',
-                                                         uid: eleve.id_ent,
-                                                         nom: eleve.nom,
-                                                         prenom: eleve.prenom } );
+                                                         uid: eleve.id,
+                                                         nom: eleve.lastname,
+                                                         prenom: eleve.firstname } );
 
                                 concerned_people.push( _(eleve.relations_adultes).map( function( people ) {
                                     return { type: 'Reponsable',
-                                             uid: people.id_ent,
-                                             nom: people.nom,
-                                             prenom: people.prenom };
+                                             uid: people.id,
+                                             nom: people.lastname,
+                                             prenom: people.firstname };
                                 } ) );
 
                                 return $q.all( _.chain( eleve.classes.concat( eleve.groupes_eleves ) ) // add groupes_libres

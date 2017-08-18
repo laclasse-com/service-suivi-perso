@@ -6,9 +6,7 @@ module Suivi
       module Carnets
         def self.registered( app )
           app.get '/api/carnets/contributed/:uid' do
-            param :uid, String, required: true
-
-            halt( 401, '401' ) if params['uid'] != user[:uid]
+            halt( 401, '401' ) if params['uid'] != user['id']
 
             json( Carnet.where( id: Onglet.where( id: Saisie.where( uid_author: params['uid'] )
                                                             .select( :onglet_id )
@@ -25,8 +23,6 @@ module Suivi
           end
 
           app.get '/api/carnets/:uid_eleve' do
-            param :uid_eleve, String, required: true
-
             json( get_and_check_carnet( params['uid_eleve'] ) )
           end
         end

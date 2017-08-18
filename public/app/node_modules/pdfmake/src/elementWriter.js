@@ -82,6 +82,7 @@ ElementWriter.prototype.alignLine = function (line) {
 			offset = i * additionalSpacing;
 
 			line.inlines[i].x += offset;
+			line.inlines[i].justifyShift = additionalSpacing;
 		}
 	}
 };
@@ -91,7 +92,7 @@ ElementWriter.prototype.addImage = function (image, index) {
 	var page = context.getCurrentPage(),
 		position = this.getCurrentPositionOnPage();
 
-	if (context.availableHeight < image._height || !page) {
+	if (!page || (context.availableHeight < image._height && page.items.length > 0)) {
 		return false;
 	}
 

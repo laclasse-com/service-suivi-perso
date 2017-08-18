@@ -3,7 +3,6 @@
 angular.module( 'suiviApp' )
     .component( 'onglets',
                 { bindings: { uidEleve: '<' },
-                  templateUrl: 'app/js/components/onglets.html',
                   controller: [ '$uibModal', 'Carnets', 'Onglets', 'Popups',
                                 function( $uibModal, Carnets, Onglets, Popups ) {
                                     var ctrl = this;
@@ -26,5 +25,23 @@ angular.module( 'suiviApp' )
                                             },
                                                    function error( response ) {} );
                                     };
-                                } ]
+                                } ],
+                  template: `
+<uib-tabset>
+    <uib-tab ng:repeat="onglet in $ctrl.onglets">
+        <uib-tab-heading> {{onglet.nom}} </uib-tab-heading>
+
+        <onglet uid-eleve="$ctrl.uidEleve"
+                onglet="onglet"></onglet>
+    </uib-tab>
+
+    <li>
+        <a href
+           class="bleu add-onglet"
+           ng:click="$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.callback_popup_onglet )">
+            <span class="glyphicon glyphicon-plus"></span>
+        </a>
+    </li>
+</uib-tabset>
+`
                 } );

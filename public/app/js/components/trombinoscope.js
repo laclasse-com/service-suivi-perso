@@ -1,7 +1,6 @@
 angular.module( 'suiviApp' )
     .component( 'trombinoscope',
-                { templateUrl: 'app/js/components/trombinoscope.html',
-                  controller: [ '$q', 'URL_ENT', 'APIs',
+                { controller: [ '$q', 'URL_ENT', 'APIs',
                                 function( $q, URL_ENT, APIs ) {
                                     var ctrl = this;
                                     ctrl.search = '';
@@ -56,7 +55,7 @@ angular.module( 'suiviApp' )
                                                            function error( response ) {} );
                                             }
 
-                                            APIs.query_carnets_contributed_to( current_user.id_ent )
+                                            APIs.query_carnets_contributed_to( current_user.id )
                                                 .then( function success( response ) {
                                                     ctrl.contributed_to = response.data;
                                                     _(ctrl.contributed_to).each( function( carnet ) {
@@ -69,5 +68,38 @@ angular.module( 'suiviApp' )
                                                 },
                                                        function error( response ) {} );
                                         } );
-                                } ]
+                                } ],
+                  template: `
+<div class="col-md-4 blanc aside">
+    <label for="search"> Filtrage des élèves affichés : </label>
+    <input  class="form-control input-sm"
+            style="display: inline; max-width: 300px;"
+            type="text" name="search"
+            ng:model="$ctrl.search" />
+
+    <label ng:if="contributed_to.length > 0"> Carnet<span ng:if="contributed_to.length > 1">s</span> <span ng:if="contributed_to.length > 1">auxquels</span><span ng:if="contributed_to.length < 2">auquel</span> vous avez contribué : </label>
+    <ul>
+        <li ng:repeat="carnet in $ctrl.contributed_to"><a ui:sref="carnet({uid_eleve: carnet.eleve.id_ent})">{{carnet.eleve.prenom}} {{carnet.eleve.nom}}</a></li>
+    </ul>
+</div>
+
+<div class="col-md-8 damier trombinoscope">
+    <ul>
+        <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins"
+            style="background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
+            ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
+            ng:repeat="eleve in $ctrl.eleves | filter:search">
+            <a class="eleve"
+               ui:sref="carnet({uid_eleve: eleve.id_ent})">
+                <h5 class="regroupement">{{eleve.regroupement.libelle}}</h5>
+
+                <div class="full-name">
+                    <h4 class="first-name">{{eleve.prenom}}</h4>
+                    <h3 class="last-name">{{eleve.nom}}</h3>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>
+`
                 } );

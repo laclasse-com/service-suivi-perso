@@ -6,8 +6,6 @@ module Suivi
       module Onglets
         def self.registered( app )
           app.get '/api/carnets/:uid_eleve/onglets/?' do
-            param :uid_eleve, String, required: true
-
             json( get_and_check_carnet( params['uid_eleve'] )
                     .onglets
                     .select { |onglet| onglet.allow?( user, :read ) }
@@ -20,9 +18,6 @@ module Suivi
           end
 
           app.get '/api/carnets/:uid_eleve/onglets/:onglet_id' do
-            param :uid_eleve, String, required: true # unused
-            param :onglet_id, Integer, required: true
-
             onglet = get_and_check_onglet( params['onglet_id'], user, :read )
             onglet_hash = onglet.to_hash
             onglet_hash[:writable] = onglet.allow?( user, :write )
@@ -31,9 +26,6 @@ module Suivi
           end
 
           app.post '/api/carnets/:uid_eleve/onglets/?' do
-            param :uid_eleve, String, required: true
-            param :nom, String, required: true
-
             carnet = get_and_check_carnet( params['uid_eleve'] )
             onglet = carnet.onglets_dataset[nom: params['nom']]
 
@@ -53,10 +45,6 @@ module Suivi
           end
 
           app.put '/api/carnets/:uid_eleve/onglets/:onglet_id' do
-            param :uid_eleve, String, required: true # unused
-            param :onglet_id, Integer, required: true
-            param :nom, String, required: false
-
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
             onglet.nom = params['nom'] if params.key?( 'nom' )
             onglet.save
@@ -68,9 +56,6 @@ module Suivi
           end
 
           app.delete '/api/carnets/:uid_eleve/onglets/:onglet_id' do
-            param :uid_eleve, String, required: true # unused
-            param :onglet_id, Integer, required: true
-
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
             onglet_hash = onglet.destroy

@@ -1,46 +1,27 @@
-GIT
-  remote: https://github.com/laclasse-com/laclasse-common.git
-  revision: 954932295d05d89ac6846ab4f8e23905988360fd
-  specs:
-    laclasse-common (0.2.37)
-      redis-rack (~> 1.5.0)
-      rest-client
-
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.5.1)
-      public_suffix (~> 2.0, >= 2.0.2)
     ast (2.3.0)
-    backports (3.7.0)
+    backports (3.8.0)
     coderay (1.1.1)
     diff-lcs (1.3)
-    domain_name (0.5.20170223)
+    domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
-    hashie (3.5.5)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    json (2.0.3)
-    logger (1.2.8)
-    mail (2.6.4)
-      mime-types (>= 1.16, < 4)
+    json (2.1.0)
     method_source (0.8.2)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    mini_portile2 (2.1.0)
+    mini_portile2 (2.2.0)
     multi_json (1.12.1)
-    mysql2 (0.4.5)
+    mustermann (1.0.0)
+    mysql2 (0.4.9)
     netrc (0.11.0)
-    nokogiri (1.7.1)
-      mini_portile2 (~> 2.1.0)
-    omniauth (1.6.1)
-      hashie (>= 3.4.6, < 3.6.0)
-      rack (>= 1.6.2, < 3)
-    omniauth-cas (1.1.1)
-      addressable (~> 2.3)
-      nokogiri (~> 1.5)
-      omniauth (~> 1.2)
+    nokogiri (1.8.0)
+      mini_portile2 (~> 2.2.0)
+    parallel (1.12.0)
     parser (2.4.0.0)
       ast (~> 2.2)
     powerpack (0.1.1)
@@ -48,88 +29,75 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    public_suffix (2.0.5)
-    puma (3.8.2)
-    rack (1.6.5)
-    rack-protection (1.5.3)
+    puma (3.10.0)
+    rack (2.0.3)
+    rack-protection (2.0.0)
       rack
-    rack-test (0.6.3)
-      rack (>= 1.0)
-    rainbow (2.2.1)
+    rainbow (2.2.2)
+      rake
     rake (12.0.0)
-    redis (3.3.3)
-    redis-rack (1.5.0)
-      rack (~> 1.5)
-      redis-store (~> 1.1.0)
-    redis-store (1.1.7)
-      redis (>= 2.2)
-    rest-client (2.0.1)
+    rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rspec (3.5.0)
-      rspec-core (~> 3.5.0)
-      rspec-expectations (~> 3.5.0)
-      rspec-mocks (~> 3.5.0)
-    rspec-core (3.5.4)
-      rspec-support (~> 3.5.0)
-    rspec-expectations (3.5.0)
+    rspec (3.6.0)
+      rspec-core (~> 3.6.0)
+      rspec-expectations (~> 3.6.0)
+      rspec-mocks (~> 3.6.0)
+    rspec-core (3.6.0)
+      rspec-support (~> 3.6.0)
+    rspec-expectations (3.6.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.5.0)
-    rspec-mocks (3.5.0)
+      rspec-support (~> 3.6.0)
+    rspec-mocks (3.6.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.5.0)
-    rspec-support (3.5.0)
-    rubocop (0.48.0)
+      rspec-support (~> 3.6.0)
+    rspec-support (3.6.0)
+    rubocop (0.49.1)
+      parallel (~> 1.10)
       parser (>= 2.3.3.1, < 3.0)
       powerpack (~> 0.1)
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.8.1)
-    sequel (4.45.0)
-    sinatra (1.4.8)
-      rack (~> 1.5)
-      rack-protection (~> 1.4)
-      tilt (>= 1.3, < 3)
-    sinatra-contrib (1.4.7)
+    sequel (4.49.0)
+    sinatra (2.0.0)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.0)
+      tilt (~> 2.0)
+    sinatra-contrib (2.0.0)
       backports (>= 2.0)
       multi_json
-      rack-protection
-      rack-test
-      sinatra (~> 1.4.0)
+      mustermann (~> 1.0)
+      rack-protection (= 2.0.0)
+      sinatra (= 2.0.0)
       tilt (>= 1.3, < 3)
-    sinatra-param (1.4.0)
-      sinatra (~> 1.3)
     slop (3.6.0)
-    tilt (2.0.7)
+    tilt (2.0.8)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.2)
-    unicode-display_width (1.1.3)
+    unf_ext (0.0.7.4)
+    unicode-display_width (1.3.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   json
-  laclasse-common!
-  logger
-  mail
   mysql2
   nokogiri
-  omniauth
-  omniauth-cas
   pry
   puma
   rack
   rake
+  rest-client
   rspec
   rubocop
   sequel
   sinatra
   sinatra-contrib
-  sinatra-param
 
 BUNDLED WITH
    1.14.3

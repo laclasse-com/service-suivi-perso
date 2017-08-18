@@ -120,11 +120,10 @@ TableProcessor.prototype.beginTable = function (writer) {
 TableProcessor.prototype.onRowBreak = function (rowIndex, writer) {
 	var self = this;
 	return function () {
-		//console.log('moving by : ', topLineWidth, rowPaddingTop);
 		var offset = self.rowPaddingTop + (!self.headerRows ? self.topLineWidth : 0);
+		writer.context().availableHeight -= self.reservedAtBottom;
 		writer.context().moveDown(offset);
 	};
-
 };
 
 TableProcessor.prototype.beginRow = function (rowIndex, writer) {
@@ -226,6 +225,7 @@ TableProcessor.prototype.drawVerticalLine = function (x, y0, y1, vLineIndex, wri
 TableProcessor.prototype.endTable = function (writer) {
 	if (this.cleanUpRepeatables) {
 		writer.popFromRepeatables();
+		this.headerRepeatableHeight = null;
 	}
 };
 
@@ -257,6 +257,10 @@ TableProcessor.prototype.endRow = function (rowIndex, writer, pageBreaks) {
 			ys[ys.length - 1].y1 = pageBreak.prevY;
 
 			ys.push({y0: pageBreak.y, page: pageBreak.prevPage + 1});
+
+			if (this.headerRepeatableHeight) {
+				ys[ys.length - 1].y0 += this.headerRepeatableHeight;
+			}
 		}
 	}
 
@@ -373,6 +377,7 @@ TableProcessor.prototype.endRow = function (rowIndex, writer, pageBreaks) {
 	}
 
 	if (this.headerRepeatable && (rowIndex === (this.rowsWithoutPageBreak - 1) || rowIndex === this.tableNode.table.body.length - 1)) {
+		this.headerRepeatableHeight = this.headerRepeatable.height;
 		writer.commitUnbreakableBlock();
 		writer.pushToRepeatables(this.headerRepeatable);
 		this.cleanUpRepeatables = true;
