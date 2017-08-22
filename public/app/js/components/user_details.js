@@ -26,9 +26,9 @@ angular.module( 'suiviApp' )
 
                                         if ( ctrl.showConcernedPeople ) {
                                             APIs.query_people_concerned_about( ctrl.uid )
-                                            .then( function success( response ) {
-                                                ctrl.concerned_people = _(response).groupBy('type');
-                                                delete ctrl.concerned_people['Élève'];
+                                                .then( function success( response ) {
+                                                    ctrl.concerned_people = _(response).groupBy('type');
+                                                    delete ctrl.concerned_people['Élève'];
                                             },
                                                    function error( response ) {} );
                                         }
@@ -76,8 +76,8 @@ angular.module( 'suiviApp' )
              ng:repeat="phone in $ctrl.user.phones"
              ng:if="$ctrl.showPhones">
             <span class="glyphicon"
-                  ng:class="{'glyphicon-phone': phone.type_telephone_id === 'PORTABLE', 'glyphicon-phone-alt': phone.type_telephone_id !== 'PORTABLE'}">
-                {{phone.type_telephone_id}}: {{phone.numero}}
+                  ng:class="{'glyphicon-phone': phone.type === 'PORTABLE', 'glyphicon-phone-alt': phone.type !== 'PORTABLE'}">
+                {{phone.type}}: {{phone.number}}
             </span>
         </div>
     </div>
@@ -93,17 +93,17 @@ angular.module( 'suiviApp' )
                 <span class="glyphicon" ng:class="{'glyphicon-menu-down': type.is_open, 'glyphicon-menu-right': !type.is_open}"></span> {{type}}
             </uib-accordion-heading>
             <ul>
-                <li ng:repeat="people in peoples | orderBy:'nom'">
-                    <span ng:if="!people.contributed_to">{{people.prenom}} {{people.nom}}</span>
-                    <span ng:if="people.contributed_to"><a ui:sref="carnet({uid_eleve: people.uid})">{{people.prenom}} {{people.nom}}</a></span>
+                <li ng:repeat="people in peoples | orderBy:'lastname'">
+                    <span ng:if="!people.contributed_to">{{people.firstname}} {{people.lastname}}</span>
+                    <span ng:if="people.contributed_to"><a ui:sref="carnet({uid_eleve: people.id})">{{people.firstname}} {{people.lastname}}</a></span>
                     <span ng:if="people.prof_principal"> (enseignant principal)</span>
                     <span ng:if="people.matieres">
                         <br/>
                         <span class="glyphicon glyphicon-briefcase"></span> {{people.matieres}}
                     </span>
-                    <span ng:if="people.email">
+                    <span ng:if="people.emails.length > 0">
                         <br/>
-                        <span class="glyphicon glyphicon-envelope"></span> <a href="mailto:{{email.adresse}}">{{people.email}}</a>
+                        <span class="glyphicon glyphicon-envelope"></span> <a href="mailto:{{people.emails[0].address}}">{{people.emails[0].address}}</a>
                     </span>
                 </li>
             </ul>
