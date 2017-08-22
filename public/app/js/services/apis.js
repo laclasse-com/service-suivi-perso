@@ -76,8 +76,8 @@ angular.module( 'suiviApp' )
                         return $http.get( APP_PATH + '/api/carnets/contributed/' + uid );
                     };
 
-                    service.query_etablissement_personnel = _.memoize( function( uai ) {
-                        return $http.get( URL_ENT + 'api/structures/' + uai + '/personnel' );
+                    service.get_structure = _.memoize( function( uai ) {
+                        return $http.get( URL_ENT + '/' + 'api/structures/' + uai );
                     } );
 
                     service.query_people_concerned_about = _.memoize( function( uid ) {
@@ -97,84 +97,98 @@ angular.module( 'suiviApp' )
                             .then( function success( response ) {
                                 contributed_to = _(response.data).pluck('uid_eleve');
 
+                                return service.query_profiles_types();
+                            },
+                                   function error( response ) {} )
+                            .then( function success( response ) {
+                                profils = _(response.data).indexBy('id');
+
                                 return service.get_user( uid );
                             },
                                    function error( response ) {} )
                             .then( function success( response ) {
                                 eleve = response.data;
 
-                                concerned_people.push( { type: 'Élève',
-                                                         uid: eleve.id,
-                                                         nom: eleve.lastname,
-                                                         prenom: eleve.firstname } );
+                                eleve.type = 'Élève';
+                                concerned_people.push( eleve );
+                                var promises = [];
 
-                                concerned_people.push( _(eleve.relations_adultes).map( function( people ) {
-                                    return { type: 'Reponsable',
-                                             uid: people.id,
-                                             nom: people.lastname,
-                                             prenom: people.firstname };
-                                } ) );
+                                promises.push( service.get_users( _(eleve.parents).pluck('parent_id') )
+                                               .then( function success( response ) {
+                                                   concerned_people.push( _(response.data).map( function( people ) {
+                                                       people.type = 'Responsable';
+                                                       return people;
+                                                   } ) );
+                                               },
+                                                      function error( response ) {} ) );
 
-                                return $q.all( _.chain( eleve.classes.concat( eleve.groupes_eleves ) ) // add groupes_libres
-                                               .select( function( regroupement ) { return _(regroupement).has('etablissement_code') && regroupement.etablissement_code === eleve.profil_actif.etablissement_code_uai; } )
-                                               .map( function( regroupement ) { return _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id; } )
-                                               .uniq()
-                                               .map( function( regroupement_id ) { return service.get_regroupement( regroupement_id ); } )
-                                               .value() );
-                            },
-                                   function error( response ) {} )
-                            .then( function success( response ) {
-                                concerned_people.push( _.chain(response)
-                                                       .pluck('data')
-                                                       .map( function( regroupement ) {
-                                                           return _(regroupement.profs)
-                                                               .map( function( people ) {
-                                                                   return { type: 'Enseignant',
-                                                                            uid: people.id,
-                                                                            nom: people.lastname,
-                                                                            prenom: people.firstname,
-                                                                            matieres: people.matieres.map( function( matiere ) { return matiere.libelle_long; } ).join(', '),
-                                                                            prof_principal: people.prof_principal === 'O' };
-                                                               } )
-                                                               .concat( _(regroupement.eleves)
-                                                                        .map( function( people ) {
-                                                                            return { type: 'Autre Élève',
-                                                                                     uid: people.id,
-                                                                                     nom: people.lastname,
-                                                                                     prenom: people.firstname,
-                                                                                     contributed_to: !_(['ELV', 'TUT']).contains( current_user.profil_actif.type ) || _(contributed_to).contains( people.id ) };
-                                                                        } ) );
-                                                       } )
-                                                       .flatten()
-                                                       .value() );
+                                promises.push( service.get_structure( eleve.profil_actif.structure_id )
+                                               .then( function success( response ) {
+                                                   var personnels = _(response.data.profiles)
+                                                       .reject( function( user ) {
+                                                           return _([ 'ELV', 'TUT', 'ENS' ]).contains( user.type );
+                                                       } );
 
-                                return service.query_profils();
-                            },
-                                   function error( response ) {} )
-                            .then( function success( response ) {
-                                profils = response.data;
+                                                   return service.get_users( _(personnels).pluck('user_id') )
+                                                       .then( function success( response ) {
+                                                           personnels = _(personnels).indexBy('user_id');
 
-                                return service.query_etablissement_personnel( eleve.profil_actif.etablissement_code_uai );
-                            },
-                                   function error( response ) {} )
-                            .then( function success( response ) {
-                                concerned_people.push( _.chain(response.data)
-                                                       .reject( function( people ) { return people.type === 'ENS'; } )
-                                                       .map( function( people ) {
-                                                           return { type: _(profils).findWhere({id: people.type}).description,
-                                                                    uid: people.id,
-                                                                    nom: people.lastname,
-                                                                    prenom: people.firstname,
-                                                                    email: people.email_principal };
-                                                       } )
-                                                       .value() );
+                                                           concerned_people.push( _(response.data).map( function( people ) {
+                                                               people.type = profils[ personnels[ people.id ].type ].name;
 
-                                return $q.resolve( _.chain(concerned_people)
-                                                   .flatten()
-                                                   .uniq( function( people ) {
-                                                       return people.uid;
-                                                   } )
-                                                   .value() );
+                                                               return people;
+                                                           } ) );
+                                                       },
+                                                              function error( response ) {} );
+                                               },
+                                                      function error( response ) {} ) );
+
+                                promises.push( service.get_groups( _(eleve.groups).pluck('group_id') )
+                                               .then( function success( response ) {
+                                                   var users = _.chain(response.data).pluck('users').flatten().value();
+                                                   var pupils = _(users).where({ type: 'ELV' });
+                                                   var teachers = _(users).where({ type: 'ENS' });
+                                                   var main_teachers = _(users).where({ type: 'PRI' });
+
+                                                   if ( pupils.length > 0 ) {
+                                                       service.get_users( _(pupils).pluck('user_id') )
+                                                           .then( function success( response ) {
+                                                               pupils = _(pupils).indexBy('user_id');
+
+                                                               concerned_people.push( _(response.data).map( function( people ) {
+                                                                   people.type = 'Autre élève';
+
+                                                                   return people;
+                                                               } ) );
+                                                           },
+                                                                  function error( response ) {} );
+                                                   }
+
+                                                   if ( teachers.length > 0 ) {
+                                                       service.get_users( _(teachers).pluck('user_id') )
+                                                           .then( function success( response ) {
+                                                               teachers = _(teachers).indexBy('user_id');
+
+                                                               concerned_people.push( _(response.data).map( function( people ) {
+                                                                   people.type = profils[ teachers[ people.id ].type ].name;
+
+                                                                   return people;
+                                                               } ) );
+                                                           },
+                                                                  function error( response ) {} );
+                                                   }
+                                               },
+                                                      function error( response ) {} ) );
+
+                                return $q.all( promises )
+                                    .then( function() {
+                                        return $q.resolve( _.chain(concerned_people)
+                                                           .flatten()
+                                                           .uniq( function( people ) {
+                                                               return people.id;
+                                                           } )
+                                                           .value() );
+                                    } );
                             },
                                    function error( response ) {} );
                     } );
