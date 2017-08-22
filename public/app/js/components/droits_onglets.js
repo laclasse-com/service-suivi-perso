@@ -57,7 +57,7 @@ angular.module( 'suiviApp' )
                             ng:model="droit.uid"
                             ng:change="droit.dirty.uid = true"
                             ng:disabled="droit.to_delete"
-                            ng:options="people.uid as people.prenom + ' ' + people.nom group by people.type for people in $ctrl.concernedPeople">
+                            ng:options="people.id as people.firstname + ' ' + people.lastname group by people.type for people in $ctrl.concernedPeople">
                     </select>
                 </label>
                 <label ng:if="droit.profil_id">Profil :
@@ -66,7 +66,7 @@ angular.module( 'suiviApp' )
                             ng:change="droit.dirty.profil_id = true"
                             ng:disabled="droit.to_delete">
                         <option ng:repeat="profil in $ctrl.profils track by profil.id"
-                                ng:value="profil.id">{{profil.description}}</option>
+                                ng:value="profil.id">{{profil.name}}</option>
                     </select>
                 </label>
                 <label ng:if="droit.sharable_id">Partage :

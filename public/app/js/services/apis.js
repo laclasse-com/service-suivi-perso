@@ -5,7 +5,7 @@ angular.module( 'suiviApp' )
                     var service = this;
 
                     service.query_profiles_types = _.memoize( function() {
-                        return $http.get( URL_ENT + 'api/profiles_types' );
+                        return $http.get( URL_ENT + '/' + 'api/profiles_types' );
                     } );
 
                     service.get_user = _.memoize( function( user_id ) {
