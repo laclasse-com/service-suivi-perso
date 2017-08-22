@@ -7,7 +7,6 @@ angular.module( 'suiviApp' )
                     service.onglet = function( uid, onglet, callback ) {
                         $uibModal.open( { resolve: { uid: function() { return uid; },
                                                      onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; } },
-                                          templateUrl: 'app/views/popup_onglet.html',
                                           controller: [ '$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uid', 'onglet',
                                                         function PopupOngletCtrl( $scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uid, onglet ) {
                                                             var ctrl = $scope;
@@ -64,7 +63,45 @@ angular.module( 'suiviApp' )
                                                             ctrl.cancel = function() {
                                                                 $uibModalInstance.dismiss();
                                                             };
-                                                        } ] } )
+                                                        } ],
+                                          template: `
+<div class="modal-header">
+    <h3 class="modal-title">
+        Propriétés de l'onglet
+    </h3>
+</div>
+
+<div class="modal-body">
+    <label>Titre : <input type="text" ng:model="onglet.nom" /></label>
+
+    <droits-onglets droits="droits"
+                    concerned-people="concerned_people"
+                    ng:if="onglet.id"></droits-onglets>
+
+    <div class="clearfix"></div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-danger pull-left"
+            ng:click="delete()"
+            ng:if="onglet.id">
+        <span class="glyphicon glyphicon-trash"></span>
+        <span> Supprimer l'onglet</span>
+    </button>
+    <button class="btn btn-default"
+            ng:click="cancel()">
+        <span class="glyphicon glyphicon-remove-sign"></span>
+        <span ng:if="onglet.nom"> Annuler</span>
+        <span ng:if="!onglet.nom"> Fermer</span>
+    </button>
+    <button class="btn btn-success"
+            ng:click="ok()"
+            ng:disabled="!onglet.nom">
+        <span class="glyphicon glyphicon-ok-sign"></span> Valider
+    </button>
+</div>
+`
+                                        } )
                             .result.then( function success( response_popup ) {
                                 var promise = null;
                                 var action = 'rien';
