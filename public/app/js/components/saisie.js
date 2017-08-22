@@ -23,7 +23,6 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.save = function() {
-                                        console.log(ctrl.saisie)
                                         var promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
 
                                         promise.then( function success( response ) {
