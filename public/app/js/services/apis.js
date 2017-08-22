@@ -102,7 +102,6 @@ angular.module( 'suiviApp' )
                                    function error( response ) {} )
                             .then( function success( response ) {
                                 eleve = response.data;
-                                console.log(response.data)
 
                                 concerned_people.push( { type: 'Élève',
                                                          uid: eleve.id,
