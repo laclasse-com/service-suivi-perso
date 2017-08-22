@@ -86,7 +86,7 @@ angular.module( 'suiviApp' )
         <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins"
             style="background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
             ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
-            ng:repeat="eleve in $ctrl.eleves | filter:search">
+            ng:repeat="eleve in $ctrl.eleves | filter:$ctrl.search | orderBy:['regroupement.name', 'lastname']">
             <a class="eleve"
                ui:sref="carnet({uid_eleve: eleve.id})">
                 <h5 class="regroupement">{{eleve.regroupement.name}}</h5>
