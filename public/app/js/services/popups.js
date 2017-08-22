@@ -32,12 +32,14 @@ angular.module( 'suiviApp' )
                                                             APIs.get_user( uid )
                                                                 .then( function success( response ) {
                                                                     ctrl.eleve = response.data;
-                                                                    APIs.query_people_concerned_about( uid )
-                                                                        .then( function success( response ) {
-                                                                            ctrl.concerned_people = response;
-                                                                        },
-                                                                               function error( response ) {} );
-                                                                } );
+                                                                },
+                                                                       function error( response ) {} );
+
+                                                            APIs.query_people_concerned_about( uid )
+                                                                .then( function success( response ) {
+                                                                    ctrl.concerned_people = response;
+                                                                },
+                                                                       function error( response ) {} );
 
                                                             ctrl.ok = function() {
                                                                 $uibModalInstance.close( { onglet: ctrl.onglet,
