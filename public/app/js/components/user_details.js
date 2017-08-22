@@ -37,46 +37,46 @@ angular.module( 'suiviApp' )
                   template: `
 <div class="col-md-12">
     <img class="col-md-4 avatar noir-moins"
-         ng:src="{{$ctrl.URL_ENT + $ctrl.user.avatar}}"
+         ng:src="{{$ctrl.URL_ENT + '/' + $ctrl.user.avatar}}"
          ng:if="$ctrl.showAvatar" />
 
     <div class="col-md-8 details">
         <div class="col-md-12">
             <span class="first-name"
-                  ng:style="{'font-size': $ctrl.small ? '100%' : '150%'}"> {{$ctrl.user.prenom}}
+                  ng:style="{'font-size': $ctrl.small ? '100%' : '150%'}"> {{$ctrl.user.firstname}}
             </span>
             <span class="last-name"
-                  ng:style="{'font-size': $ctrl.small ? '100%' : '175%'}"> {{$ctrl.user.nom}}
+                  ng:style="{'font-size': $ctrl.small ? '100%' : '175%'}"> {{$ctrl.user.lastname}}
             </span>
         </div>
 
         <span class="col-md-12 classe" ng:if="$ctrl.showClasse">
-            {{$ctrl.user.classes[0].classe_libelle}} - {{$ctrl.user.classes[0].etablissement_nom}}
+            FIXME{{$ctrl.user.classes[0].classe_libelle}} - {{$ctrl.user.classes[0].etablissement_nom}}
         </span>
 
         <span class="col-md-12 birthdate" ng:if="$ctrl.showBirthdate">
-            né<span ng:if="$ctrl.user.sexe === 'F'">e</span> le {{$ctrl.user.date_naissance | date}}
+            né<span ng:if="$ctrl.user.gender === 'F'">e</span> le {{$ctrl.user.birthdate | date}}
         </span>
         <div class="col-md-12 email"
              ng:repeat="email in $ctrl.user.emails"
              ng:if="$ctrl.showEmails">
             <span class="glyphicon glyphicon-envelope"></span>
-            <a href="mailto:{{email.adresse}}">{{email.adresse}}</a>
+            <a href="mailto:{{email.address}}">{{email.address}}</a>
         </div>
         <span class="col-md-12 address"
               ng:if="$ctrl.showAddress && $ctrl.user.adresse">
             <span class="glyphicon glyphicon-home"></span>
             <span style="display: inline-table;">
-                {{$ctrl.user.adresse}}
+                {{$ctrl.user.address}}
                 <br>
-                {{$ctrl.user.code_postal}} {{$ctrl.user.ville}}
+                {{$ctrl.user.zipcode}} {{$ctrl.user.city}}
             </span>
         </span>
         <div class="col-md-12 phone"
-             ng:repeat="phone in $ctrl.user.telephones"
+             ng:repeat="phone in $ctrl.user.phones"
              ng:if="$ctrl.showPhones">
             <span class="glyphicon"
-                  ng:class="{'glyphicon-phone': phone.type_telephone_id === 'MOBILE', 'glyphicon-phone-alt': phone.type_telephone_id !== 'MOBILE'}">
+                  ng:class="{'glyphicon-phone': phone.type_telephone_id === 'PORTABLE', 'glyphicon-phone-alt': phone.type_telephone_id !== 'PORTABLE'}">
                 {{phone.type_telephone_id}}: {{phone.numero}}
             </span>
         </div>
