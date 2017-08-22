@@ -20,7 +20,7 @@ module Suivi
           app.post '/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/?' do
             onglet = get_and_check_onglet( params['onglet_id'], user, :write )
 
-            saisie = onglet.add_saisy( uid_author: user[:uid],
+            saisie = onglet.add_saisy( uid_author: user['id'],
                                        date_creation: DateTime.now,
                                        date_modification: DateTime.now,
                                        contenu: params['contenu'] )

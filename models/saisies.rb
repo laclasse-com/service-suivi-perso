@@ -11,7 +11,7 @@ class Saisie < Sequel::Model(:saisies)
   def allow?( user, right )
     return true if right == :read
 
-    return true if user[:id] == uid_author
+    return true if user['id'] == uid_author
 
     # by default etablissement's admins and super-admins have all rights
     LaClasse::User.user_is_admin?( user ) || LaClasse::User.user_is_super_admin?( user )

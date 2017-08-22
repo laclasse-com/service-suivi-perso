@@ -21,7 +21,7 @@ class Onglet < Sequel::Model(:onglets)
   end
 
   def allow?( user, right )
-    droit = droits_dataset[uid: user[:id]]
+    droit = droits_dataset[uid: user['id']]
     return droit[ right ] unless droit.nil?
 
     droit = droits_dataset[profil_id: LaClasse::User.user_active_profile( user )['type']]
