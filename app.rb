@@ -7,6 +7,8 @@ Bundler.require(:default, ENV['RACK_ENV'].to_sym )
 
 require_relative './config/init'
 
+require_relative './lib/user'
+
 require_relative './models/carnets'
 require_relative './models/droits'
 require_relative './models/onglets'

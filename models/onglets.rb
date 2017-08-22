@@ -21,22 +21,14 @@ class Onglet < Sequel::Model(:onglets)
   end
 
   def allow?( user, right )
-    droit = droits_dataset[uid: user[:uid]]
+    droit = droits_dataset[uid: user[:id]]
     return droit[ right ] unless droit.nil?
 
-    droit = droits_dataset[profil_id: user[:user_detailed]['profil_actif']['profil_id']]
+    droit = droits_dataset[profil_id: LaClasse::User.user_active_profile( user )['type']]
     return droit[ right ] unless droit.nil?
-
-    is_admin = user[:user_detailed]['roles'].count do |role|
-      role['etablissement_code_uai'] == user[:user_detailed]['profil_actif']['etablissement_code_uai'] &&
-        ( role['role_id'] == 'TECH' ||
-          role['role_id'].match('ADM.*') )
-    end > 0
-
-    is_super_admin = user[:user_detailed]['roles'].count { |role| role['role_id'] == 'TECH' } > 0
 
     # by default etablissement's admins and super-admins have all rights
-    is_admin || is_super_admin
+    LaClasse::User.user_is_admin?( user ) || LaClasse::User.user_is_super_admin?( user )
   end
 
   def to_json( arg )
