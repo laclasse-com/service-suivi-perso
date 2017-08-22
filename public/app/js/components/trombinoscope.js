@@ -6,51 +6,49 @@ angular.module( 'suiviApp' )
                                     ctrl.search = '';
                                     ctrl.only_display_contributed_to = false;
 
-                                    var fix_avatar_url = function( avatar_url ) {
-                                        return ( _(avatar_url.match(/^user/)).isNull() ? URL_ENT : '' ) + avatar_url;
-                                    };
+                                    var current_user = undefined;
 
                                     APIs.get_current_user()
-                                        .then( function( current_user ) {
-                                            current_user.avatar = fix_avatar_url( current_user.avatar );
+                                        .then( function( response ) {
+                                            current_user = response;
 
-                                            if ( current_user.profil_actif.profil_id === 'ELV' ) {
-                                                current_user.regroupement = { libelle : current_user.classes[0].classe_libelle };
+                                            return APIs.get_current_user_groups();
+                                        } )
+                                        .then( function( groups ) {
+                                            var classes = _(groups).where({ type: 'CLS' });
+
+                                            if ( current_user.profil_actif.type === 'ELV' ) {
+                                                current_user.regroupement = { libelle : classes[0].name };
 
                                                 ctrl.eleves = [ current_user ];
                                             } else {
-                                                $q.all( _.chain( current_user.classes )
-                                                        .select( function( regroupement ) {
-                                                            return _(regroupement).has('etablissement_code') && regroupement.etablissement_code === current_user.profil_actif.etablissement_code_uai;
-                                                        } )
-                                                        .map( function( regroupement ) {
-                                                            return _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id;
-                                                        } )
-                                                        .uniq()
-                                                        .map( function( regroupement_id ) {
-                                                            return APIs.get_regroupement( regroupement_id );
-                                                        } )
-                                                        .value()
-                                                      )
+                                                APIs.get_groups( _.chain( classes )
+                                                                 .select( function( regroupement ) {
+                                                                     return _(regroupement).has('structure_id') && regroupement.structure_id === current_user.profil_actif.structure_id;
+                                                                 } )
+                                                                 .pluck( 'id' )
+                                                                 .uniq()
+                                                                 .value() )
                                                     .then( function success( response ) {
-                                                        ctrl.eleves = _.chain(response)
-                                                            .pluck('data')
-                                                            .map( function( regroupement ) {
-                                                                return _(regroupement.eleves)
-                                                                    .map( function( eleve ) {
-                                                                        eleve.avatar = fix_avatar_url( eleve.avatar );
+                                                        ctrl.groups = response.data;
+                                                        ctrl.eleves = [];
 
+                                                        _(response.data).each( function( regroupement ) {
+                                                            regroupement.profs = _.chain(regroupement.users).select( function( user ) { return user.type === 'ENS'; } ).pluck('user_id').value();
+
+                                                            APIs.get_users( _.chain(regroupement.users).select( function( user ) { return user.type === 'ELV'; } ).pluck('user_id').value() )
+                                                                .then( function( users ) {
+                                                                    ctrl.eleves = ctrl.eleves.concat( _(users.data).map( function( eleve ) {
                                                                         eleve.regroupement = { id: regroupement.id,
-                                                                                               libelle: regroupement.libelle_aaf,
-                                                                                               type: regroupement.type_regroupement_id };
-                                                                        eleve.etablissement = regroupement.etablissement;
+                                                                                               name: regroupement.name,
+                                                                                               type: regroupement.type };
+                                                                        eleve.etablissement = regroupement.structure_id;
                                                                         eleve.enseignants = regroupement.profs;
 
                                                                         return eleve;
-                                                                    } );
-                                                            } )
-                                                            .flatten()
-                                                            .value();
+                                                                    } ) );
+                                                                } );
+                                                        } );
                                                     },
                                                            function error( response ) {} );
                                             }
@@ -79,7 +77,7 @@ angular.module( 'suiviApp' )
 
     <label ng:if="contributed_to.length > 0"> Carnet<span ng:if="contributed_to.length > 1">s</span> <span ng:if="contributed_to.length > 1">auxquels</span><span ng:if="contributed_to.length < 2">auquel</span> vous avez contribué : </label>
     <ul>
-        <li ng:repeat="carnet in $ctrl.contributed_to"><a ui:sref="carnet({uid_eleve: carnet.eleve.id_ent})">{{carnet.eleve.prenom}} {{carnet.eleve.nom}}</a></li>
+        <li ng:repeat="carnet in $ctrl.contributed_to"><a ui:sref="carnet({uid_eleve: carnet.eleve.id})">{{carnet.eleve.firstname}} {{carnet.eleve.lastname}}</a></li>
     </ul>
 </div>
 
@@ -90,12 +88,12 @@ angular.module( 'suiviApp' )
             ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
             ng:repeat="eleve in $ctrl.eleves | filter:search">
             <a class="eleve"
-               ui:sref="carnet({uid_eleve: eleve.id_ent})">
-                <h5 class="regroupement">{{eleve.regroupement.libelle}}</h5>
+               ui:sref="carnet({uid_eleve: eleve.id})">
+                <h5 class="regroupement">{{eleve.regroupement.name}}</h5>
 
                 <div class="full-name">
-                    <h4 class="first-name">{{eleve.prenom}}</h4>
-                    <h3 class="last-name">{{eleve.nom}}</h3>
+                    <h4 class="first-name">{{eleve.firstname}}</h4>
+                    <h3 class="last-name">{{eleve.lastname}}</h3>
                 </div>
             </a>
         </li>

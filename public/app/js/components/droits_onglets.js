@@ -38,7 +38,7 @@ angular.module( 'suiviApp' )
                                     ctrl.$onInit = function() {
                                         ctrl.UID = UID;
 
-                                        APIs.query_profils()
+                                        APIs.query_profiles_types()
                                             .then( function success( response ) {
                                                 ctrl.profils = response.data;
                                             },

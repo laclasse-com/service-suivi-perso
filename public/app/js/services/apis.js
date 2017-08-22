@@ -4,21 +4,73 @@ angular.module( 'suiviApp' )
                 function( $http, $q, User, URL_ENT, APP_PATH ) {
                     var service = this;
 
-                    service.query_profils = _.memoize( function() {
-                        return $http.get( URL_ENT + 'api/profiles' );
+                    service.query_profiles_types = _.memoize( function() {
+                        return $http.get( URL_ENT + 'api/profiles_types' );
                     } );
 
-                    service.get_user = _.memoize( function( uid ) {
-                        return $http.get( URL_ENT + '/api/users/' + uid, { params: { expand: 'true' } } );
+                    service.get_user = _.memoize( function( user_id ) {
+                        return $http.get( URL_ENT + '/api/users/' + user_id )
+                            .then( function( response ) {
+                                response.data.profil_actif = _(response.data.profiles).findWhere( { active: true } );
+
+                                response.data.get_actual_groups = function() {
+                                    return service.get_groups( _(response.data.groups).pluck('group_id') )
+                                        .then( function( groups ) {
+                                            return $q.resolve( groups.data );
+                                        } );
+                                };
+
+                                response.data.get_actual_subjects = function() {
+                                    return service.get_subjects( _(response.data.groups).pluck('subject_id') )
+                                        .then( function( subjects ) {
+                                            return $q.resolve( subjects.data );
+                                        } );
+                                };
+
+                                return response;
+                            } );
                     } );
 
                     service.get_current_user = _.memoize( function(  ) {
                         return User.get().$promise;
                     } );
 
-                    service.get_regroupement = _.memoize( function( regroupement_id ) {
-                        return $http.get( URL_ENT + '/api/groups/' + regroupement_id, { params: { expand: 'true' } } );
+                    service.get_users = _.memoize( function( users_ids ) {
+                        return $http.get( URL_ENT + '/api/users/', { params: { 'id[]': users_ids } } );
+                    });
+
+                    service.get_current_user_groups = _.memoize( function() {
+                        return service.get_current_user().then( function success( current_user ) {
+                            var groups_ids = _.chain(current_user.groups).pluck( 'group_id' ).uniq().value();
+                            var promise = $q.resolve([]);
+                            if ( _( [ 'EVS', 'DIR', 'ADM' ] ).contains( current_user.profil_actif.type ) || current_user.profil_actif.admin ) {
+                                promise = service.get_groups_of_structures( [ current_user.profil_actif.structure_id ] );
+                            } else {
+                                promise = service.get_groups( groups_ids );
+                            }
+
+                            return promise
+                                .then( function( groups ) {
+                                    current_user.actual_groups = _(groups.data).select( function( group ) {
+                                        return group.structure_id === current_user.profil_actif.structure_id;
+                                    } );
+
+                                    return $q.resolve( current_user.actual_groups );
+                                } );
+                        } );
                     } );
+
+                    service.get_group = _.memoize( function( regroupement_id ) {
+                        return $http.get( URL_ENT + '/api/groups/' + regroupement_id );
+                    } );
+
+                    service.get_groups = _.memoize( function( groups_ids ) {
+                        return $http.get( URL_ENT + '/api/groups/', { params: { 'id[]': groups_ids } } );
+                    });
+
+                    service.get_groups_of_structures = _.memoize( function( structures_ids ) {
+                        return $http.get( URL_ENT + '/api/groups/', { params: { 'structure_id[]': structures_ids } } );
+                    });
 
                     service.query_carnets_contributed_to = function( uid ) {
                         return $http.get( APP_PATH + '/api/carnets/contributed/' + uid );
@@ -50,6 +102,7 @@ angular.module( 'suiviApp' )
                                    function error( response ) {} )
                             .then( function success( response ) {
                                 eleve = response.data;
+                                console.log(response.data)
 
                                 concerned_people.push( { type: 'Élève',
                                                          uid: eleve.id,
@@ -78,19 +131,19 @@ angular.module( 'suiviApp' )
                                                            return _(regroupement.profs)
                                                                .map( function( people ) {
                                                                    return { type: 'Enseignant',
-                                                                            uid: people.id_ent,
-                                                                            nom: people.nom,
-                                                                            prenom: people.prenom,
+                                                                            uid: people.id,
+                                                                            nom: people.lastname,
+                                                                            prenom: people.firstname,
                                                                             matieres: people.matieres.map( function( matiere ) { return matiere.libelle_long; } ).join(', '),
                                                                             prof_principal: people.prof_principal === 'O' };
                                                                } )
                                                                .concat( _(regroupement.eleves)
                                                                         .map( function( people ) {
                                                                             return { type: 'Autre Élève',
-                                                                                     uid: people.id_ent,
-                                                                                     nom: people.nom,
-                                                                                     prenom: people.prenom,
-                                                                                     contributed_to: !_(['ELV', 'TUT']).contains( current_user.profil_actif.profil_id ) || _(contributed_to).contains( people.id_ent ) };
+                                                                                     uid: people.id,
+                                                                                     nom: people.lastname,
+                                                                                     prenom: people.firstname,
+                                                                                     contributed_to: !_(['ELV', 'TUT']).contains( current_user.profil_actif.type ) || _(contributed_to).contains( people.id ) };
                                                                         } ) );
                                                        } )
                                                        .flatten()
@@ -107,12 +160,12 @@ angular.module( 'suiviApp' )
                                    function error( response ) {} )
                             .then( function success( response ) {
                                 concerned_people.push( _.chain(response.data)
-                                                       .reject( function( people ) { return people.profil_id === 'ENS'; } )
+                                                       .reject( function( people ) { return people.type === 'ENS'; } )
                                                        .map( function( people ) {
-                                                           return { type: _(profils).findWhere({id: people.profil_id}).description,
-                                                                    uid: people.id_ent,
-                                                                    nom: people.nom,
-                                                                    prenom: people.prenom,
+                                                           return { type: _(profils).findWhere({id: people.type}).description,
+                                                                    uid: people.id,
+                                                                    nom: people.lastname,
+                                                                    prenom: people.firstname,
                                                                     email: people.email_principal };
                                                        } )
                                                        .value() );
