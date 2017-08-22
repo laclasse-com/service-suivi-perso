@@ -8,9 +8,15 @@ angular.module( 'suiviApp' )
 
                                     var current_user = undefined;
 
+                                    var fix_avatar_url = function( avatar_url ) {
+                                        return ( _(avatar_url.match(/^user/)).isNull() ? URL_ENT  + '/': '' ) + avatar_url;
+                                    };
+
                                     APIs.get_current_user()
                                         .then( function( response ) {
                                             current_user = response;
+
+                                            current_user.avatar = fix_avatar_url( current_user.avatar );
 
                                             return APIs.get_current_user_groups();
                                         } )
@@ -39,6 +45,8 @@ angular.module( 'suiviApp' )
                                                             APIs.get_users( _.chain(regroupement.users).select( function( user ) { return user.type === 'ELV'; } ).pluck('user_id').value() )
                                                                 .then( function( users ) {
                                                                     ctrl.eleves = ctrl.eleves.concat( _(users.data).map( function( eleve ) {
+                                                                        eleve.avatar = fix_avatar_url( eleve.avatar );
+
                                                                         eleve.regroupement = { id: regroupement.id,
                                                                                                name: regroupement.name,
                                                                                                type: regroupement.type };
