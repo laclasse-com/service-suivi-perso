@@ -7,6 +7,7 @@ angular.module( 'suiviApp' )
                   controller: [ 'DroitsOnglets', 'APIs', 'UID', 'URL_ENT',
                                 function( DroitsOnglets, APIs, UID, URL_ENT ) {
                                     var ctrl = this;
+                                    ctrl.sharing_enabled = false;
 
                                     var gen_pseudo_UUID = function() {
                                         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -50,7 +51,8 @@ angular.module( 'suiviApp' )
     <label>Gestion des droits</label>
     <table style="width: 100%;">
         <tr style="text-align: right;"
-            ng:repeat="droit in $ctrl.droits">
+            ng:repeat="droit in $ctrl.droits"
+            ng:if="ctrl.sharing_enabled || !droit.sharable_id">
             <td>
                 <label ng:if="droit.uid">Personne :
                     <select style="width: 250px;"
@@ -127,6 +129,7 @@ angular.module( 'suiviApp' )
                 </button>
 
                 <button class="btn btn-warning pull-right"
+                        ng:if="ctrl.sharing_enabled"
                         ng:click="$ctrl.add_sharable({ read: true, write: false })">
                     <span class="glyphicon glyphicon-plus-sign"></span> partage
                 </button>
