@@ -21,6 +21,20 @@ angular.module( 'suiviApp' )
                                         APIs.get_user( ctrl.uid )
                                             .then( function success( response ) {
                                                 ctrl.user = response.data;
+
+                                                if ( ctrl.showClasse ) {
+                                                    ctrl.user.get_actual_groups()
+                                                        .then( function( response ) {
+                                                            ctrl.user.actual_groups = response;
+
+                                                            _(ctrl.user.actual_groups).each( function( group ) {
+                                                                APIs.get_structure( group.structure_id )
+                                                                    .then( function( response ) {
+                                                                        group.structure = response.data;
+                                                                    } );
+                                                            } );
+                                                        } );
+                                                }
                                             },
                                                    function error( response ) {} );
 
@@ -51,7 +65,9 @@ angular.module( 'suiviApp' )
         </div>
 
         <span class="col-md-12 classe" ng:if="$ctrl.showClasse">
-            FIXME{{$ctrl.user.classes[0].classe_libelle}} - {{$ctrl.user.classes[0].etablissement_nom}}
+            <span ng:repeat="group in $ctrl.user.actual_groups | filter:{type: 'CLS'}">
+                {{group.name}} - {{group.structure.name}}
+            </span>
         </span>
 
         <span class="col-md-12 birthdate" ng:if="$ctrl.showBirthdate">
