@@ -9,7 +9,7 @@ angular.module( 'suiviApp' )
                                     var current_user = undefined;
 
                                     var fix_avatar_url = function( avatar_url ) {
-                                        return ( _(avatar_url.match(/^user/)).isNull() ? URL_ENT  + '/': '' ) + avatar_url;
+                                        return ( _(avatar_url.match(/^(user|http)/)).isNull() ? URL_ENT  + '/': '' ) + avatar_url;
                                     };
 
                                     APIs.get_current_user()
@@ -41,21 +41,24 @@ angular.module( 'suiviApp' )
 
                                                         _(response.data).each( function( regroupement ) {
                                                             regroupement.profs = _.chain(regroupement.users).select( function( user ) { return user.type === 'ENS'; } ).pluck('user_id').value();
+                                                            var users_ids = _.chain(regroupement.users).select( function( user ) { return user.type === 'ELV'; } ).pluck('user_id').value();
 
-                                                            APIs.get_users( _.chain(regroupement.users).select( function( user ) { return user.type === 'ELV'; } ).pluck('user_id').value() )
-                                                                .then( function( users ) {
-                                                                    ctrl.eleves = ctrl.eleves.concat( _(users.data).map( function( eleve ) {
-                                                                        eleve.avatar = fix_avatar_url( eleve.avatar );
+                                                            if ( !_(users_ids).isEmpty() ) {
+                                                                APIs.get_users( users_ids )
+                                                                    .then( function( users ) {
+                                                                        ctrl.eleves = ctrl.eleves.concat( _(users.data).map( function( eleve ) {
+                                                                            eleve.avatar = fix_avatar_url( eleve.avatar );
 
-                                                                        eleve.regroupement = { id: regroupement.id,
-                                                                                               name: regroupement.name,
-                                                                                               type: regroupement.type };
-                                                                        eleve.etablissement = regroupement.structure_id;
-                                                                        eleve.enseignants = regroupement.profs;
+                                                                            eleve.regroupement = { id: regroupement.id,
+                                                                                                   name: regroupement.name,
+                                                                                                   type: regroupement.type };
+                                                                            eleve.etablissement = regroupement.structure_id;
+                                                                            eleve.enseignants = regroupement.profs;
 
-                                                                        return eleve;
-                                                                    } ) );
-                                                                } );
+                                                                            return eleve;
+                                                                        } ) );
+                                                                    } );
+                                                            }
                                                         } );
                                                     },
                                                            function error( response ) {} );
