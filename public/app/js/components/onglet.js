@@ -20,11 +20,11 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.saisie_callback = function( saisie ) {
-                                        console.log(saisie)
                                         switch( saisie.action ) {
                                         case 'created':
                                             ctrl.saisies.push( saisie );
-                                            //ctrl.saisies.unshift( { create_me: true } );
+                                            ctrl.saisies.shift();
+                                            ctrl.saisies.unshift( { create_me: true, truc: 'bidule' } );
                                             break;
                                         case 'deleted':
                                             ctrl.saisies = _(ctrl.saisies).reject( function( s ) { return s.id === saisie.id; } );
