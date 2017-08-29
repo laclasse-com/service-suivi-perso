@@ -72,6 +72,10 @@ angular.module( 'suiviApp' )
                         return $http.get( URL_ENT + '/api/groups/', { params: { 'structure_id[]': structures_ids } } );
                     });
 
+                    APIs.get_subjects = _.memoize( function( subjects_ids ) {
+                        return $http.get( URL_ENT + '/api/subjects/', { params: { 'id[]': subjects_ids } } );
+                    });
+
                     APIs.query_carnets_contributed_to = function( uid ) {
                         return $http.get( APP_PATH + '/api/carnets/contributed/' + uid );
                     };
@@ -143,7 +147,8 @@ angular.module( 'suiviApp' )
                                                },
                                                       function error( response ) {} ) );
 
-                                promises.push( APIs.get_groups( _(eleve.groups).pluck('group_id') )
+                                var groups_ids = _(eleve.groups).pluck('group_id');
+                                promises.push( APIs.get_groups( groups_ids )
                                                .then( function success( response ) {
                                                    var users = _.chain(response.data).pluck('users').flatten().value();
                                                    var pupils = _(users).where({ type: 'ELV' });
@@ -171,6 +176,11 @@ angular.module( 'suiviApp' )
 
                                                                concerned_people.push( _(response.data).map( function( people ) {
                                                                    people.type = profils[ teachers[ people.id ].type ].name;
+
+                                                                   APIs.get_subjects( _(people.groups).pluck('subject_id') )
+                                                                       .then( function( response ) {
+                                                                           people.actual_subjects = response.data;
+                                                                       } );
 
                                                                    return people;
                                                                } ) );

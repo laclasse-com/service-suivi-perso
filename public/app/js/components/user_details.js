@@ -113,9 +113,11 @@ angular.module( 'suiviApp' )
                     <span ng:if="!people.contributed_to">{{people.firstname}} {{people.lastname}}</span>
                     <span ng:if="people.contributed_to"><a ui:sref="carnet({uid_eleve: people.id})">{{people.firstname}} {{people.lastname}}</a></span>
                     <span ng:if="people.prof_principal"> (enseignant principal)</span>
-                    <span ng:if="people.matieres">
+                    <span ng:if="people.actual_subjects">
                         <br/>
-                        <span class="glyphicon glyphicon-briefcase"></span> {{people.matieres}}
+                        <em ng:repeat="subject in people.actual_subjects">
+                            <span class="glyphicon glyphicon-briefcase"></span> {{subject.name}}
+                        </em>
                     </span>
                     <span ng:if="people.emails.length > 0">
                         <br/>
