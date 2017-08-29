@@ -4,12 +4,11 @@ angular.module( 'suiviApp' )
     .component( 'onglet',
                 { bindings: { uidEleve: '<',
                               onglet: '=' },
-                  controller: [ '$uibModal', '$state', 'Onglets', 'Saisies', 'Popups', 'GeneratePDF',
-                                function( $uibModal, $state, Onglets, Saisies, Popups, GeneratePDF ) {
+                  controller: [ '$uibModal', '$state', 'Onglets', 'Saisies', 'Popups',
+                                function( $uibModal, $state, Onglets, Saisies, Popups ) {
                                     var ctrl = this;
 
                                     ctrl.manage_onglet = Popups.onglet;
-                                    ctrl.print_onglet = GeneratePDF.onglet;
 
                                     ctrl.callback_popup_onglet = function( onglet ) {
                                         if ( onglet.deleted ) {
@@ -36,16 +35,42 @@ angular.module( 'suiviApp' )
 
                                     };
 
-                                    ctrl.$onInit = function() {
-                                        Saisies.query({ uid_eleve: ctrl.uidEleve,
-                                                        onglet_id: ctrl.onglet.id }).$promise
-                                            .then( function success( response ) {
-                                                ctrl.saisies = ctrl.onglet.writable ? [ { create_me: true } ] : [];
+                                    var startPrintProcess = function( canvasObj, fileName ) {
+                                        document.body.appendChild( canvasObj ); //appendChild is required for html to add page in pdf
 
-                                                ctrl.saisies = ctrl.saisies.concat( response );
-                                            },
-                                                   function error( response ) {} );
+                                        var pdf = new jsPDF( 'l', 'pt', 'a4' );
+                                        pdf.addHTML( canvasObj, 0, 0, { pagesplit: true,
+                                                                        background: '#fff' },
+                                                     function() {
+                                                         document.body.removeChild( canvasObj );
+                                                         pdf.addPage();
+                                                         pdf.save( fileName + '.pdf' );
+                                                     } );
                                     };
+
+                                    ctrl.print = function() {
+                                        console.log(html2canvas)
+                                        html2canvas( angular.element('#saisies') )
+                                            .then( function( canvasObj ) {
+                                                console.log( canvasObj )
+                                                startPrintProcess( canvasObj, ctrl.onglet.name );
+                                            },
+                                                   function( response ) {
+                                                       console.log(response)
+                                                   }
+                                                 );
+                                    };
+
+                  ctrl.$onInit = function() {
+                      Saisies.query({ uid_eleve: ctrl.uidEleve,
+                                      onglet_id: ctrl.onglet.id }).$promise
+                          .then( function success( response ) {
+                              ctrl.saisies = ctrl.onglet.writable ? [ { create_me: true } ] : [];
+
+                              ctrl.saisies = ctrl.saisies.concat( response );
+                          },
+                                 function error( response ) {} );
+                  };
                                 } ],
                   template: `
 <div class="col-md-3 pull-right"
@@ -58,16 +83,19 @@ angular.module( 'suiviApp' )
     </button>
     <button class="btn btn-lg btn-primary"
             style="width: 100%;"
-            ng:click="$ctrl.print_onglet( $ctrl.uidEleve, $ctrl.onglet )">
+            ng:click="$ctrl.print()">
         <span class="glyphicon glyphicon-print"></span> Exporter en PDF
     </button>
 </div>
 
-<saisie ng:repeat="saisie in $ctrl.saisies"
-        class="col-md-9"
-        uid-eleve="$ctrl.uidEleve"
-        onglet="$ctrl.onglet"
-        saisie="saisie"
-        callback="$ctrl.saisie_callback( saisie )"></saisie>
+<div id="saisies"
+     class="col-md-9"
+     style="display: inline-block;">
+    <saisie ng:repeat="saisie in $ctrl.saisies"
+            uid-eleve="$ctrl.uidEleve"
+            onglet="$ctrl.onglet"
+            saisie="saisie"
+            callback="$ctrl.saisie_callback( saisie )"></saisie>
+</div>
 `
                 } );
