@@ -43,22 +43,20 @@ angular.module( 'suiviApp' )
                                                             regroupement.profs = _.chain(regroupement.users).select( function( user ) { return user.type === 'ENS'; } ).pluck('user_id').value();
                                                             var users_ids = _.chain(regroupement.users).select( function( user ) { return user.type === 'ELV'; } ).pluck('user_id').value();
 
-                                                            if ( !_(users_ids).isEmpty() ) {
-                                                                APIs.get_users( users_ids )
-                                                                    .then( function( users ) {
-                                                                        ctrl.eleves = ctrl.eleves.concat( _(users.data).map( function( eleve ) {
-                                                                            eleve.avatar = fix_avatar_url( eleve.avatar );
+                                                            APIs.get_users( users_ids )
+                                                                .then( function( users ) {
+                                                                    ctrl.eleves = ctrl.eleves.concat( _(users.data).map( function( eleve ) {
+                                                                        eleve.avatar = fix_avatar_url( eleve.avatar );
 
-                                                                            eleve.regroupement = { id: regroupement.id,
-                                                                                                   name: regroupement.name,
-                                                                                                   type: regroupement.type };
-                                                                            eleve.etablissement = regroupement.structure_id;
-                                                                            eleve.enseignants = regroupement.profs;
+                                                                        eleve.regroupement = { id: regroupement.id,
+                                                                                               name: regroupement.name,
+                                                                                               type: regroupement.type };
+                                                                        eleve.etablissement = regroupement.structure_id;
+                                                                        eleve.enseignants = regroupement.profs;
 
-                                                                            return eleve;
-                                                                        } ) );
-                                                                    } );
-                                                            }
+                                                                        return eleve;
+                                                                    } ) );
+                                                                } );
                                                         } );
                                                     },
                                                            function error( response ) {} );

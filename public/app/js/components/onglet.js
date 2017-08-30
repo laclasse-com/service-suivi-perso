@@ -4,8 +4,8 @@ angular.module( 'suiviApp' )
     .component( 'onglet',
                 { bindings: { uidEleve: '<',
                               onglet: '=' },
-                  controller: [ '$uibModal', '$state', 'Onglets', 'Saisies', 'Popups',
-                                function( $uibModal, $state, Onglets, Saisies, Popups ) {
+                  controller: [ '$uibModal', '$state', '$q', 'Onglets', 'Saisies', 'Popups',
+                                function( $uibModal, $state, $q, Onglets, Saisies, Popups ) {
                                     var ctrl = this;
 
                                     ctrl.manage_onglet = Popups.onglet;
@@ -35,42 +35,61 @@ angular.module( 'suiviApp' )
 
                                     };
 
-                                    var startPrintProcess = function( canvasObj, fileName ) {
-                                        document.body.appendChild( canvasObj ); //appendChild is required for html to add page in pdf
-
+                                    var print = function() {
+                                        var printDump = document.getElementById('printDump');
                                         var pdf = new jsPDF( 'l', 'pt', 'a4' );
-                                        pdf.addHTML( canvasObj, 0, 0, { pagesplit: true,
-                                                                        background: '#fff' },
-                                                     function() {
-                                                         document.body.removeChild( canvasObj );
-                                                         pdf.addPage();
-                                                         pdf.save( fileName + '.pdf' );
-                                                     } );
-                                    };
+                                        return $q.all( _(angular.element('.active saisie'))
+                                                       .map( function( elt ) {
+                                                    return html2canvas( elt );
+                                                } ) )
+                                            .then( function( canvases ) {
+                                                var y = 0;
 
+                                                _(canvases).each( function( canvasObj ) {
+                                                    printDump.appendChild( canvasObj ); //appendChild is required for html to add page in pdf
+
+                                                    pdf.addHTML( canvasObj, 0, y, { pagesplit: true,
+                                                                                    background: '#fff' } )
+                                                        .then( function() {
+                                                            printDump.removeChild( canvasObj );
+                                                        } );
+                                                    y += canvasObj.height;
+                                                } );
+
+                                                // pdf.addPage();
+                                                pdf.save( ctrl.onglet.name + '.pdf' );
+                                                return $q.resolve( 'terminé' );
+                                            } );
+                                    };
                                     ctrl.print = function() {
-                                        console.log(html2canvas)
-                                        html2canvas( angular.element('#saisies') )
-                                            .then( function( canvasObj ) {
-                                                console.log( canvasObj )
-                                                startPrintProcess( canvasObj, ctrl.onglet.name );
-                                            },
-                                                   function( response ) {
-                                                       console.log(response)
-                                                   }
-                                                 );
+                                        swal( { title: "Export au format PDF...",
+                                                text: "traitement en cours",
+                                                type: "info",
+                                                showLoaderOnConfirm: true,
+                                                onOpen: function(){
+                                                    swal.clickConfirm();
+                                                },
+                                                preConfirm: function() {
+                                                    return new Promise( function( resolve ) {
+                                                        print().then(
+                                                            function success( response ) {
+                                                                swal.closeModal();
+                                                            } );
+                                                    } );
+                                                },
+                                                allowOutsideClick: false } );
                                     };
 
-                  ctrl.$onInit = function() {
-                      Saisies.query({ uid_eleve: ctrl.uidEleve,
-                                      onglet_id: ctrl.onglet.id }).$promise
-                          .then( function success( response ) {
-                              ctrl.saisies = ctrl.onglet.writable ? [ { create_me: true } ] : [];
+                                    ctrl.$onInit = function() {
+                                        Saisies.query({ uid_eleve: ctrl.uidEleve,
+                                                        onglet_id: ctrl.onglet.id }).$promise
+                                            .then( function success( response ) {
+                                                ctrl.saisies = ctrl.onglet.writable ? [ { create_me: true } ] : [];
 
-                              ctrl.saisies = ctrl.saisies.concat( response );
-                          },
-                                 function error( response ) {} );
-                  };
+                                                ctrl.saisies = ctrl.saisies.concat( response );
+                                            },
+                                                   function error( response ) {} );
+                                    };
                                 } ],
                   template: `
 <div class="col-md-3 pull-right"
@@ -88,14 +107,14 @@ angular.module( 'suiviApp' )
     </button>
 </div>
 
-<div id="saisies"
-     class="col-md-9"
-     style="display: inline-block;">
-    <saisie ng:repeat="saisie in $ctrl.saisies"
-            uid-eleve="$ctrl.uidEleve"
-            onglet="$ctrl.onglet"
-            saisie="saisie"
-            callback="$ctrl.saisie_callback( saisie )"></saisie>
-</div>
+<div id="printDump"></div>
+
+<saisie class="col-md-9"
+        style="display: inline-block;"
+        ng:repeat="saisie in $ctrl.saisies"
+        uid-eleve="$ctrl.uidEleve"
+        onglet="$ctrl.onglet"
+        saisie="saisie"
+        callback="$ctrl.saisie_callback( saisie )"></saisie>
 `
                 } );

@@ -36,7 +36,11 @@ angular.module( 'suiviApp' )
                     } );
 
                     APIs.get_users = _.memoize( function( users_ids ) {
-                        return $http.get( URL_ENT + '/api/users/', { params: { 'id[]': users_ids } } );
+                        if ( _(users_ids).isEmpty() ) {
+                            return $q.resolve([]);
+                        } else {
+                            return $http.get( URL_ENT + '/api/users/', { params: { 'id[]': users_ids } } );
+                        }
                     });
 
                     APIs.get_current_user_groups = _.memoize( function() {
