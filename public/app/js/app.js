@@ -16,7 +16,8 @@ angular.module( 'suiviApp',
                function( $provide ) {
                    //traduction de textAngular
                    $provide.decorator( 'taTranslations',
-                                       function( $delegate ) {
+                                       [ '$delegate',
+                                         function( $delegate ) {
                                            $delegate.html.tooltip = 'Basculer entre les vues HTML et texte enrichi';
                                            $delegate.justifyLeft.tooltip = 'Justifier à gauche';
                                            $delegate.justifyCenter.tooltip = 'Centrer';
@@ -41,7 +42,7 @@ angular.module( 'suiviApp',
                                            $delegate.redo.tooltip = 'Rétablir';
 
                                            return $delegate;
-                                       } );
+                                         } ] );
 
                    // configuration de textAngular
                    $provide.decorator( 'taOptions',
@@ -61,10 +62,46 @@ angular.module( 'suiviApp',
                                                           }
                                                         };
                                              };
-
                                              taRegisterTool( 'fontColor', colorpicker_taTool( 'forecolor' ) );
 
-                                             taOptions.toolbar = [ [ 'bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'fontColor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'insertLink', 'insertImage', 'insertVideo', 'html', 'undo', 'redo' ] ];
+                                             taRegisterTool( 'table', { columns: { value: 1,
+                                                                                   hovered: 1 },
+                                                                        rows: { value: 1,
+                                                                                hovered: 1 },
+                                                                        hover: function( objet, value ) {
+                                                                            objet.hovered = value;
+                                                                        },
+                                                                        leave: function( objet ) {
+                                                                            objet.hovered = objet.value;
+                                                                        },
+                                                                        tooltiptext: 'insérer un tableau',
+                                                                        display: `<span uib-dropdown>
+<a uib-dropdown-toggle><i class="fa fa-table"></i> <i class="fa fa-caret-down"></i></a>
+<div uib-dropdown-menu data-ng-click="$event.stopPropagation()">
+<label><span uib-rating on-hover="hover( columns, value )" on-leave="leave( columns )" ng-model="columns.value" max="15" state-on="\'glyphicon-stop\'" state-off="\'glyphicon-unchecked\'"></span>
+<br>{{columns.hovered}} colonnes</label>
+<br>
+<label><span uib-rating on-hover="hover( rows, value )" on-leave="leave( rows )" ng-model="rows.value" max="15" state-on="\'glyphicon-stop\'" state-off="\'glyphicon-unchecked\'"></span><br>{{rows.hovered}} lignes</label><br><button class="btn btn-success" data-ng-click="insert_table()">Insérer</button></div></span>`,
+                                                                        insert_table: function(  ) {
+                                                                            var tds = '';
+                                                                            for ( var idxCol = 0; idxCol < this.columns.value; idxCol++ ) {
+                                                                                tds = tds + '<td>&nbsp;</td>';
+                                                                            }
+                                                                            var trs = '';
+                                                                            for ( var idxRow = 0; idxRow < this.rows.value; idxRow++ ) {
+                                                                                trs = trs + '<tr>'+ tds + '</tr>';
+                                                                            }
+
+                                                                            this.$editor().wrapSelection( 'insertHTML', '<table class="table table-bordered">' + trs + '</table>' );
+
+                                                                            this.deferration.resolve();
+                                                                        },
+                                                                        action: function( deferred  ) {
+                                                                            this.deferration = deferred;
+                                                                            return false;
+                                                                        } } );
+
+                                             taOptions.toolbar = [ [ 'bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'fontColor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'table', 'insertLink', 'insertImage', 'insertVideo', 'html', 'undo', 'redo' ] ];
 
                                              taOptions.classes = {
                                                  focussed: 'focussed',
