@@ -12,6 +12,9 @@ angular.module( 'suiviApp' )
                         return $http.get( URL_ENT + '/api/users/' + user_id )
                             .then( function( response ) {
                                 response.data.profil_actif = _(response.data.profiles).findWhere( { active: true } );
+                                if ( _(response.data.profil_actif).isUndefined() && !_(response.data.profiles).isEmpty() ) {
+                                    response.data.profil_actif = _(response.data.profiles).first();
+                                }
 
                                 response.data.get_actual_groups = function() {
                                     return APIs.get_groups( _(response.data.groups).pluck('group_id') )
@@ -121,7 +124,8 @@ angular.module( 'suiviApp' )
                                 concerned_people.push( eleve );
                                 var promises = [];
 
-                                promises.push( APIs.get_users( _(eleve.parents).pluck('parent_id') )
+                                if ( !_(eleve.parents).isEmpty() ){
+                                    promises.push( APIs.get_users( _(eleve.parents).pluck('parent_id') )
                                                .then( function success( response ) {
                                                    concerned_people.push( _(response.data).map( function( people ) {
                                                        people.type = 'Responsable';
@@ -129,8 +133,10 @@ angular.module( 'suiviApp' )
                                                    } ) );
                                                },
                                                       function error( response ) {} ) );
+                                }
 
-                                promises.push( APIs.get_structure( eleve.profil_actif.structure_id )
+                                if ( !_(eleve.profil_actif).isUndefined() ) {
+                                    promises.push( APIs.get_structure( eleve.profil_actif.structure_id )
                                                .then( function success( response ) {
                                                    var personnels = _(response.data.profiles)
                                                        .reject( function( user ) {
@@ -151,48 +157,49 @@ angular.module( 'suiviApp' )
                                                },
                                                       function error( response ) {} ) );
 
-                                var groups_ids = _(eleve.groups).pluck('group_id');
-                                promises.push( APIs.get_groups( groups_ids )
-                                               .then( function success( response ) {
-                                                   var users = _.chain(response.data).pluck('users').flatten().value();
-                                                   var pupils = _(users).where({ type: 'ELV' });
-                                                   var teachers = _(users).where({ type: 'ENS' });
-                                                   var main_teachers = _(users).where({ type: 'PRI' });
+                                    var groups_ids = _(eleve.groups).pluck('group_id');
+                                    promises.push( APIs.get_groups( groups_ids )
+                                                   .then( function success( response ) {
+                                                       var users = _.chain(response.data).pluck('users').flatten().value();
+                                                       var pupils = _(users).where({ type: 'ELV' });
+                                                       var teachers = _(users).where({ type: 'ENS' });
+                                                       var main_teachers = _(users).where({ type: 'PRI' });
 
-                                                   if ( pupils.length > 0 ) {
-                                                       APIs.get_users( _(pupils).pluck('user_id') )
-                                                           .then( function success( response ) {
-                                                               pupils = _(pupils).indexBy('user_id');
+                                                       if ( pupils.length > 0 ) {
+                                                           APIs.get_users( _(pupils).pluck('user_id') )
+                                                               .then( function success( response ) {
+                                                                   pupils = _(pupils).indexBy('user_id');
 
-                                                               concerned_people.push( _(response.data).map( function( people ) {
-                                                                   people.type = 'Autre élève';
+                                                                   concerned_people.push( _(response.data).map( function( people ) {
+                                                                       people.type = 'Autre élève';
 
-                                                                   return people;
-                                                               } ) );
-                                                           },
-                                                                  function error( response ) {} );
-                                                   }
+                                                                       return people;
+                                                                   } ) );
+                                                               },
+                                                                      function error( response ) {} );
+                                                       }
 
-                                                   if ( teachers.length > 0 ) {
-                                                       APIs.get_users( _(teachers).pluck('user_id') )
-                                                           .then( function success( response ) {
-                                                               teachers = _(teachers).indexBy('user_id');
+                                                       if ( teachers.length > 0 ) {
+                                                           APIs.get_users( _(teachers).pluck('user_id') )
+                                                               .then( function success( response ) {
+                                                                   teachers = _(teachers).indexBy('user_id');
 
-                                                               concerned_people.push( _(response.data).map( function( people ) {
-                                                                   people.type = profils[ teachers[ people.id ].type ].name;
+                                                                   concerned_people.push( _(response.data).map( function( people ) {
+                                                                       people.type = profils[ teachers[ people.id ].type ].name;
 
-                                                                   APIs.get_subjects( _(people.groups).pluck('subject_id') )
-                                                                       .then( function( response ) {
-                                                                           people.actual_subjects = response.data;
-                                                                       } );
+                                                                       APIs.get_subjects( _(people.groups).pluck('subject_id') )
+                                                                           .then( function( response ) {
+                                                                               people.actual_subjects = response.data;
+                                                                           } );
 
-                                                                   return people;
-                                                               } ) );
-                                                           },
-                                                                  function error( response ) {} );
-                                                   }
-                                               },
-                                                      function error( response ) {} ) );
+                                                                       return people;
+                                                                   } ) );
+                                                               },
+                                                                      function error( response ) {} );
+                                                       }
+                                                   },
+                                                          function error( response ) {} ) );
+                                }
 
                                 return $q.all( promises )
                                     .then( function() {
