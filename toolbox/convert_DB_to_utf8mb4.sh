@@ -1,5 +1,6 @@
 #!/bin/sh
 
+SERVICE=suiviperso
 DBNAME=${DBNAME:-cahierdetextes}
 DBUSER=${DBUSER:-$DBNAME}
 DBPASSWORD=${DBPASSWORD:-}
@@ -7,8 +8,8 @@ FILENAME=${DBNAME}_$(date +%F).sql
 
 cat config/database.rb
 
-echo "sudo service laclasse-cahiertextes stop"
-sudo service laclasse-cahiertextes stop
+echo "sudo service laclasse-$SERVICE stop"
+sudo service laclasse-$SERVICE stop
 
 echo "mysqldump --add-drop-table -u ${DBUSER} -p${DBPASSWORD} ${DBNAME} > $FILENAME"
 mysqldump --add-drop-table -u ${DBUSER} -p${DBPASSWORD} ${DBNAME} > $FILENAME
@@ -28,5 +29,5 @@ echo "drop database ${DBNAME}; create database ${DBNAME};" | mysql -u ${DBUSER} 
 echo "mysql -u ${DBUSER} -p${DBPASSWORD} ${DBNAME} < $FILENAME.utf8mb4"
 mysql -u ${DBUSER} -p${DBPASSWORD} ${DBNAME} < $FILENAME.utf8mb4
 
-echo "sudo service laclasse-cahiertextes start"
-sudo service laclasse-cahiertextes start
+echo "sudo service laclasse-$SERVICE start"
+sudo service laclasse-$SERVICE start
