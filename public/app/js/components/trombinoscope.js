@@ -77,17 +77,20 @@ angular.module( 'suiviApp' )
                                         } );
                                 } ],
                   template: `
-<div class="col-md-4 blanc aside">
-    <label for="search"> Filtrage des élèves affichés : </label>
-    <input  class="form-control input-sm"
-            style="display: inline; max-width: 300px;"
-            type="text" name="search"
-            ng:model="$ctrl.search" />
-
-    <label ng:if="contributed_to.length > 0"> Carnet<span ng:if="contributed_to.length > 1">s</span> <span ng:if="contributed_to.length > 1">auxquels</span><span ng:if="contributed_to.length < 2">auquel</span> vous avez contribué : </label>
-    <ul>
-        <li ng:repeat="carnet in $ctrl.contributed_to"><a ui:sref="carnet({uid_eleve: carnet.eleve.id})">{{carnet.eleve.firstname}} {{carnet.eleve.lastname}}</a></li>
-    </ul>
+<div class="col-md-4 blanc aside" style="padding: 0;">
+    <div class="search-filter" style="padding: 20px; background-color: #baddad;">
+        <label for="search"> Filtrage des élèves affichés : </label>
+        <input  class="form-control input-sm"
+                style="display: inline; max-width: 300px;"
+                type="text" name="search"
+                ng:model="$ctrl.search" />
+    </div>
+    <div class="highlighted" style="padding: 20px;">
+        <label ng:if="$ctrl.contributed_to.length > 0"> Carnet<span ng:if="contributed_to.length > 1">s</span> <span ng:if="contributed_to.length > 1">auxquels</span><span ng:if="contributed_to.length < 2">auquel</span> vous avez contribué : </label>
+        <ul>
+            <li ng:repeat="carnet in $ctrl.contributed_to"><a ui:sref="carnet({uid_eleve: carnet.eleve.id})">{{carnet.eleve.firstname}} {{carnet.eleve.lastname}}</a></li>
+        </ul>
+    </div>
 </div>
 
 <div class="col-md-8 damier trombinoscope">
