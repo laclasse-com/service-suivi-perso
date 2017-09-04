@@ -23,6 +23,12 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.save = function() {
+                                        if ( !_(ctrl.saisie).has('$save') ) {
+                                            ctrl.saisie.onglet_id = ctrl.onglet.id;
+                                            ctrl.saisie.uid_eleve = ctrl.uidEleve;
+
+                                            ctrl.saisie = new Saisies( ctrl.saisie );
+                                        }
                                         var promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
 
                                         promise.then( function success( response ) {
@@ -54,19 +60,12 @@ angular.module( 'suiviApp' )
                                             } );
                                     };
 
-                                    var new_saisie = function() {
-                                        ctrl.new_saisie = true;
-                                        ctrl.saisie = new Saisies({ new_saisie: true,
-                                                                    uid_eleve: ctrl.uidEleve,
-                                                                    onglet_id: ctrl.onglet.id,
-                                                                    contenu: '' });
-                                    };
-
                                     ctrl.$onInit = function() {
                                         ctrl.edition = ctrl.saisie.create_me;
 
                                         if ( ctrl.saisie.create_me ) {
-                                            new_saisie();
+                                            ctrl.new_saisie = true;
+                                            ctrl.saisie.contenu = '';
                                         } else {
                                             ctrl.saisie = new Saisies( ctrl.saisie );
                                         }
@@ -106,12 +105,14 @@ angular.module( 'suiviApp' )
              ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit'}"
              ng:if="$ctrl.edition">
             <text-angular ta:target-toolbars="main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}"
-                          ng:model="$ctrl.saisie.contenu"></text-angular>
+                          ng:model="$ctrl.saisie.contenu"
+                          ng:change="$ctrl.dirty = true"></text-angular>
             <div class="suivi-ta-toolbar gris2-moins">
                 <text-angular-toolbar class="pull-left"
                                       style="margin-left: 0;"
                                       name="main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}"></text-angular-toolbar>
                 <button class="btn btn-success pull-right"
+                        ng:disabled="!$ctrl.dirty"
                         ng:click="$ctrl.save()">
                     <span class="glyphicon glyphicon-save" ></span> Publier
                 </button>
