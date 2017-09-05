@@ -30,6 +30,8 @@ angular.module( 'suiviApp' )
                                         case 'deleted':
                                             ctrl.saisies = _(ctrl.saisies).reject( function( s ) { return s.id === saisie.id; } );
                                             break;
+                                        case 'updated':
+                                            break;
                                         default:
                                             console.log('What to do with this?')
                                             console.log(saisie)
