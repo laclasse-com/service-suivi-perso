@@ -1,13 +1,7 @@
-#coding: utf-8
-#
-# Fichier de configuration de l'application
-#
+# -*- encoding: utf-8 -*-
 
 # development ou production
-ENV[ 'RACK_ENV' ] = 'test'.freeze
-
-# niveau de log de l'application
-LOG_LEVEL = ''.freeze # Logger::INFO
+ENV[ 'RACK_ENV' ] = 'development'.freeze
 
 # Chemin absolu de l'application sur le serveur
 APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
@@ -16,24 +10,22 @@ APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 APP_PATH = '/suivi'.freeze
 
 # Version de l'application
-APP_VERSION = %x(date +%F%H%M).chomp
+APP_VERSION = `git describe --tags`.chomp
 
-# Langage par defaut de l'application
+# Langage par défaut de l'application
 LANG = 'fr'.freeze
 
-# Clef de hachage pour les cookies Rack
+# Clé de hachage pour les cookies Rack
 SESSION_KEY = 'SomeKey'.freeze
 
-# Duree de la session en seconde (défaut 3600)
+# Durée de la session en seconde (défaut 3600)
 SESSION_TIME = 3600
 
 # Url de l'ENT
-URL_ENT = 'https://v3dev.laclasse.com/'.freeze
+URL_ENT = 'http://localhost/annuaire'.freeze
 
-# Url de l'ENT
-URL_DOCS = "#{URL_ENT}/docs".freeze
-
-UPLOAD_SIZE = 26_214_400
+# Url des Docs
+DOCS_URL = 'http://localhost/docs'.freeze
 
 CACHE_BUSTER = Time.now.to_i.to_s
 
@@ -43,61 +35,6 @@ DEFAULT_RIGHTS = { Onglet: [ { profil_id: 'ENS', read: true, write: true },
                              { profil_id: 'DOC', read: true, write: true },
                              { profil_id: 'DIR', read: true, write: true } ] }.freeze
 
-# nom du serveur d'annuaire ENT (xml-aaf academiques)
-SERVICE_ANNUAIRE_ENT = 'http://www.dev.laclasse/com/annuaire/'.freeze
-
-#
-# Configuration du service d'annuaire de l'ENT
-#
-ANNUAIRE = { url: 'https://v3dev.laclasse.com/api',
-             api_key: 'apikey',
-             app_id: 'SUIVIELV',
-             api_mode: 'v3',
-             service_annuaire_app: 'api/app/',
-             service_annuaire_user: 'api/app/users/',
-             service_annuaire_regroupements: 'api/app/regroupements/' }.freeze
-
-#
-# Configuration du service docs cross app
-#
-DOCS = { url: 'http://localhost:9292/docs/api',
-         api_key: 'api_key',
-         app_id: 'SUIVIELV' }.freeze
-
-#
-# Configuration du service de mail
-#
-MAIL = { adress: "smtp.laclasse.com",
-         enable_starttls_auto: false,
-         webmail_host: 'http://www.dev.laclasse.com/mail/' }.freeze
-
-#
-# Configuration du Serveur d'Authentification Central CAS
-#
-module CASAUTH
-  CONFIG = { host: 'v3dev.laclasse.com',
-             ssl: true,
-             port: 443,
-             disable_ssl_verification: true,
-             login_url: '/sso/login',
-             service_validate_url: '/sso/serviceValidate',
-             logout_url: '/sso/logout',
-             logout_saml_url: '/saml/saml2/idp/SingleLogoutService.php',
-             full_host: 'https://v3dev.laclasse.com', # Fixes OmniAuthCAS+Rack X-Forwarded-Proto crap
-             restmod_url: '/sso/api/v1/tickets' }.freeze
-end
-
-module Configuration
-  APP_PREFIX = '/suivi'.freeze
-  GIT_COMMIT = ''.freeze
-  ENVIRONMENT = 'development'.freeze
-  LOGSTASH_SERVER = ''.freeze
-  LOGSTASH_PORT = ''.freeze
-end
-
-#
-# Configuration du service REDIS
-#
-REDIS = { host: 'stack0-dev.v3.laclasse.lan',
-          port: 6379,
-          redis_root: 'com:laclasse:v3:dev' }.freeze
+ANNUAIRE = { url: 'http://localhost/annuaire/api',
+             api_key: 'Ed0c27VjZc5PQMs079eLQ+aId3/xSlWWILLLP4LYTf0=',
+             app_id: 'SUIVIELV' }.freeze
