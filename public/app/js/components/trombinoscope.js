@@ -86,7 +86,7 @@ angular.module( 'suiviApp' )
                 ng:model="$ctrl.search" />
     </div>
     <div class="highlighted" style="padding: 20px;">
-        <label ng:if="$ctrl.contributed_to.length > 0"> Carnet<span ng:if="contributed_to.length > 1">s</span> <span ng:if="contributed_to.length > 1">auxquels</span><span ng:if="contributed_to.length < 2">auquel</span> vous avez contribué : </label>
+        <label ng:if="$ctrl.contributed_to.length > 0"> Carnet<span ng:if="$ctrl.contributed_to.length > 1">s</span> <span ng:if="$ctrl.contributed_to.length > 1">auxquels</span><span ng:if="$ctrl.contributed_to.length < 2">auquel</span> vous avez contribué : </label>
         <ul>
             <li ng:repeat="carnet in $ctrl.contributed_to"><a ui:sref="carnet({uid_eleve: carnet.eleve.id})">{{carnet.eleve.firstname}} {{carnet.eleve.lastname}}</a></li>
         </ul>
