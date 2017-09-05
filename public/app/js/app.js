@@ -101,7 +101,7 @@ angular.module( 'suiviApp',
                                                                             return false;
                                                                         } } );
 
-                                             taOptions.toolbar = [ [ 'bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'fontColor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'table', 'insertLink', 'insertImage', 'insertVideo', 'html', 'undo', 'redo' ] ];
+                                             taOptions.toolbar = [ [ 'bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'fontColor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'table', 'insertLink', 'insertImage', 'html', 'undo', 'redo' ] ];
 
                                              taOptions.classes = {
                                                  focussed: 'focussed',
