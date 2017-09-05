@@ -15,17 +15,8 @@ APP_VERSION = `git describe --tags`.chomp
 # Langage par défaut de l'application
 LANG = 'fr'.freeze
 
-# Clé de hachage pour les cookies Rack
-SESSION_KEY = 'SomeKey'.freeze
-
-# Durée de la session en seconde (défaut 3600)
-SESSION_TIME = 3600
-
 # Url de l'ENT
 URL_ENT = 'http://localhost/annuaire'.freeze
-
-# Url des Docs
-DOCS_URL = 'http://localhost/docs'.freeze
 
 CACHE_BUSTER = Time.now.to_i.to_s
 
