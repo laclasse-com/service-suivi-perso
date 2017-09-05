@@ -20,7 +20,6 @@ require_relative './lib/helpers/user'
 require_relative './lib/helpers/access_and_rights'
 
 require_relative './routes/index'
-require_relative './routes/auth'
 require_relative './routes/status'
 
 require_relative './routes/api/carnets'

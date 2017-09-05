@@ -35,6 +35,14 @@ URL_DOCS = "#{URL_ENT}/docs".freeze
 
 UPLOAD_SIZE = 26_214_400
 
+CACHE_BUSTER = Time.now.to_i.to_s
+
+# Gestion des droits
+DEFAULT_RIGHTS = { Onglet: [ { profil_id: 'ENS', read: true, write: true },
+                             { profil_id: 'EVS', read: true, write: true },
+                             { profil_id: 'DOC', read: true, write: true },
+                             { profil_id: 'DIR', read: true, write: true } ] }.freeze
+
 # nom du serveur d'annuaire ENT (xml-aaf academiques)
 SERVICE_ANNUAIRE_ENT = 'http://www.dev.laclasse/com/annuaire/'.freeze
 
