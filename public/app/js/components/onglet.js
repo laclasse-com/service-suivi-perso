@@ -119,6 +119,7 @@ angular.module( 'suiviApp' )
 
 <saisie class="col-md-9"
         style="display: inline-block;"
+        ng:if="$ctrl.new_saisie"
         uid-eleve="$ctrl.uidEleve"
         onglet="$ctrl.onglet"
         saisie="$ctrl.new_saisie"
