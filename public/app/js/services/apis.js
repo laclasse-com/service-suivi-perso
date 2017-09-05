@@ -40,7 +40,7 @@ angular.module( 'suiviApp' )
 
                     APIs.get_users = _.memoize( function( users_ids ) {
                         if ( _(users_ids).isEmpty() ) {
-                            return $q.resolve([]);
+                            return $q.resolve({ data: [] });
                         } else {
                             return $http.get( URL_ENT + '/api/users/', { params: { 'id[]': users_ids } } );
                         }
@@ -72,7 +72,11 @@ angular.module( 'suiviApp' )
                     } );
 
                     APIs.get_groups = _.memoize( function( groups_ids ) {
-                        return $http.get( URL_ENT + '/api/groups/', { params: { 'id[]': groups_ids } } );
+                        if ( _(groups_ids).isEmpty() ) {
+                            return $q.resolve({ data: [] });
+                        } else{
+                            return $http.get( URL_ENT + '/api/groups/', { params: { 'id[]': groups_ids } } );
+                        }
                     });
 
                     APIs.get_groups_of_structures = _.memoize( function( structures_ids ) {
@@ -80,7 +84,11 @@ angular.module( 'suiviApp' )
                     });
 
                     APIs.get_subjects = _.memoize( function( subjects_ids ) {
-                        return $http.get( URL_ENT + '/api/subjects/', { params: { 'id[]': subjects_ids } } );
+                        if ( _(subjects_ids).isEmpty() ) {
+                            return $q.resolve({ data: [] });
+                        } else{
+                            return $http.get( URL_ENT + '/api/subjects/', { params: { 'id[]': subjects_ids } } );
+                        }
                     });
 
                     APIs.query_carnets_contributed_to = function( uid ) {
