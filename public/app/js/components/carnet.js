@@ -3,11 +3,11 @@
 angular.module( 'suiviApp' )
     .component( 'carnet',
                 { bindings: { uidEleve: '<' },
-                  controller: [ function(  ) {
-                      var ctrl = this;
+                  // controller: [ function(  ) {
+                  //     var ctrl = this;
 
-                      ctrl.$onInit = function() {};
-                  } ],
+                  //     ctrl.$onInit = function() {};
+                  // } ],
                   template: `
 <div class="col-md-4 gris1-moins aside aside-carnet">
     <a class="col-md-12 btn noir-moins go-back" ui:sref="trombinoscope()"> ↰ Retour au trombinoscope </a>
