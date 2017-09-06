@@ -10,8 +10,9 @@ angular.module( 'suiviApp' )
                        .state( 'carnet',
                                { url: '/carnet/:uid_eleve',
                                  component: 'carnet',
-                                 resolve: { uidEleve: function( $transition$ ) {
-                                     return $transition$.params().uid_eleve;
-                                 } }
+                                 resolve: { uidEleve: [ '$transition$',
+                                                        function( $transition$ ) {
+                                                            return $transition$.params().uid_eleve;
+                                                        } ] }
                                } );
                } ] );
