@@ -4,17 +4,16 @@ source 'https://rubygems.org'
 
 gem 'json'
 gem 'mysql2'
-gem 'nokogiri'
+gem 'pry'
 gem 'puma'
 gem 'rack'
 gem 'rake'
 gem 'rest-client'
 gem 'sequel'
 gem 'sinatra'
+gem 'sinatra-contrib'
 
 group :development do
-  gem 'pry'
   gem 'rspec'
   gem 'rubocop'
-  gem 'sinatra-contrib'
 end
