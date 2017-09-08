@@ -13,7 +13,7 @@ before_install:
 before_script:
   - cp ./config/options.rb.sample ./config/options.rb
   - cp ./config/database.rb.sample ./config/database.rb
-
+  - bundle install
   - mysql -e 'create database suivi;'
 
 script:
