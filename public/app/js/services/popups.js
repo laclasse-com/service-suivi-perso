@@ -51,7 +51,7 @@ angular.module( 'suiviApp' )
                                                                     } )
                                                                     .pluck('nom')
                                                                     .value();
-                                                                console.log(other_onglets_names)
+
                                                                 ctrl.valid_name = !_(other_onglets_names).includes( ctrl.onglet.nom );
 
                                                                 return ctrl.valid_name;
