@@ -9,7 +9,9 @@ angular.module( 'suiviApp' )
                                     ctrl.popup_onglet = Popups.onglet;
 
                                     ctrl.callback_popup_onglet = function( onglet ) {
-                                        ctrl.onglets.push( onglet );
+                                        if ( onglet.created ) {
+                                            ctrl.onglets.push( onglet );
+                                        }
                                     };
 
                                     ctrl.$onInit = function() {
@@ -32,13 +34,14 @@ angular.module( 'suiviApp' )
         <uib-tab-heading> {{onglet.nom}} </uib-tab-heading>
 
         <onglet uid-eleve="$ctrl.uidEleve"
+                onglets="$ctrl.onglets"
                 onglet="onglet"></onglet>
     </uib-tab>
 
     <li>
         <a href
            class="bleu add-onglet"
-           ng:click="$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.callback_popup_onglet )">
+           ng:click="$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.onglets, $ctrl.callback_popup_onglet )">
             <span class="glyphicon glyphicon-plus"></span>
         </a>
     </li>

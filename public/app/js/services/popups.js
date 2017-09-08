@@ -4,16 +4,19 @@ angular.module( 'suiviApp' )
                 function( $uibModal, Onglets ) {
                     var service = this;
 
-                    service.onglet = function( uid, onglet, callback ) {
+                    service.onglet = function( uid, onglet, all_onglets, callback ) {
                         $uibModal.open( { resolve: { uid: function() { return uid; },
-                                                     onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; } },
-                                          controller: [ '$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uid', 'onglet',
-                                                        function PopupOngletCtrl( $scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uid, onglet ) {
+                                                     onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; },
+                                                     all_onglets: function() { return all_onglets; } },
+                                          controller: [ '$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uid', 'onglet', 'all_onglets',
+                                                        function PopupOngletCtrl( $scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uid, onglet, all_onglets ) {
                                                             var ctrl = $scope;
 
                                                             ctrl.uid = uid;
                                                             ctrl.onglet = onglet;
+                                                            ctrl.all_onglets = all_onglets;
                                                             ctrl.onglet.delete = false;
+                                                            ctrl.valid_name = true;
 
                                                             if ( _(ctrl.onglet).has('id') ) {
                                                                 DroitsOnglets.query({ uid_eleve: ctrl.uid,
@@ -40,6 +43,19 @@ angular.module( 'suiviApp' )
                                                                     ctrl.concerned_people = response;
                                                                 },
                                                                        function error( response ) {} );
+
+                                                            ctrl.name_validation = function() {
+                                                                var other_onglets_names = _.chain(ctrl.all_onglets)
+                                                                    .reject( function( onglet ) {
+                                                                        return !_(ctrl.onglet).isNull() && ctrl.onglet.id == onglet.id;
+                                                                    } )
+                                                                    .pluck('nom')
+                                                                    .value();
+                                                                console.log(other_onglets_names)
+                                                                ctrl.valid_name = !_(other_onglets_names).includes( ctrl.onglet.nom );
+
+                                                                return ctrl.valid_name;
+                                                            };
 
                                                             ctrl.ok = function() {
                                                                 $uibModalInstance.close( { onglet: ctrl.onglet,
@@ -74,7 +90,9 @@ angular.module( 'suiviApp' )
 </div>
 
 <div class="modal-body">
-    <label>Titre : <input type="text" ng:model="onglet.nom" /></label>
+    <label>Titre : <input type="text" maxlength="45" ng:model="onglet.nom" ng:maxlength="45" ng:change="name_validation()" />
+        <span class="label label-danger" ng:if="!valid_name">Un onglet existant porte déjà ce nom !</span>
+    </label>
 
     <droits-onglets droits="droits"
                     concerned-people="concerned_people"
@@ -98,7 +116,7 @@ angular.module( 'suiviApp' )
     </button>
     <button class="btn btn-success"
             ng:click="ok()"
-            ng:disabled="!onglet.nom">
+            ng:disabled="!onglet.nom || !valid_name">
         <span class="glyphicon glyphicon-ok-sign"></span> Valider
     </button>
 </div>
@@ -125,7 +143,7 @@ angular.module( 'suiviApp' )
                                     }
                                 }
                                 promise.then( function success( response ) {
-                                    response[ action ] = true;
+                                    response.action = action;
 
                                     _.chain(response_popup.droits)
                                         .each( function( droit ) {

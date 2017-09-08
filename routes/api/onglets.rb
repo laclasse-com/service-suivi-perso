@@ -29,7 +29,8 @@ module Suivi
             carnet = get_and_check_carnet( params['uid_eleve'] )
             onglet = carnet.onglets_dataset[nom: params['nom']]
 
-            if onglet.nil?
+            new_onglet = onglet.nil?
+            if new_onglet
               onglet = Onglet.create( carnet_id: carnet.id,
                                       nom: params['nom'],
                                       date_creation: DateTime.now )
@@ -39,7 +40,7 @@ module Suivi
 
             onglet_hash = onglet.to_hash
             onglet_hash[:writable] = onglet.allow?( user, :write )
-            onglet_hash[:created] = true
+            onglet_hash[:created] = new_onglet
 
             json( onglet_hash )
           end

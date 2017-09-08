@@ -3,9 +3,10 @@
 angular.module( 'suiviApp' )
     .component( 'onglet',
                 { bindings: { uidEleve: '<',
+                              onglets: '<',
                               onglet: '=' },
-                  controller: [ '$uibModal', '$state', '$q', 'Onglets', 'Saisies', 'Popups',
-                                function( $uibModal, $state, $q, Onglets, Saisies, Popups ) {
+                  controller: [ '$uibModal', '$state', '$q', 'Saisies', 'Popups',
+                                function( $uibModal, $state, $q, Saisies, Popups ) {
                                     var ctrl = this;
 
                                     ctrl.manage_onglet = Popups.onglet;
@@ -14,7 +15,8 @@ angular.module( 'suiviApp' )
                                                       reverse: true };
 
                                     ctrl.callback_popup_onglet = function( onglet ) {
-                                        if ( onglet.deleted ) {
+                                        console.log(onglet)
+                                        if ( onglet.action == 'deleted' ) {
                                             $state.go( 'carnet',
                                                        { uid_eleve: ctrl.uidEleve },
                                                        { reload: true } );
@@ -105,7 +107,7 @@ angular.module( 'suiviApp' )
     <button class="btn btn-lg btn-warning"
             style="width: 100%;"
             ng:if="$ctrl.onglet.writable"
-            ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.callback_popup_onglet )">
+            ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
         <span class="glyphicon glyphicon-cog"></span> Configuration de l'onglet
     </button>
 <!--
