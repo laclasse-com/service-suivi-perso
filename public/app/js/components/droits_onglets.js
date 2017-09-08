@@ -36,6 +36,24 @@ angular.module( 'suiviApp' )
                                         ctrl.add( droit );
                                     };
 
+                                    ctrl.set_read = function( droit ) {
+                                        droit.write = !droit.read ? false : droit.write;
+                                        if ( _(droit.dirty).isUndefined() ) {
+                                            droit.dirty = {};
+                                        }
+                                        droit.dirty.write = true;
+                                        droit.dirty.read = true;
+                                    };
+
+                                    ctrl.set_write = function( droit ) {
+                                        droit.read = droit.write ? true : droit.read;
+                                        if ( _(droit.dirty).isUndefined() ) {
+                                            droit.dirty = {};
+                                        }
+                                        droit.dirty.read = true;
+                                        droit.dirty.write = true;
+                                    };
+
                                     ctrl.$onInit = function() {
                                         ctrl.UID = UID;
 
@@ -83,7 +101,7 @@ angular.module( 'suiviApp' )
                 <button type="button" class="btn"
                         ng:class="{'btn-default': !droit.read, 'btn-success': droit.read}"
                         ng:model="droit.read"
-                        ng:change="droit.dirty.read = true"
+                        ng:change="$ctrl.set_read( droit )"
                         ng:disabled="droit.to_delete || droit.sharable_id"
                         uib:btn-checkbox
                         btn-checkbox-true="true"
@@ -96,7 +114,7 @@ angular.module( 'suiviApp' )
                 <button type="button" class="btn"
                         ng:class="{'btn-default': !droit.write, 'btn-success': droit.write}"
                         ng:model="droit.write"
-                        ng:change="droit.dirty.write = true"
+                        ng:change="$ctrl.set_write( droit )"
                         ng:disabled="droit.to_delete || droit.sharable_id"
                         uib:btn-checkbox
                         btn-checkbox-true="true"
