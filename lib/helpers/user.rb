@@ -16,7 +16,7 @@ module LaClasse
         LaClasse::User.user_active_profile( user( uid ) )
       end
 
-      def user_is_profile_in_structure?( profile_type, structure_id, uid = nil )
+      def user_is_profile_in_structure?( _profile_type, _structure_id, uid = nil )
         LaClasse::User.user_is_profile_in_structure?( user( uid ) )
       end
 

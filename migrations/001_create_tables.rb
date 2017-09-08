@@ -31,7 +31,7 @@ Sequel.migration do
       Bignum :carnets_id, null: false
       Bignum :onglets_id, null: false
       Integer :ordre, size: 11, default: '1', null: true
-      primary_key %i(carnets_id onglets_id), name: :carnets_onglets_pk
+      primary_key %i[carnets_id onglets_id], name: :carnets_onglets_pk
       foreign_key [:carnets_id], :carnets, name: :fk_carnets_has_onglets_carnets1, key: [:id]
       foreign_key [:onglets_id], :onglets, name: :fk_carnets_has_onglets_onglets1, key: [:id]
       index [:carnets_id], name: :fk_carnets_has_onglets_carnets1_idx
@@ -71,7 +71,7 @@ Sequel.migration do
     create_table(:entrees_onglets, ignore_index_errors: true) do
       Bignum :saisies_id, null: false
       Bignum :onglets_id, null: false
-      primary_key %i(saisies_id onglets_id), name: :entrees_onglets_pk
+      primary_key %i[saisies_id onglets_id], name: :entrees_onglets_pk
       foreign_key [:saisies_id], :saisies, name: :fk_entrees_has_onglets_entrees1, key: [:id]
       foreign_key [:onglets_id], :onglets, name: :fk_entrees_has_onglets_entrees1_idx, key: [:id]
       index [:saisies_id], name: :fk_entrees_has_onglets_entrees1_idx

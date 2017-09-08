@@ -15,7 +15,7 @@ module LaClasse
     end
 
     def user_is_super_admin?( user )
-      !user['profiles'].select { |profile| 'TECH' == profile['type'] }.empty?
+      !user['profiles'].select { |profile| profile['type'] == 'TECH' }.empty?
     end
   end
 end

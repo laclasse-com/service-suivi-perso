@@ -8,16 +8,16 @@ AllCops:
     - 'spec/fixtures/**/*'
     - Guardfile
 
-Style/SpaceInsideBrackets:
+Layout/SpaceInsideBrackets:
   Enabled: false
 
-Style/SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 
-Style/SpaceInsideParens:
+Layout/SpaceInsideParens:
   Enabled: false
 
-Style/SpaceInsideRangeLiteral:
+Layout/SpaceInsideRangeLiteral:
   Enabled: false
 
 Style/AsciiComments:
@@ -28,3 +28,6 @@ Metrics/ClassLength:
 
 Metrics/MethodLength:
   Max: 200
+
+Style/Documentation:
+  Enabled: false
