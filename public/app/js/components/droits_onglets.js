@@ -54,8 +54,19 @@ angular.module( 'suiviApp' )
                                         droit.dirty.write = true;
                                     };
 
+                                    ctrl.update_deletabilities = function() {
+                                        var last_droit_standing = _(ctrl.droits).reject( function( droit ) { return droit.to_delete; } ).length == 1;
+
+                                        _(ctrl.droits).each( function( droit ) {
+                                            droit.deletable = !last_droit_standing;
+                                            droit.deletable = droit.deletable && !droit.own;
+                                        } );
+                                    };
+
                                     ctrl.$onInit = function() {
                                         ctrl.UID = UID;
+
+                                        ctrl.update_deletabilities();
 
                                         APIs.query_profiles_types()
                                             .then( function success( response ) {
@@ -126,7 +137,9 @@ angular.module( 'suiviApp' )
             <td>
                 <button type="button" class="btn"
                         ng:class="{'btn-default': !droit.to_delete, 'btn-warning': droit.to_delete}"
+                        ng:disabled="!droit.deletable && !droit.to_delete"
                         ng:model="droit.to_delete"
+                        ng:change="$ctrl.update_deletabilities()"
                         uib:btn-checkbox
                         btn-checkbox-true="true"
                         btn-checkbox-false="false">
