@@ -22,12 +22,12 @@ angular.module( 'suiviApp' )
 
                                     ctrl.add = function( droit ) {
                                         droit.new = true;
-                                        droit.dirty = { uid: _(droit).has('uid'),
-                                                        profil_id: _(droit).has('profil_id'),
-                                                        sharable_id: _(droit).has('sharable_id'),
-                                                        read: true,
-                                                        write: true,
-                                                        manage: true };
+                                        droit.dirty = { uid: false,
+                                                        profil_id: false,
+                                                        sharable_id: false,
+                                                        read: false,
+                                                        write: false,
+                                                        manage: false };
 
                                         ctrl.droits.push( new DroitsOnglets( droit ) );
                                     };
@@ -38,7 +38,7 @@ angular.module( 'suiviApp' )
                                     };
 
                                     var maybe_init_dirtiness = function( droit ) {
-                                        if ( _(droit.dirty).isUndefined() ) {
+                                        if ( !_(droit).has('dirty') ) {
                                             droit.dirty = { uid: false,
                                                             profil_id: false,
                                                             sharable_id: false,

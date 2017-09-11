@@ -1,7 +1,7 @@
 angular.module( 'suiviApp' )
     .service( 'Popups',
-              [ '$uibModal', 'Onglets',
-                function( $uibModal, Onglets ) {
+              [ '$uibModal', '$q', 'Onglets',
+                function( $uibModal, $q, Onglets ) {
                     var service = this;
 
                     service.onglet = function( uid, onglet, all_onglets, callback ) {
@@ -11,6 +11,7 @@ angular.module( 'suiviApp' )
                                           controller: [ '$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uid', 'onglet', 'all_onglets',
                                                         function PopupOngletCtrl( $scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uid, onglet, all_onglets ) {
                                                             var ctrl = $scope;
+                                                            ctrl.$ctrl = ctrl;
 
                                                             ctrl.uid = uid;
                                                             ctrl.onglet = onglet;
@@ -90,33 +91,33 @@ angular.module( 'suiviApp' )
 </div>
 
 <div class="modal-body">
-    <label>Titre : <input type="text" maxlength="45" ng:model="onglet.nom" ng:maxlength="45" ng:change="name_validation()" />
-        <span class="label label-danger" ng:if="!valid_name">Un onglet existant porte déjà ce nom !</span>
+    <label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.nom" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
+        <span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
     </label>
 
-    <droits-onglets droits="droits"
-                    concerned-people="concerned_people"
-                    ng:if="onglet.id && droits"></droits-onglets>
+    <droits-onglets droits="$ctrl.droits"
+                    concerned-people="$ctrl.concerned_people"
+                    ng:if="$ctrl.onglet.id && $ctrl.droits"></droits-onglets>
 
     <div class="clearfix"></div>
 </div>
 
 <div class="modal-footer">
     <button class="btn btn-danger pull-left"
-            ng:click="delete()"
-            ng:if="onglet.id">
+            ng:click="$ctrl.delete()"
+            ng:if="$ctrl.onglet.id">
         <span class="glyphicon glyphicon-trash"></span>
         <span> Supprimer l'onglet</span>
     </button>
     <button class="btn btn-default"
-            ng:click="cancel()">
+            ng:click="$ctrl.cancel()">
         <span class="glyphicon glyphicon-remove-sign"></span>
-        <span ng:if="onglet.nom"> Annuler</span>
-        <span ng:if="!onglet.nom"> Fermer</span>
+        <span ng:if="$ctrl.onglet.nom"> Annuler</span>
+        <span ng:if="!$ctrl.onglet.nom"> Fermer</span>
     </button>
     <button class="btn btn-success"
-            ng:click="ok()"
-            ng:disabled="!onglet.nom || !valid_name">
+            ng:click="$ctrl.ok()"
+            ng:disabled="!$ctrl.onglet.nom || !$ctrl.valid_name">
         <span class="glyphicon glyphicon-ok-sign"></span> Valider
     </button>
 </div>
@@ -130,16 +131,17 @@ angular.module( 'suiviApp' )
                                     action = 'created';
 
                                     promise = new Onglets({ uid_eleve: uid,
-                                                            nom: response_popup.onglet.nom })
-                                        .$save();
+                                                            nom: response_popup.onglet.nom }).$save();
                                 } else {
                                     response_popup.onglet.uid_eleve = uid;
                                     if ( response_popup.onglet.delete ) {
                                         action = 'deleted';
 
                                         promise = new Onglets( response_popup.onglet ).$delete();
-                                    } else {
+                                    } else if ( response_popup.onglet.dirty ) {
                                         promise = new Onglets( response_popup.onglet ).$update();
+                                    } else {
+                                        promise = $q.resolve( response_popup.onglet );
                                     }
                                 }
 
@@ -150,17 +152,16 @@ angular.module( 'suiviApp' )
                                         .each( function( droit ) {
                                             if ( droit.to_delete ) {
                                                 if ( _(droit).has('id') ) {
-                                                    droit.$delete()
-                                                        .then( function success( response ) {},
-                                                               function error( response ) {} );
+                                                    droit.$delete();
                                                 }
-                                            } else if ( droit.dirty ) {
+                                            } else if ( droit.dirty
+                                                        && ( droit.uid !== '...' && droit.profil_id !== '...' && droit.sharable_id !== '...' )
+                                                        && _(droit.dirty).reduce( function( memo, value ) { return memo || value; }, false )
+                                                        && droit.read ) {
                                                 droit.uid_eleve = uid;
                                                 droit.onglet_id = response_popup.onglet.id;
 
-                                                ( _(droit).has('id') ? droit.$update() : droit.$save() )
-                                                    .then( function success( response ) {},
-                                                           function error( response ) {} );
+                                                ( _(droit).has('id') ? droit.$update() : droit.$save() );
                                             }
                                         } );
 
