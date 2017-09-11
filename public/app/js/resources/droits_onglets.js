@@ -10,6 +10,7 @@ angular.module( 'suiviApp' )
                                         profil_id: '@profil_id',
                                         sharable_id: '@sharable_id',
                                         read: '@read',
-                                        write: '@write' },
+                                        write: '@write',
+                                        manage: '@manage' },
                                       { update: { method: 'PUT' } } );
                 } ] );

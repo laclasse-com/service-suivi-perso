@@ -26,7 +26,8 @@ angular.module( 'suiviApp' )
                                                         profil_id: _(droit).has('profil_id'),
                                                         sharable_id: _(droit).has('sharable_id'),
                                                         read: true,
-                                                        write: true };
+                                                        write: true,
+                                                        manage: true };
 
                                         ctrl.droits.push( new DroitsOnglets( droit ) );
                                     };
@@ -36,22 +37,63 @@ angular.module( 'suiviApp' )
                                         ctrl.add( droit );
                                     };
 
-                                    ctrl.set_read = function( droit ) {
-                                        droit.write = !droit.read ? false : droit.write;
+                                    var maybe_init_dirtiness = function( droit ) {
                                         if ( _(droit.dirty).isUndefined() ) {
-                                            droit.dirty = {};
+                                            droit.dirty = { uid: false,
+                                                            profil_id: false,
+                                                            sharable_id: false,
+                                                            read: false,
+                                                            write: false,
+                                                            manage: false };
                                         }
-                                        droit.dirty.write = true;
+                                    };
+
+                                    ctrl.set_read = function( droit ) {
+                                        maybe_init_dirtiness( droit );
+
                                         droit.dirty.read = true;
+
+                                        if ( !droit.read && droit.write ) {
+                                            droit.write = false;
+                                            droit.dirty.write = true;
+                                        }
+
+                                        if ( !droit.read && droit.manage ) {
+                                            droit.manage = false;
+                                            droit.dirty.manage = true;
+                                        }
                                     };
 
                                     ctrl.set_write = function( droit ) {
-                                        droit.read = droit.write ? true : droit.read;
-                                        if ( _(droit.dirty).isUndefined() ) {
-                                            droit.dirty = {};
-                                        }
-                                        droit.dirty.read = true;
+                                        maybe_init_dirtiness( droit );
+
                                         droit.dirty.write = true;
+
+                                        if ( droit.write && !droit.read ) {
+                                            droit.read = true;
+                                            droit.dirty.read = true;
+                                        }
+
+                                        if ( !droit.write && droit.manage ) {
+                                            droit.manage = false;
+                                            droit.dirty.manage = true;
+                                        }
+                                    };
+
+                                    ctrl.set_manage = function( droit ) {
+                                        maybe_init_dirtiness( droit );
+
+                                        droit.dirty.manage = true;
+
+                                        if ( droit.manage && !droit.write ) {
+                                            droit.write = true;
+                                            droit.dirty.write = true;
+                                        }
+
+                                        if ( droit.manage && !droit.read ) {
+                                            droit.read = true;
+                                            droit.dirty.read = true;
+                                        }
                                     };
 
                                     ctrl.update_deletabilities = function() {
@@ -132,6 +174,19 @@ angular.module( 'suiviApp' )
                         btn-checkbox-false="false"
                         uib:tooltip="droit d'écriture">
                     <span class="glyphicon glyphicon-edit"></span>
+                </button>
+            </td>
+            <td>
+                <button type="button" class="btn"
+                        ng:class="{'btn-default': !droit.manage, 'btn-success': droit.manage}"
+                        ng:model="droit.manage"
+                        ng:change="$ctrl.set_manage( droit )"
+                        ng:disabled="droit.to_delete || droit.sharable_id"
+                        uib:btn-checkbox
+                        btn-checkbox-true="true"
+                        btn-checkbox-false="false"
+                        uib:tooltip="droit d'administration">
+                    <span class="glyphicon glyphicon-cog"></span>
                 </button>
             </td>
             <td>

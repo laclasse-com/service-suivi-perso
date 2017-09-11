@@ -106,7 +106,7 @@ angular.module( 'suiviApp' )
      style="text-align: right;">
     <button class="btn btn-lg btn-warning"
             style="width: 100%;"
-            ng:if="$ctrl.onglet.writable"
+            ng:if="$ctrl.onglet.manageable"
             ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
         <span class="glyphicon glyphicon-cog"></span> Configuration de l'onglet
     </button>

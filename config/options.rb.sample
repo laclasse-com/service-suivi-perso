@@ -21,10 +21,10 @@ URL_ENT = 'http://localhost/annuaire'.freeze
 CACHE_BUSTER = Time.now.to_i.to_s
 
 # Gestion des droits
-DEFAULT_RIGHTS = { Onglet: [ { profil_id: 'ENS', read: true, write: true },
-                             { profil_id: 'EVS', read: true, write: true },
-                             { profil_id: 'DOC', read: true, write: true },
-                             { profil_id: 'DIR', read: true, write: true } ] }.freeze
+DEFAULT_RIGHTS = { Onglet: [ { profil_id: 'ENS', read: true, write: true, manage: true },
+                             { profil_id: 'EVS', read: true, write: true, manage: true },
+                             { profil_id: 'DOC', read: true, write: true, manage: true },
+                             { profil_id: 'DIR', read: true, write: true, manage: true } ] }.freeze
 
 ANNUAIRE = { url: 'http://localhost/annuaire/api',
              api_key: 'Ed0c27VjZc5PQMs079eLQ+aId3/xSlWWILLLP4LYTf0=',

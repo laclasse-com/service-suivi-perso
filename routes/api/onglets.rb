@@ -12,6 +12,7 @@ module Suivi
                     .map do |onglet|
                     onglet_hash = onglet.to_hash
                     onglet_hash[:writable] = onglet.allow?( user, :write )
+                    onglet_hash[:manageable] = onglet.allow?( user, :manage )
 
                     onglet_hash
                   end )
@@ -21,6 +22,7 @@ module Suivi
             onglet = get_and_check_onglet( params['onglet_id'], user, :read )
             onglet_hash = onglet.to_hash
             onglet_hash[:writable] = onglet.allow?( user, :write )
+            onglet_hash[:manageable] = onglet.allow?( user, :manage )
 
             json( onglet_hash )
           end
@@ -40,24 +42,26 @@ module Suivi
 
             onglet_hash = onglet.to_hash
             onglet_hash[:writable] = onglet.allow?( user, :write )
+            onglet_hash[:manageable] = onglet.allow?( user, :manage )
             onglet_hash[:created] = new_onglet
 
             json( onglet_hash )
           end
 
           app.put '/api/carnets/:uid_eleve/onglets/:onglet_id' do
-            onglet = get_and_check_onglet( params['onglet_id'], user, :write )
+            onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
             onglet.nom = params['nom'] if params.key?( 'nom' )
             onglet.save
 
             onglet_hash = onglet.to_hash
             onglet_hash[:writable] = onglet.allow?( user, :write )
+            onglet_hash[:manageable] = onglet.allow?( user, :manage )
 
             json( onglet_hash )
           end
 
           app.delete '/api/carnets/:uid_eleve/onglets/:onglet_id' do
-            onglet = get_and_check_onglet( params['onglet_id'], user, :write )
+            onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
 
             onglet_hash = onglet.destroy
             onglet_hash[:deleted] = true
