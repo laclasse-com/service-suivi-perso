@@ -142,6 +142,7 @@ angular.module( 'suiviApp' )
                                         promise = new Onglets( response_popup.onglet ).$update();
                                     }
                                 }
+
                                 promise.then( function success( response ) {
                                     response.action = action;
 

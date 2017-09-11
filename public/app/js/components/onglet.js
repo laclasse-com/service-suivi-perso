@@ -15,7 +15,6 @@ angular.module( 'suiviApp' )
                                                       reverse: true };
 
                                     ctrl.callback_popup_onglet = function( onglet ) {
-                                        console.log(onglet)
                                         if ( onglet.action == 'deleted' ) {
                                             $state.go( 'carnet',
                                                        { uid_eleve: ctrl.uidEleve },
