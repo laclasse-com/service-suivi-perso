@@ -3,6 +3,8 @@
 # development ou production
 ENV[ 'RACK_ENV' ] = 'development'.freeze
 
+SSL = true
+
 # Chemin absolu de l'application sur le serveur
 APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 

@@ -31,7 +31,7 @@ module LaClasse
       end
 
       def login!( route )
-        protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
+        protocol = SSL ? 'https' : 'http'
         service = ''
         if route.empty?
           service = "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}"
