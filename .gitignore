@@ -31,6 +31,13 @@ config/database.rb
 config/options.rb
 config/rights_constants.rb
 config/thin.yml
+config/*.orig
+config/*.bkp
 
 public/node_modules
 public/app/js/constants.js
+
+# Debug
+*.sql
+*.orig
+*.utf8mb4
