@@ -96,7 +96,7 @@ angular.module( 'suiviApp' )
 
     <droits-onglets droits="droits"
                     concerned-people="concerned_people"
-                    ng:if="onglet.id"></droits-onglets>
+                    ng:if="onglet.id && droits"></droits-onglets>
 
     <div class="clearfix"></div>
 </div>
