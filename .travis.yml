@@ -15,7 +15,7 @@ before_script:
   - cp ./config/database.rb.sample ./config/database.rb
   - bundle install
   - mysql -e 'create database suivi;'
-  - mysql -e 'source migrations/current_db_schema_migration.sql;'
+  - mysql -e 'use suivi; source migrations/current_db_schema_migration.sql;'
 
 script:
   # - "bundle exec rake db:load_schema"
