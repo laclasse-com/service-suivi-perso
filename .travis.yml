@@ -13,14 +13,13 @@ before_install:
 before_script:
   - cp ./config/options.rb.sample ./config/options.rb
   - cp ./config/database.rb.sample ./config/database.rb
-  - bundle install
-  - mysql -e 'create database suivi;'
-  - mysql -e 'use suivi; source migrations/current_db_schema_migration.sql;'
 
 script:
-  # - "bundle exec rake db:load_schema"
-  # - "bundle exec rspec"
   - "bundle exec rubocop -D"
+  - mysql -e 'create database suivi;'
+  - mysql -e 'use suivi; source migrations/current_db_schema_migration.sql;'
+  - "bundle exec rake db:migrate"
+  # - "bundle exec rspec"
 
 gemfile:
   - gems.rb
