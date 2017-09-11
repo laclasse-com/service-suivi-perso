@@ -3,7 +3,7 @@
 # Configuration de la base de données de Backend
 
 DB_CONFIG = { host: '127.0.0.1',
-              user: 'suivi',
+              user: 'travis',
               password: '',
               name: 'suivi',
               charset: 'utf8' }.freeze
