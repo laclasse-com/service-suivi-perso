@@ -10,26 +10,24 @@ before_install:
   - gem --version
   - gem install rspec
 
-before_script:
-  - cp ./config/options.rb.sample ./config/options.rb
-  - cp ./config/database.rb.sample ./config/database.rb
+# before_script:
+#   - cp ./config/options.rb.sample ./config/options.rb
+#   - cp ./config/database.rb.sample ./config/database.rb
 
 script:
   - "bundle exec rubocop -D"
-  - mysql -e 'create database suivi;'
-  - mysql -e 'use suivi; source migrations/current_db_schema_migration.sql;'
-  - "bundle exec rake db:migrate"
-  # - "bundle exec rspec"
+  # - mysql -e 'create database suivi;'
+  # - mysql -e 'use suivi; source migrations/current_db_schema_migration.sql;'
+  # - "bundle exec rake db:migrate"
 
 gemfile:
   - gems.rb
 
-services:
-  - mysql
+# services:
+#   - mysql
 
 branches:
   only:
-    - master
     - develop
 
 notifications:
