@@ -137,3 +137,13 @@ CREATE TABLE `schema_info` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2017-09-11 11:47:57
+
+--
+-- Dumping data for table `schema_info`
+--
+
+LOCK TABLES `schema_info` WRITE;
+/*!40000 ALTER TABLE `schema_info` DISABLE KEYS */;
+INSERT INTO `schema_info` VALUES (32);
+/*!40000 ALTER TABLE `schema_info` ENABLE KEYS */;
+UNLOCK TABLES;
