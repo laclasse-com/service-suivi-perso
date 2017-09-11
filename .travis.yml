@@ -22,11 +22,10 @@ script:
   - "bundle exec rubocop -D"
 
 gemfile:
-  - Gemfile
+  - gems.rb
 
 services:
   - mysql
-  - redis-server
 
 branches:
   only:
