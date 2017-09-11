@@ -21,4 +21,18 @@ namespace :db do
 
   desc 'Apply migrations (alias)'
   task migrate: :migrations
+
+  desc 'Dump current DB schema'
+  task dump_schema: :load_config do
+    filename = 'migrations/current_db_schema_migration.sql'
+
+    `mysqldump --no-data -u #{DB_CONFIG[:user]} -p#{DB_CONFIG[:password]} #{DB_CONFIG[:name]} > #{filename}`
+  end
+
+  desc 'Load current DB schema from sql dump'
+  task load_schema: :load_config do
+    filename = 'migrations/current_db_schema_migration.sql'
+
+    `[ -e #{filename} ] && mysql -u #{DB_CONFIG[:user]} -p#{DB_CONFIG[:password]} < #{filename}`
+  end
 end

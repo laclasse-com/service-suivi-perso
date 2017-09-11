@@ -17,7 +17,7 @@ before_script:
   - mysql -e 'create database suivi;'
 
 script:
-  - "bundle exec rake db:migrations"
+  - "bundle exec rake db:load_schema"
   # - "bundle exec rspec"
   - "bundle exec rubocop -D"
 

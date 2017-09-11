@@ -2,11 +2,14 @@
 #
 # Configuration de la base de données de Backend
 
-DB = Sequel.mysql2( 'suivi',
-                    host: '127.0.0.1',
-                    user: 'root',
-                    password: '',
-                    charset: 'utf8')
+DB_CONFIG = { host: '127.0.0.1',
+              user: 'suivi',
+              password: '',
+              name: 'suivi',
+              charset: 'utf8' }.freeze
+
+DB = Sequel.mysql2( DB_CONFIG[:name],
+                    DB_CONFIG )
 
 Sequel.extension(:migration)
 
