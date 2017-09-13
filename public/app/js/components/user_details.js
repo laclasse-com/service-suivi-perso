@@ -104,7 +104,8 @@ angular.module( 'suiviApp' )
     <uib-accordion>
         <div uib-accordion-group
              class="panel-default"
-             ng:repeat="(type, peoples) in $ctrl.concerned_people">
+             ng:repeat="(type, peoples) in $ctrl.concerned_people"
+             ng:if="type != 'Autre élève suivi'">
             <uib-accordion-heading>
                 <span class="glyphicon" ng:class="{'glyphicon-menu-down': type.is_open, 'glyphicon-menu-right': !type.is_open}"></span> {{type}}
             </uib-accordion-heading>

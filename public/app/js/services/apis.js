@@ -105,10 +105,21 @@ angular.module( 'suiviApp' )
                         var profils = [];
                         var contributed_to = [];
                         var current_user = null;
+                        var users = [];
+                        var personnels = [];
+                        var pupils = [];
+                        var teachers = [];
+                        var main_teachers = [];
 
                         return APIs.get_current_user()
                             .then( function success( response ) {
                                 current_user = response;
+
+                                return APIs.query_profiles_types();
+                            },
+                                   function error( response ) { return $q.reject( response ); } )
+                            .then( function success( response ) {
+                                profils = _(response.data).indexBy('id');
 
                                 return APIs.query_carnets_contributed_to( current_user.id );
                             },
@@ -116,109 +127,138 @@ angular.module( 'suiviApp' )
                             .then( function success( response ) {
                                 contributed_to = _(response.data).pluck('uid_eleve');
 
-                                return APIs.query_profiles_types();
-                            },
-                                   function error( response ) {} )
-                            .then( function success( response ) {
-                                profils = _(response.data).indexBy('id');
+                                if ( !_(contributed_to).isEmpty() ) {
+                                    APIs.get_users( contributed_to )
+                                        .then( function success( response ) {
+                                            concerned_people.push( _(response.data).map( function( people ) {
+                                                people.type = 'Autre élève suivi';
+
+                                                return people;
+                                            } ) );
+                                        },
+                                               function error( response ) { return $q.reject( response ); } );
+                                }
 
                                 return APIs.get_user( uid );
                             },
-                                   function error( response ) {} )
+                                   function error( response ) { return $q.reject( response ); } )
                             .then( function success( response ) {
                                 eleve = response.data;
 
                                 eleve.type = 'Élève';
                                 concerned_people.push( eleve );
-                                var promises = [];
 
-                                if ( !_(eleve.parents).isEmpty() ){
-                                    promises.push( APIs.get_users( _(eleve.parents).pluck('parent_id') )
-                                               .then( function success( response ) {
-                                                   concerned_people.push( _(response.data).map( function( people ) {
-                                                       people.type = 'Responsable';
-                                                       return people;
-                                                   } ) );
-                                               },
-                                                      function error( response ) {} ) );
+                                if ( !_(eleve.parents).isEmpty() ) {
+                                    return APIs.get_users( _(eleve.parents).pluck('parent_id') );
+                                } else {
+                                    return $q.resolve({ no_parents: true });
+                                }
+                            },
+                                   function error( response ) { return $q.reject( response ); } )
+                            .then( function success( response ) {
+                                if ( _(response).has('data') ) {
+                                    concerned_people.push( _(response.data).map( function( people ) {
+                                        people.type = 'Responsable';
+
+                                        return people;
+                                    } ) );
                                 }
 
                                 if ( !_(eleve.profil_actif).isUndefined() ) {
-                                    promises.push( APIs.get_structure( eleve.profil_actif.structure_id )
-                                               .then( function success( response ) {
-                                                   var personnels = _(response.data.profiles)
-                                                       .reject( function( user ) {
-                                                           return _([ 'ELV', 'TUT', 'ENS' ]).contains( user.type );
-                                                       } );
+                                    return APIs.get_structure( eleve.profil_actif.structure_id );
+                                } else {
+                                    return $q.resolve({ no_profile: true });
+                                }
+                            },
+                                   function error( response ) { return $q.reject( response ); } )
+                            .then( function success( response ) {
+                                if ( _(response).has('data') ) {
+                                    personnels = _(response.data.profiles)
+                                        .reject( function( user ) {
+                                            return _([ 'ELV', 'TUT', 'ENS' ]).contains( user.type );
+                                        } );
 
-                                                   return APIs.get_users( _(personnels).pluck('user_id') )
-                                                       .then( function success( response ) {
-                                                           personnels = _(personnels).indexBy('user_id');
+                                    return APIs.get_users( _(personnels).pluck('user_id') );
+                                } else {
+                                    return $q.resolve({ no_profile: true });
+                                }
+                            } )
+                            .then( function success( response ) {
+                                if ( _(response).has('data') ) {
+                                    personnels = _(personnels).indexBy('user_id');
 
-                                                           concerned_people.push( _(response.data).map( function( people ) {
-                                                               people.type = profils[ personnels[ people.id ].type ].name;
+                                    concerned_people.push( _(response.data).map( function( people ) {
+                                        people.type = profils[ personnels[ people.id ].type ].name;
 
-                                                               return people;
-                                                           } ) );
-                                                       },
-                                                              function error( response ) {} );
-                                               },
-                                                      function error( response ) {} ) );
+                                        return people;
+                                    } ) );
 
                                     var groups_ids = _(eleve.groups).pluck('group_id');
-                                    promises.push( APIs.get_groups( groups_ids )
-                                                   .then( function success( response ) {
-                                                       var users = _.chain(response.data).pluck('users').flatten().value();
-                                                       var pupils = _(users).where({ type: 'ELV' });
-                                                       var teachers = _(users).where({ type: 'ENS' });
-                                                       var main_teachers = _(users).where({ type: 'PRI' });
 
-                                                       if ( pupils.length > 0 ) {
-                                                           APIs.get_users( _(pupils).pluck('user_id') )
-                                                               .then( function success( response ) {
-                                                                   pupils = _(pupils).indexBy('user_id');
-
-                                                                   concerned_people.push( _(response.data).map( function( people ) {
-                                                                       people.type = 'Autre élève';
-
-                                                                       return people;
-                                                                   } ) );
-                                                               },
-                                                                      function error( response ) {} );
-                                                       }
-
-                                                       if ( teachers.length > 0 ) {
-                                                           APIs.get_users( _(teachers).pluck('user_id') )
-                                                               .then( function success( response ) {
-                                                                   teachers = _(teachers).indexBy('user_id');
-
-                                                                   concerned_people.push( _(response.data).map( function( people ) {
-                                                                       people.type = profils[ teachers[ people.id ].type ].name;
-
-                                                                       APIs.get_subjects( _(people.groups).pluck('subject_id') )
-                                                                           .then( function( response ) {
-                                                                               people.actual_subjects = response.data;
-                                                                           } );
-
-                                                                       return people;
-                                                                   } ) );
-                                                               },
-                                                                      function error( response ) {} );
-                                                       }
-                                                   },
-                                                          function error( response ) {} ) );
+                                    return APIs.get_groups( groups_ids );
+                                } else {
+                                    return $q.resolve({ no_profile: true });
                                 }
-
-                                return $q.all( promises )
-                                    .then( function() {
-                                        return $q.resolve( _.chain(concerned_people)
-                                                           .flatten()
-                                                           .uniq( function( people ) {
-                                                               return people.id;
-                                                           } )
-                                                           .value() );
-                                    } );
                             },
-                                   function error( response ) {} );
+                                   function error( response ) { return $q.reject( response ); } )
+                            .then( function success( response ) {
+                                if ( _(response).has('data') ) {
+                                    users = _.chain(response.data).pluck('users').flatten().value();
+                                    pupils = _(users).where({ type: 'ELV' });
+
+                                    if ( pupils.length > 0 ) {
+                                        return APIs.get_users( _(pupils).pluck('user_id') );
+                                    } else {
+                                        return $q.resolve({ no_pupils: true });
+                                    }
+                                } else {
+                                    return $q.resolve({ no_profile: true });
+                                }
+                            },
+                                   function error( response ) { return $q.reject( response ); } )
+                            .then( function success( response ) {
+                                pupils = _(pupils).indexBy('user_id');
+
+                                concerned_people.push( _(response.data).map( function( people ) {
+                                    people.type = 'Autre élève';
+
+                                    return people;
+                                } ) );
+
+                                teachers = _(users).where({ type: 'ENS' });
+                                if ( teachers.length > 0 ) {
+                                    return APIs.get_users( _(teachers).pluck('user_id') );
+                                } else {
+
+                                }
+                                return $q.resolve();
+                            },
+                                   function error( response ) { return $q.reject( response ); } )
+                            .then( function success( response ) {
+                                teachers = _(teachers).indexBy('user_id');
+                                main_teachers = _(users).where({ type: 'PRI' });
+
+                                concerned_people.push( _(response.data).map( function( people ) {
+                                    people.type = profils[ teachers[ people.id ].type ].name;
+
+                                    APIs.get_subjects( _(people.groups).pluck('subject_id') )
+                                        .then( function( response ) {
+                                            people.actual_subjects = response.data;
+                                        } );
+
+                                    return people;
+                                } ) );
+
+                                return $q.resolve();
+                            },
+                                   function error( response ) { return $q.reject( response ); } )
+                            .then( function() {
+                                return $q.resolve( _.chain(concerned_people)
+                                                   .flatten()
+                                                   .uniq( function( people ) {
+                                                       return people.id;
+                                                   } )
+                                                   .value() );
+                            } );
                     } );
                 } ] );
