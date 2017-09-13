@@ -14,7 +14,7 @@ angular.module( 'suiviApp' )
 
                                                    user.is_admin = function() {
                                                        return !_(user.profil_actif).isUndefined()
-                                                           && !_.chain(user.profils)
+                                                           && !_.chain(user.profiles)
                                                            .findWhere( { structure_id: user.profil_actif.structure_id,
                                                                          type: 'ADM' } )
                                                            .isUndefined()
