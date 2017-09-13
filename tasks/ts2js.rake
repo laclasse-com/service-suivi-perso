@@ -2,5 +2,7 @@
 
 desc 'Compile typescript files'
 task :ts2js do
-  `find public/app -type f -name \\*.ts -not -path "public/app/node_modules/*" -exec tsc --allowJs {} \\;`
+  require_relative '../config/options'
+
+  puts `find #{APP_ROOT}/public/app/ -type f -name \\*.ts -not -path "#{APP_ROOT}/public/app/node_modules/*" -exec tsc --allowJs {} \\;`
 end
