@@ -75,7 +75,6 @@ angular.module( 'suiviApp' )
                                         APIs.get_current_user()
                                             .then( function( current_user ) {
                                                 ctrl.current_user = current_user;
-                                                console.log(current_user)
                                                 ctrl.editable = ctrl.onglet.writable && ctrl.saisie.uid_author === ctrl.current_user.id;
                                             } );
                                     };
