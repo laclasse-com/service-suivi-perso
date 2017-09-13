@@ -28,7 +28,7 @@ class Onglet < Sequel::Model(:onglets)
     return droit[ right ] unless droit.nil?
 
     # by default etablissement's admins and super-admins have all rights
-    LaClasse::User.user_is_admin?( user ) || LaClasse::User.user_is_super_admin?( user )
+    droits_dataset.count > 1 && ( LaClasse::User.user_is_admin?( user ) || LaClasse::User.user_is_super_admin?( user ) )
   end
 
   def to_json( arg )
