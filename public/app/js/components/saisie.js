@@ -74,7 +74,9 @@ angular.module( 'suiviApp' )
 
                                         APIs.get_current_user()
                                             .then( function( current_user ) {
-                                                ctrl.editable = current_user.is_admin() || ( ctrl.onglet.writable && ctrl.saisie.uid_author === current_user.id );
+                                                ctrl.current_user = current_user;
+                                                console.log(current_user)
+                                                ctrl.editable = ctrl.onglet.writable && ctrl.saisie.uid_author === ctrl.current_user.id;
                                             } );
                                     };
 
@@ -126,16 +128,17 @@ angular.module( 'suiviApp' )
         </div>
     </div>
 
-    <div class="panel-footer" ng:if="$ctrl.editable && !$ctrl.edition">
+    <div class="panel-footer" ng:if="!$ctrl.edition">
         <div class="pull-right buttons">
             <button class="btn btn-default"
-                    ng:click="$ctrl.toggle_edit()">
+                    ng:click="$ctrl.toggle_edit()"
+                    ng:if="$ctrl.editable">
                 <span class="glyphicon glyphicon-edit" ></span> Éditer
             </button>
 
             <button class="btn btn-danger"
                     ng:click="$ctrl.delete()"
-                    ng:if="$ctrl.saisie.id">
+                    ng:if="$ctrl.saisie.id && ( $ctrl.editable || $ctrl.current_user.is_admin() )">
                 <span class="glyphicon glyphicon-trash"></span> Supprimer
             </button>
         </div>
