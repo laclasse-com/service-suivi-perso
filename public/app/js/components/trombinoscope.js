@@ -5,6 +5,7 @@ angular.module( 'suiviApp' )
                                     var ctrl = this;
                                     ctrl.search = '';
                                     ctrl.only_display_contributed_to = false;
+                                    ctrl.eleves = [];
 
                                     var current_user = undefined;
 
@@ -27,6 +28,35 @@ angular.module( 'suiviApp' )
                                                 current_user.regroupement = { libelle : classes[0].name };
 
                                                 ctrl.eleves = [ current_user ];
+                                            } else if ( current_user.profil_actif.type === 'TUT' ) {
+                                                let users_ids = _(current_user.children).pluck('child_id');
+
+                                                if ( !_(users_ids).isEmpty() ) {
+                                                    APIs.get_users( users_ids )
+                                                        .then( function( users ) {
+                                                            ctrl.eleves = ctrl.eleves.concat( _(users.data).map( function( eleve ) {
+                                                                eleve.avatar = fix_avatar_url( eleve.avatar );
+                                                                let groups_ids = _(eleve.groups).pluck('group_id');
+
+                                                                if ( !_(groups_ids).isEmpty() ) {
+                                                                    APIs.get_groups( groups_ids )
+                                                                        .then( function( response ) {
+                                                                            let regroupement = _(response.data).findWhere({ type: 'CLS' });
+
+                                                                            if ( !_(regroupement).isUndefined() ) {
+                                                                                eleve.regroupement = { id: regroupement.id,
+                                                                                                       name: regroupement.name,
+                                                                                                       type: regroupement.type };
+                                                                                eleve.etablissement = regroupement.structure_id;
+                                                                                eleve.enseignants = regroupement.profs;
+                                                                            }
+                                                                        } );
+                                                                }
+
+                                                                return eleve;
+                                                            } ) );
+                                                        } );
+                                                }
                                             } else {
                                                 APIs.get_groups( _.chain( classes )
                                                                  .select( function( regroupement ) {
