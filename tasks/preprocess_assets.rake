@@ -7,6 +7,9 @@ namespace :preprocess_assets do
 
     puts `find #{APP_ROOT}/public/app/ -type f -name \\*.ts -not -path "#{APP_ROOT}/public/app/node_modules/*" -exec tsc --allowJs {} \\;`
   end
+
+  desc 'Do what needs to be done for production environment'
+  task production: [:ts2js]
 end
 
-task preprocess_assets: 'preprocess_assets:ts2js'
+task preprocess_assets: ['preprocess_assets:production']
