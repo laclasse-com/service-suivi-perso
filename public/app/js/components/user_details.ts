@@ -50,13 +50,13 @@ angular.module( 'suiviApp' )
                                 } ],
                   template: `
 <div class="col-md-12">
-    <img class="col-md-4 avatar noir-moins"
-         ng:src="{{$ctrl.URL_ENT + '/' + $ctrl.user.avatar}}"
-         ng:if="$ctrl.showAvatar" />
+    <img class="avatar noir-moins"
+ng:src="{{$ctrl.URL_ENT + '/' + $ctrl.user.avatar}}"
+ng:if="$ctrl.showAvatar" />
 
-    <div class="col-md-8 details">
-        <div class="col-md-12">
-            <span class="first-name"
+<div class="col-md-8 details">
+<div class="col-md-12">
+<span class="first-name"
                   ng:style="{'font-size': $ctrl.small ? '100%' : '150%'}"> {{$ctrl.user.firstname}}
             </span>
             <span class="last-name"

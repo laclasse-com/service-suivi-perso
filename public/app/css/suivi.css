@@ -26,6 +26,10 @@
                                                     margin-bottom: 20px; }
 #main-ui-view .aside .user-details.eleve .informations { padding: 0; }
 
+saisie .avatar { float: left;
+                 max-height: 50px;
+                 max-width: 50px; }
+
 .trombinoscope .eleve { position: absolute;
                         top: 0;
                         left: 0;
