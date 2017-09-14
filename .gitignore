@@ -1,43 +1,4 @@
-*.gem
-*.rbc
-.bundle
-.config
-.tags
-coverage
-storages
-InstalledFiles
-lib/bundler/man
-pkg
-rdoc
-spec/reports
-test/tmp
-test/version_tmp
-tmp
-
-# Application specific
-
-# YARD artifacts
-.yardoc
-_yardoc
-doc/
-
-# Vagrant
-vagrant
-.vagrant/
-
-# Config
-config/common.rb
-config/database.rb
-config/options.rb
-config/rights_constants.rb
-config/thin.yml
+/.bundle/
+/config/database.rb
+/config/options.rb
 config/*.orig
-config/*.bkp
-
-public/node_modules
-public/app/js/constants.js
-
-# Debug
-*.sql
-*.orig
-*.utf8mb4
