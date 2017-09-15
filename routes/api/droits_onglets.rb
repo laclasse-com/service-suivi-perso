@@ -9,7 +9,7 @@ module Suivi
             app.get '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
               onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
 
-              json( onglet.droits )
+              json( onglet.droits.map(&:to_hash) )
             end
 
             app.post '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
@@ -24,7 +24,7 @@ module Suivi
                              read: params['read'],
                              write: params['write'],
                              manage: params['manage'] ]
-              return json( droit ) unless droit.nil?
+              return json( droit.to_hash ) unless droit.nil?
 
               droit = {}
               %w[uid profil_id read write manage].each do |key|
@@ -32,7 +32,7 @@ module Suivi
               end
               droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
 
-              json( onglet.add_droit( droit ) )
+              json( onglet.add_droit( droit ).to_hash )
             end
 
             app.put '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
@@ -49,7 +49,7 @@ module Suivi
               droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
               droit.save
 
-              json( droit )
+              json( droit.to_hash )
             end
 
             app.delete '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
