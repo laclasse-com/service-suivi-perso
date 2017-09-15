@@ -17,12 +17,16 @@
 #main-ui-view .damier { padding: 0; }
 
 #main-ui-view .aside .go-back { color: #eee;
-                                text-decoration: none; }
+                                text-decoration: none;
+                                margin-bottom: 8px; }
 
 #main-ui-view .aside .user-details.eleve .avatar { background-color: #333;
                                                    margin-bottom: 20px;
-                                                   padding: 0; }
-#main-ui-view .aside .user-details.eleve .details { height: 125px;
+                                                   padding: 0;
+                                                   float: left;
+                                                   max-height: 175px;
+                                                   max-width: 175px; }
+#main-ui-view .aside .user-details.eleve .details { min-height: 175px;
                                                     margin-bottom: 20px; }
 #main-ui-view .aside .user-details.eleve .informations { padding: 0; }
 
