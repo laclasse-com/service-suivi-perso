@@ -31,7 +31,7 @@ angular.module('suiviApp')
                     ctrl.callback();
                 }, function error(response) { console.log(response); });
             };
-            ctrl["delete"] = function () {
+            ctrl.delete = function () {
                 swal({ title: 'Êtes-vous sur ?',
                     text: "La saisie sera définitivement supprimée !",
                     type: 'warning',

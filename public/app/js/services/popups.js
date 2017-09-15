@@ -13,7 +13,7 @@ angular.module('suiviApp')
                         ctrl.uid = uid;
                         ctrl.onglet = onglet;
                         ctrl.all_onglets = all_onglets;
-                        ctrl.onglet["delete"] = false;
+                        ctrl.onglet.delete = false;
                         ctrl.valid_name = true;
                         if (_(ctrl.onglet).has('id')) {
                             DroitsOnglets.query({ uid_eleve: ctrl.uid,
@@ -48,7 +48,7 @@ angular.module('suiviApp')
                             $uibModalInstance.close({ onglet: ctrl.onglet,
                                 droits: ctrl.droits });
                         };
-                        ctrl["delete"] = function () {
+                        ctrl.delete = function () {
                             swal({ title: 'Êtes-vous sur ?',
                                 text: "L'onglet ainsi que toutes les saisies et droits associés seront définitivement supprimés !",
                                 type: 'warning',
@@ -59,7 +59,7 @@ angular.module('suiviApp')
                                 cancelButtonText: 'Annuler'
                             })
                                 .then(function () {
-                                ctrl.onglet["delete"] = true;
+                                ctrl.onglet.delete = true;
                                 ctrl.ok();
                             });
                         };
@@ -79,7 +79,7 @@ angular.module('suiviApp')
                 }
                 else {
                     response_popup.onglet.uid_eleve = uid;
-                    if (response_popup.onglet["delete"]) {
+                    if (response_popup.onglet.delete) {
                         action = 'deleted';
                         promise = new Onglets(response_popup.onglet).$delete();
                     }

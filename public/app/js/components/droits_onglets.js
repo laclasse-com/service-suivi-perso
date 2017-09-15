@@ -16,7 +16,7 @@ angular.module('suiviApp')
                 return _.chain(ctrl.droits).findWhere({ own: true }).isUndefined();
             };
             ctrl.add = function (droit) {
-                droit["new"] = true;
+                droit.new = true;
                 droit.dirty = { uid: false,
                     profil_id: false,
                     sharable_id: false,
