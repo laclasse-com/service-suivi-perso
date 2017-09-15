@@ -4,8 +4,8 @@ namespace :preprocess_assets do
   desc 'Load config'
   task :load_config do
     require_relative '../config/options'
-    COMPILED_FILE = "#{APP_ROOT}/public/app/js/suiviApp.js".freeze
-    MINIFIED_FILE = "#{APP_ROOT}/public/app/js/suiviApp.min.js".freeze
+    COMPILED_FILE = "#{APP_ROOT}/public/app/js/app.js".freeze
+    MINIFIED_FILE = "#{APP_ROOT}/public/app/js/app.min.js".freeze
   end
 
   desc 'Clean away compiled files'
