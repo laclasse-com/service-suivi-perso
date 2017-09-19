@@ -48,9 +48,9 @@ angular.module( 'suiviApp',
                    $provide.decorator( 'taOptions',
                                        [ '$delegate', 'taRegisterTool',
                                          function( taOptions, taRegisterTool ){
-                                             var colorpicker_taTool = function( type ) {
-                                                 var style_prefix = ( type === 'backcolor' ) ? 'background-' : '';
-                                                 var couleurs = [ '#7bd148', '#5484ed', '#a4bdfc', '#46d6db', '#7ae7bf', '#51b749', '#fbd75b', '#ffb878', '#ff887c', '#dc2127', '#dbadff', '#e1e1e1' ];
+                                             let colorpicker_taTool = function( type ) {
+                                                 let style_prefix = ( type === 'backcolor' ) ? 'background-' : '';
+                                                 let couleurs = [ '#7bd148', '#5484ed', '#a4bdfc', '#46d6db', '#7ae7bf', '#51b749', '#fbd75b', '#ffb878', '#ff887c', '#dc2127', '#dbadff', '#e1e1e1' ];
                                                  if ( type === 'backcolor' ) {
                                                      couleurs.push( 'transparent' );
                                                  }
@@ -83,12 +83,12 @@ angular.module( 'suiviApp',
 <br>
 <label><span uib-rating on-hover="hover( rows, value )" on-leave="leave( rows )" ng-model="rows.value" max="15" state-on="\'glyphicon-stop\'" state-off="\'glyphicon-unchecked\'"></span><br>{{rows.hovered}} lignes</label><br><button class="btn btn-success" data-ng-click="insert_table()">Insérer</button></div></span>`,
                                                                         insert_table: function(  ) {
-                                                                            var tds = '';
-                                                                            for ( var idxCol = 0; idxCol < this.columns.value; idxCol++ ) {
+                                                                            let tds = '';
+                                                                            for ( let idxCol = 0; idxCol < this.columns.value; idxCol++ ) {
                                                                                 tds = tds + '<td>&nbsp;</td>';
                                                                             }
-                                                                            var trs = '';
-                                                                            for ( var idxRow = 0; idxRow < this.rows.value; idxRow++ ) {
+                                                                            let trs = '';
+                                                                            for ( let idxRow = 0; idxRow < this.rows.value; idxRow++ ) {
                                                                                 trs = trs + '<tr>'+ tds + '</tr>';
                                                                             }
 

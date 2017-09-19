@@ -2,7 +2,7 @@ angular.module( 'suiviApp' )
     .service( 'APIs',
               [ '$http', '$q', 'User', 'URL_ENT', 'APP_PATH',
                 function( $http, $q, User, URL_ENT, APP_PATH ) {
-                    var APIs = this;
+                    let APIs = this;
 
                     APIs.query_profiles_types = _.memoize( function() {
                         return $http.get( URL_ENT + '/api/profiles_types' );
@@ -48,8 +48,8 @@ angular.module( 'suiviApp' )
 
                     APIs.get_current_user_groups = _.memoize( function() {
                         return APIs.get_current_user().then( function success( current_user ) {
-                            var groups_ids = _.chain(current_user.groups).pluck( 'group_id' ).uniq().value();
-                            var promise = $q.resolve([]);
+                            let groups_ids = _.chain(current_user.groups).pluck( 'group_id' ).uniq().value();
+                            let promise = $q.resolve([]);
                             if ( _( [ 'EVS', 'DIR', 'ADM' ] ).contains( current_user.profil_actif.type ) || current_user.profil_actif.admin ) {
                                 promise = APIs.get_groups_of_structures( [ current_user.profil_actif.structure_id ] );
                             } else {
@@ -100,16 +100,16 @@ angular.module( 'suiviApp' )
                     } );
 
                     APIs.query_people_concerned_about = _.memoize( function( uid ) {
-                        var eleve = null;
-                        var concerned_people = [];
-                        var profils = [];
-                        var contributed_to = [];
-                        var current_user = null;
-                        var users = [];
-                        var personnels = [];
-                        var pupils = [];
-                        var teachers = [];
-                        var main_teachers = [];
+                        let eleve = null;
+                        let concerned_people = [];
+                        let profils = [];
+                        let contributed_to = [];
+                        let current_user = null;
+                        let users = [];
+                        let personnels = [];
+                        let pupils = [];
+                        let teachers = [];
+                        let main_teachers = [];
 
                         return APIs.get_current_user()
                             .then( function success( response ) {
@@ -193,7 +193,7 @@ angular.module( 'suiviApp' )
                                         return people;
                                     } ) );
 
-                                    var groups_ids = _(eleve.groups).pluck('group_id');
+                                    let groups_ids = _(eleve.groups).pluck('group_id');
 
                                     return APIs.get_groups( groups_ids );
                                 } else {

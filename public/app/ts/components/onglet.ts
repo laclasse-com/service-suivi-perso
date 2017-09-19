@@ -7,7 +7,7 @@ angular.module( 'suiviApp' )
                               onglet: '=' },
                   controller: [ '$uibModal', '$state', '$q', 'Saisies', 'Popups',
                                 function( $uibModal, $state, $q, Saisies, Popups ) {
-                                    var ctrl = this;
+                                    let ctrl = this;
 
                                     ctrl.manage_onglet = Popups.onglet;
 
@@ -40,15 +40,15 @@ angular.module( 'suiviApp' )
 
                                     };
 
-                                    // var print = function() {
-                                    //     var printDump = document.getElementById('printDump');
-                                    //     var pdf = new jsPDF( 'l', 'pt', 'a4' );
+                                    // let print = function() {
+                                    //     let printDump = document.getElementById('printDump');
+                                    //     let pdf = new jsPDF( 'l', 'pt', 'a4' );
                                     //     return $q.all( _(angular.element('.active saisie'))
                                     //                    .map( function( elt ) {
                                     //                        return html2canvas( elt );
                                     //                    } ) )
                                     //         .then( function( canvases ) {
-                                    //             var y = 0;
+                                    //             let y = 0;
 
                                     //             _(canvases).each( function( canvasObj ) {
                                     //                 printDump.appendChild( canvasObj ); //appendChild is required for html to add page in pdf
@@ -85,7 +85,7 @@ angular.module( 'suiviApp' )
                                     //             allowOutsideClick: false } );
                                     // };
 
-                                    var init_new_saisie = function() {
+                                    let init_new_saisie = function() {
                                         ctrl.new_saisie = ctrl.onglet.writable ? { create_me: true } : null;
                                     };
 

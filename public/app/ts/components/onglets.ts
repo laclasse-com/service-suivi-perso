@@ -5,7 +5,7 @@ angular.module( 'suiviApp' )
                 { bindings: { uidEleve: '<' },
                   controller: [ '$uibModal', 'Carnets', 'Onglets', 'Popups',
                                 function( $uibModal, Carnets, Onglets, Popups ) {
-                                    var ctrl = this;
+                                    let ctrl = this;
                                     ctrl.popup_onglet = Popups.onglet;
 
                                     ctrl.callback_popup_onglet = function( onglet ) {

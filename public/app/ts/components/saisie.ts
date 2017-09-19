@@ -8,7 +8,7 @@ angular.module( 'suiviApp' )
                               callback: '&' },
                   controller: [ '$sce', 'Saisies', 'APIs',
                                 function( $sce, Saisies, APIs ) {
-                                    var ctrl = this;
+                                    let ctrl = this;
 
                                     ctrl.toggle_edit = function() {
                                         ctrl.edition = !ctrl.edition;
@@ -29,7 +29,7 @@ angular.module( 'suiviApp' )
 
                                             ctrl.saisie = new Saisies( ctrl.saisie );
                                         }
-                                        var promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
+                                        let promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
 
                                         promise.then( function success( response ) {
                                             if ( !ctrl.new_saisie ) {

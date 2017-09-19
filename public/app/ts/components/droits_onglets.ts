@@ -6,12 +6,12 @@ angular.module( 'suiviApp' )
                               concernedPeople: '<' },
                   controller: [ 'DroitsOnglets', 'APIs', 'UID', 'URL_ENT',
                                 function( DroitsOnglets, APIs, UID, URL_ENT ) {
-                                    var ctrl = this;
+                                    let ctrl = this;
                                     ctrl.sharing_enabled = false;
 
-                                    var gen_pseudo_UUID = function() {
+                                    let gen_pseudo_UUID = function() {
                                         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                                            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                                            let r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
                                             return v.toString(16);
                                         });
                                     };
@@ -37,7 +37,7 @@ angular.module( 'suiviApp' )
                                         ctrl.add( droit );
                                     };
 
-                                    var maybe_init_dirtiness = function( droit ) {
+                                    let maybe_init_dirtiness = function( droit ) {
                                         if ( !_(droit).has('dirty') ) {
                                             droit.dirty = { uid: false,
                                                             profil_id: false,
@@ -97,7 +97,7 @@ angular.module( 'suiviApp' )
                                     };
 
                                     ctrl.update_deletabilities = function() {
-                                        var last_droit_standing = _(ctrl.droits).reject( function( droit ) { return droit.to_delete; } ).length == 1;
+                                        let last_droit_standing = _(ctrl.droits).reject( function( droit ) { return droit.to_delete; } ).length == 1;
 
                                         _(ctrl.droits).each( function( droit ) {
                                             droit.deletable = !last_droit_standing;

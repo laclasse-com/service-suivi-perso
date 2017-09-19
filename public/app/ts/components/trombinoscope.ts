@@ -3,14 +3,14 @@ angular.module('suiviApp')
   {
     controller: ['$q', 'URL_ENT', 'APIs',
       function($q, URL_ENT, APIs) {
-        var ctrl = this;
+        let ctrl = this;
         ctrl.search = '';
         ctrl.only_display_contributed_to = false;
         ctrl.eleves = [];
 
-        var current_user = undefined;
+        let current_user = undefined;
 
-        var fix_avatar_url = function(avatar_url) {
+        let fix_avatar_url = function(avatar_url) {
           return (_(avatar_url.match(/^(user|http)/)).isNull() ? URL_ENT + '/' : '') + avatar_url;
         };
 
@@ -23,7 +23,7 @@ angular.module('suiviApp')
             return APIs.get_current_user_groups();
           })
           .then(function(groups) {
-            var classes = _(groups).where({ type: 'CLS' });
+            let classes = _(groups).where({ type: 'CLS' });
 
             if (current_user.profil_actif.type === 'ELV') {
               current_user.regroupement = { libelle: classes[0].name };
@@ -74,7 +74,7 @@ angular.module('suiviApp')
 
                   _(response.data).each(function(regroupement) {
                     regroupement.profs = _.chain(regroupement.users).select(function(user) { return user.type === 'ENS'; }).pluck('user_id').value();
-                    var users_ids = _.chain(regroupement.users).select(function(user) { return user.type === 'ELV'; }).pluck('user_id').value();
+                    let users_ids = _.chain(regroupement.users).select(function(user) { return user.type === 'ELV'; }).pluck('user_id').value();
 
                     APIs.get_users(users_ids)
                       .then(function(users) {
@@ -104,7 +104,7 @@ angular.module('suiviApp')
               function error(response) { });
           });
       }],
-      mplate: `
+      template: `
       <div class="col-md-4 blanc aside" style="padding: 0;">
         <div class="search-filter" style="padding: 20px; background-color: #baddad;">
           <label for="search"> Filtrage des élèves affichés : </label>

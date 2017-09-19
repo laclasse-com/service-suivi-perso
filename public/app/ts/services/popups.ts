@@ -2,7 +2,7 @@ angular.module( 'suiviApp' )
     .service( 'Popups',
               [ '$uibModal', '$q', 'Onglets',
                 function( $uibModal, $q, Onglets ) {
-                    var service = this;
+                    let service = this;
 
                     service.onglet = function( uid, onglet, all_onglets, callback ) {
                         $uibModal.open( { resolve: { uid: function() { return uid; },
@@ -10,7 +10,7 @@ angular.module( 'suiviApp' )
                                                      all_onglets: function() { return all_onglets; } },
                                           controller: [ '$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uid', 'onglet', 'all_onglets',
                                                         function PopupOngletCtrl( $scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uid, onglet, all_onglets ) {
-                                                            var ctrl = $scope;
+                                                            let ctrl = $scope;
                                                             ctrl.$ctrl = ctrl;
 
                                                             ctrl.uid = uid;
@@ -46,7 +46,7 @@ angular.module( 'suiviApp' )
                                                                        function error( response ) {} );
 
                                                             ctrl.name_validation = function() {
-                                                                var other_onglets_names = _.chain(ctrl.all_onglets)
+                                                                let other_onglets_names = _.chain(ctrl.all_onglets)
                                                                     .reject( function( onglet ) {
                                                                         return !_(ctrl.onglet).isNull() && ctrl.onglet.id == onglet.id;
                                                                     } )
@@ -124,8 +124,8 @@ angular.module( 'suiviApp' )
 `
                                         } )
                             .result.then( function success( response_popup ) {
-                                var promise = null;
-                                var action = 'rien';
+                                let promise = null;
+                                let action = 'rien';
 
                                 if ( _(onglet).isNull() ) {
                                     action = 'created';

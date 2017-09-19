@@ -8,7 +8,7 @@ angular.module( 'suiviApp' )
                                       { expand: 'true' },
                                       { get: { cache: false,
                                                transformResponse: function( response ) {
-                                                   var user = angular.fromJson( response );
+                                                   let user = angular.fromJson( response );
 
                                                    user.profil_actif = _(user.profiles).findWhere({ active: true });
 

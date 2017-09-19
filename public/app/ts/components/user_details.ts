@@ -16,7 +16,7 @@ angular.module('suiviApp')
     },
     controller: ['APIs', 'URL_ENT',
       function(APIs, URL_ENT) {
-        var ctrl = this;
+        let ctrl = this;
 
         ctrl.URL_ENT = URL_ENT;
 
