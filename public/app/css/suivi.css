@@ -23,16 +23,13 @@
 #main-ui-view .aside .user-details.eleve .avatar { background-color: #333;
                                                    margin-bottom: 20px;
                                                    padding: 0;
-                                                   float: left;
                                                    max-height: 175px;
                                                    max-width: 175px; }
 #main-ui-view .aside .user-details.eleve .details { min-height: 175px;
                                                     margin-bottom: 20px; }
 #main-ui-view .aside .user-details.eleve .informations { padding: 0; }
 
-saisie .avatar { float: left;
-                 max-height: 50px;
-                 max-width: 50px; }
+.avatar-container { text-align: center; }
 
 .trombinoscope .eleve { position: absolute;
                         top: 0;

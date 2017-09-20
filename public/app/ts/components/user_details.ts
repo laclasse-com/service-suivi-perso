@@ -53,11 +53,12 @@ angular.module('suiviApp')
       }],
       template: `
       <div class="col-md-12">
-        <img class="avatar noir-moins pull-left"
-             ng:style="{'height': $ctrl.small ? '44px' : '175px', 'width': $ctrl.small ? '44px' : '175px'}"
-             ng:src="{{$ctrl.URL_ENT + '/' + $ctrl.user.avatar}}"
-             ng:if="$ctrl.showAvatar" />
-
+        <div class="avatar-container gris4 pull-left" ng:style="{'height': $ctrl.small ? '44px' : '175px', 'width': $ctrl.small ? '44px' : '175px'}">
+          <img class="avatar noir-moins"
+               ng:style="{'max-height': $ctrl.small ? '44px' : '175px', 'max-width': $ctrl.small ? '44px' : '175px'}"
+               ng:src="{{$ctrl.URL_ENT + '/' + $ctrl.user.avatar}}"
+               ng:if="$ctrl.showAvatar" />
+        </div>
         <div class="col-md-8 details">
           <div class="col-md-12">
             <span class="first-name"
