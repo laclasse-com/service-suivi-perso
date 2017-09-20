@@ -119,7 +119,7 @@ angular.module('suiviApp')
           </button>
         </div>
 
-        <div class="group-filter" style="padding: 20px; background-color: #baddad;">
+        <div class="group-filter" style="padding: 20px; background-color: #baddad;" ng:if="$ctrl.groups.length > 0">
           <label> Filtrage par classe : </label>
           <button class="btn btn-sm" style="margin: 2px;"
                   ng:repeat="group in $ctrl.groups"
