@@ -107,23 +107,32 @@ angular.module('suiviApp')
     function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/');
         $stateProvider
-            .state('trombinoscope', { url: '/',
-            component: 'trombinoscope' })
-            .state('carnet', { url: '/carnet/:uid_eleve',
+            .state('trombinoscope', {
+            url: '/',
+            component: 'trombinoscope'
+        })
+            .state('carnet', {
+            url: '/carnet/:uid_eleve',
             component: 'carnet',
-            resolve: { uidEleve: ['$transition$',
+            resolve: {
+                uidEleve: ['$transition$',
                     function ($transition$) {
                         return $transition$.params().uid_eleve;
-                    }] }
+                    }]
+            }
         });
     }]);
 angular.module('suiviApp')
-    .component('carnet', { bindings: { uidEleve: '<' },
+    .component('carnet', {
+    bindings: { uidEleve: '<' },
     template: "\n<div class=\"col-md-4 gris1-moins aside aside-carnet\">\n    <a class=\"col-md-12 btn btn-lg noir-moins go-back\" ui:sref=\"trombinoscope()\"> \u21B0 Retour au trombinoscope </a>\n\n    <user-details class=\"user-details eleve\"\n                  uid=\"$ctrl.uidEleve\"\n                  show-avatar=\"true\"\n                  show-emails=\"true\"\n                  show-classe=\"true\"\n                  show-birthdate=\"true\"\n                  show-address=\"true\"\n                  show-concerned-people=\"true\"></user-details>\n</div>\n\n<onglets class=\"col-md-8 carnet\"\n         uid-eleve=\"$ctrl.uidEleve\"></onglets>\n"
 });
 angular.module('suiviApp')
-    .component('droitsOnglets', { bindings: { droits: '=',
-        concernedPeople: '<' },
+    .component('droitsOnglets', {
+    bindings: {
+        droits: '=',
+        concernedPeople: '<'
+    },
     controller: ['DroitsOnglets', 'APIs', 'UID', 'URL_ENT',
         function (DroitsOnglets, APIs, UID, URL_ENT) {
             var ctrl = this;
@@ -139,12 +148,14 @@ angular.module('suiviApp')
             };
             ctrl.add = function (droit) {
                 droit.new = true;
-                droit.dirty = { uid: false,
+                droit.dirty = {
+                    uid: false,
                     profil_id: false,
                     sharable_id: false,
                     read: false,
                     write: false,
-                    manage: false };
+                    manage: false
+                };
                 ctrl.droits.push(new DroitsOnglets(droit));
             };
             ctrl.add_sharable = function (droit) {
@@ -153,12 +164,14 @@ angular.module('suiviApp')
             };
             var maybe_init_dirtiness = function (droit) {
                 if (!_(droit).has('dirty')) {
-                    droit.dirty = { uid: false,
+                    droit.dirty = {
+                        uid: false,
                         profil_id: false,
                         sharable_id: false,
                         read: false,
                         write: false,
-                        manage: false };
+                        manage: false
+                    };
                 }
             };
             ctrl.set_read = function (droit) {
@@ -216,15 +229,20 @@ angular.module('suiviApp')
     template: "\n<div>\n    <label>Gestion des droits</label>\n    <table style=\"width: 100%;\">\n        <tr style=\"text-align: right;\"\n            ng:repeat=\"droit in $ctrl.droits\"\n            ng:if=\"ctrl.sharing_enabled || !droit.sharable_id\">\n            <td>\n                <label ng:if=\"droit.uid\">Personne :\n                    <select style=\"width: 250px;\"\n                            ng:model=\"droit.uid\"\n                            ng:change=\"droit.dirty.uid = true\"\n                            ng:disabled=\"droit.to_delete\"\n                            ng:options=\"people.id as people.firstname + ' ' + people.lastname group by people.type for people in $ctrl.concernedPeople\">\n                    </select>\n                </label>\n                <label ng:if=\"droit.profil_id\">Profil :\n                    <select style=\"width: 250px;\"\n                            ng:model=\"droit.profil_id\"\n                            ng:change=\"droit.dirty.profil_id = true\"\n                            ng:disabled=\"droit.to_delete\">\n                        <option ng:repeat=\"profil in $ctrl.profils track by profil.id\"\n                                ng:value=\"profil.id\">{{profil.name}}</option>\n                    </select>\n                </label>\n                <label ng:if=\"droit.sharable_id\">Partage :\n                    <input style=\"width: 250px;\"\n                           type=\"text\"\n                           ng:model=\"droit.sharable_id\"\n                           ng:change=\"droit.dirty.sharable_id = true\"\n                           ng:disabled=\"droit.to_delete\" />\n                </label>\n            </td>\n            <td>\n                <button type=\"button\" class=\"btn\"\n                        ng:class=\"{'btn-default': !droit.read, 'btn-success': droit.read}\"\n                        ng:model=\"droit.read\"\n                        ng:change=\"$ctrl.set_read( droit )\"\n                        ng:disabled=\"droit.to_delete || droit.sharable_id\"\n                        uib:btn-checkbox\n                        btn-checkbox-true=\"true\"\n                        btn-checkbox-false=\"false\"\n                        uib:tooltip=\"droit de lecture\">\n                    <span class=\"glyphicon glyphicon-eye-open\"></span>\n                </button>\n            </td>\n            <td>\n                <button type=\"button\" class=\"btn\"\n                        ng:class=\"{'btn-default': !droit.write, 'btn-success': droit.write}\"\n                        ng:model=\"droit.write\"\n                        ng:change=\"$ctrl.set_write( droit )\"\n                        ng:disabled=\"droit.to_delete || droit.sharable_id\"\n                        uib:btn-checkbox\n                        btn-checkbox-true=\"true\"\n                        btn-checkbox-false=\"false\"\n                        uib:tooltip=\"droit d'\u00E9criture\">\n                    <span class=\"glyphicon glyphicon-edit\"></span>\n                </button>\n            </td>\n            <td>\n                <button type=\"button\" class=\"btn\"\n                        ng:class=\"{'btn-default': !droit.manage, 'btn-success': droit.manage}\"\n                        ng:model=\"droit.manage\"\n                        ng:change=\"$ctrl.set_manage( droit )\"\n                        ng:disabled=\"droit.to_delete || droit.sharable_id\"\n                        uib:btn-checkbox\n                        btn-checkbox-true=\"true\"\n                        btn-checkbox-false=\"false\"\n                        uib:tooltip=\"droit d'administration\">\n                    <span class=\"glyphicon glyphicon-cog\"></span>\n                </button>\n            </td>\n            <td>\n                <button type=\"button\" class=\"btn\"\n                        ng:class=\"{'btn-default': !droit.to_delete, 'btn-warning': droit.to_delete}\"\n                        ng:disabled=\"!droit.deletable && !droit.to_delete\"\n                        ng:model=\"droit.to_delete\"\n                        ng:change=\"$ctrl.update_deletabilities()\"\n                        uib:btn-checkbox\n                        btn-checkbox-true=\"true\"\n                        btn-checkbox-false=\"false\">\n                    <span class=\"glyphicon glyphicon-trash\"></span>\n                </button>\n            </td>\n        </tr>\n        <tfoot>\n            <td colspan=\"3\">\n                <button class=\"btn btn-default\"\n                        ng:click=\"$ctrl.add({ uid: '...', read: true, write: true })\">\n                    <span class=\"glyphicon glyphicon-plus-sign\"></span> par personne\n                </button>\n\n                <button class=\"btn btn-default\"\n                        ng:click=\"$ctrl.add({ profil_id: '...', read: true, write: false })\">\n                    <span class=\"glyphicon glyphicon-plus-sign\"></span> par profil\n                </button>\n\n                <button class=\"btn btn-warning pull-right\"\n                        ng:if=\"ctrl.sharing_enabled\"\n                        ng:click=\"$ctrl.add_sharable({ read: true, write: false })\">\n                    <span class=\"glyphicon glyphicon-plus-sign\"></span> partage\n                </button>\n            </td>\n        </tfoot>\n    </table>\n</div>\n"
 });
 angular.module('suiviApp')
-    .component('onglet', { bindings: { uidEleve: '<',
+    .component('onglet', {
+    bindings: {
+        uidEleve: '<',
         onglets: '<',
-        onglet: '=' },
+        onglet: '='
+    },
     controller: ['$uibModal', '$state', '$q', 'Saisies', 'Popups',
         function ($uibModal, $state, $q, Saisies, Popups) {
             var ctrl = this;
             ctrl.manage_onglet = Popups.onglet;
-            ctrl.order_by = { field: 'date',
-                reverse: true };
+            ctrl.order_by = {
+                field: 'date',
+                reverse: true
+            };
             ctrl.callback_popup_onglet = function (onglet) {
                 if (onglet.action == 'deleted') {
                     $state.go('carnet', { uid_eleve: ctrl.uidEleve }, { reload: true });
@@ -251,8 +269,10 @@ angular.module('suiviApp')
             };
             ctrl.$onInit = function () {
                 init_new_saisie();
-                Saisies.query({ uid_eleve: ctrl.uidEleve,
-                    onglet_id: ctrl.onglet.id }).$promise
+                Saisies.query({
+                    uid_eleve: ctrl.uidEleve,
+                    onglet_id: ctrl.onglet.id
+                }).$promise
                     .then(function success(response) {
                     ctrl.saisies = response;
                 }, function error(response) { });
@@ -261,7 +281,8 @@ angular.module('suiviApp')
     template: "\n<span class=\"hidden-xs hidden-sm floating-button toggle big off jaune\"\nng:if=\"$ctrl.onglet.manageable\"\nng:click=\"$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\"></span>\n\n<saisie class=\"col-md-12\"\nstyle=\"display: inline-block;\"\nng:if=\"$ctrl.new_saisie\"\nuid-eleve=\"$ctrl.uidEleve\"\nonglet=\"$ctrl.onglet\"\nsaisie=\"$ctrl.new_saisie\"\ncallback=\"$ctrl.saisie_callback( $ctrl.new_saisie )\"></saisie>\n\n<div class=\"col-md-12\" style=\"margin-bottom: 10px;\">\n<button class=\"btn btn-sm btn-primary pull-right\"\nng:click=\"$ctrl.order_by.reverse = !$ctrl.order_by.reverse\"\nng:if=\"$ctrl.saisies.length > 1\">\n<span class=\"glyphicon\"\nng:class=\"{'glyphicon-sort-by-order': $ctrl.order_by.reverse, 'glyphicon-sort-by-order-alt': !$ctrl.order_by.reverse}\"></span>\nTrier par la date de publication la plus <span ng:if=\"$ctrl.order_by.reverse\">r\u00E9cente</span><span ng:if=\"!$ctrl.order_by.reverse\">ancienne</span>.\n</button>\n</div>\n\n<div class=\"col-md-12 saisies\" style=\"overflow-y: auto;\">\n\n<saisie class=\"col-md-12\" style=\"display: inline-block;\"\nng:repeat=\"saisie in $ctrl.saisies | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse\"\nuid-eleve=\"$ctrl.uidEleve\"\nonglet=\"$ctrl.onglet\"\nsaisie=\"saisie\"\ncallback=\"$ctrl.saisie_callback( saisie )\"></saisie>\n</div>\n"
 });
 angular.module('suiviApp')
-    .component('onglets', { bindings: { uidEleve: '<' },
+    .component('onglets', {
+    bindings: { uidEleve: '<' },
     controller: ['$uibModal', 'Carnets', 'Onglets', 'Popups',
         function ($uibModal, Carnets, Onglets, Popups) {
             var ctrl = this;
@@ -285,10 +306,13 @@ angular.module('suiviApp')
     template: "\n<uib-tabset>\n    <uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n        <uib-tab-heading> {{onglet.nom}} </uib-tab-heading>\n\n        <onglet uid-eleve=\"$ctrl.uidEleve\"\n                onglets=\"$ctrl.onglets\"\n                onglet=\"onglet\"></onglet>\n    </uib-tab>\n\n    <li>\n        <a href\n           class=\"bleu add-onglet\"\n           ng:click=\"$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n            <span class=\"glyphicon glyphicon-plus\"></span>\n        </a>\n    </li>\n</uib-tabset>\n"
 });
 angular.module('suiviApp')
-    .component('saisie', { bindings: { uidEleve: '<',
+    .component('saisie', {
+    bindings: {
+        uidEleve: '<',
         onglet: '<',
         saisie: '=',
-        callback: '&' },
+        callback: '&'
+    },
     controller: ['$sce', 'Saisies', 'APIs',
         function ($sce, Saisies, APIs) {
             var ctrl = this;
@@ -317,7 +341,8 @@ angular.module('suiviApp')
                 }, function error(response) { console.log(response); });
             };
             ctrl.delete = function () {
-                swal({ title: 'Êtes-vous sur ?',
+                swal({
+                    title: 'Êtes-vous sur ?',
                     text: "La saisie sera définitivement supprimée !",
                     type: 'warning',
                     showCancelButton: true,
@@ -368,7 +393,7 @@ angular.module('suiviApp')
             ctrl.eleves = [];
             var current_user = undefined;
             var fix_avatar_url = function (avatar_url) {
-                return (_(avatar_url.match(/^(user|http)/)).isNull() ? URL_ENT + '/' : '') + avatar_url;
+                return (_(avatar_url.match(/^(user|http)/)).isNull() ? URL_ENT + "/" : '') + avatar_url;
             };
             APIs.get_current_user()
                 .then(function (response) {
@@ -497,12 +522,13 @@ angular.module('suiviApp')
 angular.module('suiviApp')
     .factory('Carnets', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
-        return $resource(APP_PATH + '/api/carnets/:uid_eleve', { uid_eleve: '@uid_eleve' }, { update: { method: 'PUT' } });
+        return $resource(APP_PATH + "/api/carnets/:uid_eleve", { uid_eleve: '@uid_eleve' }, { update: { method: 'PUT' } });
     }]);
 angular.module('suiviApp')
     .factory('DroitsOnglets', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
-        return $resource(APP_PATH + '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:id', { uid_eleve: '@uid_eleve',
+        return $resource(APP_PATH + "/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:id", {
+            uid_eleve: '@uid_eleve',
             onglet_id: '@onglet_id',
             id: '@id',
             uid: '@uid',
@@ -510,35 +536,44 @@ angular.module('suiviApp')
             sharable_id: '@sharable_id',
             read: '@read',
             write: '@write',
-            manage: '@manage' }, { update: { method: 'PUT' } });
+            manage: '@manage'
+        }, { update: { method: 'PUT' } });
     }]);
 angular.module('suiviApp')
     .factory('Onglets', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
-        return $resource(APP_PATH + '/api/carnets/:uid_eleve/onglets/:id', { uid_eleve: '@uid_eleve',
+        return $resource(APP_PATH + "/api/carnets/:uid_eleve/onglets/:id", {
+            uid_eleve: '@uid_eleve',
             id: '@id',
-            nom: '@nom' }, { update: { method: 'PUT' } });
+            nom: '@nom'
+        }, { update: { method: 'PUT' } });
     }]);
 angular.module('suiviApp')
     .factory('Saisies', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
-        return $resource(APP_PATH + '/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id', { uid_eleve: '@uid_eleve',
+        return $resource(APP_PATH + "/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id", {
+            uid_eleve: '@uid_eleve',
             onglet_id: '@onglet_id',
             id: '@id',
-            contenu: '@contenu' }, { update: { method: 'PUT' } });
+            contenu: '@contenu'
+        }, { update: { method: 'PUT' } });
     }]);
 angular.module('suiviApp')
     .factory('User', ['$resource', '$rootScope', 'URL_ENT', 'UID',
     function ($resource, $rootScope, URL_ENT, UID) {
-        return $resource(URL_ENT + '/api/users/' + UID, { expand: 'true' }, { get: { cache: false,
+        return $resource(URL_ENT + "/api/users/" + UID, { expand: 'true' }, {
+            get: {
+                cache: false,
                 transformResponse: function (response) {
                     var user = angular.fromJson(response);
                     user.profil_actif = _(user.profiles).findWhere({ active: true });
                     user.is_admin = function () {
                         return !_(user.profil_actif).isUndefined()
                             && !_.chain(user.profiles)
-                                .findWhere({ structure_id: user.profil_actif.structure_id,
-                                type: 'ADM' })
+                                .findWhere({
+                                structure_id: user.profil_actif.structure_id,
+                                type: 'ADM'
+                            })
                                 .isUndefined()
                                 .value();
                     };
@@ -552,10 +587,10 @@ angular.module('suiviApp')
     function ($http, $q, User, URL_ENT, APP_PATH) {
         var APIs = this;
         APIs.query_profiles_types = _.memoize(function () {
-            return $http.get(URL_ENT + '/api/profiles_types');
+            return $http.get(URL_ENT + "/api/profiles_types");
         });
         APIs.get_user = _.memoize(function (user_id) {
-            return $http.get(URL_ENT + '/api/users/' + user_id)
+            return $http.get(URL_ENT + "/api/users/" + user_id)
                 .then(function (response) {
                 response.data.profil_actif = _(response.data.profiles).findWhere({ active: true });
                 if (_(response.data.profil_actif).isUndefined() && !_(response.data.profiles).isEmpty()) {
@@ -584,7 +619,7 @@ angular.module('suiviApp')
                 return $q.resolve({ data: [] });
             }
             else {
-                return $http.get(URL_ENT + '/api/users/', { params: { 'id[]': users_ids } });
+                return $http.get(URL_ENT + "/api/users/", { params: { 'id[]': users_ids } });
             }
         });
         APIs.get_current_user_groups = _.memoize(function () {
@@ -607,32 +642,32 @@ angular.module('suiviApp')
             });
         });
         APIs.get_group = _.memoize(function (regroupement_id) {
-            return $http.get(URL_ENT + '/api/groups/' + regroupement_id);
+            return $http.get(URL_ENT + "/api/groups/" + regroupement_id);
         });
         APIs.get_groups = _.memoize(function (groups_ids) {
             if (_(groups_ids).isEmpty()) {
                 return $q.resolve({ data: [] });
             }
             else {
-                return $http.get(URL_ENT + '/api/groups/', { params: { 'id[]': groups_ids } });
+                return $http.get(URL_ENT + "/api/groups/", { params: { 'id[]': groups_ids } });
             }
         });
         APIs.get_groups_of_structures = _.memoize(function (structures_ids) {
-            return $http.get(URL_ENT + '/api/groups/', { params: { 'structure_id[]': structures_ids } });
+            return $http.get(URL_ENT + "/api/groups/", { params: { 'structure_id[]': structures_ids } });
         });
         APIs.get_subjects = _.memoize(function (subjects_ids) {
             if (_(subjects_ids).isEmpty()) {
                 return $q.resolve({ data: [] });
             }
             else {
-                return $http.get(URL_ENT + '/api/subjects/', { params: { 'id[]': subjects_ids } });
+                return $http.get(URL_ENT + "/api/subjects/", { params: { 'id[]': subjects_ids } });
             }
         });
         APIs.query_carnets_contributed_to = function (uid) {
-            return $http.get(APP_PATH + '/api/carnets/contributed/' + uid);
+            return $http.get(APP_PATH + "/api/carnets/contributed/" + uid);
         };
         APIs.get_structure = _.memoize(function (uai) {
-            return $http.get(URL_ENT + '/api/structures/' + uai);
+            return $http.get(URL_ENT + "/api/structures/" + uai);
         });
         APIs.query_people_concerned_about = _.memoize(function (uid) {
             var eleve = null;
@@ -775,9 +810,12 @@ angular.module('suiviApp')
     function ($uibModal, $q, Onglets) {
         var service = this;
         service.onglet = function (uid, onglet, all_onglets, callback) {
-            $uibModal.open({ resolve: { uid: function () { return uid; },
+            $uibModal.open({
+                resolve: {
+                    uid: function () { return uid; },
                     onglet: function () { return _(onglet).isNull() ? { nom: '' } : onglet; },
-                    all_onglets: function () { return all_onglets; } },
+                    all_onglets: function () { return all_onglets; }
+                },
                 controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uid', 'onglet', 'all_onglets',
                     function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uid, onglet, all_onglets) {
                         var ctrl = $scope;
@@ -788,8 +826,10 @@ angular.module('suiviApp')
                         ctrl.onglet.delete = false;
                         ctrl.valid_name = true;
                         if (_(ctrl.onglet).has('id')) {
-                            DroitsOnglets.query({ uid_eleve: ctrl.uid,
-                                onglet_id: ctrl.onglet.id }).$promise
+                            DroitsOnglets.query({
+                                uid_eleve: ctrl.uid,
+                                onglet_id: ctrl.onglet.id
+                            }).$promise
                                 .then(function success(response) {
                                 ctrl.droits = _(response).map(function (droit) {
                                     droit.uid_eleve = ctrl.uid;
@@ -817,11 +857,14 @@ angular.module('suiviApp')
                             return ctrl.valid_name;
                         };
                         ctrl.ok = function () {
-                            $uibModalInstance.close({ onglet: ctrl.onglet,
-                                droits: ctrl.droits });
+                            $uibModalInstance.close({
+                                onglet: ctrl.onglet,
+                                droits: ctrl.droits
+                            });
                         };
                         ctrl.delete = function () {
-                            swal({ title: 'Êtes-vous sur ?',
+                            swal({
+                                title: 'Êtes-vous sur ?',
                                 text: "L'onglet ainsi que toutes les saisies et droits associés seront définitivement supprimés !",
                                 type: 'warning',
                                 showCancelButton: true,
@@ -846,8 +889,10 @@ angular.module('suiviApp')
                 var action = 'rien';
                 if (_(onglet).isNull()) {
                     action = 'created';
-                    promise = new Onglets({ uid_eleve: uid,
-                        nom: response_popup.onglet.nom }).$save();
+                    promise = new Onglets({
+                        uid_eleve: uid,
+                        nom: response_popup.onglet.nom
+                    }).$save();
                 }
                 else {
                     response_popup.onglet.uid_eleve = uid;

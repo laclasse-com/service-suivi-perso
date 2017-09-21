@@ -1,8 +1,8 @@
-angular.module('suiviApp')
-  .component('trombinoscope',
+angular.module( 'suiviApp' )
+  .component( 'trombinoscope',
   {
-    controller: ['$q', 'URL_ENT', 'APIs',
-      function($q, URL_ENT, APIs) {
+    controller: [ '$q', 'URL_ENT', 'APIs',
+      function( $q, URL_ENT, APIs ) {
         let ctrl = this;
         ctrl.search = '';
         ctrl.only_display_contributed_to = false;
@@ -10,41 +10,41 @@ angular.module('suiviApp')
 
         let current_user = undefined;
 
-        let fix_avatar_url = function(avatar_url) {
-          return (_(avatar_url.match(/^(user|http)/)).isNull() ? URL_ENT + '/' : '') + avatar_url;
+        let fix_avatar_url = function( avatar_url ) {
+          return ( _( avatar_url.match( /^(user|http)/ ) ).isNull() ? `${ URL_ENT }/` : '' ) + avatar_url;
         };
 
         APIs.get_current_user()
-          .then(function(response) {
+          .then( function( response ) {
             current_user = response;
 
-            current_user.avatar = fix_avatar_url(current_user.avatar);
+            current_user.avatar = fix_avatar_url( current_user.avatar );
 
             return APIs.get_current_user_groups();
-          })
-          .then(function(groups) {
-            let classes = _(groups).where({ type: 'CLS' });
+          } )
+          .then( function( groups ) {
+            let classes = _( groups ).where( { type: 'CLS' } );
 
-            if (current_user.profil_actif.type === 'ELV') {
-              current_user.regroupement = { libelle: classes[0].name };
+            if ( current_user.profil_actif.type === 'ELV' ) {
+              current_user.regroupement = { libelle: classes[ 0 ].name };
 
-              ctrl.eleves = [current_user];
-            } else if (current_user.profil_actif.type === 'TUT') {
-              let users_ids = _(current_user.children).pluck('child_id');
+              ctrl.eleves = [ current_user ];
+            } else if ( current_user.profil_actif.type === 'TUT' ) {
+              let users_ids = _( current_user.children ).pluck( 'child_id' );
 
-              if (!_(users_ids).isEmpty()) {
-                APIs.get_users(users_ids)
-                  .then(function(users) {
-                    ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
-                      eleve.avatar = fix_avatar_url(eleve.avatar);
-                      let groups_ids = _(eleve.groups).pluck('group_id');
+              if ( !_( users_ids ).isEmpty() ) {
+                APIs.get_users( users_ids )
+                  .then( function( users ) {
+                    ctrl.eleves = ctrl.eleves.concat( _( users.data ).map( function( eleve ) {
+                      eleve.avatar = fix_avatar_url( eleve.avatar );
+                      let groups_ids = _( eleve.groups ).pluck( 'group_id' );
 
-                      if (!_(groups_ids).isEmpty()) {
-                        APIs.get_groups(groups_ids)
-                          .then(function(response) {
-                            let regroupement = _(response.data).findWhere({ type: 'CLS' });
+                      if ( !_( groups_ids ).isEmpty() ) {
+                        APIs.get_groups( groups_ids )
+                          .then( function( response ) {
+                            let regroupement = _( response.data ).findWhere( { type: 'CLS' } );
 
-                            if (!_(regroupement).isUndefined()) {
+                            if ( !_( regroupement ).isUndefined() ) {
                               eleve.regroupement = {
                                 id: regroupement.id,
                                 name: regroupement.name,
@@ -53,33 +53,33 @@ angular.module('suiviApp')
                               eleve.etablissement = regroupement.structure_id;
                               eleve.enseignants = regroupement.profs;
                             }
-                          });
+                          } );
                       }
 
                       return eleve;
-                    }));
-                  });
+                    } ) );
+                  } );
               }
             } else {
-              APIs.get_groups(_.chain(classes)
-                .select(function(regroupement) {
-                  return _(regroupement).has('structure_id') && regroupement.structure_id === current_user.profil_actif.structure_id;
-                })
-                .pluck('id')
+              APIs.get_groups( _.chain( classes )
+                .select( function( regroupement ) {
+                  return _( regroupement ).has( 'structure_id' ) && regroupement.structure_id === current_user.profil_actif.structure_id;
+                } )
+                .pluck( 'id' )
                 .uniq()
-                .value())
-                .then(function success(response) {
+                .value() )
+                .then( function success( response ) {
                   ctrl.groups = response.data;
                   ctrl.eleves = [];
 
-                  _(response.data).each(function(regroupement) {
-                    regroupement.profs = _.chain(regroupement.users).select(function(user) { return user.type === 'ENS'; }).pluck('user_id').value();
-                    let users_ids = _.chain(regroupement.users).select(function(user) { return user.type === 'ELV'; }).pluck('user_id').value();
+                  _( response.data ).each( function( regroupement ) {
+                    regroupement.profs = _.chain( regroupement.users ).select( function( user ) { return user.type === 'ENS'; } ).pluck( 'user_id' ).value();
+                    let users_ids = _.chain( regroupement.users ).select( function( user ) { return user.type === 'ELV'; } ).pluck( 'user_id' ).value();
 
-                    APIs.get_users(users_ids)
-                      .then(function(users) {
-                        ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
-                          eleve.avatar = fix_avatar_url(eleve.avatar);
+                    APIs.get_users( users_ids )
+                      .then( function( users ) {
+                        ctrl.eleves = ctrl.eleves.concat( _( users.data ).map( function( eleve ) {
+                          eleve.avatar = fix_avatar_url( eleve.avatar );
 
                           eleve.regroupement = {
                             id: regroupement.id,
@@ -90,21 +90,21 @@ angular.module('suiviApp')
                           eleve.enseignants = regroupement.profs;
 
                           return eleve;
-                        }));
-                      });
-                  });
+                        } ) );
+                      } );
+                  } );
                 },
-                function error(response) { });
+                function error( response ) { } );
             }
 
-            APIs.query_carnets_contributed_to(current_user.id)
-              .then(function success(response) {
+            APIs.query_carnets_contributed_to( current_user.id )
+              .then( function success( response ) {
                 ctrl.contributed_to = response.data;
               },
-              function error(response) { });
-          });
+              function error( response ) { } );
+          } );
       }],
-      template: `
+    template: `
       <div class="col-md-4 blanc aside" style="padding: 0;">
         <div class="search-filter" style="padding: 20px; background-color: #baddad;">
           <label for="search"> Filtrage des élèves affichés : </label>
@@ -163,4 +163,4 @@ angular.module('suiviApp')
         </ul>
       </div>
 `
-  });
+  } );

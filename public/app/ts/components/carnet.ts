@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module( 'suiviApp' )
-    .component( 'carnet',
-                { bindings: { uidEleve: '<' },
-                  template: `
+  .component( 'carnet',
+  {
+    bindings: { uidEleve: '<' },
+    template: `
 <div class="col-md-4 gris1-moins aside aside-carnet">
     <a class="col-md-12 btn btn-lg noir-moins go-back" ui:sref="trombinoscope()"> ↰ Retour au trombinoscope </a>
 
@@ -20,4 +21,4 @@ angular.module( 'suiviApp' )
 <onglets class="col-md-8 carnet"
          uid-eleve="$ctrl.uidEleve"></onglets>
 `
-                } );
+  } );

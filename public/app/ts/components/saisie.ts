@@ -1,90 +1,94 @@
 'use strict';
 
 angular.module( 'suiviApp' )
-    .component( 'saisie',
-                { bindings: { uidEleve: '<',
-                              onglet: '<',
-                              saisie: '=',
-                              callback: '&' },
-                  controller: [ '$sce', 'Saisies', 'APIs',
-                                function( $sce, Saisies, APIs ) {
-                                    let ctrl = this;
+  .component( 'saisie',
+  {
+    bindings: {
+      uidEleve: '<',
+      onglet: '<',
+      saisie: '=',
+      callback: '&'
+    },
+    controller: [ '$sce', 'Saisies', 'APIs',
+      function( $sce, Saisies, APIs ) {
+        let ctrl = this;
 
-                                    ctrl.toggle_edit = function() {
-                                        ctrl.edition = !ctrl.edition;
+        ctrl.toggle_edit = function() {
+          ctrl.edition = !ctrl.edition;
 
-                                        if ( !ctrl.edition ) {
-                                            ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
-                                        }
-                                    };
+          if ( !ctrl.edition ) {
+            ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
+          }
+        };
 
-                                    ctrl.cancel = function() {
-                                        ctrl.toggle_edit();
-                                    };
+        ctrl.cancel = function() {
+          ctrl.toggle_edit();
+        };
 
-                                    ctrl.save = function() {
-                                        if ( !_(ctrl.saisie).has('$save') ) {
-                                            ctrl.saisie.onglet_id = ctrl.onglet.id;
-                                            ctrl.saisie.uid_eleve = ctrl.uidEleve;
+        ctrl.save = function() {
+          if ( !_( ctrl.saisie ).has( '$save' ) ) {
+            ctrl.saisie.onglet_id = ctrl.onglet.id;
+            ctrl.saisie.uid_eleve = ctrl.uidEleve;
 
-                                            ctrl.saisie = new Saisies( ctrl.saisie );
-                                        }
-                                        let promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
+            ctrl.saisie = new Saisies( ctrl.saisie );
+          }
+          let promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
 
-                                        promise.then( function success( response ) {
-                                            if ( !ctrl.new_saisie ) {
-                                                ctrl.toggle_edit();
-                                            }
-                                            ctrl.saisie.action = ctrl.new_saisie ? 'created' : 'updated';
-                                            ctrl.callback();
-                                        },
-                                                      function error( response ) { console.log( response ) });
-                                    };
+          promise.then( function success( response ) {
+            if ( !ctrl.new_saisie ) {
+              ctrl.toggle_edit();
+            }
+            ctrl.saisie.action = ctrl.new_saisie ? 'created' : 'updated';
+            ctrl.callback();
+          },
+            function error( response ) { console.log( response ) } );
+        };
 
-                                    ctrl.delete = function() {
-                                        swal({ title: 'Êtes-vous sur ?',
-                                               text: "La saisie sera définitivement supprimée !",
-                                               type: 'warning',
-                                               showCancelButton: true,
-                                               confirmButtonColor: '#3085d6',
-                                               confirmButtonText: 'Oui, je confirme !',
-                                               cancelButtonColor: '#d33',
-                                               cancelButtonText: 'Annuler'
-                                             })
-                                            .then( function() {
-                                                ctrl.saisie.$delete()
-                                                    .then( function(  ) {
-                                                        ctrl.saisie.action = 'deleted';
-                                                        ctrl.callback();
-                                                    });
-                                            } );
-                                    };
+        ctrl.delete = function() {
+          swal( {
+            title: 'Êtes-vous sur ?',
+            text: "La saisie sera définitivement supprimée !",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, je confirme !',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Annuler'
+          } )
+            .then( function() {
+              ctrl.saisie.$delete()
+                .then( function() {
+                  ctrl.saisie.action = 'deleted';
+                  ctrl.callback();
+                } );
+            } );
+        };
 
-                                    ctrl.$onInit = function() {
-                                        ctrl.edition = ctrl.saisie.create_me;
+        ctrl.$onInit = function() {
+          ctrl.edition = ctrl.saisie.create_me;
 
-                                        if ( ctrl.saisie.create_me ) {
-                                            ctrl.new_saisie = true;
-                                            ctrl.saisie.contenu = '';
-                                        } else {
-                                            ctrl.saisie = new Saisies( ctrl.saisie );
-                                        }
-                                        ctrl.saisie.uid_eleve = ctrl.uidEleve;
-                                        ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
+          if ( ctrl.saisie.create_me ) {
+            ctrl.new_saisie = true;
+            ctrl.saisie.contenu = '';
+          } else {
+            ctrl.saisie = new Saisies( ctrl.saisie );
+          }
+          ctrl.saisie.uid_eleve = ctrl.uidEleve;
+          ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
 
-                                        APIs.get_current_user()
-                                            .then( function( current_user ) {
-                                                ctrl.current_user = current_user;
-                                                ctrl.editable = ctrl.onglet.writable && ctrl.saisie.uid_author === ctrl.current_user.id;
-                                            } );
-                                    };
+          APIs.get_current_user()
+            .then( function( current_user ) {
+              ctrl.current_user = current_user;
+              ctrl.editable = ctrl.onglet.writable && ctrl.saisie.uid_author === ctrl.current_user.id;
+            } );
+        };
 
-                                    ctrl.$onChanges = function( changes ) {
-                                        ctrl.saisie.uid_eleve = ctrl.uidEleve;
-                                        ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
-                                    };
-                                } ],
-                  template: `
+        ctrl.$onChanges = function( changes ) {
+          ctrl.saisie.uid_eleve = ctrl.uidEleve;
+          ctrl.saisie.trusted_contenu = $sce.trustAsHtml( ctrl.saisie.contenu );
+        };
+      }],
+    template: `
 <div class="panel panel-default saisie-display">
     <div class="panel-heading" ng:if="$ctrl.saisie.id">
         <user-details class="col-md-4"
@@ -145,4 +149,4 @@ angular.module( 'suiviApp' )
     </div>
 </div>
 `
-                } );
+  } );

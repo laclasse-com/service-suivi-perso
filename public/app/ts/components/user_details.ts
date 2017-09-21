@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('suiviApp')
-  .component('userDetails',
+angular.module( 'suiviApp' )
+  .component( 'userDetails',
   {
     bindings: {
       uid: '<',
@@ -14,44 +14,44 @@ angular.module('suiviApp')
       showAddress: '<',
       showBirthdate: '<'
     },
-    controller: ['APIs', 'URL_ENT',
-      function(APIs, URL_ENT) {
+    controller: [ 'APIs', 'URL_ENT',
+      function( APIs, URL_ENT ) {
         let ctrl = this;
 
         ctrl.URL_ENT = URL_ENT;
 
         ctrl.$onInit = function() {
-          APIs.get_user(ctrl.uid)
-            .then(function success(response) {
+          APIs.get_user( ctrl.uid )
+            .then( function success( response ) {
               ctrl.user = response.data;
 
-              if (ctrl.showClasse) {
+              if ( ctrl.showClasse ) {
                 ctrl.user.get_actual_groups()
-                  .then(function(response) {
+                  .then( function( response ) {
                     ctrl.user.actual_groups = response;
 
-                    _(ctrl.user.actual_groups).each(function(group) {
-                      APIs.get_structure(group.structure_id)
-                        .then(function(response) {
+                    _( ctrl.user.actual_groups ).each( function( group ) {
+                      APIs.get_structure( group.structure_id )
+                        .then( function( response ) {
                           group.structure = response.data;
-                        });
-                    });
-                  });
+                        } );
+                    } );
+                  } );
               }
             },
-            function error(response) { });
+            function error( response ) { } );
 
-          if (ctrl.showConcernedPeople) {
-            APIs.query_people_concerned_about(ctrl.uid)
-              .then(function success(response) {
-                ctrl.concerned_people = _(response).groupBy('type');
-                delete ctrl.concerned_people['Élève'];
+          if ( ctrl.showConcernedPeople ) {
+            APIs.query_people_concerned_about( ctrl.uid )
+              .then( function success( response ) {
+                ctrl.concerned_people = _( response ).groupBy( 'type' );
+                delete ctrl.concerned_people[ 'Élève' ];
               },
-              function error(response) { });
+              function error( response ) { } );
           }
         };
       }],
-      template: `
+    template: `
       <div class="col-md-12">
         <div class="avatar-container gris4 pull-left" ng:style="{'height': $ctrl.small ? '44px' : '175px', 'width': $ctrl.small ? '44px' : '175px'}">
           <img class="avatar noir-moins"
@@ -143,4 +143,4 @@ angular.module('suiviApp')
         </uib-accordion>
       </fieldset>
 `
-  });
+  } );
