@@ -1,23 +1,23 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module( 'suiviApp',
-  [ 'ngColorPicker',
+angular.module('suiviApp',
+  ['ngColorPicker',
     'ngResource',
     'textAngular',
     'ui.bootstrap',
-    'ui.router' ] )
-  .config( [ '$httpProvider',
-    function( $httpProvider ) {
+    'ui.router'])
+  .config(['$httpProvider',
+    function($httpProvider) {
       $httpProvider.defaults.withCredentials = true;
-    }] )
+    }])
   // textAngular
-  .config( [ '$provide',
-    function( $provide ) {
+  .config(['$provide',
+    function($provide) {
       //traduction de textAngular
-      $provide.decorator( 'taTranslations',
-        [ '$delegate',
-          function( $delegate ) {
+      $provide.decorator('taTranslations',
+        ['$delegate',
+          function($delegate) {
             $delegate.html.tooltip = 'Basculer entre les vues HTML et texte enrichi';
             $delegate.justifyLeft.tooltip = 'Justifier à gauche';
             $delegate.justifyCenter.tooltip = 'Centrer';
@@ -42,30 +42,30 @@ angular.module( 'suiviApp',
             $delegate.redo.tooltip = 'Rétablir';
 
             return $delegate;
-          }] );
+          }]);
 
       // configuration de textAngular
-      $provide.decorator( 'taOptions',
-        [ '$delegate', 'taRegisterTool',
-          function( taOptions, taRegisterTool ) {
-            let colorpicker_taTool = function( type ) {
-              let style_prefix = ( type === 'backcolor' ) ? 'background-' : '';
-              let couleurs = [ '#7bd148', '#5484ed', '#a4bdfc', '#46d6db', '#7ae7bf', '#51b749', '#fbd75b', '#ffb878', '#ff887c', '#dc2127', '#dbadff', '#e1e1e1' ];
-              if ( type === 'backcolor' ) {
-                couleurs.push( 'transparent' );
+      $provide.decorator('taOptions',
+        ['$delegate', 'taRegisterTool',
+          function(taOptions, taRegisterTool) {
+            let colorpicker_taTool = function(type) {
+              let style_prefix = (type === 'backcolor') ? 'background-' : '';
+              let couleurs = ['#7bd148', '#5484ed', '#a4bdfc', '#46d6db', '#7ae7bf', '#51b749', '#fbd75b', '#ffb878', '#ff887c', '#dc2127', '#dbadff', '#e1e1e1'];
+              if (type === 'backcolor') {
+                couleurs.push('transparent');
               }
 
               return {
                 couleurs: couleurs,
                 display: '<span uib-dropdown><a uib-dropdown-toggle><i class="fa fa-font" data-ng-style="{\'' + style_prefix + 'color\': selected }"></i> <i class="fa fa-caret-down"></i></a><ng-color-picker uib-dropdown-menu selected="selected" colors="couleurs"></ng-color-picker></span>',
                 action: function() {
-                  return ( this.selected === 'nil' ) ? false : this.$editor().wrapSelection( type, this.selected );
+                  return (this.selected === 'nil') ? false : this.$editor().wrapSelection(type, this.selected);
                 }
               };
             };
-            taRegisterTool( 'fontColor', colorpicker_taTool( 'forecolor' ) );
+            taRegisterTool('fontColor', colorpicker_taTool('forecolor'));
 
-            taRegisterTool( 'table', {
+            taRegisterTool('table', {
               columns: {
                 value: 1,
                 hovered: 1
@@ -74,10 +74,10 @@ angular.module( 'suiviApp',
                 value: 1,
                 hovered: 1
               },
-              hover: function( objet, value ) {
+              hover: function(objet, value) {
                 objet.hovered = value;
               },
-              leave: function( objet ) {
+              leave: function(objet) {
                 objet.hovered = objet.value;
               },
               tooltiptext: 'insérer un tableau',
@@ -108,21 +108,21 @@ angular.module( 'suiviApp',
 `,
               insert_table: function() {
                 let tds = '';
-                _( this.columns.value ).times( function( i ) { tds = tds + '<td>&nbsp;</td>'; } );
+                _(this.columns.value).times(function(i) { tds = tds + '<td>&nbsp;</td>'; });
                 let trs = '';
-                _( this.rows.value ).times( function( j ) { trs = trs + '<tr>' + tds + '</tr>'; } );
+                _(this.rows.value).times(function(j) { trs = trs + '<tr>' + tds + '</tr>'; });
 
-                this.$editor().wrapSelection( 'insertHTML', '<table class="table table-bordered">' + trs + '</table>' );
+                this.$editor().wrapSelection('insertHTML', '<table class="table table-bordered">' + trs + '</table>');
 
                 this.deferration.resolve();
               },
-              action: function( deferred ) {
+              action: function(deferred) {
                 this.deferration = deferred;
                 return false;
               }
-            } );
+            });
 
-            taOptions.toolbar = [ [ 'bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'fontColor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'table', 'insertLink', 'insertImage', 'html', 'undo', 'redo' ] ];
+            taOptions.toolbar = [['bold', 'italics', 'underline', 'ul', 'ol', 'quote', 'fontColor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'table', 'insertLink', 'insertImage', 'html', 'undo', 'redo']];
 
             taOptions.classes = {
               focussed: 'focussed',
@@ -135,13 +135,13 @@ angular.module( 'suiviApp',
               htmlEditor: 'form-control'
             };
             return taOptions;
-          }] );
+          }]);
 
-      $provide.decorator( 'taTools',
-        [ '$delegate',
-          function( taTools ) {
+      $provide.decorator('taTools',
+        ['$delegate',
+          function(taTools) {
             taTools.html.buttontext = 'HTML';
 
             return taTools;
-          }] );
-    }] );
+          }]);
+    }]);

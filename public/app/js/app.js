@@ -385,10 +385,14 @@ angular.module('suiviApp')
 });
 angular.module('suiviApp')
     .component('trombinoscope', {
-    controller: ['$q', 'URL_ENT', 'APIs',
-        function ($q, URL_ENT, APIs) {
+    controller: ['$filter', '$q', 'URL_ENT', 'APIs',
+        function ($filter, $q, URL_ENT, APIs) {
             var ctrl = this;
-            ctrl.search = '';
+            ctrl.filters = {
+                text: '',
+                groups: [],
+                grades: []
+            };
             ctrl.only_display_contributed_to = false;
             ctrl.eleves = [];
             var current_user = undefined;
@@ -446,6 +450,14 @@ angular.module('suiviApp')
                         .then(function success(response) {
                         ctrl.groups = response.data;
                         ctrl.eleves = [];
+                        APIs.get_grades(_.chain(response.data)
+                            .pluck('grades')
+                            .flatten()
+                            .pluck('grade_id')
+                            .value())
+                            .then(function success(response) {
+                            ctrl.grades = response.data;
+                        }, function error(response) { });
                         _(response.data).each(function (regroupement) {
                             regroupement.profs = _.chain(regroupement.users).select(function (user) { return user.type === 'ENS'; }).pluck('user_id').value();
                             var users_ids = _.chain(regroupement.users).select(function (user) { return user.type === 'ELV'; }).pluck('user_id').value();
@@ -453,11 +465,7 @@ angular.module('suiviApp')
                                 .then(function (users) {
                                 ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function (eleve) {
                                     eleve.avatar = fix_avatar_url(eleve.avatar);
-                                    eleve.regroupement = {
-                                        id: regroupement.id,
-                                        name: regroupement.name,
-                                        type: regroupement.type
-                                    };
+                                    eleve.regroupement = regroupement;
                                     eleve.etablissement = regroupement.structure_id;
                                     eleve.enseignants = regroupement.profs;
                                     return eleve;
@@ -471,8 +479,22 @@ angular.module('suiviApp')
                     ctrl.contributed_to = response.data;
                 }, function error(response) { });
             });
+            ctrl.apply_filters = function () {
+                var selected_groups_ids = _.chain(ctrl.groups).where({ selected: true }).pluck('id').value();
+                var selected_grades_ids = _.chain(ctrl.grades).where({ selected: true }).pluck('id').value();
+                console.log(selected_groups_ids);
+                console.log(selected_grades_ids);
+                return function (pupil) {
+                    return ("" + pupil.firstname + pupil.lastname).toLocaleLowerCase().includes(ctrl.filters.text.toLocaleLowerCase())
+                        && (selected_groups_ids.length == 0 || _(selected_groups_ids).contains(pupil.regroupement.id))
+                        && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(_(pupil.regroupement.grades).pluck('grade_id')).length > 0);
+                };
+            };
+            ctrl.clear_filters = function (type) {
+                _(ctrl[type]).each(function (item) { item.selected = false; });
+            };
         }],
-    template: "\n      <div class=\"col-md-4 blanc aside\" style=\"padding: 0;\">\n        <div class=\"search-filter\" style=\"padding: 20px; background-color: #baddad;\">\n          <label for=\"search\"> Filtrage des \u00E9l\u00E8ves affich\u00E9s : </label>\n          <input  class=\"form-control input-sm\"\n                  style=\"display: inline; max-width: 300px;\"\n                  type=\"text\" name=\"search\"\n                  ng:model=\"$ctrl.search\" />\n          <button class=\"btn btn-sm\" style=\"margin-left: -5px;\"\n                  ng:click=\"$ctrl.search = ''\">\n            <span class=\"glyphicon glyphicon-remove\">\n            </span>\n          </button>\n        </div>\n\n        <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n          <label> Filtrage par classe : </label>\n          <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n                  ng:repeat=\"group in $ctrl.groups\"\n                  ng:click=\"$ctrl.search = group.name;\">{{group.name}}</button>\n        </div>\n\n        <div class=\"highlighted\" style=\"padding: 20px;\">\n          <label ng:if=\"$ctrl.contributed_to.length > 0\"> Carnet<span ng:if=\"$ctrl.contributed_to.length > 1\">s</span>\n          <span ng:if=\"$ctrl.contributed_to.length > 1\">auxquels</span>\n          <span ng:if=\"$ctrl.contributed_to.length < 2\">auquel</span> vous avez contribu\u00E9 : </label>\n          <ul>\n            <li ng:repeat=\"carnet in $ctrl.contributed_to\" style=\"list-style-type: none;\">\n              <a ui:sref=\"carnet({uid_eleve: carnet.uid_eleve})\">\n                <user-details uid=\"carnet.uid_eleve\"\n                              small=\"true\"\n                              show-classe=\"true\"\n                              show-avatar=\"true\">\n                </user-details>\n              </a>\n            </li>\n          </ul>\n        </div>\n      </div>\n\n      <div class=\"col-md-8 damier trombinoscope\">\n        <ul>\n          <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n              style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n              ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n              ng:repeat=\"eleve in $ctrl.eleves | filter:$ctrl.search | orderBy:['regroupement.name', 'lastname']\">\n            <a class=\"eleve\"\n               ui:sref=\"carnet({uid_eleve: eleve.id})\">\n              <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n              <div class=\"full-name\">\n                <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n                <h3 class=\"last-name\">{{eleve.lastname}}</h3>\n              </div>\n            </a>\n          </li>\n        </ul>\n      </div>\n"
+    template: "\n      <div class=\"col-md-4 blanc aside\" style=\"padding: 0;\">\n        <div class=\"search-filter\" style=\"padding: 20px; background-color: #baddad;\">\n          <label for=\"search\"> Filtrage des \u00E9l\u00E8ves affich\u00E9s <button class=\"btn btn-xs\"\n          ng:click=\"$ctrl.filters.text = ''\">\n          <span class=\"glyphicon glyphicon-remove\">\n          </span>\n          </button> : </label>\n          <input  class=\"form-control input-sm\"\n                  style=\"display: inline; max-width: 300px;\"\n                  type=\"text\" name=\"search\"\n                  ng:model=\"$ctrl.filters.text\" />\n        </div>\n\n        <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n          <label> Filtrage par classe <button class=\"btn btn-xs\"\n          ng:click=\"$ctrl.clear_filters('groups')\">\n          <span class=\"glyphicon glyphicon-remove\">\n          </span>\n          </button> : </label>\n          <div class=\"btn-group\">\n            <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n                    ng:repeat=\"group in $ctrl.groups\"\n                    ng:class=\"{'btn-success': group.selected}\"\n                    ng:model=\"group.selected\"\n                    uib:btn-checkbox>\n                    {{group.name}}\n                  </button>\n                </div>\n              </div>\n\n              <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n                <label> Filtrage par niveau <button class=\"btn btn-xs\"\n                ng:click=\"$ctrl.clear_filters('grades')\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n                </button> : </label>\n                <div class=\"btn-group\">\n                  <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n                          ng:repeat=\"grade in $ctrl.grades\"\n                          ng:class=\"{'btn-success': grade.selected}\"\n                          ng:model=\"grade.selected\"\n                          uib:btn-checkbox>\n                          {{grade.name}}\n                        </button>\n                      </div>\n                    </div>\n\n                    <div class=\"highlighted\" style=\"padding: 20px;\">\n                      <label ng:if=\"$ctrl.contributed_to.length > 0\"> Carnet<span ng:if=\"$ctrl.contributed_to.length > 1\">s</span>\n                      <span ng:if=\"$ctrl.contributed_to.length > 1\">auxquels</span>\n                      <span ng:if=\"$ctrl.contributed_to.length < 2\">auquel</span> vous avez contribu\u00E9 : </label>\n                      <ul>\n                        <li ng:repeat=\"carnet in $ctrl.contributed_to\" style=\"list-style-type: none;\">\n                          <a ui:sref=\"carnet({uid_eleve: carnet.uid_eleve})\">\n                            <user-details uid=\"carnet.uid_eleve\"\n                                          small=\"true\"\n                                          show-classe=\"true\"\n                                          show-avatar=\"true\">\n                                        </user-details>\n                                      </a>\n                                    </li>\n                                  </ul>\n                                </div>\n                              </div>\n\n                              <div class=\"col-md-8 damier trombinoscope\">\n                                <ul>\n                                  <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n                                      style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n                                      ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n                                      ng:repeat=\"eleve in $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname']\">\n                                      <a class=\"eleve\"\n                                         ui:sref=\"carnet({uid_eleve: eleve.id})\">\n                                         <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n                                         <div class=\"full-name\">\n                                           <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n                                           <h3 class=\"last-name\">{{eleve.lastname}}</h3>\n                                         </div>\n                                       </a>\n                                     </li>\n                                   </ul>\n                                 </div>\n"
 });
 angular.module('suiviApp')
     .component('userDetails', {
@@ -654,6 +676,14 @@ angular.module('suiviApp')
         });
         APIs.get_groups_of_structures = _.memoize(function (structures_ids) {
             return $http.get(URL_ENT + "/api/groups/", { params: { 'structure_id[]': structures_ids } });
+        });
+        APIs.get_grades = _.memoize(function (grades_ids) {
+            if (_(grades_ids).isEmpty()) {
+                return $q.resolve({ data: [] });
+            }
+            else {
+                return $http.get(URL_ENT + "/api/grades/", { params: { 'id[]': grades_ids } });
+            }
         });
         APIs.get_subjects = _.memoize(function (subjects_ids) {
             if (_(subjects_ids).isEmpty()) {
