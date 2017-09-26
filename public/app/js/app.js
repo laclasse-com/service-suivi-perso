@@ -574,7 +574,8 @@ angular.module('suiviApp')
     .factory('Onglets', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
         return $resource(APP_PATH + "/api/onglets/:id", {
-            uid_eleve: '@uid_eleve',
+            uid: '@uid',
+            uids: '@uids',
             id: '@id',
             nom: '@nom'
         }, {
@@ -953,7 +954,7 @@ angular.module('suiviApp')
                 if (_(onglet).isNull()) {
                     action = 'created';
                     promise = new Onglets({
-                        uid_eleve: uid,
+                        uid: uid,
                         nom: response_popup.onglet.nom
                     }).$save();
                 }
@@ -1021,8 +1022,11 @@ angular.module('suiviApp')
                 .result.then(function success(response_popup) {
                 var promises = null;
                 var action = 'created';
-                promises = APIs.batch_create_onglets(uids, response_popup.onglet);
-                $q.all(promises).then(function success(response) {
+                new Onglets({
+                    uids: uids,
+                    nom: response_popup.onglet.nom
+                }).$save()
+                    .then(function success(response) {
                     response.action = action;
                     callback(response);
                 }, function error() { });

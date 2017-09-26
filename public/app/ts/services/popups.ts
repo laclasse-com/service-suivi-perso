@@ -141,7 +141,7 @@ angular.module('suiviApp')
               action = 'created';
 
               promise = new Onglets({
-                uid_eleve: uid,
+                uid: uid,
                 nom: response_popup.onglet.nom
               }).$save();
             } else {
@@ -221,13 +221,15 @@ angular.module('suiviApp')
             let promises = null;
             let action = 'created';
 
-            promises = APIs.batch_create_onglets(uids, response_popup.onglet);
+            new Onglets({
+              uids: uids,
+              nom: response_popup.onglet.nom
+            }).$save()
+              .then(function success(response) {
+                response.action = action;
 
-            $q.all(promises).then(function success(response) {
-              response.action = action;
-
-              callback(response);
-            },
+                callback(response);
+              },
               function error() { });
           }, function error() { });
       };

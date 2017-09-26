@@ -269,27 +269,4 @@ angular.module('suiviApp')
                                                 .value());
                           });
                   });
-
-                  APIs.batch_create_onglets = function(uids, onglet, droits) {
-                      swal( { title: `Création de l'onglet « ${onglet.nom} »...`,
-                              text: "traitement en cours",
-                                  type: "info",
-                                  showLoaderOnConfirm: true,
-                              onOpen: function(){
-                                  swal.clickConfirm();
-                              },
-                              preConfirm: function() {
-                                  return new Promise( function( resolve ) {
-                                      $q.all( _(uids).map(function(uid) {
-                                          onglet.uid_eleve = uid;
-
-                                          return new Onglets( onglet ).$save();
-                                      })).then(
-                                          function success( response ) {
-                                              swal.closeModal();
-                                          } );
-                                  } );
-                              },
-                              allowOutsideClick: false } );
-                  };
               }]);

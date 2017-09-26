@@ -28,24 +28,36 @@ module Suivi
           end
 
           app.post '/api/onglets/?' do
-            carnet = get_and_check_carnet( params['uid_eleve'] )
-            onglet = carnet.onglets_dataset[nom: params['nom']]
+            request.body.rewind
+            body = JSON.parse( request.body.read )
+            single = body.key?('uid')
 
-            new_onglet = onglet.nil?
-            if new_onglet
-              onglet = Onglet.create( carnet_id: carnet.id,
-                                      nom: params['nom'],
-                                      date_creation: DateTime.now )
+            uids = single ? [ body['uid'] ] : body['uids']
 
-              onglet.init_droits( DEFAULT_RIGHTS[:Onglet], user )
+            onglets_hashes = uids.map do |uid_eleve|
+              carnet = get_and_check_carnet( uid_eleve )
+              onglet = carnet.onglets_dataset[nom: params['nom']]
+
+              new_onglet = onglet.nil?
+              if new_onglet
+                onglet = Onglet.create( carnet_id: carnet.id,
+                                        nom: params['nom'],
+                                        date_creation: DateTime.now )
+
+                onglet.init_droits( DEFAULT_RIGHTS[:Onglet], user )
+              end
+
+              onglet_hash = onglet.to_hash
+              onglet_hash[:writable] = onglet.allow?( user, :write )
+              onglet_hash[:manageable] = onglet.allow?( user, :manage )
+              onglet_hash[:created] = new_onglet
+
+              onglet_hash
             end
 
-            onglet_hash = onglet.to_hash
-            onglet_hash[:writable] = onglet.allow?( user, :write )
-            onglet_hash[:manageable] = onglet.allow?( user, :manage )
-            onglet_hash[:created] = new_onglet
+            onglets_hashes = onglets_hashes.first if single
 
-            json( onglet_hash )
+            json( onglets_hashes )
           end
 
           app.put '/api/onglets/:onglet_id' do
