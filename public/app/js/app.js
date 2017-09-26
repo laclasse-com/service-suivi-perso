@@ -556,7 +556,7 @@ angular.module('suiviApp')
 angular.module('suiviApp')
     .factory('DroitsOnglets', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
-        return $resource(APP_PATH + "/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:id", {
+        return $resource(APP_PATH + "/api/droits/:id", {
             uid_eleve: '@uid_eleve',
             onglet_id: '@onglet_id',
             id: '@id',
@@ -566,26 +566,31 @@ angular.module('suiviApp')
             read: '@read',
             write: '@write',
             manage: '@manage'
-        }, { update: { method: 'PUT' } });
+        }, {
+            update: { method: 'PUT' }
+        });
     }]);
 angular.module('suiviApp')
     .factory('Onglets', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
-        return $resource(APP_PATH + "/api/carnets/:uid_eleve/onglets/:id", {
+        return $resource(APP_PATH + "/api/onglets/:id", {
             uid_eleve: '@uid_eleve',
             id: '@id',
             nom: '@nom'
-        }, { update: { method: 'PUT' } });
+        }, {
+            update: { method: 'PUT' }
+        });
     }]);
 angular.module('suiviApp')
     .factory('Saisies', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
-        return $resource(APP_PATH + "/api/carnets/:uid_eleve/onglets/:onglet_id/saisies/:id", {
-            uid_eleve: '@uid_eleve',
-            onglet_id: '@onglet_id',
+        return $resource(APP_PATH + "/api/saisies/:id", {
             id: '@id',
+            onglet_id: '@onglet_id',
             contenu: '@contenu'
-        }, { update: { method: 'PUT' } });
+        }, {
+            update: { method: 'PUT' }
+        });
     }]);
 angular.module('suiviApp')
     .factory('User', ['$resource', '$rootScope', 'URL_ENT', 'UID',

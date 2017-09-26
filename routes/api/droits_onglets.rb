@@ -6,13 +6,13 @@ module Suivi
       module Onglets
         module Droits
           def self.registered( app )
-            app.get '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
+            app.get '/api/droits/?' do
               onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
 
               json( onglet.droits.map(&:to_hash) )
             end
 
-            app.post '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/?' do
+            app.post '/api/droits/?' do
               halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') || params.key?('sharable_id') ) && ( params.key?('read') || params.key?('write') )
 
               onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
@@ -35,13 +35,13 @@ module Suivi
               json( onglet.add_droit( droit ).to_hash )
             end
 
-            app.put '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
+            app.put '/api/:droit_id' do
               halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') || params.key?('sharable_id') ) && ( params.key?('read') || params.key?('write') )
-
-              get_and_check_onglet( params['onglet_id'], user, :manage )
 
               droit = Droit[params['droit_id']]
               halt( 404, '404 Unknown droit' ) if droit.nil?
+
+              get_and_check_onglet( droit.onglet_id, user, :manage )
 
               %w[uid profil_id read write manage].each do |key|
                 droit.update( key => params[ key ] ) if params.key?( key )
@@ -52,11 +52,11 @@ module Suivi
               json( droit.to_hash )
             end
 
-            app.delete '/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:droit_id' do
-              get_and_check_onglet( params['onglet_id'], user, :manage )
-
-              droit = Droit[params['droit_id']]
+            app.delete '/api/droits/:droit_id' do
+              droit = Droit[id: params['droit_id']]
               halt( 404, '404 Unknown droit' ) if droit.nil?
+
+              get_and_check_onglet( droit.onglet_id, user, :manage )
 
               json( droit.destroy )
             end

@@ -1,8 +1,8 @@
-angular.module( 'suiviApp' )
-  .factory( 'DroitsOnglets',
-  [ '$resource', 'APP_PATH',
-    function( $resource, APP_PATH ) {
-      return $resource( `${ APP_PATH }/api/carnets/:uid_eleve/onglets/:onglet_id/droits/:id`,
+angular.module('suiviApp')
+  .factory('DroitsOnglets',
+  ['$resource', 'APP_PATH',
+    function($resource, APP_PATH) {
+      return $resource(`${APP_PATH}/api/droits/:id`,
         {
           uid_eleve: '@uid_eleve',
           onglet_id: '@onglet_id',
@@ -14,5 +14,7 @@ angular.module( 'suiviApp' )
           write: '@write',
           manage: '@manage'
         },
-        { update: { method: 'PUT' } } );
-    }] );
+        {
+          update: { method: 'PUT' }
+        });
+    }]);

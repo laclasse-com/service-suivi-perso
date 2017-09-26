@@ -5,6 +5,10 @@ module Suivi
     module Api
       module Carnets
         def self.registered( app )
+          app.get '/api/carnets/:uid_eleve' do
+            json( get_and_check_carnet( params['uid_eleve'] ) )
+          end
+
           app.get '/api/carnets/contributed/:uid' do
             halt( 401, '401' ) if params['uid'] != user['id']
 
@@ -20,10 +24,6 @@ module Suivi
                                           .all
                                           .map(&:carnet_id) )
                         .all )
-          end
-
-          app.get '/api/carnets/:uid_eleve' do
-            json( get_and_check_carnet( params['uid_eleve'] ) )
           end
         end
       end
