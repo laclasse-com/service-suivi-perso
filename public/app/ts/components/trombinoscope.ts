@@ -1,9 +1,13 @@
 angular.module('suiviApp')
   .component('trombinoscope',
   {
-    controller: ['$filter', '$q', 'URL_ENT', 'APIs',
-      function($filter, $q, URL_ENT, APIs) {
+    controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups',
+      function($filter, $q, URL_ENT, APIs, Popups) {
         let ctrl = this;
+
+        ctrl.popup_onglet_batch = Popups.onglet_batch;
+        ctrl.popup_onglet_batch_callback = function(feedback) { console.log(feedback); };
+
         ctrl.filters = {
           text: '',
           groups: [],
@@ -127,9 +131,18 @@ angular.module('suiviApp')
 
         ctrl.clear_filters = function(type) {
           _(ctrl[type]).each(function(item) { item.selected = false; });
-        }
+        };
+
+        ctrl.pluck_selected_uids = function() {
+          var filter = ctrl.apply_filters();
+
+          return _.chain(ctrl.eleves)
+            .select(function(pupil) { return filter(pupil); })
+            .pluck('id')
+            .value();
+        };
       }],
-      template: `
+    template: `
       <div class="col-md-4 blanc aside" style="padding: 0;">
         <div class="search-filter" style="padding: 20px; background-color: #baddad;">
           <label for="search"> Filtrage des élèves affichés <button class="btn btn-xs"
@@ -148,70 +161,75 @@ angular.module('suiviApp')
           ng:click="$ctrl.clear_filters('groups')">
           <span class="glyphicon glyphicon-remove">
           </span>
-          </button> : </label>
-          <div class="btn-group">
-            <button class="btn btn-sm" style="margin: 2px;"
-                    ng:repeat="group in $ctrl.groups"
-                    ng:class="{'btn-success': group.selected}"
-                    ng:model="group.selected"
-                    uib:btn-checkbox>
-                    {{group.name}}
-                  </button>
-                </div>
+          </button> :
+        </label>
+        <div class="btn-group">
+          <button class="btn btn-sm" style="margin: 2px;"
+                  ng:repeat="group in $ctrl.groups"
+                  ng:class="{'btn-success': group.selected}"
+                  ng:model="group.selected"
+                  uib:btn-checkbox>
+                  {{group.name}}
+                </button>
               </div>
+            </div>
 
-              <div class="group-filter" style="padding: 20px; background-color: #baddad;" ng:if="$ctrl.groups.length > 0">
-                <label> Filtrage par niveau <button class="btn btn-xs"
-                ng:click="$ctrl.clear_filters('grades')">
-                <span class="glyphicon glyphicon-remove">
-                </span>
-                </button> : </label>
-                <div class="btn-group">
-                  <button class="btn btn-sm" style="margin: 2px;"
-                          ng:repeat="grade in $ctrl.grades"
-                          ng:class="{'btn-success': grade.selected}"
-                          ng:model="grade.selected"
-                          uib:btn-checkbox>
-                          {{grade.name}}
-                        </button>
-                      </div>
+            <div class="group-filter" style="padding: 20px; background-color: #baddad;" ng:if="$ctrl.groups.length > 0">
+              <label> Filtrage par niveau <button class="btn btn-xs"
+              ng:click="$ctrl.clear_filters('grades')">
+              <span class="glyphicon glyphicon-remove">
+              </span>
+              </button> : </label>
+              <div class="btn-group">
+                <button class="btn btn-sm" style="margin: 2px;"
+                        ng:repeat="grade in $ctrl.grades"
+                        ng:class="{'btn-success': grade.selected}"
+                        ng:model="grade.selected"
+                        uib:btn-checkbox>
+                        {{grade.name}}
+                      </button>
                     </div>
+                  </div>
 
-                    <div class="highlighted" style="padding: 20px;">
-                      <label ng:if="$ctrl.contributed_to.length > 0"> Carnet<span ng:if="$ctrl.contributed_to.length > 1">s</span>
-                      <span ng:if="$ctrl.contributed_to.length > 1">auxquels</span>
-                      <span ng:if="$ctrl.contributed_to.length < 2">auquel</span> vous avez contribué : </label>
-                      <ul>
-                        <li ng:repeat="carnet in $ctrl.contributed_to" style="list-style-type: none;">
-                          <a ui:sref="carnet({uid_eleve: carnet.uid_eleve})">
-                            <user-details uid="carnet.uid_eleve"
-                                          small="true"
-                                          show-classe="true"
-                                          show-avatar="true">
-                                        </user-details>
-                                      </a>
-                                    </li>
-                                  </ul>
-                                </div>
+                  <div class="highlighted" style="padding: 20px;">
+                    <label ng:if="$ctrl.contributed_to.length > 0"> Carnet<span ng:if="$ctrl.contributed_to.length > 1">s</span>
+                    <span ng:if="$ctrl.contributed_to.length > 1">auxquels</span>
+                    <span ng:if="$ctrl.contributed_to.length < 2">auquel</span> vous avez contribué : </label>
+                    <ul>
+                      <li ng:repeat="carnet in $ctrl.contributed_to" style="list-style-type: none;">
+                        <a ui:sref="carnet({uid_eleve: carnet.uid_eleve})">
+                          <user-details uid="carnet.uid_eleve"
+                                        small="true"
+                                        show-classe="true"
+                                        show-avatar="true">
+                                      </user-details>
+                                    </a>
+                                  </li>
+                                </ul>
                               </div>
 
-                              <div class="col-md-8 damier trombinoscope">
-                                <ul>
-                                  <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins"
-                                      style="background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
-                                      ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
-                                      ng:repeat="eleve in $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname']">
-                                      <a class="eleve"
-                                         ui:sref="carnet({uid_eleve: eleve.id})">
-                                         <h5 class="regroupement">{{eleve.regroupement.name}}</h5>
+                              <div class="batch-operations" style="position: absolute; bottom: 0; width: 100%;">
+                                <button class="btn btn-warning" ng:click="$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch )">Nouvel onglet</button>
+                              </div>
+                            </div>
 
-                                         <div class="full-name">
-                                           <h4 class="first-name">{{eleve.firstname}}</h4>
-                                           <h3 class="last-name">{{eleve.lastname}}</h3>
-                                         </div>
-                                       </a>
-                                     </li>
-                                   </ul>
-                                 </div>
-`
+                            <div class="col-md-8 damier trombinoscope">
+                              <ul>
+                                <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins"
+                                    style="background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
+                                    ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
+                                    ng:repeat="eleve in $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname']">
+                                    <a class="eleve"
+                                       ui:sref="carnet({uid_eleve: eleve.id})">
+                                       <h5 class="regroupement">{{eleve.regroupement.name}}</h5>
+
+                                       <div class="full-name">
+                                         <h4 class="first-name">{{eleve.firstname}}</h4>
+                                         <h3 class="last-name">{{eleve.lastname}}</h3>
+                                       </div>
+                                     </a>
+                                   </li>
+                                 </ul>
+                               </div>
+                               `
   });

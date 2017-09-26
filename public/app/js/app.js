@@ -303,7 +303,7 @@ angular.module('suiviApp')
                 }, function error(response) { });
             };
         }],
-    template: "\n<uib-tabset>\n    <uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n        <uib-tab-heading> {{onglet.nom}} </uib-tab-heading>\n\n        <onglet uid-eleve=\"$ctrl.uidEleve\"\n                onglets=\"$ctrl.onglets\"\n                onglet=\"onglet\"></onglet>\n    </uib-tab>\n\n    <li>\n        <a href\n           class=\"bleu add-onglet\"\n           ng:click=\"$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n            <span class=\"glyphicon glyphicon-plus\"></span>\n        </a>\n    </li>\n</uib-tabset>\n"
+    template: "\n      <uib-tabset>\n        <uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n          <uib-tab-heading> {{onglet.nom}} </uib-tab-heading>\n\n          <onglet uid-eleve=\"$ctrl.uidEleve\"\n                  onglets=\"$ctrl.onglets\"\n                  onglet=\"onglet\">\n          </onglet>\n        </uib-tab>\n\n        <li>\n          <a href\n          class=\"bleu add-onglet\"\n          ng:click=\"$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n          <span class=\"glyphicon glyphicon-plus\">\n          </span>\n        </a>\n      </li>\n    </uib-tabset>\n"
 });
 angular.module('suiviApp')
     .component('saisie', {
@@ -385,9 +385,11 @@ angular.module('suiviApp')
 });
 angular.module('suiviApp')
     .component('trombinoscope', {
-    controller: ['$filter', '$q', 'URL_ENT', 'APIs',
-        function ($filter, $q, URL_ENT, APIs) {
+    controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups',
+        function ($filter, $q, URL_ENT, APIs, Popups) {
             var ctrl = this;
+            ctrl.popup_onglet_batch = Popups.onglet_batch;
+            ctrl.popup_onglet_batch_callback = function (feedback) { console.log(feedback); };
             ctrl.filters = {
                 text: '',
                 groups: [],
@@ -482,8 +484,6 @@ angular.module('suiviApp')
             ctrl.apply_filters = function () {
                 var selected_groups_ids = _.chain(ctrl.groups).where({ selected: true }).pluck('id').value();
                 var selected_grades_ids = _.chain(ctrl.grades).where({ selected: true }).pluck('id').value();
-                console.log(selected_groups_ids);
-                console.log(selected_grades_ids);
                 return function (pupil) {
                     return ("" + pupil.firstname + pupil.lastname).toLocaleLowerCase().includes(ctrl.filters.text.toLocaleLowerCase())
                         && (selected_groups_ids.length == 0 || _(selected_groups_ids).contains(pupil.regroupement.id))
@@ -493,8 +493,15 @@ angular.module('suiviApp')
             ctrl.clear_filters = function (type) {
                 _(ctrl[type]).each(function (item) { item.selected = false; });
             };
+            ctrl.pluck_selected_uids = function () {
+                var filter = ctrl.apply_filters();
+                return _.chain(ctrl.eleves)
+                    .select(function (pupil) { return filter(pupil); })
+                    .pluck('id')
+                    .value();
+            };
         }],
-    template: "\n      <div class=\"col-md-4 blanc aside\" style=\"padding: 0;\">\n        <div class=\"search-filter\" style=\"padding: 20px; background-color: #baddad;\">\n          <label for=\"search\"> Filtrage des \u00E9l\u00E8ves affich\u00E9s <button class=\"btn btn-xs\"\n          ng:click=\"$ctrl.filters.text = ''\">\n          <span class=\"glyphicon glyphicon-remove\">\n          </span>\n          </button> : </label>\n          <input  class=\"form-control input-sm\"\n                  style=\"display: inline; max-width: 300px;\"\n                  type=\"text\" name=\"search\"\n                  ng:model=\"$ctrl.filters.text\" />\n        </div>\n\n        <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n          <label> Filtrage par classe <button class=\"btn btn-xs\"\n          ng:click=\"$ctrl.clear_filters('groups')\">\n          <span class=\"glyphicon glyphicon-remove\">\n          </span>\n          </button> : </label>\n          <div class=\"btn-group\">\n            <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n                    ng:repeat=\"group in $ctrl.groups\"\n                    ng:class=\"{'btn-success': group.selected}\"\n                    ng:model=\"group.selected\"\n                    uib:btn-checkbox>\n                    {{group.name}}\n                  </button>\n                </div>\n              </div>\n\n              <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n                <label> Filtrage par niveau <button class=\"btn btn-xs\"\n                ng:click=\"$ctrl.clear_filters('grades')\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n                </button> : </label>\n                <div class=\"btn-group\">\n                  <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n                          ng:repeat=\"grade in $ctrl.grades\"\n                          ng:class=\"{'btn-success': grade.selected}\"\n                          ng:model=\"grade.selected\"\n                          uib:btn-checkbox>\n                          {{grade.name}}\n                        </button>\n                      </div>\n                    </div>\n\n                    <div class=\"highlighted\" style=\"padding: 20px;\">\n                      <label ng:if=\"$ctrl.contributed_to.length > 0\"> Carnet<span ng:if=\"$ctrl.contributed_to.length > 1\">s</span>\n                      <span ng:if=\"$ctrl.contributed_to.length > 1\">auxquels</span>\n                      <span ng:if=\"$ctrl.contributed_to.length < 2\">auquel</span> vous avez contribu\u00E9 : </label>\n                      <ul>\n                        <li ng:repeat=\"carnet in $ctrl.contributed_to\" style=\"list-style-type: none;\">\n                          <a ui:sref=\"carnet({uid_eleve: carnet.uid_eleve})\">\n                            <user-details uid=\"carnet.uid_eleve\"\n                                          small=\"true\"\n                                          show-classe=\"true\"\n                                          show-avatar=\"true\">\n                                        </user-details>\n                                      </a>\n                                    </li>\n                                  </ul>\n                                </div>\n                              </div>\n\n                              <div class=\"col-md-8 damier trombinoscope\">\n                                <ul>\n                                  <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n                                      style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n                                      ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n                                      ng:repeat=\"eleve in $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname']\">\n                                      <a class=\"eleve\"\n                                         ui:sref=\"carnet({uid_eleve: eleve.id})\">\n                                         <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n                                         <div class=\"full-name\">\n                                           <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n                                           <h3 class=\"last-name\">{{eleve.lastname}}</h3>\n                                         </div>\n                                       </a>\n                                     </li>\n                                   </ul>\n                                 </div>\n"
+    template: "\n      <div class=\"col-md-4 blanc aside\" style=\"padding: 0;\">\n        <div class=\"search-filter\" style=\"padding: 20px; background-color: #baddad;\">\n          <label for=\"search\"> Filtrage des \u00E9l\u00E8ves affich\u00E9s <button class=\"btn btn-xs\"\n          ng:click=\"$ctrl.filters.text = ''\">\n          <span class=\"glyphicon glyphicon-remove\">\n          </span>\n          </button> : </label>\n          <input  class=\"form-control input-sm\"\n                  style=\"display: inline; max-width: 300px;\"\n                  type=\"text\" name=\"search\"\n                  ng:model=\"$ctrl.filters.text\" />\n        </div>\n\n        <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n          <label> Filtrage par classe <button class=\"btn btn-xs\"\n          ng:click=\"$ctrl.clear_filters('groups')\">\n          <span class=\"glyphicon glyphicon-remove\">\n          </span>\n          </button> :\n        </label>\n        <div class=\"btn-group\">\n          <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n                  ng:repeat=\"group in $ctrl.groups\"\n                  ng:class=\"{'btn-success': group.selected}\"\n                  ng:model=\"group.selected\"\n                  uib:btn-checkbox>\n                  {{group.name}}\n                </button>\n              </div>\n            </div>\n\n            <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n              <label> Filtrage par niveau <button class=\"btn btn-xs\"\n              ng:click=\"$ctrl.clear_filters('grades')\">\n              <span class=\"glyphicon glyphicon-remove\">\n              </span>\n              </button> : </label>\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n                        ng:repeat=\"grade in $ctrl.grades\"\n                        ng:class=\"{'btn-success': grade.selected}\"\n                        ng:model=\"grade.selected\"\n                        uib:btn-checkbox>\n                        {{grade.name}}\n                      </button>\n                    </div>\n                  </div>\n\n                  <div class=\"highlighted\" style=\"padding: 20px;\">\n                    <label ng:if=\"$ctrl.contributed_to.length > 0\"> Carnet<span ng:if=\"$ctrl.contributed_to.length > 1\">s</span>\n                    <span ng:if=\"$ctrl.contributed_to.length > 1\">auxquels</span>\n                    <span ng:if=\"$ctrl.contributed_to.length < 2\">auquel</span> vous avez contribu\u00E9 : </label>\n                    <ul>\n                      <li ng:repeat=\"carnet in $ctrl.contributed_to\" style=\"list-style-type: none;\">\n                        <a ui:sref=\"carnet({uid_eleve: carnet.uid_eleve})\">\n                          <user-details uid=\"carnet.uid_eleve\"\n                                        small=\"true\"\n                                        show-classe=\"true\"\n                                        show-avatar=\"true\">\n                                      </user-details>\n                                    </a>\n                                  </li>\n                                </ul>\n                              </div>\n\n                              <div class=\"batch-operations\" style=\"position: absolute; bottom: 0; width: 100%;\">\n                                <button class=\"btn btn-warning\" ng:click=\"$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch )\">Nouvel onglet</button>\n                              </div>\n                            </div>\n\n                            <div class=\"col-md-8 damier trombinoscope\">\n                              <ul>\n                                <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n                                    style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n                                    ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n                                    ng:repeat=\"eleve in $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname']\">\n                                    <a class=\"eleve\"\n                                       ui:sref=\"carnet({uid_eleve: eleve.id})\">\n                                       <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n                                       <div class=\"full-name\">\n                                         <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n                                         <h3 class=\"last-name\">{{eleve.lastname}}</h3>\n                                       </div>\n                                     </a>\n                                   </li>\n                                 </ul>\n                               </div>\n                               "
 });
 angular.module('suiviApp')
     .component('userDetails', {
@@ -605,8 +612,8 @@ angular.module('suiviApp')
         });
     }]);
 angular.module('suiviApp')
-    .service('APIs', ['$http', '$q', 'User', 'URL_ENT', 'APP_PATH',
-    function ($http, $q, User, URL_ENT, APP_PATH) {
+    .service('APIs', ['$http', '$q', 'User', 'Onglets', 'URL_ENT', 'APP_PATH',
+    function ($http, $q, User, Onglets, URL_ENT, APP_PATH) {
         var APIs = this;
         APIs.query_profiles_types = _.memoize(function () {
             return $http.get(URL_ENT + "/api/profiles_types");
@@ -834,11 +841,32 @@ angular.module('suiviApp')
                     .value());
             });
         });
+        APIs.batch_create_onglets = function (uids, onglet, droits) {
+            swal({ title: "Cr\u00E9ation de l'onglet \u00AB " + onglet.nom + " \u00BB...",
+                text: "traitement en cours",
+                type: "info",
+                showLoaderOnConfirm: true,
+                onOpen: function () {
+                    swal.clickConfirm();
+                },
+                preConfirm: function () {
+                    return new Promise(function (resolve) {
+                        $q.all(_(uids).map(function (uid) {
+                            onglet.uid_eleve = uid;
+                            return new Onglets(onglet).$save();
+                        })).then(function success(response) {
+                            swal.closeModal();
+                        });
+                    });
+                },
+                allowOutsideClick: false });
+        };
     }]);
 angular.module('suiviApp')
-    .service('Popups', ['$uibModal', '$q', 'Onglets',
-    function ($uibModal, $q, Onglets) {
+    .service('Popups', ['$uibModal', '$q', 'Onglets', 'APIs',
+    function ($uibModal, $q, Onglets, APIs) {
         var service = this;
+        var template_onglet = "\n<div class=\"modal-header\">\n    <h3 class=\"modal-title\">\n        Propri\u00E9t\u00E9s de l'onglet\n    </h3>\n</div>\n\n<div class=\"modal-body\">\n    <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n        <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n    </label>\n\n    <droits-onglets droits=\"$ctrl.droits\"\n                    concerned-people=\"$ctrl.concerned_people\"\n                    ng:if=\"$ctrl.onglet.id && $ctrl.droits\"></droits-onglets>\n\n    <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n    <button class=\"btn btn-danger pull-left\"\n            ng:click=\"$ctrl.delete()\"\n            ng:if=\"$ctrl.onglet.id\">\n        <span class=\"glyphicon glyphicon-trash\"></span>\n        <span> Supprimer l'onglet</span>\n    </button>\n    <button class=\"btn btn-default\"\n            ng:click=\"$ctrl.cancel()\">\n        <span class=\"glyphicon glyphicon-remove-sign\"></span>\n        <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n        <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n    </button>\n    <button class=\"btn btn-success\"\n            ng:click=\"$ctrl.ok()\"\n            ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n        <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n    </button>\n</div>\n";
         service.onglet = function (uid, onglet, all_onglets, callback) {
             $uibModal.open({
                 resolve: {
@@ -912,7 +940,7 @@ angular.module('suiviApp')
                             $uibModalInstance.dismiss();
                         };
                     }],
-                template: "\n<div class=\"modal-header\">\n    <h3 class=\"modal-title\">\n        Propri\u00E9t\u00E9s de l'onglet\n    </h3>\n</div>\n\n<div class=\"modal-body\">\n    <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n        <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n    </label>\n\n    <droits-onglets droits=\"$ctrl.droits\"\n                    concerned-people=\"$ctrl.concerned_people\"\n                    ng:if=\"$ctrl.onglet.id && $ctrl.droits\"></droits-onglets>\n\n    <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n    <button class=\"btn btn-danger pull-left\"\n            ng:click=\"$ctrl.delete()\"\n            ng:if=\"$ctrl.onglet.id\">\n        <span class=\"glyphicon glyphicon-trash\"></span>\n        <span> Supprimer l'onglet</span>\n    </button>\n    <button class=\"btn btn-default\"\n            ng:click=\"$ctrl.cancel()\">\n        <span class=\"glyphicon glyphicon-remove-sign\"></span>\n        <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n        <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n    </button>\n    <button class=\"btn btn-success\"\n            ng:click=\"$ctrl.ok()\"\n            ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n        <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n    </button>\n</div>\n"
+                template: template_onglet
             })
                 .result.then(function success(response_popup) {
                 var promise = null;
@@ -955,6 +983,42 @@ angular.module('suiviApp')
                             (_(droit).has('id') ? droit.$update() : droit.$save());
                         }
                     });
+                    callback(response);
+                }, function error() { });
+            }, function error() { });
+        };
+        service.onglet_batch = function (uids, callback) {
+            $uibModal.open({
+                resolve: {
+                    uids: function () { return uids; }
+                },
+                controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uids',
+                    function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uids) {
+                        var ctrl = $scope;
+                        ctrl.$ctrl = ctrl;
+                        ctrl.uids = uids;
+                        ctrl.valid_name = true;
+                        APIs.get_user(uids)
+                            .then(function success(response) {
+                            ctrl.eleve = response.data;
+                        }, function error(response) { });
+                        ctrl.ok = function () {
+                            $uibModalInstance.close({
+                                onglet: ctrl.onglet,
+                            });
+                        };
+                        ctrl.cancel = function () {
+                            $uibModalInstance.dismiss();
+                        };
+                    }],
+                template: template_onglet
+            })
+                .result.then(function success(response_popup) {
+                var promises = null;
+                var action = 'created';
+                promises = APIs.batch_create_onglets(uids, response_popup.onglet);
+                $q.all(promises).then(function success(response) {
+                    response.action = action;
                     callback(response);
                 }, function error() { });
             }, function error() { });
