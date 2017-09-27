@@ -51,6 +51,7 @@
                                    padding: 5px;
                                    color: #fff;
                                    background: rgba(0, 0, 0, 0.25); }
+.trombinoscope .contributed .eleve .full-name { color: #ee0; }
 .trombinoscope .eleve .full-name .first-name,
 .trombinoscope .eleve .full-name .last-name { font-weight: bold; }
 
