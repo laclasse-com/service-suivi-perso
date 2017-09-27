@@ -427,7 +427,7 @@ angular.module('suiviApp')
                 .then(function (response) {
                 ctrl.current_user = response;
                 ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
-                ctrl.can_do_batch = !_(['TUT', 'ELV']).contains(ctrl.current_user.profil_actif.type);
+                ctrl.can_do_batch = false;
                 return APIs.query_carnets_contributed_to(ctrl.current_user.id);
             }, function error(response) { })
                 .then(function success(response) {
@@ -507,7 +507,7 @@ angular.module('suiviApp')
                 }
             });
         }],
-    template: "\n<div class=\"col-md-4 vert-moins aside\" style=\"padding: 0;\">\n\n  <div class=\"stats vert-plus\" style=\"color: #efefef; text-align: right;\">\n    <button class=\"btn btn-sm pull-left\"\n            ng:if=\"$ctrl.contributed_to.length > 0\"\n            ng:class=\"{'btn-success': !$ctrl.only_display_contributed_to,\n                      'btn-primary': $ctrl.only_display_contributed_to}\"\n            ng:model=\"$ctrl.only_display_contributed_to\"\nuib:btn-checkbox>{{$ctrl.contributed_to}}\nN'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribu\u00E9.\n</button>\n<h3 style=\"margin: 0; padding: 5px 15px; width: 100%;\">\n{{$ctrl.filtered.length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affich\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}} <span class=\"glyphicon glyphicon-hand-right\">\n</span>\n</h3>\n\n<div class=\"batch-operations\" ng:if=\"$ctrl.can_do_batch\">\n<label>Actions group\u00E9es</label>\n<div class=\"btn-group\">\n<button class=\"btn btn-success pull-right\" ng:click=\"$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch )\">\n<span class=\"glyphicon glyphicon-folder-close\"></span> Nouvel onglet\n        </button>\n      </div>\n    </div>\n  </div>\n\n  <div class=\"search-filter\" style=\"padding: 20px; background-color: #baddad;\">\n    <label for=\"search\"> Filtrage des \u00E9l\u00E8ves affich\u00E9s <button class=\"btn btn-xs\"\n                                                              ng:click=\"$ctrl.filters.text = ''\">\n        <span class=\"glyphicon glyphicon-remove\">\n        </span>\n      </button> : </label>\n    <input  class=\"form-control input-sm\"\n            style=\"display: inline; max-width: 300px;\"\n            type=\"text\" name=\"search\"\n            ng:model=\"$ctrl.filters.text\" />\n  </div>\n\n  <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n    <label> Filtrage par classe <button class=\"btn btn-xs\"\n                                        ng:click=\"$ctrl.clear_filters('groups')\">\n        <span class=\"glyphicon glyphicon-remove\">\n        </span>\n      </button> :\n    </label>\n    <div class=\"btn-group\">\n      <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n              ng:repeat=\"group in $ctrl.groups | orderBy:['name']\"\n              ng:class=\"{'btn-primary': group.selected, 'btn-success': !group.selected}\"\n              ng:model=\"group.selected\"\n              uib:btn-checkbox>\n        {{group.name}}\n      </button>\n    </div>\n  </div>\n\n  <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n    <label> Filtrage par niveau <button class=\"btn btn-xs\"\n                                        ng:click=\"$ctrl.clear_filters('grades')\">\n        <span class=\"glyphicon glyphicon-remove\">\n        </span>\n      </button> : </label>\n    <div class=\"btn-group\">\n      <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n              ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n              ng:class=\"{'btn-primary': grade.selected, 'btn-success': !grade.selected}\"\n              ng:model=\"grade.selected\"\n              uib:btn-checkbox>\n        {{grade.name}}\n      </button>\n    </div>\n  </div>\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'contributed': eleve.contributed}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <a class=\"eleve\"\n         ui:sref=\"carnet({uid_eleve: eleve.id})\">\n        <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n        <div class=\"full-name\" title=\"{{eleve.contributed ? 'Vous avez contribut\u00E9 \u00E0 ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h3 class=\"last-name\">{{eleve.lastname}}</h3>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
+    template: "\n<div class=\"col-md-4 vert-moins aside\" style=\"padding: 0;\">\n\n  <div class=\"stats vert-plus\" style=\"color: #efefef; text-align: right;\">\n    <button class=\"btn btn-sm pull-left\"\n            ng:if=\"$ctrl.contributed_to.length > 0\"\n            ng:class=\"{'btn-success': !$ctrl.only_display_contributed_to,\n                      'btn-primary': $ctrl.only_display_contributed_to}\"\n            ng:model=\"$ctrl.only_display_contributed_to\"\n            uib:btn-checkbox>\n      N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribu\u00E9.\n    </button>\n    <h3 style=\"margin: 0; padding: 5px 15px; width: 100%;\">\n      {{$ctrl.filtered.length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affich\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}} <span class=\"glyphicon glyphicon-hand-right\">\n      </span>\n    </h3>\n\n    <div class=\"batch-operations\" ng:if=\"$ctrl.can_do_batch\">\n      <label>Actions group\u00E9es</label>\n      <div class=\"btn-group\">\n        <button class=\"btn btn-success pull-right\" ng:click=\"$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch )\">\n          <span class=\"glyphicon glyphicon-folder-close\"></span> Nouvel onglet\n        </button>\n      </div>\n    </div>\n  </div>\n\n  <div class=\"search-filter\" style=\"padding: 20px; background-color: #baddad;\">\n    <label for=\"search\"> Filtrage des \u00E9l\u00E8ves affich\u00E9s <button class=\"btn btn-xs\"\n                                                              ng:click=\"$ctrl.filters.text = ''\">\n        <span class=\"glyphicon glyphicon-remove\">\n        </span>\n      </button> : </label>\n    <input  class=\"form-control input-sm\"\n            style=\"display: inline; max-width: 300px;\"\n            type=\"text\" name=\"search\"\n            ng:model=\"$ctrl.filters.text\" />\n  </div>\n\n  <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n    <label> Filtrage par classe <button class=\"btn btn-xs\"\n                                        ng:click=\"$ctrl.clear_filters('groups')\">\n        <span class=\"glyphicon glyphicon-remove\">\n        </span>\n      </button> :\n    </label>\n    <div class=\"btn-group\">\n      <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n              ng:repeat=\"group in $ctrl.groups | orderBy:['name']\"\n              ng:class=\"{'btn-primary': group.selected, 'btn-success': !group.selected}\"\n              ng:model=\"group.selected\"\n              uib:btn-checkbox>\n        {{group.name}}\n      </button>\n    </div>\n  </div>\n\n  <div class=\"group-filter\" style=\"padding: 20px; background-color: #baddad;\" ng:if=\"$ctrl.groups.length > 0\">\n    <label> Filtrage par niveau <button class=\"btn btn-xs\"\n                                        ng:click=\"$ctrl.clear_filters('grades')\">\n        <span class=\"glyphicon glyphicon-remove\">\n        </span>\n      </button> : </label>\n    <div class=\"btn-group\">\n      <button class=\"btn btn-sm\" style=\"margin: 2px;\"\n              ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n              ng:class=\"{'btn-primary': grade.selected, 'btn-success': !grade.selected}\"\n              ng:model=\"grade.selected\"\n              uib:btn-checkbox>\n        {{grade.name}}\n      </button>\n    </div>\n  </div>\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'contributed': eleve.contributed}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <a class=\"eleve\"\n         ui:sref=\"carnet({uid_eleve: eleve.id})\">\n        <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n        <div class=\"full-name\" title=\"{{eleve.contributed ? 'Vous avez contribut\u00E9 \u00E0 ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h3 class=\"last-name\">{{eleve.lastname}}</h3>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
 });
 angular.module('suiviApp')
     .component('userDetails', {
@@ -744,7 +744,8 @@ angular.module('suiviApp')
                     APIs.get_users(contributed_to)
                         .then(function success(response) {
                         concerned_people.push(_(response.data).map(function (people) {
-                            people.type = 'Autre élève suivi';
+                            var pluriel = response.data.length > 1 ? 's' : '';
+                            people.type = "Autre" + pluriel + " \u00E9l\u00E8ve" + pluriel + " suivi" + pluriel;
                             return people;
                         }));
                     }, function error(response) { return $q.reject(response); });
@@ -765,7 +766,8 @@ angular.module('suiviApp')
                 .then(function success(response) {
                 if (_(response).has('data')) {
                     concerned_people.push(_(response.data).map(function (people) {
-                        people.type = 'Responsable';
+                        var pluriel = response.data.length > 1 ? 's' : '';
+                        people.type = "Responsable" + pluriel + " de l'\u00E9l\u00E8ve";
                         return people;
                     }));
                 }
@@ -792,7 +794,7 @@ angular.module('suiviApp')
                 if (_(response).has('data')) {
                     personnels = _(personnels).indexBy('user_id');
                     concerned_people.push(_(response.data).map(function (people) {
-                        people.type = profils[personnels[people.id].type].name;
+                        people.type = profils[personnels[people.id].type].name + " de l'\u00E9l\u00E8ve";
                         return people;
                     }));
                     var groups_ids = _(eleve.groups).pluck('group_id');
@@ -820,7 +822,8 @@ angular.module('suiviApp')
                 .then(function success(response) {
                 pupils = _(pupils).indexBy('user_id');
                 concerned_people.push(_(response.data).map(function (people) {
-                    people.type = 'Autre élève';
+                    var pluriel = response.data.length > 1 ? 's' : '';
+                    people.type = "Autre" + pluriel + " \u00E9l\u00E8ve" + pluriel;
                     return people;
                 }));
                 teachers = _(users).where({ type: 'ENS' });
@@ -835,7 +838,7 @@ angular.module('suiviApp')
                 teachers = _(teachers).indexBy('user_id');
                 main_teachers = _(users).where({ type: 'PRI' });
                 concerned_people.push(_(response.data).map(function (people) {
-                    people.type = profils[teachers[people.id].type].name;
+                    people.type = profils[teachers[people.id].type].name + " de l'\u00E9l\u00E8ve";
                     APIs.get_subjects(_(people.groups).pluck('subject_id'))
                         .then(function (response) {
                         people.actual_subjects = response.data;
