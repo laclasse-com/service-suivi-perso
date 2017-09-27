@@ -139,7 +139,9 @@ angular.module('suiviApp')
                                   APIs.get_users(contributed_to)
                                       .then(function success(response) {
                                           concerned_people.push(_(response.data).map(function(people) {
-                                              people.type = 'Autre élève suivi';
+                                              let pluriel = response.data.length > 1 ? 's' : '';
+
+                                              people.type = `Autre${pluriel} élève${pluriel} suivi${pluriel}`;
 
                                               return people;
                                           }));
@@ -166,7 +168,9 @@ angular.module('suiviApp')
                           .then(function success(response) {
                               if (_(response).has('data')) {
                                   concerned_people.push(_(response.data).map(function(people) {
-                                      people.type = 'Responsable';
+                                      let pluriel = response.data.length > 1 ? 's' : '';
+
+                                      people.type = `Responsable${pluriel} de l'élève`;
 
                                       return people;
                                   }));
@@ -196,7 +200,7 @@ angular.module('suiviApp')
                                   personnels = _(personnels).indexBy('user_id');
 
                                   concerned_people.push(_(response.data).map(function(people) {
-                                      people.type = profils[personnels[people.id].type].name;
+                                      people.type = `${profils[personnels[people.id].type].name} de l'élève`;
 
                                       return people;
                                   }));
@@ -228,7 +232,8 @@ angular.module('suiviApp')
                               pupils = _(pupils).indexBy('user_id');
 
                               concerned_people.push(_(response.data).map(function(people) {
-                                  people.type = 'Autre élève';
+                                  let pluriel = response.data.length > 1 ? 's' : '';
+                                  people.type = `Autre${pluriel} élève${pluriel}`;
 
                                   return people;
                               }));
@@ -247,7 +252,7 @@ angular.module('suiviApp')
                               main_teachers = _(users).where({ type: 'PRI' });
 
                               concerned_people.push(_(response.data).map(function(people) {
-                                  people.type = profils[teachers[people.id].type].name;
+                                  people.type = `${profils[teachers[people.id].type].name} de l'élève`;
 
                                   APIs.get_subjects(_(people.groups).pluck('subject_id'))
                                       .then(function(response) {
