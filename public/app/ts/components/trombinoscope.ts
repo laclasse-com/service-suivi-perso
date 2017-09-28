@@ -151,92 +151,121 @@ angular.module('suiviApp')
           });
       }],
 template: `
-<div class="col-md-4 vert-moins aside" style="padding: 0;">
+<style>
+  .trombinoscope-aside .panel-heading { color: #fff;
+  background-color: rgba(0, 0, 0, 0.25);
+  }
+</style>
+<div class="col-md-4 vert-moins aside trombinoscope-aside" style="padding: 0;">
+  <div class="panel panel-default vert-moins">
+    <div class="panel-heading" style="text-align: right; ">
+      <h3>
+        {{$ctrl.filtered.length}} élève{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affiché{{$ctrl.pluriel($ctrl.filtered.length, 's')}}
+      </h3>
+    </div>
+    <div class="panel-body">
 
-  <div class="col-md-12 stats vert-plus" style="color: #efefef; text-align: right;">
-    <h3 style="margin: 0; padding: 5px 15px; width: 100%;">
-      {{$ctrl.filtered.length}} élève{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affiché{{$ctrl.pluriel($ctrl.filtered.length, 's')}} <span class="glyphicon glyphicon-hand-right">
-      </span>
-    </h3>
+      <div class="panel panel-default" ng:if="$ctrl.can_do_batch">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-fullscreen"></span> Actions groupées
+        </div>
+
+        <div class="panel-body">
+
+          <div class="btn-group">
+            <button class="btn btn-success pull-right" ng:click="$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch )">
+              <span class="glyphicon glyphicon-folder-close"></span> Nouvel onglet
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-filter"></span> Filtrage
+        </div>
+
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-md-12">
+              <input class="form-control input-sm"
+                     style="display: inline; max-width: 300px;"
+                     type="text" name="search"
+                     ng:model="$ctrl.filters.text" />
+              <button class="btn btn-xs" ng:click="$ctrl.filters.text = ''">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <label><input type="checkbox" ng:model="$ctrl.only_display_contributed_to" /> N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribué.</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  Filtrage par classe
+
+                  <button class="btn btn-xs pull-right"
+                          ng:click="$ctrl.clear_filters('groups')">
+                    <span class="glyphicon glyphicon-remove">
+                    </span>
+                  </button>
+                  <div class="clearfix"></div>
+                </div>
+
+                <div class="panel-body">
+                  <div class="btn-group">
+                    <button class="btn btn-sm" style="margin: 2px;"
+                            ng:repeat="group in $ctrl.groups | orderBy:['name']"
+                            ng:class="{'btn-primary': group.selected, 'btn-success': !group.selected}"
+                            ng:model="group.selected"
+                            uib:btn-checkbox>
+                      {{group.name}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  Filtrage par niveau
+
+                  <button class="btn btn-xs pull-right"
+                          ng:click="$ctrl.clear_filters('grades')">
+                    <span class="glyphicon glyphicon-remove">
+                    </span>
+                  </button>
+                  <div class="clearfix"></div>
+                </div>
+
+                <div class="panel-body">
+                  <div class="btn-group">
+                    <button class="btn btn-sm" style="margin: 2px;"
+                            ng:repeat="grade in $ctrl.grades | orderBy:['name']"
+                            ng:class="{'btn-primary': grade.selected, 'btn-success': !grade.selected}"
+                            ng:model="grade.selected"
+                            uib:btn-checkbox>
+                      {{grade.name}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   </div>
-
-  <fieldset class="col-md-12 trombinoscope-filters" style="background-color: #baddad;"
-            ng:if="$ctrl.can_do_batch">
-    <legend>
-      <span class="glyphicon glyphicon-fullscreen"></span> Actions groupées
-    </legend>
-    <div class="btn-group">
-      <button class="btn btn-success pull-right" ng:click="$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch )">
-        <span class="glyphicon glyphicon-folder-close"></span> Nouvel onglet
-      </button>
-    </div>
-  </fieldset>
-
-  <fieldset class="col-md-12 trombinoscope-filters" style="background-color: #baddad;">
-    <legend>
-      <span class="glyphicon glyphicon-filter"></span> Filtrage
-    </legend>
-
-    <div class="filter">
-      <button class="btn"
-              ng:if="$ctrl.contributed_to.length > 0"
-              ng:class="{'btn-success': !$ctrl.only_display_contributed_to,
-                        'btn-primary': $ctrl.only_display_contributed_to}"
-              ng:model="$ctrl.only_display_contributed_to"
-              uib:btn-checkbox>
-        <span class="glyphicon" ng:class="{'glyphicon-unchecked': !$ctrl.only_display_contributed_to, 'glyphicon-check': $ctrl.only_display_contributed_to}"></span>
-        N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribué.
-      </button>
-    </div>
-
-    <div class="search-filter">
-      <label for="search"> Filtrage des élèves affichés <button class="btn btn-xs"
-                                                                ng:click="$ctrl.filters.text = ''">
-          <span class="glyphicon glyphicon-remove">
-          </span>
-        </button> : </label>
-      <input  class="form-control input-sm"
-              style="display: inline; max-width: 300px;"
-              type="text" name="search"
-              ng:model="$ctrl.filters.text" />
-    </div>
-
-    <div class="group-filter" ng:if="$ctrl.groups.length > 0">
-      <label> Filtrage par classe <button class="btn btn-xs"
-                                          ng:click="$ctrl.clear_filters('groups')">
-          <span class="glyphicon glyphicon-remove">
-          </span>
-        </button> :
-      </label>
-      <div class="btn-group">
-        <button class="btn btn-sm" style="margin: 2px;"
-                ng:repeat="group in $ctrl.groups | orderBy:['name']"
-                ng:class="{'btn-primary': group.selected, 'btn-success': !group.selected}"
-                ng:model="group.selected"
-                uib:btn-checkbox>
-          {{group.name}}
-        </button>
-      </div>
-    </div>
-
-    <div class="group-filter" ng:if="$ctrl.groups.length > 0">
-      <label> Filtrage par niveau <button class="btn btn-xs"
-                                          ng:click="$ctrl.clear_filters('grades')">
-          <span class="glyphicon glyphicon-remove">
-          </span>
-        </button> : </label>
-      <div class="btn-group">
-        <button class="btn btn-sm" style="margin: 2px;"
-                ng:repeat="grade in $ctrl.grades | orderBy:['name']"
-                ng:class="{'btn-primary': grade.selected, 'btn-success': !grade.selected}"
-                ng:model="grade.selected"
-                uib:btn-checkbox>
-          {{grade.name}}
-        </button>
-      </div>
-    </div>
-  </fieldset>
-
 </div>
 
 <div class="col-md-8 vert-moins damier trombinoscope">
