@@ -197,10 +197,10 @@ template: `
           <div class="row">
             <div class="col-md-12">
               <input class="form-control input-lg"
-                     style="display: inline; max-width: 90%; background-color: rgba(240, 240, 240, 0.66);"
+                     style="display: inline; background-color: rgba(240, 240, 240, 0.66);"
                      type="text" name="search"
                      ng:model="$ctrl.filters.text" />
-              <button class="btn btn-xs" style="color: green;" ng:click="$ctrl.filters.text = ''">
+              <button class="btn btn-xs" style="color: green; margin-left: -44px; margin-top: -4px;" ng:click="$ctrl.filters.text = ''">
                 <span class="glyphicon glyphicon-remove"></span>
               </button>
             </div>
