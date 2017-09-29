@@ -152,14 +152,10 @@ angular.module('suiviApp')
       }],
 template: `
 <style>
-  .trombinoscope-aside .panel-heading { color: #fff;
-  background-color: rgba(0, 0, 0, 0.25);
-  }
-
   .trombinoscope .petite.case { border: 1px solid transparent; }
 </style>
-<div class="col-md-4 vert-moins aside trombinoscope-aside" style="padding: 0;">
-  <div class="panel panel-default vert-moins">
+<div class="col-md-4 gris1-moins aside trombinoscope-aside" style="padding: 0;">
+  <div class="panel panel-default gris1-moins">
     <div class="panel-heading" style="text-align: right; ">
       <h3>
         {{$ctrl.filtered.length}} élève{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affiché{{$ctrl.pluriel($ctrl.filtered.length, 's')}}
@@ -167,7 +163,7 @@ template: `
     </div>
     <div class="panel-body">
 
-      <div class="panel panel-default vert-moins" ng:if="$ctrl.can_do_batch">
+      <div class="panel panel-default" ng:if="$ctrl.can_do_batch">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-fullscreen"></span> Actions groupées
         </div>
@@ -182,7 +178,7 @@ template: `
         </div>
       </div>
 
-      <div class="panel panel-default vert-moins">
+      <div class="panel panel-default">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-filter"></span> Filtrage
         </div>
@@ -193,14 +189,14 @@ template: `
             <div class="col-md-12">
               <label>
                 <input type="checkbox" ng:model="$ctrl.only_display_contributed_to" />
-                <h4 style="color: #fff; display: inline;"> N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribué.</h4>
+                <h4 style="display: inline;"> N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribué.</h4>
               </label>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-12">
-              <input class="form-control input-lg vert-plus"
+              <input class="form-control input-lg"
                      style="display: inline; max-width: 90%; background-color: rgba(240, 240, 240, 0.66);"
                      type="text" name="search"
                      ng:model="$ctrl.filters.text" />
@@ -212,7 +208,7 @@ template: `
 
           <div class="row" style="margin-top: 14px;">
             <div class="col-md-6">
-              <div class="panel panel-default vert-moins">
+              <div class="panel panel-default">
                 <div class="panel-heading">
                   Filtrage par classe
 
@@ -239,7 +235,7 @@ template: `
             </div>
 
             <div class="col-md-6">
-              <div class="panel panel-default vert-moins">
+              <div class="panel panel-default">
                 <div class="panel-heading">
                   Filtrage par niveau
 
