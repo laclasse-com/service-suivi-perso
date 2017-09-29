@@ -155,6 +155,8 @@ template: `
   .trombinoscope-aside .panel-heading { color: #fff;
   background-color: rgba(0, 0, 0, 0.25);
   }
+
+  .trombinoscope .petite.case { border: 1px solid transparent; }
 </style>
 <div class="col-md-4 vert-moins aside trombinoscope-aside" style="padding: 0;">
   <div class="panel panel-default vert-moins">
@@ -165,7 +167,7 @@ template: `
     </div>
     <div class="panel-body">
 
-      <div class="panel panel-default" ng:if="$ctrl.can_do_batch">
+      <div class="panel panel-default vert-moins" ng:if="$ctrl.can_do_batch">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-fullscreen"></span> Actions groupées
         </div>
@@ -180,7 +182,7 @@ template: `
         </div>
       </div>
 
-      <div class="panel panel-default">
+      <div class="panel panel-default vert-moins">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-filter"></span> Filtrage
         </div>
@@ -189,29 +191,32 @@ template: `
 
           <div class="row">
             <div class="col-md-12">
-              <input class="form-control input-sm"
-                     style="display: inline; max-width: 300px;"
-                     type="text" name="search"
-                     ng:model="$ctrl.filters.text" />
-              <button class="btn btn-xs" ng:click="$ctrl.filters.text = ''">
-                <span class="glyphicon glyphicon-remove"></span>
-              </button>
+              <label>
+                <input type="checkbox" ng:model="$ctrl.only_display_contributed_to" />
+                <h4 style="color: #fff; display: inline;"> N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribué.</h4>
+              </label>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-12">
-              <label><input type="checkbox" ng:model="$ctrl.only_display_contributed_to" /> N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribué.</label>
+              <input class="form-control input-lg vert-plus"
+                     style="display: inline; max-width: 90%; background-color: rgba(240, 240, 240, 0.66);"
+                     type="text" name="search"
+                     ng:model="$ctrl.filters.text" />
+              <button class="btn btn-xs" style="color: green;" ng:click="$ctrl.filters.text = ''">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" style="margin-top: 14px;">
             <div class="col-md-6">
-              <div class="panel panel-default">
+              <div class="panel panel-default vert-moins">
                 <div class="panel-heading">
                   Filtrage par classe
 
-                  <button class="btn btn-xs pull-right"
+                  <button class="btn btn-xs pull-right" style="color: green;"
                           ng:click="$ctrl.clear_filters('groups')">
                     <span class="glyphicon glyphicon-remove">
                     </span>
@@ -221,9 +226,9 @@ template: `
 
                 <div class="panel-body">
                   <div class="btn-group">
-                    <button class="btn btn-sm" style="margin: 2px;"
+                    <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
                             ng:repeat="group in $ctrl.groups | orderBy:['name']"
-                            ng:class="{'btn-primary': group.selected, 'btn-success': !group.selected}"
+                            ng:class="{'vert-moins': group.selected, 'vert-plus': !group.selected}"
                             ng:model="group.selected"
                             uib:btn-checkbox>
                       {{group.name}}
@@ -234,11 +239,11 @@ template: `
             </div>
 
             <div class="col-md-6">
-              <div class="panel panel-default">
+              <div class="panel panel-default vert-moins">
                 <div class="panel-heading">
                   Filtrage par niveau
 
-                  <button class="btn btn-xs pull-right"
+                  <button class="btn btn-xs pull-right" style="color: green;"
                           ng:click="$ctrl.clear_filters('grades')">
                     <span class="glyphicon glyphicon-remove">
                     </span>
@@ -248,9 +253,9 @@ template: `
 
                 <div class="panel-body">
                   <div class="btn-group">
-                    <button class="btn btn-sm" style="margin: 2px;"
+                    <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
                             ng:repeat="grade in $ctrl.grades | orderBy:['name']"
-                            ng:class="{'btn-primary': grade.selected, 'btn-success': !grade.selected}"
+                            ng:class="{'vert-moins': grade.selected, 'vert-plus': !grade.selected}"
                             ng:model="grade.selected"
                             uib:btn-checkbox>
                       {{grade.name}}
