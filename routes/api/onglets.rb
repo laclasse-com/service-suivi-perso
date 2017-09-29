@@ -6,16 +6,26 @@ module Suivi
       module Onglets
         def self.registered( app )
           app.get '/api/onglets/?' do
-            json( get_and_check_carnet( params['uid_eleve'] )
-                    .onglets
-                    .select { |onglet| onglet.allow?( user, :read ) }
-                    .map do |onglet|
-                    onglet_hash = onglet.to_hash
-                    onglet_hash[:writable] = onglet.allow?( user, :write )
-                    onglet_hash[:manageable] = onglet.allow?( user, :manage )
+            single = params.key?('uid')
 
-                    onglet_hash
-                  end )
+            uids = single ? [ params['uid'] ] : params['uids']
+
+            onglets_hashes = uids.map do |uid_eleve|
+              get_and_check_carnet( uid_eleve )
+                .onglets
+                .select { |onglet| onglet.allow?( user, :read ) }
+                .map do |onglet|
+                onglet_hash = onglet.to_hash
+                onglet_hash[:writable] = onglet.allow?( user, :write )
+                onglet_hash[:manageable] = onglet.allow?( user, :manage )
+
+                onglet_hash
+              end
+            end
+
+            onglets_hashes = onglets_hashes.first if single
+
+            json( onglets_hashes )
           end
 
           app.get '/api/onglets/:onglet_id' do

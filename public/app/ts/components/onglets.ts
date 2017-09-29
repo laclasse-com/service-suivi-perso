@@ -20,7 +20,7 @@ angular.module('suiviApp')
             .then(function success(response) {
               ctrl.carnet = response;
 
-              Onglets.query({ uid_eleve: ctrl.uidEleve }).$promise
+              Onglets.query({ uid: ctrl.uidEleve }).$promise
                 .then(function success(response) {
                   ctrl.onglets = response;
                 },
