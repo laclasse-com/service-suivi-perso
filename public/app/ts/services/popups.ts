@@ -6,41 +6,45 @@ angular.module('suiviApp')
 
       let template_onglet = `
 <div class="modal-header">
-    <h3 class="modal-title">
-        Propriétés de l'onglet
-    </h3>
+  <h3 class="modal-title">
+    Propriétés de l'onglet
+  </h3>
 </div>
 
 <div class="modal-body">
-    <label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.nom" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
-        <span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
-    </label>
+  <label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.nom" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
+    <span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
+  </label>
 
-    <droits-onglets droits="$ctrl.droits"
-                    concerned-people="$ctrl.concerned_people"
-                    ng:if="$ctrl.onglet.id && $ctrl.droits"></droits-onglets>
+  <droits-onglets droits="$ctrl.droits"
+                  concerned-people="$ctrl.concerned_people"
+                  ng:if="$ctrl.droits"></droits-onglets>
 
-    <div class="clearfix"></div>
+  <div  ng:if="$ctrl.common_tabs">
+    <label>Onglet(s) commun(s) déjà existant(s) :</label>
+    <ul><li ng:repeat="(name, tabs) in $ctrl.common_tabs">{{name}}</li></ul>
+  </div>
+  <div class="clearfix"></div>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-danger pull-left"
-            ng:click="$ctrl.delete()"
-            ng:if="$ctrl.onglet.id">
-        <span class="glyphicon glyphicon-trash"></span>
-        <span> Supprimer l'onglet</span>
-    </button>
-    <button class="btn btn-default"
-            ng:click="$ctrl.cancel()">
-        <span class="glyphicon glyphicon-remove-sign"></span>
-        <span ng:if="$ctrl.onglet.nom"> Annuler</span>
-        <span ng:if="!$ctrl.onglet.nom"> Fermer</span>
-    </button>
-    <button class="btn btn-success"
-            ng:click="$ctrl.ok()"
-            ng:disabled="!$ctrl.onglet.nom || !$ctrl.valid_name">
-        <span class="glyphicon glyphicon-ok-sign"></span> Valider
-    </button>
+  <button class="btn btn-danger pull-left"
+          ng:click="$ctrl.delete()"
+          ng:if="$ctrl.onglet.id">
+    <span class="glyphicon glyphicon-trash"></span>
+    <span> Supprimer l'onglet</span>
+  </button>
+  <button class="btn btn-default"
+          ng:click="$ctrl.cancel()">
+    <span class="glyphicon glyphicon-remove-sign"></span>
+    <span ng:if="$ctrl.onglet.nom"> Annuler</span>
+    <span ng:if="!$ctrl.onglet.nom"> Fermer</span>
+  </button>
+  <button class="btn btn-success"
+          ng:click="$ctrl.ok()"
+          ng:disabled="!$ctrl.onglet.nom || !$ctrl.valid_name">
+    <span class="glyphicon glyphicon-ok-sign"></span> Valider
+  </button>
 </div>
 `;
 
@@ -196,13 +200,20 @@ angular.module('suiviApp')
               ctrl.uids = uids;
               //ctrl.droits = {};
 
+              APIs.query_common_onglets_of(ctrl.uids)
+                .then(function(response) {
+                  ctrl.common_tabs = response;
+                });
+
               ctrl.valid_name = true;
 
-              APIs.get_user(uids)
-                .then(function success(response) {
-                  ctrl.eleve = response.data;
-                },
-                function error(response) { });
+              ctrl.name_validation = function() {
+                let other_onglets_names = _(ctrl.common_tabs).keys();
+
+                ctrl.valid_name = !_(other_onglets_names).includes(ctrl.onglet.nom);
+
+                return ctrl.valid_name;
+              };
 
               ctrl.ok = function() {
                 $uibModalInstance.close({
