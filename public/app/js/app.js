@@ -4,6 +4,12 @@ angular.module('suiviApp', ['ngColorPicker',
     'textAngular',
     'ui.bootstrap',
     'ui.router'])
+    .constant('DEFAULT_RIGHTS_ONGLET', [
+    { "profil_id": "ENS", "read": true, "write": true, "manage": true },
+    { "profil_id": "EVS", "read": true, "write": true, "manage": true },
+    { "profil_id": "DOC", "read": true, "write": true, "manage": true },
+    { "profil_id": "DIR", "read": true, "write": true, "manage": true }
+])
     .config(['$httpProvider',
     function ($httpProvider) {
         $httpProvider.defaults.withCredentials = true;
@@ -270,7 +276,6 @@ angular.module('suiviApp')
             ctrl.$onInit = function () {
                 init_new_saisie();
                 Saisies.query({
-                    uid_eleve: ctrl.uidEleve,
                     onglet_id: ctrl.onglet.id
                 }).$promise
                     .then(function success(response) {
@@ -278,7 +283,7 @@ angular.module('suiviApp')
                 }, function error(response) { });
             };
         }],
-    template: "\n<span class=\"hidden-xs hidden-sm floating-button toggle big off jaune\"\nng:if=\"$ctrl.onglet.manageable\"\nng:click=\"$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\"></span>\n\n<saisie class=\"col-md-12\"\nstyle=\"display: inline-block;\"\nng:if=\"$ctrl.new_saisie\"\nuid-eleve=\"$ctrl.uidEleve\"\nonglet=\"$ctrl.onglet\"\nsaisie=\"$ctrl.new_saisie\"\ncallback=\"$ctrl.saisie_callback( $ctrl.new_saisie )\"></saisie>\n\n<div class=\"col-md-12\" style=\"margin-bottom: 10px;\">\n<button class=\"btn btn-sm btn-primary pull-right\"\nng:click=\"$ctrl.order_by.reverse = !$ctrl.order_by.reverse\"\nng:if=\"$ctrl.saisies.length > 1\">\n<span class=\"glyphicon\"\nng:class=\"{'glyphicon-sort-by-order': $ctrl.order_by.reverse, 'glyphicon-sort-by-order-alt': !$ctrl.order_by.reverse}\"></span>\nTrier par la date de publication la plus <span ng:if=\"$ctrl.order_by.reverse\">r\u00E9cente</span><span ng:if=\"!$ctrl.order_by.reverse\">ancienne</span>.\n</button>\n</div>\n\n<div class=\"col-md-12 saisies\" style=\"overflow-y: auto;\">\n\n<saisie class=\"col-md-12\" style=\"display: inline-block;\"\nng:repeat=\"saisie in $ctrl.saisies | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse\"\nuid-eleve=\"$ctrl.uidEleve\"\nonglet=\"$ctrl.onglet\"\nsaisie=\"saisie\"\ncallback=\"$ctrl.saisie_callback( saisie )\"></saisie>\n</div>\n"
+    template: "\n<span class=\"hidden-xs hidden-sm floating-button toggle big off jaune\"\nng:if=\"$ctrl.onglet.manageable\"\nng:click=\"$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\"></span>\n\n<saisie class=\"col-md-12\"\nstyle=\"display: inline-block;\"\nng:if=\"$ctrl.new_saisie\"\nonglet=\"$ctrl.onglet\"\nsaisie=\"$ctrl.new_saisie\"\ncallback=\"$ctrl.saisie_callback( $ctrl.new_saisie )\"></saisie>\n\n<div class=\"col-md-12\" style=\"margin-bottom: 10px;\">\n<button class=\"btn btn-sm btn-primary pull-right\"\nng:click=\"$ctrl.order_by.reverse = !$ctrl.order_by.reverse\"\nng:if=\"$ctrl.saisies.length > 1\">\n<span class=\"glyphicon\"\nng:class=\"{'glyphicon-sort-by-order': $ctrl.order_by.reverse, 'glyphicon-sort-by-order-alt': !$ctrl.order_by.reverse}\"></span>\nTrier par la date de publication la plus <span ng:if=\"$ctrl.order_by.reverse\">r\u00E9cente</span><span ng:if=\"!$ctrl.order_by.reverse\">ancienne</span>.\n</button>\n</div>\n\n<div class=\"col-md-12 saisies\" style=\"overflow-y: auto;\">\n\n<saisie class=\"col-md-12\" style=\"display: inline-block;\"\nng:repeat=\"saisie in $ctrl.saisies | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse\"\nonglet=\"$ctrl.onglet\"\nsaisie=\"saisie\"\ncallback=\"$ctrl.saisie_callback( saisie )\"></saisie>\n</div>\n"
 });
 angular.module('suiviApp')
     .component('onglets', {
@@ -308,8 +313,9 @@ angular.module('suiviApp')
 angular.module('suiviApp')
     .component('saisie', {
     bindings: {
-        uidEleve: '<',
         onglet: '<',
+        onglets: '<',
+        passive: '<',
         saisie: '=',
         callback: '&'
     },
@@ -328,7 +334,6 @@ angular.module('suiviApp')
             ctrl.save = function () {
                 if (!_(ctrl.saisie).has('$save')) {
                     ctrl.saisie.onglet_id = ctrl.onglet.id;
-                    ctrl.saisie.uid_eleve = ctrl.uidEleve;
                     ctrl.saisie = new Saisies(ctrl.saisie);
                 }
                 var promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
@@ -368,20 +373,18 @@ angular.module('suiviApp')
                 else {
                     ctrl.saisie = new Saisies(ctrl.saisie);
                 }
-                ctrl.saisie.uid_eleve = ctrl.uidEleve;
                 ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
                 APIs.get_current_user()
                     .then(function (current_user) {
                     ctrl.current_user = current_user;
-                    ctrl.editable = ctrl.onglet.writable && ctrl.saisie.uid_author === ctrl.current_user.id;
+                    ctrl.editable = _(ctrl).has('onglets') || (ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id);
                 });
             };
             ctrl.$onChanges = function (changes) {
-                ctrl.saisie.uid_eleve = ctrl.uidEleve;
                 ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
             };
         }],
-    template: "\n<div class=\"panel panel-default saisie-display\">\n    <div class=\"panel-heading\" ng:if=\"$ctrl.saisie.id\">\n        <user-details class=\"col-md-4\"\n                      ng:if=\"!$ctrl.saisie.new_saisie\"\n                      uid=\"$ctrl.saisie.uid_author\"\n                      small=\"true\"\n                      show-avatar=\"true\"></user-details>\n        {{$ctrl.saisie.date_creation | date:'medium'}}\n        <div class=\"clearfix\"></div>\n    </div>\n\n    <div class=\"panel-body\" ng:style=\"{'padding': $ctrl.new_saisie ? 0 : 'inherit', 'border': $ctrl.new_saisie ? 0 : 'inherit'}\">\n\n        <div class=\"col-md-12\"\n             ng:bind-html=\"$ctrl.saisie.trusted_contenu\"\n             ng:if=\"!$ctrl.edition\"></div>\n\n        <div class=\"col-md-12\"\n             ng:style=\"{'padding': $ctrl.new_saisie ? 0 : 'inherit'}\"\n             ng:if=\"$ctrl.edition\">\n            <text-angular ta:target-toolbars=\"main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}\"\n                          ng:model=\"$ctrl.saisie.contenu\"\n                          ng:change=\"$ctrl.dirty = true\"></text-angular>\n            <div class=\"suivi-ta-toolbar gris2-moins\">\n                <text-angular-toolbar class=\"pull-left\"\n                                      style=\"margin-left: 0;\"\n                                      name=\"main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}\"></text-angular-toolbar>\n                <button class=\"btn btn-success pull-right\"\n                        ng:disabled=\"!$ctrl.dirty\"\n                        ng:click=\"$ctrl.save()\">\n                    <span class=\"glyphicon glyphicon-save\" ></span> Publier\n                </button>\n                <button class=\"btn btn-default pull-right\"\n                        ng:click=\"$ctrl.cancel()\"\n                        ng:if=\"$ctrl.saisie.id\">\n                    <span class=\"glyphicon glyphicon-edit\" ></span> Annuler\n                </button>\n                <div class=\"clearfix\"></div>\n            </div>\n        </div>\n    </div>\n\n    <div class=\"panel-footer\" ng:if=\"!$ctrl.edition\">\n        <div class=\"pull-right buttons\">\n            <button class=\"btn btn-default\"\n                    ng:click=\"$ctrl.toggle_edit()\"\n                    ng:if=\"$ctrl.editable\">\n                <span class=\"glyphicon glyphicon-edit\" ></span> \u00C9diter\n            </button>\n\n            <button class=\"btn btn-danger\"\n                    ng:click=\"$ctrl.delete()\"\n                    ng:if=\"$ctrl.saisie.id && ( $ctrl.editable || $ctrl.current_user.is_admin() )\">\n                <span class=\"glyphicon glyphicon-trash\"></span> Supprimer\n            </button>\n        </div>\n        <div class=\"clearfix\"></div>\n    </div>\n</div>\n"
+    template: "\n                  <div class=\"panel panel-default saisie-display\">\n                    <div class=\"panel-heading\" ng:if=\"$ctrl.saisie.id\">\n                      <user-details class=\"col-md-4\"\n                                    ng:if=\"!$ctrl.saisie.new_saisie\"\n                                    uid=\"$ctrl.saisie.uid_author\"\n                                    small=\"true\"\n                                    show-avatar=\"true\"></user-details>\n                      {{$ctrl.saisie.date_creation | date:'medium'}}\n                      <div class=\"clearfix\"></div>\n                    </div>\n\n                    <div class=\"panel-body\" ng:style=\"{'padding': $ctrl.new_saisie ? 0 : 'inherit', 'border': $ctrl.new_saisie ? 0 : 'inherit'}\">\n\n                      <div class=\"col-md-12\"\n                           ng:bind-html=\"$ctrl.saisie.trusted_contenu\"\n                           ng:if=\"!$ctrl.edition\"></div>\n\n                      <div class=\"col-md-12\"\n                           ng:style=\"{'padding': $ctrl.new_saisie ? 0 : 'inherit'}\"\n                           ng:if=\"$ctrl.edition\">\n                        <text-angular ta:target-toolbars=\"main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}\"\n                                      ng:model=\"$ctrl.saisie.contenu\"\n                                      ng:change=\"$ctrl.dirty = true\"></text-angular>\n                        <div class=\"suivi-ta-toolbar gris2-moins\">\n                          <text-angular-toolbar class=\"pull-left\"\n                                                style=\"margin-left: 0;\"\n                                                name=\"main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}\"></text-angular-toolbar>\n                          <button class=\"btn btn-success pull-right\"\n                                  ng:disabled=\"!$ctrl.dirty\"\n                                  ng:if=\"!$ctrl.passive\"\n                                  ng:click=\"$ctrl.save()\">\n                            <span class=\"glyphicon glyphicon-save\" ></span> Publier\n                          </button>\n                          <button class=\"btn btn-default pull-right\"\n                                  ng:click=\"$ctrl.cancel()\"\n                                  ng:if=\"!$ctrl.passive && $ctrl.saisie.id\">\n                            <span class=\"glyphicon glyphicon-edit\" ></span> Annuler\n                          </button>\n                          <div class=\"clearfix\"></div>\n                        </div>\n                      </div>\n                    </div>\n\n                    <div class=\"panel-footer\" ng:if=\"!$ctrl.passive && !$ctrl.edition\">\n                      <div class=\"pull-right buttons\">\n                        <button class=\"btn btn-default\"\n                                ng:click=\"$ctrl.toggle_edit()\"\n                                ng:if=\"$ctrl.editable\">\n                          <span class=\"glyphicon glyphicon-edit\" ></span> \u00C9diter\n                        </button>\n\n                        <button class=\"btn btn-danger\"\n                                ng:click=\"$ctrl.delete()\"\n                                ng:if=\"$ctrl.saisie.id && ( $ctrl.editable || $ctrl.current_user.is_admin() )\">\n                          <span class=\"glyphicon glyphicon-trash\"></span> Supprimer\n                        </button>\n                      </div>\n                      <div class=\"clearfix\"></div>\n                    </div>\n                  </div>\n\n"
 });
 angular.module('suiviApp')
     .component('trombinoscope', {
@@ -390,6 +393,8 @@ angular.module('suiviApp')
             var ctrl = this;
             ctrl.popup_onglet_batch = Popups.onglet_batch;
             ctrl.popup_onglet_batch_callback = function (feedback) { console.log(feedback); };
+            ctrl.popup_publish_batch = Popups.publish_batch;
+            ctrl.popup_publish_batch_callback = function (feedback) { console.log(feedback); };
             ctrl.filters = {
                 text: '',
                 groups: [],
@@ -507,7 +512,7 @@ angular.module('suiviApp')
                 }
             });
         }],
-    template: "\n<style>\n  .trombinoscope .petite.case { border: 1px solid transparent; }\n</style>\n<div class=\"col-md-4 gris1-moins aside trombinoscope-aside\" style=\"padding: 0;\">\n  <div class=\"panel panel-default gris1-moins\">\n    <div class=\"panel-heading\" style=\"text-align: right; \">\n      <h3>\n        {{$ctrl.filtered.length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affich\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}}\n      </h3>\n    </div>\n    <div class=\"panel-body\">\n\n      <div class=\"panel panel-default\" ng:if=\"$ctrl.can_do_batch\">\n        <div class=\"panel-heading\">\n          <span class=\"glyphicon glyphicon-fullscreen\"></span> Actions group\u00E9es\n        </div>\n\n        <div class=\"panel-body\">\n\n          <div class=\"btn-group\">\n            <button class=\"btn btn-success pull-right\" ng:click=\"$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch )\">\n              <span class=\"glyphicon glyphicon-folder-close\"></span> Nouvel onglet\n            </button>\n          </div>\n        </div>\n      </div>\n\n      <div class=\"panel panel-default\">\n        <div class=\"panel-heading\">\n          <span class=\"glyphicon glyphicon-filter\"></span> Filtrage\n        </div>\n\n        <div class=\"panel-body\">\n\n          <div class=\"row\">\n            <div class=\"col-md-12\">\n              <label>\n                <input type=\"checkbox\" ng:model=\"$ctrl.only_display_contributed_to\" />\n                <h4 style=\"display: inline;\"> N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribu\u00E9.</h4>\n              </label>\n            </div>\n          </div>\n\n          <div class=\"row\">\n            <div class=\"col-md-12\">\n              <input class=\"form-control input-lg\"\n                     style=\"display: inline; background-color: rgba(240, 240, 240, 0.66);\"\n                     type=\"text\" name=\"search\"\n                     ng:model=\"$ctrl.filters.text\" />\n              <button class=\"btn btn-xs\" style=\"color: green; margin-left: -44px; margin-top: -4px;\" ng:click=\"$ctrl.filters.text = ''\">\n                <span class=\"glyphicon glyphicon-remove\"></span>\n              </button>\n            </div>\n          </div>\n\n          <div class=\"row\" style=\"margin-top: 14px;\">\n            <div class=\"col-md-6\">\n              <div class=\"panel panel-default\">\n                <div class=\"panel-heading\">\n                  Filtrage par classe\n\n                  <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                          ng:click=\"$ctrl.clear_filters('groups')\">\n                    <span class=\"glyphicon glyphicon-remove\">\n                    </span>\n                  </button>\n                  <div class=\"clearfix\"></div>\n                </div>\n\n                <div class=\"panel-body\">\n                  <div class=\"btn-group\">\n                    <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                            ng:repeat=\"group in $ctrl.groups | orderBy:['name']\"\n                            ng:class=\"{'vert-moins': group.selected, 'vert-plus': !group.selected}\"\n                            ng:model=\"group.selected\"\n                            uib:btn-checkbox>\n                      {{group.name}}\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </div>\n\n            <div class=\"col-md-6\">\n              <div class=\"panel panel-default\">\n                <div class=\"panel-heading\">\n                  Filtrage par niveau\n\n                  <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                          ng:click=\"$ctrl.clear_filters('grades')\">\n                    <span class=\"glyphicon glyphicon-remove\">\n                    </span>\n                  </button>\n                  <div class=\"clearfix\"></div>\n                </div>\n\n                <div class=\"panel-body\">\n                  <div class=\"btn-group\">\n                    <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                            ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n                            ng:class=\"{'vert-moins': grade.selected, 'vert-plus': !grade.selected}\"\n                            ng:model=\"grade.selected\"\n                            uib:btn-checkbox>\n                      {{grade.name}}\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>\n\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'contributed': eleve.contributed}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <a class=\"eleve\"\n         ui:sref=\"carnet({uid_eleve: eleve.id})\">\n        <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n        <div class=\"full-name\" title=\"{{eleve.contributed ? 'Vous avez contribut\u00E9 \u00E0 ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h3 class=\"last-name\">{{eleve.lastname}}</h3>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
+    template: "\n<style>\n  .trombinoscope .petite.case { border: 1px solid transparent; }\n</style>\n<div class=\"col-md-4 gris1-moins aside trombinoscope-aside\" style=\"padding: 0;\">\n  <div class=\"panel panel-default gris1-moins\">\n    <div class=\"panel-heading\" style=\"text-align: right; \">\n      <h3>\n        {{$ctrl.filtered.length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affich\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}}\n      </h3>\n    </div>\n    <div class=\"panel-body\">\n\n      <div class=\"panel panel-default\" ng:if=\"$ctrl.can_do_batch\">\n        <div class=\"panel-heading\">\n          <span class=\"glyphicon glyphicon-fullscreen\"></span> Actions group\u00E9es\n        </div>\n\n        <div class=\"panel-body\">\n\n          <div class=\"btn-group\">\n            <button class=\"btn btn-success\" ng:click=\"$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )\">\n              <span class=\"glyphicon glyphicon-folder-close\"></span> Nouvel onglet commun\n            </button>\n\n            <button class=\"btn btn-primary\" ng:click=\"$ctrl.popup_publish_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_publish_batch_callback )\">\n              <span class=\"glyphicon glyphicon-pencil\"></span> Publier dans un onglet commun\n            </button>\n          </div>\n        </div>\n      </div>\n\n      <div class=\"panel panel-default\">\n        <div class=\"panel-heading\">\n          <span class=\"glyphicon glyphicon-filter\"></span> Filtrage\n        </div>\n\n        <div class=\"panel-body\">\n\n          <div class=\"row\">\n            <div class=\"col-md-12\">\n              <label>\n                <input type=\"checkbox\" ng:model=\"$ctrl.only_display_contributed_to\" />\n                <h4 style=\"display: inline;\"> N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribu\u00E9.</h4>\n              </label>\n            </div>\n          </div>\n\n          <div class=\"row\">\n            <div class=\"col-md-12\">\n              <input class=\"form-control input-lg\"\n                     style=\"display: inline; background-color: rgba(240, 240, 240, 0.66);\"\n                     type=\"text\" name=\"search\"\n                     ng:model=\"$ctrl.filters.text\" />\n              <button class=\"btn btn-xs\" style=\"color: green; margin-left: -44px; margin-top: -4px;\" ng:click=\"$ctrl.filters.text = ''\">\n                <span class=\"glyphicon glyphicon-remove\"></span>\n              </button>\n            </div>\n          </div>\n\n          <div class=\"row\" style=\"margin-top: 14px;\">\n            <div class=\"col-md-6\">\n              <div class=\"panel panel-default\">\n                <div class=\"panel-heading\">\n                  Filtrage par classe\n\n                  <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                          ng:click=\"$ctrl.clear_filters('groups')\">\n                    <span class=\"glyphicon glyphicon-remove\">\n                    </span>\n                  </button>\n                  <div class=\"clearfix\"></div>\n                </div>\n\n                <div class=\"panel-body\">\n                  <div class=\"btn-group\">\n                    <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                            ng:repeat=\"group in $ctrl.groups | orderBy:['name']\"\n                            ng:class=\"{'vert-moins': group.selected, 'vert-plus': !group.selected}\"\n                            ng:model=\"group.selected\"\n                            uib:btn-checkbox>\n                      {{group.name}}\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </div>\n\n            <div class=\"col-md-6\">\n              <div class=\"panel panel-default\">\n                <div class=\"panel-heading\">\n                  Filtrage par niveau\n\n                  <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                          ng:click=\"$ctrl.clear_filters('grades')\">\n                    <span class=\"glyphicon glyphicon-remove\">\n                    </span>\n                  </button>\n                  <div class=\"clearfix\"></div>\n                </div>\n\n                <div class=\"panel-body\">\n                  <div class=\"btn-group\">\n                    <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                            ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n                            ng:class=\"{'vert-moins': grade.selected, 'vert-plus': !grade.selected}\"\n                            ng:model=\"grade.selected\"\n                            uib:btn-checkbox>\n                      {{grade.name}}\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>\n\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'contributed': eleve.contributed}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <a class=\"eleve\"\n         ui:sref=\"carnet({uid_eleve: eleve.id})\">\n        <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n        <div class=\"full-name\" title=\"{{eleve.contributed ? 'Vous avez contribut\u00E9 \u00E0 ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h3 class=\"last-name\">{{eleve.lastname}}</h3>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
 });
 angular.module('suiviApp')
     .component('userDetails', {
@@ -563,8 +568,8 @@ angular.module('suiviApp')
     .factory('DroitsOnglets', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
         return $resource(APP_PATH + "/api/droits/:id", {
-            uid_eleve: '@uid_eleve',
             onglet_id: '@onglet_id',
+            onglets_ids: '@onglets_ids',
             id: '@id',
             uid: '@uid',
             profil_id: '@profil_id',
@@ -875,10 +880,10 @@ angular.module('suiviApp')
         });
     }]);
 angular.module('suiviApp')
-    .service('Popups', ['$uibModal', '$q', 'Onglets', 'APIs',
-    function ($uibModal, $q, Onglets, APIs) {
+    .service('Popups', ['$uibModal', '$q', 'Onglets', 'DroitsOnglets', 'Saisies', 'APIs', 'UID',
+    function ($uibModal, $q, Onglets, DroitsOnglets, Saisies, APIs, UID) {
         var service = this;
-        var template_onglet = "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <droits-onglets droits=\"$ctrl.droits\"\n                  concerned-people=\"$ctrl.concerned_people\"\n                  ng:if=\"$ctrl.droits\"></droits-onglets>\n\n  <div  ng:if=\"$ctrl.common_tabs\">\n    <label>Onglet(s) commun(s) d\u00E9j\u00E0 existant(s) :</label>\n    <ul><li ng:repeat=\"(name, tabs) in $ctrl.common_tabs\">{{name}}</li></ul>\n  </div>\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n";
+        var template_onglet = "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n  <droits-onglets droits=\"$ctrl.droits\"\n                  concerned-people=\"$ctrl.concerned_people\"\n                  ng:if=\"$ctrl.droits\"></droits-onglets>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n";
         service.onglet = function (uid, onglet, all_onglets, callback) {
             $uibModal.open({
                 resolve: {
@@ -886,8 +891,8 @@ angular.module('suiviApp')
                     onglet: function () { return _(onglet).isNull() ? { nom: '' } : onglet; },
                     all_onglets: function () { return all_onglets; }
                 },
-                controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uid', 'onglet', 'all_onglets',
-                    function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uid, onglet, all_onglets) {
+                controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uid', 'onglet', 'all_onglets',
+                    function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uid, onglet, all_onglets) {
                         var ctrl = $scope;
                         ctrl.$ctrl = ctrl;
                         ctrl.uid = uid;
@@ -897,16 +902,24 @@ angular.module('suiviApp')
                         ctrl.valid_name = true;
                         if (_(ctrl.onglet).has('id')) {
                             DroitsOnglets.query({
-                                uid_eleve: ctrl.uid,
                                 onglet_id: ctrl.onglet.id
                             }).$promise
                                 .then(function success(response) {
                                 ctrl.droits = _(response).map(function (droit) {
-                                    droit.uid_eleve = ctrl.uid;
-                                    droit.own = droit.uid === ctrl.UID;
+                                    droit.own = droit.uid == uid;
                                     return new DroitsOnglets(droit);
                                 });
                             }, function error(response) { });
+                        }
+                        else {
+                            ctrl.droits = [new DroitsOnglets({ uid: UID, read: true, write: true, manage: true })];
+                            ctrl.droits.push(new DroitsOnglets({ uid: uid, read: true, write: true, manage: false }));
+                            ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
+                                .map(function (droit) {
+                                var proper_droit = new DroitsOnglets(droit);
+                                proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
+                                return proper_droit;
+                            }));
                         }
                         APIs.get_user(uid)
                             .then(function success(response) {
@@ -965,7 +978,6 @@ angular.module('suiviApp')
                     }).$save();
                 }
                 else {
-                    response_popup.onglet.uid_eleve = uid;
                     if (response_popup.onglet.delete) {
                         action = 'deleted';
                         promise = new Onglets(response_popup.onglet).$delete();
@@ -979,22 +991,24 @@ angular.module('suiviApp')
                 }
                 promise.then(function success(response) {
                     response.action = action;
-                    _.chain(response_popup.droits)
-                        .each(function (droit) {
-                        if (droit.to_delete) {
-                            if (_(droit).has('id')) {
-                                droit.$delete();
+                    if (action != 'deleted') {
+                        _.chain(response_popup.droits)
+                            .reject(function (droit) { return _(droit).has('uid') && (droit.uid == UID || droit.uid == uid); })
+                            .each(function (droit) {
+                            if (droit.to_delete) {
+                                if (_(droit).has('id')) {
+                                    droit.$delete();
+                                }
                             }
-                        }
-                        else if (droit.dirty
-                            && (droit.uid !== '...' && droit.profil_id !== '...' && droit.sharable_id !== '...')
-                            && _(droit.dirty).reduce(function (memo, value) { return memo || value; }, false)
-                            && droit.read) {
-                            droit.uid_eleve = uid;
-                            droit.onglet_id = response_popup.onglet.id;
-                            (_(droit).has('id') ? droit.$update() : droit.$save());
-                        }
-                    });
+                            else if (droit.dirty
+                                && (droit.uid !== '...' && droit.profil_id !== '...' && droit.sharable_id !== '...')
+                                && _(droit.dirty).reduce(function (memo, value) { return memo || value; }, false)
+                                && droit.read) {
+                                droit.onglet_id = response.id;
+                                (_(droit).has('id') ? droit.$update() : droit.$save());
+                            }
+                        });
+                    }
                     callback(response);
                 }, function error() { });
             }, function error() { });
@@ -1004,15 +1018,53 @@ angular.module('suiviApp')
                 resolve: {
                     uids: function () { return uids; }
                 },
-                controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uids',
-                    function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uids) {
+                controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uids',
+                    function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uids) {
                         var ctrl = $scope;
+                        ctrl._ = _;
                         ctrl.$ctrl = ctrl;
                         ctrl.uids = uids;
+                        ctrl.droits = [{ uid: UID, read: true, write: true, manage: true }];
+                        ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
+                            .map(function (droit) {
+                            var proper_droit = new DroitsOnglets(droit);
+                            proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
+                            return proper_droit;
+                        }));
                         APIs.query_common_onglets_of(ctrl.uids)
                             .then(function (response) {
                             ctrl.common_tabs = response;
                         });
+                        var current_user = null;
+                        var profils = {};
+                        var personnels = [];
+                        APIs.get_current_user()
+                            .then(function success(response) {
+                            current_user = response;
+                            return APIs.query_profiles_types();
+                        })
+                            .then(function success(response) {
+                            profils = _(response.data).indexBy('id');
+                            return APIs.get_structure(current_user.profil_actif.structure_id);
+                        }, function error(response) { return $q.reject(response); })
+                            .then(function success(response) {
+                            if (_(response).has('data')) {
+                                personnels = _(response.data.profiles)
+                                    .reject(function (user) {
+                                    return _(['ELV', 'TUT']).contains(user.type);
+                                });
+                                return APIs.get_users(_(personnels).pluck('user_id'));
+                            }
+                        }, function error(response) { return $q.reject(response); })
+                            .then(function success(response) {
+                            if (_(response).has('data')) {
+                                personnels = _(personnels).indexBy('user_id');
+                                ctrl.concerned_people = _(response.data).map(function (people) {
+                                    people.type = profils[personnels[people.id].type].name;
+                                    return people;
+                                });
+                            }
+                        }, function error(response) { return $q.reject(response); });
                         ctrl.valid_name = true;
                         ctrl.name_validation = function () {
                             var other_onglets_names = _(ctrl.common_tabs).keys();
@@ -1022,6 +1074,7 @@ angular.module('suiviApp')
                         ctrl.ok = function () {
                             $uibModalInstance.close({
                                 onglet: ctrl.onglet,
+                                droits: ctrl.droits
                             });
                         };
                         ctrl.cancel = function () {
@@ -1039,8 +1092,56 @@ angular.module('suiviApp')
                 }).$save()
                     .then(function success(response) {
                     response.action = action;
+                    var onglets_ids = _(response.data).pluck('id');
+                    _.chain(response_popup.droits)
+                        .reject(function (droit) { return _(droit).has('uid') && droit.uid == UID; })
+                        .reject(function (droit) { return _(droit).has('to_delete') && droit.to_delete; })
+                        .each(function (droit) {
+                        droit.onglets_ids = onglets_ids;
+                        new DroitsOnglets(droit).$save();
+                    });
                     callback(response);
-                }, function error() { });
+                }, function error(response) { console.log(response); });
+            }, function error() { });
+        };
+        service.publish_batch = function (uids, callback) {
+            $uibModal.open({
+                template: "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Pulication simultan\u00E9e vers un onglet commun \u00E0 plusieurs \u00E9l\u00E8ves\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <div class=\"alert alert-warning\" role=\"alert\" ng:if=\"$ctrl.common_tabs && !$ctrl.has_common_tabs\">Aucun onglet commun n'a \u00E9t\u00E9 trouv\u00E9 pour cette s\u00E9lection d'\u00E9l\u00E8ves.</div>\n\n  <div ng:if=\"$ctrl.common_tabs && $ctrl.has_common_tabs\">\n    <label>Onglet(s) commun(s) existant(s) :</label>\n    <div class=\"btn-group\">\n      <label class=\"btn btn-primary\" ng-model=\"$ctrl.selected_onglets\" uib-btn-radio=\"tabs\"ng:repeat=\"(name, tabs) in $ctrl.common_tabs\">{{name}}</label>\n    </div>\n  </div>\n\n  <saisie class=\"col-md-12\"\n          style=\"display: inline-block;\"\n          passive=\"true\"\n          saisie=\"$ctrl.saisie\"\n          ng:if=\"$ctrl.common_tabs && $ctrl.has_common_tabs\"></saisie>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span> Annuler\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.selected_onglets || !$ctrl.saisie.contenu\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n",
+                resolve: {
+                    uids: function () { return uids; }
+                },
+                controller: ['$scope', '$uibModalInstance', '$q', 'Saisies', 'APIs', 'uids',
+                    function PopupOngletCtrl($scope, $uibModalInstance, $q, Saisies, APIs, uids) {
+                        var ctrl = $scope;
+                        ctrl.$ctrl = ctrl;
+                        ctrl.uids = uids;
+                        ctrl.saisie = { create_me: true };
+                        APIs.query_common_onglets_of(ctrl.uids)
+                            .then(function (response) {
+                            ctrl.common_tabs = response;
+                            ctrl.has_common_tabs = !_(ctrl.common_tabs).isEmpty();
+                        });
+                        ctrl.ok = function () {
+                            $uibModalInstance.close({
+                                saisie: ctrl.saisie,
+                                onglets_ids: _(ctrl.selected_onglets).pluck('id')
+                            });
+                        };
+                        ctrl.cancel = function () {
+                            $uibModalInstance.dismiss();
+                        };
+                    }]
+            })
+                .result.then(function success(response_popup) {
+                $q.all(_(response_popup.onglets_ids).map(function (onglet_id) {
+                    return new Saisies({
+                        contenu: response_popup.saisie.contenu,
+                        onglet_id: onglet_id
+                    }).$save();
+                }))
+                    .then(function (response) {
+                    callback(response);
+                });
             }, function error() { });
         };
     }]);

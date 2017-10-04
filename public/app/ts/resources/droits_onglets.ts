@@ -4,8 +4,8 @@ angular.module('suiviApp')
     function($resource, APP_PATH) {
       return $resource(`${APP_PATH}/api/droits/:id`,
         {
-          uid_eleve: '@uid_eleve',
           onglet_id: '@onglet_id',
+          onglets_ids: '@onglets_ids',
           id: '@id',
           uid: '@uid',
           profil_id: '@profil_id',

@@ -1,7 +1,7 @@
 angular.module('suiviApp')
   .service('Popups',
-  ['$uibModal', '$q', 'Onglets', 'APIs',
-    function($uibModal, $q, Onglets, APIs) {
+  ['$uibModal', '$q', 'Onglets', 'DroitsOnglets', 'Saisies', 'APIs', 'UID',
+    function($uibModal, $q, Onglets, DroitsOnglets, Saisies, APIs, UID) {
       let service = this;
 
       let template_onglet = `
@@ -16,14 +16,11 @@ angular.module('suiviApp')
     <span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
   </label>
 
+  <span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
   <droits-onglets droits="$ctrl.droits"
                   concerned-people="$ctrl.concerned_people"
                   ng:if="$ctrl.droits"></droits-onglets>
 
-  <div  ng:if="$ctrl.common_tabs">
-    <label>Onglet(s) commun(s) déjà existant(s) :</label>
-    <ul><li ng:repeat="(name, tabs) in $ctrl.common_tabs">{{name}}</li></ul>
-  </div>
   <div class="clearfix"></div>
 </div>
 
@@ -55,8 +52,8 @@ angular.module('suiviApp')
             onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; },
             all_onglets: function() { return all_onglets; }
           },
-          controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uid', 'onglet', 'all_onglets',
-            function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uid, onglet, all_onglets) {
+          controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uid', 'onglet', 'all_onglets',
+            function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uid, onglet, all_onglets) {
               let ctrl = $scope;
               ctrl.$ctrl = ctrl;
 
@@ -68,18 +65,27 @@ angular.module('suiviApp')
 
               if (_(ctrl.onglet).has('id')) {
                 DroitsOnglets.query({
-                  uid_eleve: ctrl.uid,
                   onglet_id: ctrl.onglet.id
                 }).$promise
                   .then(function success(response) {
                     ctrl.droits = _(response).map(function(droit) {
-                      droit.uid_eleve = ctrl.uid;
-                      droit.own = droit.uid === ctrl.UID;
+                      droit.own = droit.uid == uid;
 
                       return new DroitsOnglets(droit);
                     });
                   },
                   function error(response) { });
+              } else {
+                ctrl.droits = [new DroitsOnglets({ uid: UID, read: true, write: true, manage: true })];
+                ctrl.droits.push(new DroitsOnglets({ uid: uid, read: true, write: true, manage: false }));
+                ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
+                  .map(function(droit) {
+                    let proper_droit = new DroitsOnglets(droit);
+
+                    proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
+
+                    return proper_droit;
+                  }));
               }
 
               APIs.get_user(uid)
@@ -149,7 +155,6 @@ angular.module('suiviApp')
                 nom: response_popup.onglet.nom
               }).$save();
             } else {
-              response_popup.onglet.uid_eleve = uid;
               if (response_popup.onglet.delete) {
                 action = 'deleted';
 
@@ -164,22 +169,24 @@ angular.module('suiviApp')
             promise.then(function success(response) {
               response.action = action;
 
-              _.chain(response_popup.droits)
-                .each(function(droit) {
-                  if (droit.to_delete) {
-                    if (_(droit).has('id')) {
-                      droit.$delete();
-                    }
-                  } else if (droit.dirty
-                    && (droit.uid !== '...' && droit.profil_id !== '...' && droit.sharable_id !== '...')
-                    && _(droit.dirty).reduce(function(memo, value) { return memo || value; }, false)
-                    && droit.read) {
-                    droit.uid_eleve = uid;
-                    droit.onglet_id = response_popup.onglet.id;
+              if (action != 'deleted') {
+                _.chain(response_popup.droits)
+                  .reject(function(droit) { return _(droit).has('uid') && (droit.uid == UID || droit.uid == uid); })
+                  .each(function(droit) {
+                    if (droit.to_delete) {
+                      if (_(droit).has('id')) {
+                        droit.$delete();
+                      }
+                    } else if (droit.dirty
+                      && (droit.uid !== '...' && droit.profil_id !== '...' && droit.sharable_id !== '...')
+                      && _(droit.dirty).reduce(function(memo, value) { return memo || value; }, false)
+                      && droit.read) {
+                      droit.onglet_id = response.id;
 
-                    (_(droit).has('id') ? droit.$update() : droit.$save());
-                  }
-                });
+                      (_(droit).has('id') ? droit.$update() : droit.$save());
+                    }
+                  });
+              }
 
               callback(response);
             },
@@ -192,18 +199,65 @@ angular.module('suiviApp')
           resolve: {
             uids: function() { return uids; }
           },
-          controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'uids',
-            function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, uids) {
+          controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uids',
+            function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uids) {
               let ctrl = $scope;
+              ctrl._ = _;
               ctrl.$ctrl = ctrl;
-
               ctrl.uids = uids;
-              //ctrl.droits = {};
+              ctrl.droits = [{ uid: UID, read: true, write: true, manage: true }];
+              ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
+                .map(function(droit) {
+                  let proper_droit = new DroitsOnglets(droit);
+
+                  proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
+
+                  return proper_droit;
+                }));
 
               APIs.query_common_onglets_of(ctrl.uids)
                 .then(function(response) {
                   ctrl.common_tabs = response;
                 });
+
+              let current_user = null;
+              let profils = {};
+              let personnels = [];
+              APIs.get_current_user()
+                .then(function success(response) {
+                  current_user = response;
+
+                  return APIs.query_profiles_types();
+                })
+                .then(function success(response) {
+                  profils = _(response.data).indexBy('id');
+
+                  return APIs.get_structure(current_user.profil_actif.structure_id);
+                },
+                function error(response) { return $q.reject(response); })
+                .then(function success(response) {
+                  if (_(response).has('data')) {
+                    personnels = _(response.data.profiles)
+                      .reject(function(user) {
+                        return _(['ELV', 'TUT']).contains(user.type);
+                      });
+
+                    return APIs.get_users(_(personnels).pluck('user_id'));
+                  }
+                },
+                function error(response) { return $q.reject(response); })
+                .then(function success(response) {
+                  if (_(response).has('data')) {
+                    personnels = _(personnels).indexBy('user_id');
+
+                    ctrl.concerned_people = _(response.data).map(function(people) {
+                      people.type = profils[personnels[people.id].type].name;
+
+                      return people;
+                    });
+                  }
+                },
+                function error(response) { return $q.reject(response); });
 
               ctrl.valid_name = true;
 
@@ -218,7 +272,7 @@ angular.module('suiviApp')
               ctrl.ok = function() {
                 $uibModalInstance.close({
                   onglet: ctrl.onglet,
-                  //droits: ctrl.droits
+                  droits: ctrl.droits
                 });
               };
 
@@ -239,9 +293,102 @@ angular.module('suiviApp')
               .then(function success(response) {
                 response.action = action;
 
+                let onglets_ids = _(response.data).pluck('id');
+                _.chain(response_popup.droits)
+                  .reject(function(droit) { return _(droit).has('uid') && droit.uid == UID; })
+                  .reject(function(droit) { return _(droit).has('to_delete') && droit.to_delete; })
+                  .each(function(droit) {
+                    droit.onglets_ids = onglets_ids;
+
+                    new DroitsOnglets(droit).$save();
+                  });
+
                 callback(response);
               },
-              function error() { });
+              function error(response) { console.log(response) });
+          }, function error() { });
+      };
+
+      service.publish_batch = function(uids, callback) {
+        $uibModal.open({
+          template: `
+<div class="modal-header">
+  <h3 class="modal-title">
+    Pulication simultanée vers un onglet commun à plusieurs élèves
+  </h3>
+</div>
+
+<div class="modal-body">
+  <div class="alert alert-warning" role="alert" ng:if="$ctrl.common_tabs && !$ctrl.has_common_tabs">Aucun onglet commun n'a été trouvé pour cette sélection d'élèves.</div>
+
+  <div ng:if="$ctrl.common_tabs && $ctrl.has_common_tabs">
+    <label>Onglet(s) commun(s) existant(s) :</label>
+    <div class="btn-group">
+      <label class="btn btn-primary" ng-model="$ctrl.selected_onglets" uib-btn-radio="tabs"ng:repeat="(name, tabs) in $ctrl.common_tabs">{{name}}</label>
+    </div>
+  </div>
+
+  <saisie class="col-md-12"
+          style="display: inline-block;"
+          passive="true"
+          saisie="$ctrl.saisie"
+          ng:if="$ctrl.common_tabs && $ctrl.has_common_tabs"></saisie>
+
+  <div class="clearfix"></div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default"
+          ng:click="$ctrl.cancel()">
+    <span class="glyphicon glyphicon-remove-sign"></span> Annuler
+  </button>
+  <button class="btn btn-success"
+          ng:click="$ctrl.ok()"
+          ng:disabled="!$ctrl.selected_onglets || !$ctrl.saisie.contenu">
+    <span class="glyphicon glyphicon-ok-sign"></span> Valider
+  </button>
+</div>
+`,
+          resolve: {
+            uids: function() { return uids; }
+          },
+          controller: ['$scope', '$uibModalInstance', '$q', 'Saisies', 'APIs', 'uids',
+            function PopupOngletCtrl($scope, $uibModalInstance, $q, Saisies, APIs, uids) {
+              let ctrl = $scope;
+              ctrl.$ctrl = ctrl;
+
+              ctrl.uids = uids;
+
+              ctrl.saisie = { create_me: true };
+
+              APIs.query_common_onglets_of(ctrl.uids)
+                .then(function(response) {
+                  ctrl.common_tabs = response;
+                  ctrl.has_common_tabs = !_(ctrl.common_tabs).isEmpty();
+                });
+
+              ctrl.ok = function() {
+                $uibModalInstance.close({
+                  saisie: ctrl.saisie,
+                  onglets_ids: _(ctrl.selected_onglets).pluck('id')
+                });
+              };
+
+              ctrl.cancel = function() {
+                $uibModalInstance.dismiss();
+              };
+            }]
+        })
+          .result.then(function success(response_popup) {
+            $q.all(_(response_popup.onglets_ids).map(function(onglet_id) {
+              return new Saisies({
+                contenu: response_popup.saisie.contenu,
+                onglet_id: onglet_id
+              }).$save();
+            }))
+              .then(function(response) {
+                callback(response);
+              });
           }, function error() { });
       };
     }]);

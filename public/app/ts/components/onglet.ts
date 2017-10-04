@@ -1,15 +1,15 @@
 'use strict';
 
-angular.module( 'suiviApp' )
-  .component( 'onglet',
+angular.module('suiviApp')
+  .component('onglet',
   {
     bindings: {
       uidEleve: '<',
       onglets: '<',
       onglet: '='
     },
-    controller: [ '$uibModal', '$state', '$q', 'Saisies', 'Popups',
-      function( $uibModal, $state, $q, Saisies, Popups ) {
+    controller: ['$uibModal', '$state', '$q', 'Saisies', 'Popups',
+      function($uibModal, $state, $q, Saisies, Popups) {
         let ctrl = this;
 
         ctrl.manage_onglet = Popups.onglet;
@@ -19,28 +19,28 @@ angular.module( 'suiviApp' )
           reverse: true
         };
 
-        ctrl.callback_popup_onglet = function( onglet ) {
-          if ( onglet.action == 'deleted' ) {
-            $state.go( 'carnet',
+        ctrl.callback_popup_onglet = function(onglet) {
+          if (onglet.action == 'deleted') {
+            $state.go('carnet',
               { uid_eleve: ctrl.uidEleve },
-              { reload: true } );
+              { reload: true });
           }
         };
 
-        ctrl.saisie_callback = function( saisie ) {
-          switch ( saisie.action ) {
+        ctrl.saisie_callback = function(saisie) {
+          switch (saisie.action) {
             case 'created':
-              ctrl.saisies.push( saisie );
+              ctrl.saisies.push(saisie);
               init_new_saisie();
               break;
             case 'deleted':
-              ctrl.saisies = _( ctrl.saisies ).reject( function( s ) { return s.id === saisie.id; } );
+              ctrl.saisies = _(ctrl.saisies).reject(function(s) { return s.id === saisie.id; });
               break;
             case 'updated':
               break;
             default:
-              console.log( 'What to do with this?' )
-              console.log( saisie )
+              console.log('What to do with this?')
+              console.log(saisie)
           }
 
         };
@@ -97,14 +97,13 @@ angular.module( 'suiviApp' )
         ctrl.$onInit = function() {
           init_new_saisie();
 
-          Saisies.query( {
-            uid_eleve: ctrl.uidEleve,
+          Saisies.query({
             onglet_id: ctrl.onglet.id
-          } ).$promise
-            .then( function success( response ) {
+          }).$promise
+            .then(function success(response) {
               ctrl.saisies = response;
             },
-            function error( response ) { } );
+            function error(response) { });
         };
       }],
     template: `
@@ -115,7 +114,6 @@ ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctr
 <saisie class="col-md-12"
 style="display: inline-block;"
 ng:if="$ctrl.new_saisie"
-uid-eleve="$ctrl.uidEleve"
 onglet="$ctrl.onglet"
 saisie="$ctrl.new_saisie"
 callback="$ctrl.saisie_callback( $ctrl.new_saisie )"></saisie>
@@ -134,10 +132,9 @@ Trier par la date de publication la plus <span ng:if="$ctrl.order_by.reverse">r√
 
 <saisie class="col-md-12" style="display: inline-block;"
 ng:repeat="saisie in $ctrl.saisies | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse"
-uid-eleve="$ctrl.uidEleve"
 onglet="$ctrl.onglet"
 saisie="saisie"
 callback="$ctrl.saisie_callback( saisie )"></saisie>
 </div>
 `
-  } );
+  });

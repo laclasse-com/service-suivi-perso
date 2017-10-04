@@ -8,6 +8,9 @@ angular.module('suiviApp')
         ctrl.popup_onglet_batch = Popups.onglet_batch;
         ctrl.popup_onglet_batch_callback = function(feedback) { console.log(feedback); };
 
+        ctrl.popup_publish_batch = Popups.publish_batch;
+        ctrl.popup_publish_batch_callback = function(feedback) { console.log(feedback); };
+
         ctrl.filters = {
           text: '',
           groups: [],
@@ -171,8 +174,12 @@ template: `
         <div class="panel-body">
 
           <div class="btn-group">
-            <button class="btn btn-success pull-right" ng:click="$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch )">
-              <span class="glyphicon glyphicon-folder-close"></span> Nouvel onglet
+            <button class="btn btn-success" ng:click="$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )">
+              <span class="glyphicon glyphicon-folder-close"></span> Nouvel onglet commun
+            </button>
+
+            <button class="btn btn-primary" ng:click="$ctrl.popup_publish_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_publish_batch_callback )">
+              <span class="glyphicon glyphicon-pencil"></span> Publier dans un onglet commun
             </button>
           </div>
         </div>

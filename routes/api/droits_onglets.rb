@@ -15,27 +15,37 @@ module Suivi
             app.post '/api/droits/?' do
               halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') || params.key?('sharable_id') ) && ( params.key?('read') || params.key?('write') )
 
-              onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
+              request.body.rewind
+              body = JSON.parse( request.body.read )
+              single = body.key?('onglet_id')
 
-              droit = Droit[ uid: params['uid'],
-                             profil_id: params['profil_id'],
-                             onglet_id: params['onglet_id'],
-                             sharable_id: params['sharable_id'],
-                             read: params['read'],
-                             write: params['write'],
-                             manage: params['manage'] ]
-              return json( droit.to_hash ) unless droit.nil?
+              onglets_ids = single ? [ body['onglet_id'] ] : body['onglets_ids']
 
-              droit = {}
-              %w[uid profil_id read write manage].each do |key|
-                droit[ key ] = params[ key ] if params.key?( key )
+              droits_hashes = onglets_ids.map do |onglet_id|
+                onglet = get_and_check_onglet( onglet_id, user, :manage )
+
+                droit = Droit[ onglet_id: onglet_id,
+                               uid: params['uid'],
+                               profil_id: params['profil_id'],
+                               sharable_id: params['sharable_id'],
+                               read: params['read'],
+                               write: params['write'],
+                               manage: params['manage'] ]
+                return droit.to_hash unless droit.nil?
+
+                droit = {}
+                %w[uid profil_id read write manage].each do |key|
+                  droit[ key ] = params[ key ] if params.key?( key )
+                end
+                droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
+
+                onglet.add_droit( droit ).to_hash
               end
-              droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
 
-              json( onglet.add_droit( droit ).to_hash )
+              json( single ? droits_hashes.first : { multiple: true, data: droits_hashes } )
             end
 
-            app.put '/api/:droit_id' do
+            app.put '/api/droits/:droit_id' do
               halt( 400, '400 missing parameter' ) unless ( params.key?('uid') || params.key?('profil_id') || params.key?('sharable_id') ) && ( params.key?('read') || params.key?('write') )
 
               droit = Droit[params['droit_id']]

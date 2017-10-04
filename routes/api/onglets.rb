@@ -23,9 +23,7 @@ module Suivi
               end
             end
 
-            onglets_hashes = onglets_hashes.first if single
-
-            json( onglets_hashes )
+            json( single ? onglets_hashes.first : onglets_hashes )
           end
 
           app.get '/api/onglets/:onglet_id' do
@@ -54,7 +52,7 @@ module Suivi
                                         nom: params['nom'],
                                         date_creation: DateTime.now )
 
-                onglet.init_droits( DEFAULT_RIGHTS[:Onglet], user )
+                onglet.init_droits( user )
               end
 
               onglet_hash = onglet.to_hash
@@ -65,9 +63,7 @@ module Suivi
               onglet_hash
             end
 
-            onglets_hashes = onglets_hashes.first if single
-
-            json( onglets_hashes )
+            json( single ? onglets_hashes.first : { multiple: true, data: onglets_hashes } )
           end
 
           app.put '/api/onglets/:onglet_id' do
