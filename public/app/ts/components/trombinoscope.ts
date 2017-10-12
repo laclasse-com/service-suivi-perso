@@ -77,6 +77,37 @@ angular.module('suiviApp')
               ctrl.current_user.contributed = true;
 
               ctrl.eleves = [ctrl.current_user];
+
+              ctrl.contributed_to = _(ctrl.contributed_to).reject(function(uid) { return uid == ctrl.current_user.id; });
+              APIs.get_users(ctrl.contributed_to)
+                .then(function(users) {
+                  ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
+                    eleve.avatar = fix_avatar_url(eleve.avatar);
+                    eleve.contributed = true;
+
+                    let groups_ids = _(eleve.groups).pluck('group_id');
+
+                    if (!_(groups_ids).isEmpty()) {
+                      APIs.get_groups(groups_ids)
+                        .then(function(response) {
+                          let regroupement = _(response.data).findWhere({ type: 'CLS' });
+
+                          if (!_(regroupement).isUndefined()) {
+                            eleve.regroupement = {
+                              id: regroupement.id,
+                              name: regroupement.name,
+                              type: regroupement.type
+                            };
+                            eleve.etablissement = regroupement.structure_id;
+                            eleve.enseignants = regroupement.profs;
+                          }
+                        });
+                    }
+
+                    return eleve;
+                  }));
+                });
+
             } else if (ctrl.current_user.profil_actif.type === 'TUT') {
               let users_ids = _(ctrl.current_user.children).pluck('child_id');
 
@@ -153,7 +184,7 @@ angular.module('suiviApp')
             }
           });
       }],
-template: `
+    template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
 </style>
