@@ -1,29 +1,26 @@
 'use strict';
 
-angular.module( 'suiviApp' )
-  .component( 'droitsOnglets',
+angular.module('suiviApp')
+  .component('droitsOnglets',
   {
     bindings: {
+      uidEleve: '<',
       droits: '=',
       concernedPeople: '<'
     },
-    controller: [ 'DroitsOnglets', 'APIs', 'UID', 'URL_ENT',
-      function( DroitsOnglets, APIs, UID, URL_ENT ) {
+    controller: ['DroitsOnglets', 'APIs', 'UID', 'URL_ENT',
+      function(DroitsOnglets, APIs, UID, URL_ENT) {
         let ctrl = this;
         ctrl.sharing_enabled = false;
 
         let gen_pseudo_UUID = function() {
-          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
-            let r = Math.random() * 16 | 0, v = c == 'x' ? r : ( r & 0x3 | 0x8 );
-            return v.toString( 16 );
-          } );
+          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+          });
         };
 
-        ctrl.have_own_right = function() {
-          return _.chain( ctrl.droits ).findWhere( { own: true } ).isUndefined();
-        };
-
-        ctrl.add = function( droit ) {
+        ctrl.add = function(droit) {
           droit.new = true;
           droit.dirty = {
             uid: false,
@@ -34,16 +31,16 @@ angular.module( 'suiviApp' )
             manage: false
           };
 
-          ctrl.droits.push( new DroitsOnglets( droit ) );
+          ctrl.droits.push(new DroitsOnglets(droit));
         };
 
-        ctrl.add_sharable = function( droit ) {
+        ctrl.add_sharable = function(droit) {
           droit.sharable_id = gen_pseudo_UUID();
-          ctrl.add( droit );
+          ctrl.add(droit);
         };
 
-        let maybe_init_dirtiness = function( droit ) {
-          if ( !_( droit ).has( 'dirty' ) ) {
+        let maybe_init_dirtiness = function(droit) {
+          if (!_(droit).has('dirty')) {
             droit.dirty = {
               uid: false,
               profil_id: false,
@@ -55,61 +52,62 @@ angular.module( 'suiviApp' )
           }
         };
 
-        ctrl.set_read = function( droit ) {
-          maybe_init_dirtiness( droit );
+        ctrl.set_read = function(droit) {
+          maybe_init_dirtiness(droit);
 
           droit.dirty.read = true;
 
-          if ( !droit.read && droit.write ) {
+          if (!droit.read && droit.write) {
             droit.write = false;
             droit.dirty.write = true;
           }
 
-          if ( !droit.read && droit.manage ) {
+          if (!droit.read && droit.manage) {
             droit.manage = false;
             droit.dirty.manage = true;
           }
         };
 
-        ctrl.set_write = function( droit ) {
-          maybe_init_dirtiness( droit );
+        ctrl.set_write = function(droit) {
+          maybe_init_dirtiness(droit);
 
           droit.dirty.write = true;
 
-          if ( droit.write && !droit.read ) {
+          if (droit.write && !droit.read) {
             droit.read = true;
             droit.dirty.read = true;
           }
 
-          if ( !droit.write && droit.manage ) {
+          if (!droit.write && droit.manage) {
             droit.manage = false;
             droit.dirty.manage = true;
           }
         };
 
-        ctrl.set_manage = function( droit ) {
-          maybe_init_dirtiness( droit );
+        ctrl.set_manage = function(droit) {
+          maybe_init_dirtiness(droit);
 
           droit.dirty.manage = true;
 
-          if ( droit.manage && !droit.write ) {
+          if (droit.manage && !droit.write) {
             droit.write = true;
             droit.dirty.write = true;
           }
 
-          if ( droit.manage && !droit.read ) {
+          if (droit.manage && !droit.read) {
             droit.read = true;
             droit.dirty.read = true;
           }
         };
 
         ctrl.update_deletabilities = function() {
-          let last_droit_standing = _( ctrl.droits ).reject( function( droit ) { return droit.to_delete; } ).length == 1;
-
-          _( ctrl.droits ).each( function( droit ) {
-            droit.deletable = !last_droit_standing;
-            droit.deletable = droit.deletable && !droit.own;
-          } );
+          console.log(ctrl);
+          _(ctrl.droits).each(function(droit) {
+            droit.deletable = droit.uid != UID;
+            if (!_(ctrl.uidEleve).isUndefined()) {
+              droit.deletable = droit.deletable && droit.uid != ctrl.uidEleve;
+            }
+          });
         };
 
         ctrl.$onInit = function() {
@@ -118,10 +116,10 @@ angular.module( 'suiviApp' )
           ctrl.update_deletabilities();
 
           APIs.query_profiles_types()
-            .then( function success( response ) {
+            .then(function success(response) {
               ctrl.profils = response.data;
             },
-            function error( response ) { } );
+            function error(response) { });
         };
       }],
     template: `
@@ -231,4 +229,4 @@ angular.module( 'suiviApp' )
     </table>
 </div>
 `
-  } );
+  });

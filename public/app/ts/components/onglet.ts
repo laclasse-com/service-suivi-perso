@@ -106,35 +106,35 @@ angular.module('suiviApp')
             function error(response) { });
         };
       }],
-    template: `
-<span class="hidden-xs hidden-sm floating-button toggle big off jaune"
-ng:if="$ctrl.onglet.manageable"
-ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )"></span>
+                  template: `
+                  <span class="hidden-xs hidden-sm floating-button toggle big off jaune"
+                        ng:if="$ctrl.onglet.manageable"
+                        ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )"></span>
 
-<saisie class="col-md-12"
-style="display: inline-block;"
-ng:if="$ctrl.new_saisie"
-onglet="$ctrl.onglet"
-saisie="$ctrl.new_saisie"
-callback="$ctrl.saisie_callback( $ctrl.new_saisie )"></saisie>
+                  <saisie class="col-md-12"
+                          style="display: inline-block;"
+                          ng:if="$ctrl.new_saisie"
+                          onglet="$ctrl.onglet"
+                          saisie="$ctrl.new_saisie"
+                          callback="$ctrl.saisie_callback( $ctrl.new_saisie )"></saisie>
 
-<div class="col-md-12" style="margin-bottom: 10px;">
-<button class="btn btn-sm btn-primary pull-right"
-ng:click="$ctrl.order_by.reverse = !$ctrl.order_by.reverse"
-ng:if="$ctrl.saisies.length > 1">
-<span class="glyphicon"
-ng:class="{'glyphicon-sort-by-order': $ctrl.order_by.reverse, 'glyphicon-sort-by-order-alt': !$ctrl.order_by.reverse}"></span>
-Trier par la date de publication la plus <span ng:if="$ctrl.order_by.reverse">récente</span><span ng:if="!$ctrl.order_by.reverse">ancienne</span>.
-</button>
-</div>
+                  <div class="col-md-12" style="margin-bottom: 10px;">
+                    <button class="btn btn-sm btn-primary pull-right"
+                            ng:click="$ctrl.order_by.reverse = !$ctrl.order_by.reverse"
+                            ng:if="$ctrl.saisies.length > 1">
+                      <span class="glyphicon"
+                            ng:class="{'glyphicon-sort-by-order': $ctrl.order_by.reverse, 'glyphicon-sort-by-order-alt': !$ctrl.order_by.reverse}"></span>
+                      Trier par la date de publication la plus <span ng:if="$ctrl.order_by.reverse">récente</span><span ng:if="!$ctrl.order_by.reverse">ancienne</span>.
+                    </button>
+                  </div>
 
-<div class="col-md-12 saisies" style="overflow-y: auto;">
+                  <div class="col-md-12 saisies" style="overflow-y: auto;">
 
-<saisie class="col-md-12" style="display: inline-block;"
-ng:repeat="saisie in $ctrl.saisies | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse"
-onglet="$ctrl.onglet"
-saisie="saisie"
-callback="$ctrl.saisie_callback( saisie )"></saisie>
-</div>
+                    <saisie class="col-md-12" style="display: inline-block;"
+                            ng:repeat="saisie in $ctrl.saisies | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse"
+                            onglet="$ctrl.onglet"
+                            saisie="saisie"
+                            callback="$ctrl.saisie_callback( saisie )"></saisie>
+                  </div>
 `
   });
