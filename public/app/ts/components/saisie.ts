@@ -27,6 +27,7 @@ angular.module('suiviApp')
         };
 
         ctrl.save = function() {
+          ctrl.saisie.pinned = ctrl.saisie.tmp_pinned;
           if (!_(ctrl.saisie).has('$save')) {
             ctrl.saisie.onglet_id = ctrl.onglet.id;
 
@@ -70,8 +71,10 @@ angular.module('suiviApp')
           if (ctrl.saisie.create_me) {
             ctrl.new_saisie = true;
             ctrl.saisie.contenu = '';
+            ctrl.saisie.tmp_pinned = false;
           } else {
             ctrl.saisie = new Saisies(ctrl.saisie);
+            ctrl.saisie.tmp_pinned = ctrl.saisie.pinned;
           }
           ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
 
@@ -88,7 +91,12 @@ angular.module('suiviApp')
       }],
                   template: `
                   <div class="panel panel-default saisie-display">
-                    <div class="panel-heading" ng:if="$ctrl.saisie.id">
+                    <span style="position: absolute; top: 0; right: 15px;height: 0;width: 0;text-align: center; color: #fff; border-color: transparent #fa0 transparent transparent;border-style: solid;border-width: 0 50px 50px 0; z-index: 1;"
+                          ng:if="$ctrl.saisie.tmp_pinned">
+                      <span class="glyphicon glyphicon-pushpin" style="margin-left: 25px;font-size: 22px;margin-top: 3px;"></span>
+                    </span>
+
+                    <div class="panel-heading" ng:if="$ctrl.saisie.id && !$ctrl.saisie.tmp_pinned">
                       <user-details class="col-md-4"
                                     ng:if="!$ctrl.saisie.new_saisie"
                                     uid="$ctrl.saisie.uid_author"
@@ -114,6 +122,18 @@ angular.module('suiviApp')
                           <text-angular-toolbar class="pull-left"
                                                 style="margin-left: 0;"
                                                 name="main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}"></text-angular-toolbar>
+
+                          <button class="btn" style="margin-left: 6px;"
+                                  ng:disabled="$ctrl.onglet.has_pin && !$ctrl.saisie.tmp_pinned"
+                                  ng:model="$ctrl.saisie.tmp_pinned"
+                                  ng:change="$ctrl.dirty = true"
+                                  ng:class="{'btn-warning': $ctrl.saisie.tmp_pinned, 'btn-default': !$ctrl.saisie.tmp_pinned}"
+                                  uib:btn-checkbox
+                                  btn:checkbox-true="true"
+                                  btn:checkbox-false="false">
+                            <span class="glyphicon glyphicon-pushpin" ></span> Épingler
+                          </button>
+
                           <button class="btn btn-success pull-right"
                                   ng:disabled="!$ctrl.dirty"
                                   ng:if="!$ctrl.passive"

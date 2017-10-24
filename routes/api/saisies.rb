@@ -17,7 +17,8 @@ module Suivi
             saisie = onglet.add_saisy( uid_author: user['id'],
                                        date_creation: DateTime.now,
                                        date_modification: DateTime.now,
-                                       contenu: params['contenu'] )
+                                       contenu: params['contenu'],
+                                       pinned: params['pinned'] )
 
             json( saisie )
           end
@@ -33,8 +34,9 @@ module Suivi
             saisie = get_and_check_saisie( params['id'], user, :write )
             get_and_check_onglet( saisie.onglet_id, user, :write )
 
-            if params.key?('contenu')
-              saisie.contenu = params['contenu']
+            if params.key?('contenu') || params.key?('pinned')
+              saisie.contenu = params['contenu'] if params.key?('contenu')
+              saisie.pinned = params['pinned'] if params.key?('pinned')
               saisie.date_modification = DateTime.now
 
               saisie.save

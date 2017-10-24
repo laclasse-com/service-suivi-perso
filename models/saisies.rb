@@ -13,6 +13,9 @@ class Saisie < Sequel::Model(:saisies)
 
     return true if user['id'] == uid_author
 
+    # if user can manage then she can edit onglet's pinned saisie(s)
+    return true if pinned && Onglet[ onglet_id ].allow?( user, :manage )
+
     # by default etablissement's admins and super-admins have all rights
     LaClasse::User.user_is_admin?( user ) || LaClasse::User.user_is_super_admin?( user )
   end

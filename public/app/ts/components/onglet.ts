@@ -37,61 +37,36 @@ angular.module('suiviApp')
               ctrl.saisies = _(ctrl.saisies).reject(function(s) { return s.id === saisie.id; });
               break;
             case 'updated':
+              let index = _(ctrl.saisies).findIndex(function(s) { return s.id == saisie.id; })
+              ctrl.saisies[index] = saisie;
+
+              console.log(ctrl.saisies)
+              console.log(saisie)
               break;
             default:
               console.log('What to do with this?')
               console.log(saisie)
           }
 
+          update_pin_status();
         };
-
-        // let print = function() {
-        //     let printDump = document.getElementById('printDump');
-        //     let pdf = new jsPDF( 'l', 'pt', 'a4' );
-        //     return $q.all( _(angular.element('.active saisie'))
-        //                    .map( function( elt ) {
-        //                        return html2canvas( elt );
-        //                    } ) )
-        //         .then( function( canvases ) {
-        //             let y = 0;
-
-        //             _(canvases).each( function( canvasObj ) {
-        //                 printDump.appendChild( canvasObj ); //appendChild is required for html to add page in pdf
-
-        //                 pdf.addHTML( canvasObj, 0, y, { pagesplit: true,
-        //                                                 background: '#fff' } )
-        //                     .then( function() {
-        //                         printDump.removeChild( canvasObj );
-        //                     } );
-        //                 y += canvasObj.height;
-        //             } );
-
-        //             // pdf.addPage();
-        //             pdf.save( ctrl.onglet.name + '.pdf' );
-        //             return $q.resolve( 'terminé' );
-        //         } );
-        // };
-        // ctrl.print = function() {
-        //     swal( { title: "Export au format PDF...",
-        //             text: "traitement en cours",
-        //             type: "info",
-        //             showLoaderOnConfirm: true,
-        //             onOpen: function(){
-        //                 swal.clickConfirm();
-        //             },
-        //             preConfirm: function() {
-        //                 return new Promise( function( resolve ) {
-        //                     print().then(
-        //                         function success( response ) {
-        //                             swal.closeModal();
-        //                         } );
-        //                 } );
-        //             },
-        //             allowOutsideClick: false } );
-        // };
 
         let init_new_saisie = function() {
           ctrl.new_saisie = ctrl.onglet.writable ? { create_me: true } : null;
+        };
+
+        let filter_on_pin = function(pinned) {
+          return function() {
+            return function(saisie) {
+              return saisie.pinned == pinned;
+            }
+          }
+        }
+        ctrl.filter_pinned = filter_on_pin(true);
+        ctrl.filter_unpinned = filter_on_pin(false);
+
+        let update_pin_status = function() {
+          ctrl.onglet.has_pin = _(ctrl.saisies).findIndex(function(saisie) { return saisie.pinned; }) != -1;
         };
 
         ctrl.$onInit = function() {
@@ -102,14 +77,25 @@ angular.module('suiviApp')
           }).$promise
             .then(function success(response) {
               ctrl.saisies = response;
+              update_pin_status();
             },
             function error(response) { });
         };
       }],
-                  template: `
-                  <span class="hidden-xs hidden-sm floating-button toggle big off jaune"
+    template: `
+<span class="hidden-xs hidden-sm floating-button toggle big off jaune"
                         ng:if="$ctrl.onglet.manageable"
                         ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )"></span>
+
+
+                  <div class="col-md-12 saisies" style="overflow-y: auto;">
+
+                    <saisie class="col-md-12" style="display: inline-block;"
+                            ng:repeat="saisie in $ctrl.saisies | filter:$ctrl.filter_pinned() | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse"
+                            onglet="$ctrl.onglet"
+                            saisie="saisie"
+                            callback="$ctrl.saisie_callback( saisie )"></saisie>
+                  </div>
 
                   <saisie class="col-md-12"
                           style="display: inline-block;"
@@ -131,7 +117,7 @@ angular.module('suiviApp')
                   <div class="col-md-12 saisies" style="overflow-y: auto;">
 
                     <saisie class="col-md-12" style="display: inline-block;"
-                            ng:repeat="saisie in $ctrl.saisies | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse"
+                            ng:repeat="saisie in $ctrl.saisies | filter:$ctrl.filter_unpinned() | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse"
                             onglet="$ctrl.onglet"
                             saisie="saisie"
                             callback="$ctrl.saisie_callback( saisie )"></saisie>
