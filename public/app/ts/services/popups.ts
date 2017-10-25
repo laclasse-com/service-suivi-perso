@@ -383,6 +383,7 @@ angular.module('suiviApp')
             $q.all(_(response_popup.onglets_ids).map(function(onglet_id) {
               return new Saisies({
                 contenu: response_popup.saisie.contenu,
+                pinned: response_popup.saisie.tmp_pinned,
                 onglet_id: onglet_id
               }).$save();
             }))

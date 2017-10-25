@@ -39,16 +39,11 @@ angular.module('suiviApp')
             case 'updated':
               let index = _(ctrl.saisies).findIndex(function(s) { return s.id == saisie.id; })
               ctrl.saisies[index] = saisie;
-
-              console.log(ctrl.saisies)
-              console.log(saisie)
               break;
             default:
               console.log('What to do with this?')
               console.log(saisie)
           }
-
-          update_pin_status();
         };
 
         let init_new_saisie = function() {
@@ -65,10 +60,6 @@ angular.module('suiviApp')
         ctrl.filter_pinned = filter_on_pin(true);
         ctrl.filter_unpinned = filter_on_pin(false);
 
-        let update_pin_status = function() {
-          ctrl.onglet.has_pin = _(ctrl.saisies).findIndex(function(saisie) { return saisie.pinned; }) != -1;
-        };
-
         ctrl.$onInit = function() {
           init_new_saisie();
 
@@ -77,13 +68,12 @@ angular.module('suiviApp')
           }).$promise
             .then(function success(response) {
               ctrl.saisies = response;
-              update_pin_status();
             },
             function error(response) { });
         };
       }],
-    template: `
-<span class="hidden-xs hidden-sm floating-button toggle big off jaune"
+                  template: `
+                  <span class="hidden-xs hidden-sm floating-button toggle big off jaune"
                         ng:if="$ctrl.onglet.manageable"
                         ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )"></span>
 

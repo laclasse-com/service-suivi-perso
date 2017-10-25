@@ -124,7 +124,6 @@ angular.module('suiviApp')
                                                 name="main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}"></text-angular-toolbar>
 
                           <button class="btn" style="margin-left: 6px;"
-                                  ng:disabled="$ctrl.onglet.has_pin && !$ctrl.saisie.tmp_pinned"
                                   ng:model="$ctrl.saisie.tmp_pinned"
                                   ng:change="$ctrl.dirty = true"
                                   ng:class="{'btn-warning': $ctrl.saisie.tmp_pinned, 'btn-default': !$ctrl.saisie.tmp_pinned}"
