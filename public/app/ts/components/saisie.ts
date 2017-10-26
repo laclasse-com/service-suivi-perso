@@ -27,7 +27,7 @@ angular.module('suiviApp')
         };
 
         ctrl.save = function() {
-          ctrl.saisie.pinned = ctrl.saisie.tmp_pinned;
+          ctrl.saisie.pinned = ctrl.saisie.tmp_pinned || false;
           if (!_(ctrl.saisie).has('$save')) {
             ctrl.saisie.onglet_id = ctrl.onglet.id;
 
