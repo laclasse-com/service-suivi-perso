@@ -2,6 +2,10 @@ module LaClasse
   module User
     module_function
 
+    def user_groups( user )
+      user['groups']
+    end
+
     def user_active_profile( user )
       user['profiles'].select { |profile| profile['active'] }.first
     end
