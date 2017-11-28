@@ -24,7 +24,7 @@ require_relative './routes/status'
 
 require_relative './routes/api/carnets'
 require_relative './routes/api/onglets'
-require_relative './routes/api/droits_onglets'
+require_relative './routes/api/droits'
 require_relative './routes/api/saisies'
 require_relative './routes/api/sharable'
 
