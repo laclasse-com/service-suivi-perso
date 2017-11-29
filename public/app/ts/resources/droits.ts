@@ -1,5 +1,5 @@
 angular.module('suiviApp')
-  .factory('DroitsOnglets',
+  .factory('Droits',
   ['$resource', 'APP_PATH',
     function($resource, APP_PATH) {
       return $resource(`${APP_PATH}/api/droits/:id`,

@@ -1,7 +1,7 @@
 angular.module('suiviApp')
   .service('Popups',
-  ['$uibModal', '$q', 'Onglets', 'DroitsOnglets', 'Saisies', 'APIs', 'UID',
-    function($uibModal, $q, Onglets, DroitsOnglets, Saisies, APIs, UID) {
+  ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID',
+    function($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
       let service = this;
 
       let template_onglet = `
@@ -17,10 +17,10 @@ angular.module('suiviApp')
   </label>
 
   <span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
-  <droits-onglets uid-eleve="$ctrl.uid_eleve"
-                  droits="$ctrl.droits"
-                  concerned-people="$ctrl.concerned_people"
-                  ng:if="$ctrl.droits"></droits-onglets>
+  <droits uid-eleve="$ctrl.uid_eleve"
+          droits="$ctrl.droits"
+          concerned-people="$ctrl.concerned_people"
+          ng:if="$ctrl.droits"></droits>
 
   <div class="clearfix"></div>
 </div>
@@ -53,8 +53,8 @@ angular.module('suiviApp')
             onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; },
             all_onglets: function() { return all_onglets; }
           },
-          controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uid_eleve', 'onglet', 'all_onglets',
-            function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uid_eleve, onglet, all_onglets) {
+          controller: ['$scope', '$uibModalInstance', '$q', 'Droits', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uid_eleve', 'onglet', 'all_onglets',
+            function PopupOngletCtrl($scope, $uibModalInstance, $q, Droits, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uid_eleve, onglet, all_onglets) {
               let ctrl = $scope;
               ctrl.$ctrl = ctrl;
 
@@ -65,21 +65,21 @@ angular.module('suiviApp')
               ctrl.valid_name = true;
 
               if (_(ctrl.onglet).has('id')) {
-                DroitsOnglets.query({
+                Droits.query({
                   onglet_id: ctrl.onglet.id
                 }).$promise
                   .then(function success(response) {
                     ctrl.droits = _(response).map(function(droit) {
-                      return new DroitsOnglets(droit);
+                      return new Droits(droit);
                     });
                   },
                   function error(response) { });
               } else {
-                ctrl.droits = [new DroitsOnglets({ uid: UID, read: true, write: true, manage: true })];
-                ctrl.droits.push(new DroitsOnglets({ uid: uid_eleve, read: true, write: true, manage: false }));
+                ctrl.droits = [new Droits({ uid: UID, read: true, write: true, manage: true })];
+                ctrl.droits.push(new Droits({ uid: uid_eleve, read: true, write: true, manage: false }));
                 ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
                   .map(function(droit) {
-                    let proper_droit = new DroitsOnglets(droit);
+                    let proper_droit = new Droits(droit);
 
                     proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
 
@@ -200,15 +200,15 @@ angular.module('suiviApp')
           resolve: {
             uids: function() { return uids; }
           },
-          controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uids',
-            function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uids) {
+          controller: ['$scope', '$uibModalInstance', '$q', 'Droits', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uids',
+            function PopupOngletCtrl($scope, $uibModalInstance, $q, Droits, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uids) {
               let ctrl = $scope;
               ctrl.$ctrl = ctrl;
               ctrl.uids = uids;
               ctrl.droits = [{ uid: UID, read: true, write: true, manage: true }];
               ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
                 .map(function(droit) {
-                  let proper_droit = new DroitsOnglets(droit);
+                  let proper_droit = new Droits(droit);
 
                   proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
 
@@ -300,7 +300,7 @@ angular.module('suiviApp')
                   .each(function(droit) {
                     droit.onglets_ids = onglets_ids;
 
-                    new DroitsOnglets(droit).$save();
+                    new Droits(droit).$save();
                   });
 
                 callback(response);

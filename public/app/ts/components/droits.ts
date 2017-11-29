@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('suiviApp')
-  .component('droitsOnglets',
+  .component('droits',
   {
     bindings: {
       uidEleve: '<',
       droits: '=',
       concernedPeople: '<'
     },
-    controller: ['DroitsOnglets', 'APIs', 'UID', 'URL_ENT',
-      function(DroitsOnglets, APIs, UID, URL_ENT) {
+    controller: ['Droits', 'APIs', 'UID', 'URL_ENT',
+      function(Droits, APIs, UID, URL_ENT) {
         let ctrl = this;
         ctrl.sharing_enabled = false;
 
@@ -25,13 +25,14 @@ angular.module('suiviApp')
           droit.dirty = {
             uid: false,
             profil_id: false,
+            group_id: false,
             sharable_id: false,
             read: false,
             write: false,
             manage: false
           };
 
-          ctrl.droits.push(new DroitsOnglets(droit));
+          ctrl.droits.push(new Droits(droit));
         };
 
         ctrl.add_sharable = function(droit) {

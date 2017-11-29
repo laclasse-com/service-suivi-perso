@@ -134,14 +134,14 @@ angular.module('suiviApp')
     template: "\n<div class=\"col-md-4 gris1-moins aside aside-carnet\">\n    <a class=\"col-md-12 btn btn-lg noir-moins go-back\" ui:sref=\"trombinoscope()\"> \u21B0 Retour au trombinoscope </a>\n\n    <user-details class=\"user-details eleve\"\n                  uid=\"$ctrl.uidEleve\"\n                  show-avatar=\"true\"\n                  show-emails=\"true\"\n                  show-classe=\"true\"\n                  show-birthdate=\"true\"\n                  show-address=\"true\"\n                  show-concerned-people=\"true\"></user-details>\n</div>\n\n<onglets class=\"col-md-8 carnet\"\n         uid-eleve=\"$ctrl.uidEleve\"></onglets>\n"
 });
 angular.module('suiviApp')
-    .component('droitsOnglets', {
+    .component('droits', {
     bindings: {
         uidEleve: '<',
         droits: '=',
         concernedPeople: '<'
     },
-    controller: ['DroitsOnglets', 'APIs', 'UID', 'URL_ENT',
-        function (DroitsOnglets, APIs, UID, URL_ENT) {
+    controller: ['Droits', 'APIs', 'UID', 'URL_ENT',
+        function (Droits, APIs, UID, URL_ENT) {
             var ctrl = this;
             ctrl.sharing_enabled = false;
             var gen_pseudo_UUID = function () {
@@ -155,12 +155,13 @@ angular.module('suiviApp')
                 droit.dirty = {
                     uid: false,
                     profil_id: false,
+                    group_id: false,
                     sharable_id: false,
                     read: false,
                     write: false,
                     manage: false
                 };
-                ctrl.droits.push(new DroitsOnglets(droit));
+                ctrl.droits.push(new Droits(droit));
             };
             ctrl.add_sharable = function (droit) {
                 droit.sharable_id = gen_pseudo_UUID();
@@ -608,7 +609,7 @@ angular.module('suiviApp')
         return $resource(APP_PATH + "/api/carnets/:uid_eleve", { uid_eleve: '@uid_eleve' }, { update: { method: 'PUT' } });
     }]);
 angular.module('suiviApp')
-    .factory('DroitsOnglets', ['$resource', 'APP_PATH',
+    .factory('Droits', ['$resource', 'APP_PATH',
     function ($resource, APP_PATH) {
         return $resource(APP_PATH + "/api/droits/:id", {
             onglet_id: '@onglet_id',
@@ -924,10 +925,10 @@ angular.module('suiviApp')
         });
     }]);
 angular.module('suiviApp')
-    .service('Popups', ['$uibModal', '$q', 'Onglets', 'DroitsOnglets', 'Saisies', 'APIs', 'UID',
-    function ($uibModal, $q, Onglets, DroitsOnglets, Saisies, APIs, UID) {
+    .service('Popups', ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID',
+    function ($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
         var service = this;
-        var template_onglet = "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n  <droits-onglets uid-eleve=\"$ctrl.uid_eleve\"\n                  droits=\"$ctrl.droits\"\n                  concerned-people=\"$ctrl.concerned_people\"\n                  ng:if=\"$ctrl.droits\"></droits-onglets>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n";
+        var template_onglet = "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n  <droits uid-eleve=\"$ctrl.uid_eleve\"\n          droits=\"$ctrl.droits\"\n          concerned-people=\"$ctrl.concerned_people\"\n          ng:if=\"$ctrl.droits\"></droits>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n";
         service.onglet = function (uid_eleve, onglet, all_onglets, callback) {
             $uibModal.open({
                 resolve: {
@@ -935,8 +936,8 @@ angular.module('suiviApp')
                     onglet: function () { return _(onglet).isNull() ? { nom: '' } : onglet; },
                     all_onglets: function () { return all_onglets; }
                 },
-                controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uid_eleve', 'onglet', 'all_onglets',
-                    function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uid_eleve, onglet, all_onglets) {
+                controller: ['$scope', '$uibModalInstance', '$q', 'Droits', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uid_eleve', 'onglet', 'all_onglets',
+                    function PopupOngletCtrl($scope, $uibModalInstance, $q, Droits, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uid_eleve, onglet, all_onglets) {
                         var ctrl = $scope;
                         ctrl.$ctrl = ctrl;
                         ctrl.uid_eleve = uid_eleve;
@@ -945,21 +946,21 @@ angular.module('suiviApp')
                         ctrl.onglet.delete = false;
                         ctrl.valid_name = true;
                         if (_(ctrl.onglet).has('id')) {
-                            DroitsOnglets.query({
+                            Droits.query({
                                 onglet_id: ctrl.onglet.id
                             }).$promise
                                 .then(function success(response) {
                                 ctrl.droits = _(response).map(function (droit) {
-                                    return new DroitsOnglets(droit);
+                                    return new Droits(droit);
                                 });
                             }, function error(response) { });
                         }
                         else {
-                            ctrl.droits = [new DroitsOnglets({ uid: UID, read: true, write: true, manage: true })];
-                            ctrl.droits.push(new DroitsOnglets({ uid: uid_eleve, read: true, write: true, manage: false }));
+                            ctrl.droits = [new Droits({ uid: UID, read: true, write: true, manage: true })];
+                            ctrl.droits.push(new Droits({ uid: uid_eleve, read: true, write: true, manage: false }));
                             ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
                                 .map(function (droit) {
-                                var proper_droit = new DroitsOnglets(droit);
+                                var proper_droit = new Droits(droit);
                                 proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
                                 return proper_droit;
                             }));
@@ -1063,15 +1064,15 @@ angular.module('suiviApp')
                 resolve: {
                     uids: function () { return uids; }
                 },
-                controller: ['$scope', '$uibModalInstance', '$q', 'DroitsOnglets', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uids',
-                    function PopupOngletCtrl($scope, $uibModalInstance, $q, DroitsOnglets, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uids) {
+                controller: ['$scope', '$uibModalInstance', '$q', 'Droits', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uids',
+                    function PopupOngletCtrl($scope, $uibModalInstance, $q, Droits, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uids) {
                         var ctrl = $scope;
                         ctrl.$ctrl = ctrl;
                         ctrl.uids = uids;
                         ctrl.droits = [{ uid: UID, read: true, write: true, manage: true }];
                         ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
                             .map(function (droit) {
-                            var proper_droit = new DroitsOnglets(droit);
+                            var proper_droit = new Droits(droit);
                             proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
                             return proper_droit;
                         }));
@@ -1142,7 +1143,7 @@ angular.module('suiviApp')
                         .reject(function (droit) { return _(droit).has('to_delete') && droit.to_delete; })
                         .each(function (droit) {
                         droit.onglets_ids = onglets_ids;
-                        new DroitsOnglets(droit).$save();
+                        new Droits(droit).$save();
                     });
                     callback(response);
                 }, function error(response) { console.log(response); });
