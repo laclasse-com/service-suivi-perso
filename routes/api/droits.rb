@@ -35,7 +35,7 @@ module Suivi
                 return droit.to_hash unless droit.nil?
 
                 droit = {}
-                %w[uid profil_id read write manage].each do |key|
+                %w[uid profil_id group_id read write manage].each do |key|
                   droit[ key ] = params[ key ] if params.key?( key )
                 end
                 droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil

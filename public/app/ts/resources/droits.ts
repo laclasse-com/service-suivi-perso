@@ -9,6 +9,7 @@ angular.module('suiviApp')
           id: '@id',
           uid: '@uid',
           profil_id: '@profil_id',
+          group_id: '@group_id',
           sharable_id: '@sharable_id',
           read: '@read',
           write: '@write',

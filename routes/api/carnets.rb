@@ -17,6 +17,7 @@ module Suivi
                                                             .all
                                                             .map(&:onglet_id)
                                                             .concat( Droit.where( uid: params['uid'] )
+                                                                          .or( group_id: LaClasse::User.user_groups(user).map { |group| group['group_id'] } )
                                                                           .select( :onglet_id )
                                                                           .all
                                                                           .map(&:onglet_id) ) )
