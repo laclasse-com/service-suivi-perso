@@ -81,7 +81,7 @@ angular.module('suiviApp')
           APIs.get_current_user()
             .then(function(current_user) {
               ctrl.current_user = current_user;
-              ctrl.editable = _(ctrl).has('onglets') || (ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id);
+              ctrl.editable = ctrl.current_user.is_admin() || (_(ctrl).has('onglets') && ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id);
             });
         };
 
@@ -89,7 +89,7 @@ angular.module('suiviApp')
           ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
         };
       }],
-                  template: `
+    template: `
                   <div class="panel panel-default saisie-display">
                     <span style="position: absolute; top: 0; right: 15px;height: 0;width: 0;text-align: center; color: #fff; border-color: transparent #fa0 transparent transparent;border-style: solid;border-width: 0 50px 50px 0; z-index: 1;"
                           ng:if="$ctrl.saisie.tmp_pinned">
