@@ -27,10 +27,13 @@ Style/SymbolArray:
   Enabled: false
 
 Metrics/ClassLength:
-  Max: 300
+  Enabled: false
 
 Metrics/MethodLength:
-  Max: 200
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
 
 Style/Documentation:
   Enabled: false
