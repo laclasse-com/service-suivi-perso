@@ -119,8 +119,8 @@ angular.module( 'suiviApp' )
             </uib-accordion-heading>
             <ul>
               <li ng:repeat="people in peoples | orderBy:'lastname'">
-                <span ng:if="!people.contributed_to">{{people.firstname}} {{people.lastname}}</span>
-                <span ng:if="people.contributed_to">
+                <span ng:if="!people.relevant_to">{{people.firstname}} {{people.lastname}}</span>
+                <span ng:if="people.relevant_to">
                   <a ui:sref="carnet({uid_eleve: people.id})">{{people.firstname}} {{people.lastname}}</a>
                 </span>
                 <span ng:if="people.prof_principal"> (enseignant principal)</span>

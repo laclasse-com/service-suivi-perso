@@ -99,8 +99,8 @@ angular.module('suiviApp')
                       }
                   });
 
-                  APIs.query_carnets_contributed_to = function(uid) {
-                      return $http.get(`${APP_PATH}/api/carnets/contributed/` + uid);
+                  APIs.query_carnets_relevant_to = function(uid) {
+                      return $http.get(`${APP_PATH}/api/carnets/relevant/` + uid);
                   };
 
                   APIs.get_structure = _.memoize(function(uai) {
@@ -130,7 +130,7 @@ angular.module('suiviApp')
                       let eleve = null;
                       let concerned_people = [];
                       let profils = [];
-                      let contributed_to = [];
+                      let relevant_to = [];
                       let current_user = null;
                       let users = [];
                       let personnels = [];
@@ -148,14 +148,14 @@ angular.module('suiviApp')
                           .then(function success(response) {
                               profils = _(response.data).indexBy('id');
 
-                              return APIs.query_carnets_contributed_to(current_user.id);
+                              return APIs.query_carnets_relevant_to(current_user.id);
                           },
                                 function error(response) { })
                           .then(function success(response) {
-                              contributed_to = _(response.data).pluck('uid_eleve');
+                              relevant_to = _(response.data).pluck('uid_eleve');
 
-                              if (!_(contributed_to).isEmpty()) {
-                                  APIs.get_users(contributed_to)
+                              if (!_(relevant_to).isEmpty()) {
+                                  APIs.get_users(relevant_to)
                                       .then(function success(response) {
                                           concerned_people.push(_(response.data).map(function(people) {
                                               let pluriel = response.data.length > 1 ? 's' : '';

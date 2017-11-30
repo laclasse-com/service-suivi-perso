@@ -16,7 +16,7 @@ angular.module('suiviApp')
           groups: [],
           grades: []
         };
-        ctrl.only_display_contributed_to = false;
+        ctrl.only_display_relevant_to = false;
         ctrl.eleves = [];
 
         let fix_avatar_url = function(avatar_url) {
@@ -31,7 +31,7 @@ angular.module('suiviApp')
             return `${pupil.firstname}${pupil.lastname}`.toLocaleLowerCase().includes(ctrl.filters.text.toLocaleLowerCase())
               && (selected_groups_ids.length == 0 || _(selected_groups_ids).contains(pupil.regroupement.id))
               && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(_(pupil.regroupement.grades).pluck('grade_id')).length > 0)
-              && (!ctrl.only_display_contributed_to || pupil.contributed);
+              && (!ctrl.only_display_relevant_to || pupil.relevant);
           };
         };
 
@@ -60,11 +60,11 @@ angular.module('suiviApp')
             ctrl.can_do_batch = !_(['TUT', 'ELV']).contains(ctrl.current_user.profil_actif.type);
 
 
-            return APIs.query_carnets_contributed_to(ctrl.current_user.id);
+            return APIs.query_carnets_relevant_to(ctrl.current_user.id);
           },
           function error(response) { })
           .then(function success(response) {
-            ctrl.contributed_to = _(response.data).pluck('uid_eleve');
+            ctrl.relevant_to = _(response.data).pluck('uid_eleve');
 
             return APIs.get_current_user_groups();
           },
@@ -74,16 +74,16 @@ angular.module('suiviApp')
 
             if (ctrl.current_user.profil_actif.type === 'ELV') {
               ctrl.current_user.regroupement = { libelle: classes[0].name };
-              ctrl.current_user.contributed = true;
+              ctrl.current_user.relevant = true;
 
               ctrl.eleves = [ctrl.current_user];
 
-              ctrl.contributed_to = _(ctrl.contributed_to).reject(function(uid) { return uid == ctrl.current_user.id; });
-              APIs.get_users(ctrl.contributed_to)
+              ctrl.relevant_to = _(ctrl.relevant_to).reject(function(uid) { return uid == ctrl.current_user.id; });
+              APIs.get_users(ctrl.relevant_to)
                 .then(function(users) {
                   ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
                     eleve.avatar = fix_avatar_url(eleve.avatar);
-                    eleve.contributed = true;
+                    eleve.relevant = true;
 
                     let groups_ids = _(eleve.groups).pluck('group_id');
 
@@ -170,7 +170,7 @@ angular.module('suiviApp')
                         ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
                           eleve.avatar = fix_avatar_url(eleve.avatar);
 
-                          eleve.contributed = _(ctrl.contributed_to).contains(eleve.id);
+                          eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
                           eleve.regroupement = regroupement;
                           eleve.etablissement = regroupement.structure_id;
                           eleve.enseignants = regroupement.profs;
@@ -184,7 +184,7 @@ angular.module('suiviApp')
             }
           });
       }],
-    template: `
+template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
 </style>
@@ -226,8 +226,8 @@ angular.module('suiviApp')
           <div class="row">
             <div class="col-md-12">
               <label>
-                <input type="checkbox" ng:model="$ctrl.only_display_contributed_to" />
-                <h4 style="display: inline;"> N'afficher que le{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} au{{$ctrl.pluriel($ctrl.contributed_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.contributed_to.length, 's')}} j'ai contribué.</h4>
+                <input type="checkbox" ng:model="$ctrl.only_display_relevant_to" />
+                <h4 style="display: inline;"> N'afficher que le{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} au{{$ctrl.pluriel($ctrl.relevant_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} je contribue.</h4>
               </label>
             </div>
           </div>
@@ -311,14 +311,14 @@ angular.module('suiviApp')
   <ul>
     <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins"
         style="background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
-        ng:class="{'contributed': eleve.contributed}"
+        ng:class="{'relevant': eleve.relevant}"
         ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
         ng:repeat="eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )">
       <a class="eleve"
          ui:sref="carnet({uid_eleve: eleve.id})">
         <h5 class="regroupement">{{eleve.regroupement.name}}</h5>
 
-        <div class="full-name" title="{{eleve.contributed ? 'Vous avez contributé à ce carnet' : ''}}">
+        <div class="full-name" title="{{eleve.relevant ? 'Vous êtes contributeur de ce carnet' : ''}}">
           <h4 class="first-name">{{eleve.firstname}}</h4>
           <h3 class="last-name">{{eleve.lastname}}</h3>
         </div>
