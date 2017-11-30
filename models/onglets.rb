@@ -21,13 +21,13 @@ class Onglet < Sequel::Model(:onglets)
     droit = droits_dataset[uid: user['id']]
     return droit[ right ] unless droit.nil?
 
-    droit = droits_dataset[profil_id: LaClasse::User.user_active_profile( user )['type']]
+    droit = droits_dataset[profil_id: LaClasse::User.active_profile( user )['type']]
     return droit[ right ] unless droit.nil?
 
-    droit = droits_dataset[group_id: LaClasse::User.user_groups( user ).map { |group| group['group_id'] } ]
+    droit = droits_dataset[group_id: LaClasse::User.groups( user ).map { |group| group['group_id'] } ]
     return droit[ right ] unless droit.nil?
 
-    droits_dataset.count > 1 && ( LaClasse::User.user_is_admin?( user ) || LaClasse::User.user_is_super_admin?( user ) )
+    droits_dataset.count > 1 && ( LaClasse::User.admin?( user ) || LaClasse::User.super_admin?( user ) )
   end
 
   def to_json( arg )

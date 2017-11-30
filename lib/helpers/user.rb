@@ -13,19 +13,19 @@ module LaClasse
       end
 
       def user_active_profile( uid = nil )
-        LaClasse::User.user_active_profile( user( uid ) )
+        LaClasse::User.active_profile( user( uid ) )
       end
 
       def user_is_profile_in_structure?( _profile_type, _structure_id, uid = nil )
-        LaClasse::User.user_is_profile_in_structure?( user( uid ) )
+        LaClasse::User.profile_in_structure?( user( uid ) )
       end
 
       def user_is_admin?( uid = nil )
-        LaClasse::User.user_is_admin?( user( uid ) )
+        LaClasse::User.admin?( user( uid ) )
       end
 
       def user_is_super_admin?( uid = nil )
-        LaClasse::User.user_is_super_admin?( user( uid ) )
+        LaClasse::User.super_admin?( user( uid ) )
       end
 
       def user_needs_to_be( profile_types, uid = nil )

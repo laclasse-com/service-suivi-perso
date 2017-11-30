@@ -17,7 +17,7 @@ class Saisie < Sequel::Model(:saisies)
     return true if pinned && Onglet[ onglet_id ].allow?( user, :manage )
 
     # by default etablissement's admins and super-admins have all rights
-    LaClasse::User.user_is_admin?( user ) || LaClasse::User.user_is_super_admin?( user )
+    LaClasse::User.admin?( user ) || LaClasse::User.super_admin?( user )
   end
 
   def to_json( arg )
