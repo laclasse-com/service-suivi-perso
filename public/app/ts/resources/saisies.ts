@@ -6,6 +6,7 @@ angular.module('suiviApp')
         {
           id: '@id',
           onglet_id: '@onglet_id',
+          "onglets_ids[]": '@onglets_ids',
           contenu: '@contenu',
           pinned: '@pinned'
         },

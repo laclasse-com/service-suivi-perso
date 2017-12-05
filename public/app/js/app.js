@@ -406,7 +406,7 @@ angular.module('suiviApp')
                 APIs.get_current_user()
                     .then(function (current_user) {
                     ctrl.current_user = current_user;
-                    ctrl.editable = _(ctrl).has('onglets') && ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id;
+                    ctrl.editable = ctrl.current_user.is_admin() || (_(ctrl).has('onglets') && ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id);
                 });
             };
             ctrl.$onChanges = function (changes) {

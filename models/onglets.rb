@@ -2,13 +2,13 @@
 
 class Onglet < Sequel::Model(:onglets)
   many_to_one :carnets, class: :Carnet, key: :carnet_id
-  one_to_many :saisies, class: :Saisie
+  many_to_many :saisies, class: :Saisie, join_table: :saisies_onglets, left_key: :onglet_id, right_key: :saisie_id
   one_to_many :droits
   one_to_many :ressources
 
   def before_destroy
     Droit.where(onglet_id: id).destroy
-    Saisie.where(onglet_id: id).destroy
+    remove_all_saisies.each(&:destroy)
     Ressource.where(onglet_id: id).destroy
   end
 
