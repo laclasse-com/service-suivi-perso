@@ -91,7 +91,7 @@ angular.module('suiviApp')
         };
       }],
                  template: `
-                 <div class="panel panel-default saisie-display">
+                 <div class="panel panel-default saisie-display" ng:class="{'new-saisie': $ctrl.new_saisie}">
                    <span style="position: absolute; top: 0; right: 15px;height: 0;width: 0;text-align: center; color: #fff; border-color: transparent #fa0 transparent transparent;border-style: solid;border-width: 0 50px 50px 0; z-index: 1;"
                          ng:if="$ctrl.saisie.tmp_pinned">
                      <span class="glyphicon glyphicon-pushpin" style="margin-left: 25px;font-size: 22px;margin-top: 3px;"></span>
