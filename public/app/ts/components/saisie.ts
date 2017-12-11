@@ -110,7 +110,8 @@ angular.module('suiviApp')
                    <div class="panel-body" ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit', 'border': $ctrl.new_saisie ? 0 : 'inherit'}">
 
                      <div class="col-md-12"
-                          ng:bind-html="$ctrl.saisie.trusted_contenu"
+                          ta-bind
+                          ng:model="$ctrl.saisie.trusted_contenu"
                           ng:if="!$ctrl.edition"></div>
 
                      <div class="col-md-12"
