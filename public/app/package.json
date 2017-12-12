@@ -46,5 +46,10 @@
     "typescript": "^2.5.2",
     "typescript-formatter": "^6.0.0",
     "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "@types/angular": "^1.6.39",
+    "@types/sweetalert": "^1.1.28",
+    "@types/underscore": "^1.8.5"
   }
 }

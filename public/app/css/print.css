@@ -1,0 +1,13 @@
+.btn,
+fieldset.parents,
+.nav-tabs,
+.panel-footer,
+.new-saisie { display: none; }
+
+#main-ui-view .aside, .aside-carnet,
+#main-ui-view .carnet,
+.saisie-display .ta-bind, .saisie-display p,
+saisie { width: 100%;
+         height: auto; }
+
+li.active { display: block; }

@@ -320,7 +320,7 @@ template: `
 
         <div class="full-name" title="{{eleve.relevant ? 'Vous êtes contributeur de ce carnet' : ''}}">
           <h4 class="first-name">{{eleve.firstname}}</h4>
-          <h3 class="last-name">{{eleve.lastname}}</h3>
+          <h4 class="last-name">{{eleve.lastname}}</h4>
         </div>
       </a>
     </li>
