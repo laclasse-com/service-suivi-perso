@@ -4,8 +4,10 @@ export default {
   text: '',
   html: '',
   type: null,
+  toast: false,
   customClass: '',
   target: 'body',
+  backdrop: true,
   animation: true,
   allowOutsideClick: true,
   allowEscapeKey: true,
@@ -53,5 +55,11 @@ export default {
   onBeforeOpen: null,
   onOpen: null,
   onClose: null,
-  useRejections: true
+  useRejections: false,
+  expectRejections: false
 }
+
+export const deprecatedParams = [
+  'useRejections',
+  'expectRejections'
+]

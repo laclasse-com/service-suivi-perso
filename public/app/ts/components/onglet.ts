@@ -38,10 +38,10 @@ angular.module('suiviApp')
               init_new_saisie();
               break;
             case 'deleted':
-              ctrl.saisies = _(ctrl.saisies).reject(function(s) { return s.id === saisie.id; });
+              ctrl.saisies = ctrl.saisies.filter(function(s) { return s.id != saisie.id; });
               break;
             case 'updated':
-              let index = _(ctrl.saisies).findIndex(function(s) { return s.id == saisie.id; })
+              let index = ctrl.saisies.findIndex(function(s) { return s.id == saisie.id; })
               ctrl.saisies[index] = saisie;
               break;
             default:
@@ -76,7 +76,7 @@ angular.module('suiviApp')
             function error(response) { });
         };
       }],
-                  template: `
+    template: `
                   <span class="hidden-xs hidden-sm floating-button toggle big off jaune"
                         ng:if="$ctrl.onglet.manageable"
                         ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )"></span>

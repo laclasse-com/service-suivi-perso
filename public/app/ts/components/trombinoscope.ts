@@ -184,7 +184,7 @@ angular.module('suiviApp')
             }
           });
       }],
-template: `
+    template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
 </style>

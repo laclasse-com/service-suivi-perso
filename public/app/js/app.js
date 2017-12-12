@@ -276,10 +276,10 @@ angular.module('suiviApp')
                         init_new_saisie();
                         break;
                     case 'deleted':
-                        ctrl.saisies = _(ctrl.saisies).reject(function (s) { return s.id === saisie.id; });
+                        ctrl.saisies = ctrl.saisies.filter(function (s) { return s.id != saisie.id; });
                         break;
                     case 'updated':
-                        var index = _(ctrl.saisies).findIndex(function (s) { return s.id == saisie.id; });
+                        var index = ctrl.saisies.findIndex(function (s) { return s.id == saisie.id; });
                         ctrl.saisies[index] = saisie;
                         break;
                     default:
@@ -672,13 +672,11 @@ angular.module('suiviApp')
                     user.profil_actif = _(user.profiles).findWhere({ active: true });
                     user.is_admin = function () {
                         return !_(user.profil_actif).isUndefined()
-                            && !_.chain(user.profiles)
+                            && _(user.profiles)
                                 .findWhere({
                                 structure_id: user.profil_actif.structure_id,
                                 type: 'ADM'
-                            })
-                                .isUndefined()
-                                .value();
+                            }) != undefined;
                     };
                     return user;
                 }
@@ -799,15 +797,15 @@ angular.module('suiviApp')
         };
         APIs.query_people_concerned_about = _.memoize(function (uid) {
             var eleve = null;
-            var concerned_people = [];
-            var profils = [];
-            var relevant_to = [];
+            var concerned_people = new Array();
+            var profils = new Array();
+            var relevant_to = new Array();
             var current_user = null;
-            var users = [];
-            var personnels = [];
-            var pupils = [];
-            var teachers = [];
-            var main_teachers = [];
+            var users = new Array();
+            var personnels = new Array();
+            var pupils = new Array();
+            var teachers = new Array();
+            var main_teachers = new Array();
             return APIs.get_current_user()
                 .then(function success(response) {
                 current_user = response;
@@ -940,7 +938,7 @@ angular.module('suiviApp')
     .service('Popups', ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID',
     function ($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
         var service = this;
-        var template_onglet = "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n  <droits uid-eleve=\"$ctrl.uid_eleve\"\n          droits=\"$ctrl.droits\"\n          concerned-people=\"$ctrl.concerned_people\"\n          ng:if=\"$ctrl.droits\"></droits>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n";
+        var template_onglet = "\n<div class=\"modal-header\">\n<h3 class=\"modal-title\">\nPropri\u00E9t\u00E9s de l'onglet\n</h3>\n</div>\n\n<div class=\"modal-body\">\n<label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n<span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n</label>\n\n<span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n<droits uid-eleve=\"$ctrl.uid_eleve\"\ndroits=\"$ctrl.droits\"\nconcerned-people=\"$ctrl.concerned_people\"\nng:if=\"$ctrl.droits\"></droits>\n\n<div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n<button class=\"btn btn-danger pull-left\"\nng:click=\"$ctrl.delete()\"\nng:if=\"$ctrl.onglet.id\">\n<span class=\"glyphicon glyphicon-trash\"></span>\n<span> Supprimer l'onglet</span>\n</button>\n<button class=\"btn btn-default\"\nng:click=\"$ctrl.cancel()\">\n<span class=\"glyphicon glyphicon-remove-sign\"></span>\n<span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n<span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n</button>\n<button class=\"btn btn-success\"\nng:click=\"$ctrl.ok()\"\nng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n<span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n</button>\n</div>\n";
         service.onglet = function (uid_eleve, onglet, all_onglets, callback) {
             $uibModal.open({
                 resolve: {
@@ -1009,10 +1007,9 @@ angular.module('suiviApp')
                                 showCancelButton: true,
                                 confirmButtonColor: '#3085d6',
                                 confirmButtonText: 'Oui, je confirme !',
-                                cancelButtonColor: '#d33',
                                 cancelButtonText: 'Annuler'
                             })
-                                .then(function () {
+                                .then(function (result) {
                                 ctrl.onglet.delete = true;
                                 ctrl.ok();
                             });
@@ -1094,7 +1091,7 @@ angular.module('suiviApp')
                         });
                         var current_user = null;
                         var profils = {};
-                        var personnels = [];
+                        var personnels = new Array();
                         APIs.get_current_user()
                             .then(function success(response) {
                             current_user = response;

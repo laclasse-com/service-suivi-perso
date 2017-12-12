@@ -6,43 +6,43 @@ angular.module('suiviApp')
 
       let template_onglet = `
 <div class="modal-header">
-  <h3 class="modal-title">
-    Propriétés de l'onglet
-  </h3>
+<h3 class="modal-title">
+Propriétés de l'onglet
+</h3>
 </div>
 
 <div class="modal-body">
-  <label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.nom" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
-    <span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
-  </label>
+<label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.nom" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
+<span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
+</label>
 
-  <span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
-  <droits uid-eleve="$ctrl.uid_eleve"
-          droits="$ctrl.droits"
-          concerned-people="$ctrl.concerned_people"
-          ng:if="$ctrl.droits"></droits>
+<span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
+<droits uid-eleve="$ctrl.uid_eleve"
+droits="$ctrl.droits"
+concerned-people="$ctrl.concerned_people"
+ng:if="$ctrl.droits"></droits>
 
-  <div class="clearfix"></div>
+<div class="clearfix"></div>
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-danger pull-left"
-          ng:click="$ctrl.delete()"
-          ng:if="$ctrl.onglet.id">
-    <span class="glyphicon glyphicon-trash"></span>
-    <span> Supprimer l'onglet</span>
-  </button>
-  <button class="btn btn-default"
-          ng:click="$ctrl.cancel()">
-    <span class="glyphicon glyphicon-remove-sign"></span>
-    <span ng:if="$ctrl.onglet.nom"> Annuler</span>
-    <span ng:if="!$ctrl.onglet.nom"> Fermer</span>
-  </button>
-  <button class="btn btn-success"
-          ng:click="$ctrl.ok()"
-          ng:disabled="!$ctrl.onglet.nom || !$ctrl.valid_name">
-    <span class="glyphicon glyphicon-ok-sign"></span> Valider
-  </button>
+<button class="btn btn-danger pull-left"
+ng:click="$ctrl.delete()"
+ng:if="$ctrl.onglet.id">
+<span class="glyphicon glyphicon-trash"></span>
+<span> Supprimer l'onglet</span>
+</button>
+<button class="btn btn-default"
+ng:click="$ctrl.cancel()">
+<span class="glyphicon glyphicon-remove-sign"></span>
+<span ng:if="$ctrl.onglet.nom"> Annuler</span>
+<span ng:if="!$ctrl.onglet.nom"> Fermer</span>
+</button>
+<button class="btn btn-success"
+ng:click="$ctrl.ok()"
+ng:disabled="!$ctrl.onglet.nom || !$ctrl.valid_name">
+<span class="glyphicon glyphicon-ok-sign"></span> Valider
+</button>
 </div>
 `;
 
@@ -127,10 +127,10 @@ angular.module('suiviApp')
                   showCancelButton: true,
                   confirmButtonColor: '#3085d6',
                   confirmButtonText: 'Oui, je confirme !',
-                  cancelButtonColor: '#d33',
+                  // cancelButtonColor: '#d33',
                   cancelButtonText: 'Annuler'
                 })
-                  .then(function() {
+                  .then((result) => {
                     ctrl.onglet.delete = true;
                     ctrl.ok();
                   });
@@ -222,7 +222,7 @@ angular.module('suiviApp')
 
               let current_user = null;
               let profils = {};
-              let personnels = [];
+              let personnels: Array<any> = new Array<any>();
               APIs.get_current_user()
                 .then(function success(response) {
                   current_user = response;
@@ -248,7 +248,7 @@ angular.module('suiviApp')
                 function error(response) { return $q.reject(response); })
                 .then(function success(response) {
                   if (_(response).has('data')) {
-                    personnels = _(personnels).indexBy('user_id');
+                    personnels = _(personnels).indexBy('user_id') as Array<any>;
 
                     ctrl.concerned_people = _(response.data).map(function(people) {
                       people.type = profils[personnels[people.id].type].name;
