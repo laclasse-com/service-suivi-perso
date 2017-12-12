@@ -8,7 +8,8 @@ class Onglet < Sequel::Model(:onglets)
 
   def before_destroy
     Droit.where(onglet_id: id).destroy
-    remove_all_saisies.each(&:destroy)
+    saisies = remove_all_saisies
+    saisies.each(&:destroy) unless saisies.nil?
     Ressource.where(onglet_id: id).destroy
   end
 
