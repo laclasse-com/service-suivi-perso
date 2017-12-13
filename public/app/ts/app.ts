@@ -1,9 +1,7 @@
 /// <reference path="../node_modules/@types/angular/index.d.ts" />
 /// <reference path="../node_modules/@types/underscore/index.d.ts" />
-/// <reference path="../node_modules/@types/sweetalert/index.d.ts" />
+/// <reference path="../node_modules/sweetalert2/sweetalert2.d.ts" />
 
-
-// Declare app level module which depends on filters, and services
 angular.module('suiviApp',
   ['ngColorPicker',
     'ngResource',

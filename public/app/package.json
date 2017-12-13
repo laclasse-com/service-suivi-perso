@@ -17,7 +17,6 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "@types/angular": "^1.6.39",
-    "@types/sweetalert": "^1.1.28",
     "@types/underscore": "^1.8.5",
     "@uirouter/angularjs": "^1.0.11",
     "angular": "^1.6.7",
@@ -35,7 +34,7 @@
     "bootstrap-css-only": "^2.3.2-1",
     "es5-shim": "^4.5.9",
     "font-awesome": "^4.7.0",
-    "google-closure-compiler-js": "^20170910.0.1",
+    "google-closure-compiler-js": "^20171203.0.0",
     "laclasse-common-client": "git+https://github.com/laclasse-com/laclasse-common-client.git",
     "ng-color-picker": "git+https://github.com/cycojesus/ng-color-picker.git",
     "sweetalert2": "^7.0.9",
@@ -43,5 +42,6 @@
     "typescript": "^2.6.2",
     "typescript-formatter": "^7.0.0",
     "underscore": "^1.8.3"
-  }
+  },
+  "devDependencies": {}
 }
