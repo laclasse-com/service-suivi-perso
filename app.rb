@@ -7,6 +7,16 @@ Bundler.require(:default, ENV['RACK_ENV'].to_sym )
 
 require_relative './config/init'
 
+DB_CONFIG = YAML.safe_load( File.read( "./config/database.yml" ) )
+DB = Sequel.mysql2( DB_CONFIG[:name],
+                    DB_CONFIG )
+
+Sequel.extension( :migration )
+Sequel::Model.plugin( :json_serializer )
+
+# Uncomment this if you want to log all DB queries
+# DB.loggers << Logger.new($stdout)
+
 require_relative './lib/user'
 
 require_relative './models/carnets'
