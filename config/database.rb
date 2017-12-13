@@ -2,12 +2,7 @@
 #
 # Configuration de la base de données de Backend
 
-DB_CONFIG = { host: '127.0.0.1',
-              user: 'root',
-              password: '',
-              name: 'suivi',
-              charset: 'utf8' }.freeze
-
+DB_CONFIG = YAML.load( File.read( "./config/database.yml" ) )
 DB = Sequel.mysql2( DB_CONFIG[:name],
                     DB_CONFIG )
 

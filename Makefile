@@ -17,3 +17,12 @@ clean:
 clean-all: clean
 	-rm -fr .bundle/ruby/
 	-rm -fr public/app/node_modules
+
+# DB
+
+db-migrate:
+	bundle exec sequel ./config/database.yml --migrate-directory ./migrations
+
+# Pry
+pry:
+	RACK_ENV=development bundle exec ruby -e "require './app'; pry.binding"

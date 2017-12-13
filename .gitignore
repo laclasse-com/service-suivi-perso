@@ -1,4 +1,4 @@
 /.bundle/
-/config/database.rb
+/config/database.yml
 /config/options.rb
-config/*.orig
+/config/*.orig

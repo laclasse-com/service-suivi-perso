@@ -1,0 +1,7 @@
+adapter: mysql2
+host: localhost
+name: suivi
+database: suivi
+username: root
+password:
+charset: utf8

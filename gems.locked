@@ -87,7 +87,6 @@ DEPENDENCIES
   pry
   puma
   rack
-  rake
   rest-client
   rspec
   rubocop
