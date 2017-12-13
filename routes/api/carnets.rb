@@ -16,7 +16,7 @@ module Suivi
                                                             .association_join( :onglets )
                                                             .select( :onglet_id )
                                                             .all
-                                                            .map { |s| s[:onglet_id]  }
+                                                            .map { |s| s[:onglet_id] }
                                                             .concat( Droit.where( uid: params['uid'] )
                                                                           .or( group_id: LaClasse::User.groups(user).map { |group| group['group_id'] } )
                                                                           .select( :onglet_id )
