@@ -6,43 +6,43 @@ angular.module('suiviApp')
 
       let template_onglet = `
 <div class="modal-header">
-  <h3 class="modal-title">
-    Propriétés de l'onglet
-  </h3>
+<h3 class="modal-title">
+Propriétés de l'onglet
+</h3>
 </div>
 
 <div class="modal-body">
-  <label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.nom" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
-    <span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
-  </label>
+<label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.nom" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
+<span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
+</label>
 
-  <span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
-  <droits uid-eleve="$ctrl.uid_eleve"
-          droits="$ctrl.droits"
-          concerned-people="$ctrl.concerned_people"
-          ng:if="$ctrl.droits"></droits>
+<span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
+<droits uid-eleve="$ctrl.uid_eleve"
+droits="$ctrl.droits"
+concerned-people="$ctrl.concerned_people"
+ng:if="$ctrl.droits"></droits>
 
-  <div class="clearfix"></div>
+<div class="clearfix"></div>
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-danger pull-left"
-          ng:click="$ctrl.delete()"
-          ng:if="$ctrl.onglet.id">
-    <span class="glyphicon glyphicon-trash"></span>
-    <span> Supprimer l'onglet</span>
-  </button>
-  <button class="btn btn-default"
-          ng:click="$ctrl.cancel()">
-    <span class="glyphicon glyphicon-remove-sign"></span>
-    <span ng:if="$ctrl.onglet.nom"> Annuler</span>
-    <span ng:if="!$ctrl.onglet.nom"> Fermer</span>
-  </button>
-  <button class="btn btn-success"
-          ng:click="$ctrl.ok()"
-          ng:disabled="!$ctrl.onglet.nom || !$ctrl.valid_name">
-    <span class="glyphicon glyphicon-ok-sign"></span> Valider
-  </button>
+<button class="btn btn-danger pull-left"
+ng:click="$ctrl.delete()"
+ng:if="$ctrl.onglet.id">
+<span class="glyphicon glyphicon-trash"></span>
+<span> Supprimer l'onglet</span>
+</button>
+<button class="btn btn-default"
+ng:click="$ctrl.cancel()">
+<span class="glyphicon glyphicon-remove-sign"></span>
+<span ng:if="$ctrl.onglet.nom"> Annuler</span>
+<span ng:if="!$ctrl.onglet.nom"> Fermer</span>
+</button>
+<button class="btn btn-success"
+ng:click="$ctrl.ok()"
+ng:disabled="!$ctrl.onglet.nom || !$ctrl.valid_name">
+<span class="glyphicon glyphicon-ok-sign"></span> Valider
+</button>
 </div>
 `;
 
@@ -207,7 +207,17 @@ angular.module('suiviApp')
 
               ctrl.uids = uids;
             }],
-          template: `<onglets uids-eleves="$ctrl.uids"></onglets>`
+          template: `
+<div class="modal-header">
+  <h3 class="modal-title">
+    Onglet(s) commun(s)
+  </h3>
+</div>
+
+<div class="modal-body">
+  <onglets uids-eleves="$ctrl.uids"></onglets>
+  <div class="clearfix"></div>
+</div>`
         });
       };
 
@@ -327,10 +337,10 @@ angular.module('suiviApp')
 
       service.publish_batch = function(uids) {
         $uibModal.open({
-          template: `
+      template: `
       <div class="modal-header">
         <h3 class="modal-title">
-          Pulication simultanée vers un onglet commun à plusieurs élèves
+          Publication simultanée vers un onglet commun à plusieurs élèves
         </h3>
       </div>
 

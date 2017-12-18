@@ -77,7 +77,7 @@ angular.module('suiviApp')
           } else if (ctrl.uidsEleves != undefined) {
             ctrl.only_common_saisies = true;
             Saisies.query({
-              onglets_ids: ctrl.onglet.ids
+              "onglets_ids[]": ctrl.onglet.ids
             }).$promise
               .then(function success(response) {
                 ctrl.saisies = response;

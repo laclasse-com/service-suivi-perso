@@ -313,7 +313,7 @@ angular.module('suiviApp')
                 else if (ctrl.uidsEleves != undefined) {
                     ctrl.only_common_saisies = true;
                     Saisies.query({
-                        onglets_ids: ctrl.onglet.ids
+                        "onglets_ids[]": ctrl.onglet.ids
                     }).$promise
                         .then(function success(response) {
                         ctrl.saisies = response;
@@ -973,7 +973,7 @@ angular.module('suiviApp')
     .service('Popups', ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID',
     function ($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
         var service = this;
-        var template_onglet = "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n  <droits uid-eleve=\"$ctrl.uid_eleve\"\n          droits=\"$ctrl.droits\"\n          concerned-people=\"$ctrl.concerned_people\"\n          ng:if=\"$ctrl.droits\"></droits>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n";
+        var template_onglet = "\n<div class=\"modal-header\">\n<h3 class=\"modal-title\">\nPropri\u00E9t\u00E9s de l'onglet\n</h3>\n</div>\n\n<div class=\"modal-body\">\n<label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n<span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n</label>\n\n<span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n<droits uid-eleve=\"$ctrl.uid_eleve\"\ndroits=\"$ctrl.droits\"\nconcerned-people=\"$ctrl.concerned_people\"\nng:if=\"$ctrl.droits\"></droits>\n\n<div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n<button class=\"btn btn-danger pull-left\"\nng:click=\"$ctrl.delete()\"\nng:if=\"$ctrl.onglet.id\">\n<span class=\"glyphicon glyphicon-trash\"></span>\n<span> Supprimer l'onglet</span>\n</button>\n<button class=\"btn btn-default\"\nng:click=\"$ctrl.cancel()\">\n<span class=\"glyphicon glyphicon-remove-sign\"></span>\n<span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n<span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n</button>\n<button class=\"btn btn-success\"\nng:click=\"$ctrl.ok()\"\nng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n<span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n</button>\n</div>\n";
         service.onglet = function (uid_eleve, onglet, all_onglets, callback) {
             $uibModal.open({
                 resolve: {
@@ -1115,7 +1115,7 @@ angular.module('suiviApp')
                         ctrl.$ctrl = ctrl;
                         ctrl.uids = uids;
                     }],
-                template: "<onglets uids-eleves=\"$ctrl.uids\"></onglets>"
+                template: "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Onglet(s) commun(s)\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <onglets uids-eleves=\"$ctrl.uids\"></onglets>\n  <div class=\"clearfix\"></div>\n</div>"
             });
         };
         service.onglet_batch = function (uids, callback) {

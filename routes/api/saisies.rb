@@ -17,17 +17,19 @@ module Suivi
 
               return json( onglet.saisies )
             else
-              query = Saisie.association_join(:onglets)
-
-              onglets_ids.each do |oid|
+              result = onglets_ids.map do |oid|
                 get_and_check_onglet( oid, user, :read )
 
-                query = query.where(onglet_id: oid)
+                Saisie.association_join(:onglets)
+                      .where(onglet_id: oid)
+                      .select_all(:saisies)
+                      .all
               end
 
-              p query
+              first_onglet_saisies = result.shift
+              result = result.reduce( first_onglet_saisies ) { |memo, onglet_saisies| memo & onglet_saisies }
 
-              return json( query.all )
+              return json( result )
             end
           end
 
