@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('suiviApp')
   .component('droits',
   {
@@ -136,7 +134,7 @@ angular.module('suiviApp')
             function error(response) { });
         };
       }],
-                          template: `
+    template: `
                           <div>
                             <label>Gestion des droits</label>
                             <table style="width: 100%;">

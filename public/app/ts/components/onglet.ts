@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('suiviApp')
   .config(['$compileProvider',
     function($compileProvider) {
@@ -9,6 +7,7 @@ angular.module('suiviApp')
   {
     bindings: {
       uidEleve: '<',
+      uidsEleves: '<',
       onglets: '<',
       onglet: '='
     },
@@ -67,13 +66,24 @@ angular.module('suiviApp')
         ctrl.$onInit = function() {
           init_new_saisie();
 
-          Saisies.query({
-            onglet_id: ctrl.onglet.id
-          }).$promise
-            .then(function success(response) {
-              ctrl.saisies = response;
-            },
-            function error(response) { });
+          if (ctrl.uidEleve != undefined) {
+            Saisies.query({
+              onglet_id: ctrl.onglet.id
+            }).$promise
+              .then(function success(response) {
+                ctrl.saisies = response;
+              },
+              function error(response) { });
+          } else if (ctrl.uidsEleves != undefined) {
+            ctrl.only_common_saisies = true;
+            Saisies.query({
+              onglets_ids: ctrl.onglet.ids
+            }).$promise
+              .then(function success(response) {
+                ctrl.saisies = response;
+              },
+              function error(response) { });
+          }
         };
       }],
     template: `

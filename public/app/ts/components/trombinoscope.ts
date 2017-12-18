@@ -6,10 +6,10 @@ angular.module('suiviApp')
         let ctrl = this;
 
         ctrl.popup_onglet_batch = Popups.onglet_batch;
+        ctrl.popup_batch = Popups.batch;
         ctrl.popup_onglet_batch_callback = function(feedback) { console.log(feedback); };
 
         ctrl.popup_publish_batch = Popups.publish_batch;
-        ctrl.popup_publish_batch_callback = function(feedback) { console.log(feedback); };
 
         ctrl.filters = {
           text: '',
@@ -184,7 +184,7 @@ angular.module('suiviApp')
             }
           });
       }],
-    template: `
+template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
 </style>
@@ -209,7 +209,11 @@ angular.module('suiviApp')
               <span class="glyphicon glyphicon-folder-close"></span> Nouvel onglet commun
             </button>
 
-            <button class="btn btn-primary" ng:click="$ctrl.popup_publish_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_publish_batch_callback )">
+            <button class="btn btn-success" ng:click="$ctrl.popup_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )">
+              <span class="glyphicon glyphicon-folder-close"></span> Gestion des onglets communs
+            </button>
+
+            <button class="btn btn-primary" ng:click="$ctrl.popup_publish_batch( $ctrl.pluck_selected_uids() )">
               <span class="glyphicon glyphicon-pencil"></span> Publier dans un onglet commun
             </button>
           </div>

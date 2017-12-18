@@ -1,7 +1,5 @@
-'use strict';
-
-angular.module( 'suiviApp' )
-  .component( 'carnet',
+angular.module('suiviApp')
+  .component('carnet',
   {
     bindings: { uidEleve: '<' },
     template: `
@@ -21,4 +19,4 @@ angular.module( 'suiviApp' )
 <onglets class="col-md-8 carnet"
          uid-eleve="$ctrl.uidEleve"></onglets>
 `
-  } );
+  });

@@ -6,9 +6,29 @@ module Suivi
       module Saisies
         def self.registered( app )
           app.get '/api/saisies/?' do
-            onglet = get_and_check_onglet( params['onglet_id'], user, :read )
+            p params
 
-            json( onglet.saisies )
+            single = params.key?( 'onglet_id')
+
+            onglets_ids = single ? [ params['onglet_id'] ] : params['onglets_ids']
+
+            if single
+              onglet = get_and_check_onglet( params['onglet_id'], user, :read )
+
+              return json( onglet.saisies )
+            else
+              query = Saisie.association_join(:onglets)
+
+              onglets_ids.each do |oid|
+                get_and_check_onglet( oid, user, :read )
+
+                query = query.where(onglet_id: oid)
+              end
+
+              p query
+
+              return json( query.all )
+            end
           end
 
           app.post '/api/saisies/?' do

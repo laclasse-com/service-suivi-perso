@@ -4,7 +4,7 @@ angular.module('suiviApp')
     function($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
       let service = this;
 
-let template_onglet = `
+      let template_onglet = `
 <div class="modal-header">
   <h3 class="modal-title">
     Propriétés de l'onglet
@@ -195,6 +195,22 @@ let template_onglet = `
           }, function error() { });
       };
 
+      service.batch = (uids, callback) => {
+        $uibModal.open({
+          resolve: {
+            uids: function() { return uids; }
+          },
+          controller: ['$scope', '$uibModalInstance', 'uids',
+            function($scope, $uibModalInstance, uids) {
+              let ctrl = $scope;
+              ctrl.$ctrl = ctrl;
+
+              ctrl.uids = uids;
+            }],
+          template: `<onglets uids-eleves="$ctrl.uids"></onglets>`
+        });
+      };
+
       service.onglet_batch = function(uids, callback) {
         $uibModal.open({
           resolve: {
@@ -309,45 +325,41 @@ let template_onglet = `
           }, function error() { });
       };
 
-      service.publish_batch = function(uids, callback) {
+      service.publish_batch = function(uids) {
         $uibModal.open({
           template: `
-<div class="modal-header">
-  <h3 class="modal-title">
-    Pulication simultanée vers un onglet commun à plusieurs élèves
-  </h3>
-</div>
+      <div class="modal-header">
+        <h3 class="modal-title">
+          Pulication simultanée vers un onglet commun à plusieurs élèves
+        </h3>
+      </div>
 
-<div class="modal-body">
-  <div class="alert alert-warning" role="alert" ng:if="$ctrl.common_tabs && !$ctrl.has_common_tabs">Aucun onglet commun n'a été trouvé pour cette sélection d'élèves.</div>
+      <div class="modal-body">
+        <div class="alert alert-warning" role="alert" ng:if="$ctrl.common_tabs && !$ctrl.has_common_tabs">Aucun onglet commun n'a été trouvé pour cette sélection d'élèves.</div>
 
-  <div ng:if="$ctrl.common_tabs && $ctrl.has_common_tabs">
-    <label>Onglet(s) commun(s) existant(s) :</label>
-    <div class="btn-group">
-      <label class="btn btn-primary" ng-model="$ctrl.selected_onglets" uib-btn-radio="tabs"ng:repeat="(name, tabs) in $ctrl.common_tabs">{{name}}</label>
-    </div>
-  </div>
+        <div ng:if="$ctrl.common_tabs && $ctrl.has_common_tabs">
+          <label>Onglet(s) commun(s) existant(s) :</label>
+          <div class="btn-group">
+            <label class="btn btn-primary" ng-model="$ctrl.selected_onglets" uib-btn-radio="tabs"ng:repeat="(name, tabs) in $ctrl.common_tabs">{{name}}</label>
+          </div>
+        </div>
 
-  <saisie class="col-md-12"
-          style="display: inline-block;"
-          passive="true"
-          saisie="$ctrl.saisie"
-          ng:if="$ctrl.common_tabs && $ctrl.has_common_tabs"></saisie>
+        <saisie class="col-md-12"
+                style="display: inline-block;"
+                passive="true"
+                saisie="$ctrl.saisie"
+                onglets="$ctrl.selected_onglets"
+                ng:if="$ctrl.common_tabs && $ctrl.has_common_tabs"></saisie>
 
-  <div class="clearfix"></div>
-</div>
+        <div class="clearfix"></div>
+      </div>
 
-<div class="modal-footer">
-  <button class="btn btn-default"
-          ng:click="$ctrl.cancel()">
-    <span class="glyphicon glyphicon-remove-sign"></span> Annuler
-  </button>
-  <button class="btn btn-success"
-          ng:click="$ctrl.ok()"
-          ng:disabled="!$ctrl.selected_onglets || !$ctrl.saisie.contenu">
-    <span class="glyphicon glyphicon-ok-sign"></span> Valider
-  </button>
-</div>
+      <div class="modal-footer">
+        <button class="btn btn-default"
+                ng:click="$ctrl.close()">
+          <span class="glyphicon glyphicon-remove-sign"></span> Fermer
+        </button>
+      </div>
 `,
           resolve: {
             uids: function() { return uids; }
@@ -367,27 +379,10 @@ let template_onglet = `
                   ctrl.has_common_tabs = !_(ctrl.common_tabs).isEmpty();
                 });
 
-              ctrl.ok = function() {
-                $uibModalInstance.close({
-                  saisie: ctrl.saisie,
-                  onglets_ids: _(ctrl.selected_onglets).pluck('id')
-                });
-              };
-
-              ctrl.cancel = function() {
+              ctrl.close = function() {
                 $uibModalInstance.dismiss();
               };
             }]
-        })
-          .result.then(function success(response_popup) {
-            new Saisies({
-              contenu: response_popup.saisie.contenu,
-              pinned: response_popup.saisie.tmp_pinned,
-              onglets_ids: response_popup.onglets_ids
-            }).$save()
-              .then(function(response) {
-                callback(response);
-              });
-          }, function error() { });
+        });
       };
     }]);
