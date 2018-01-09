@@ -36,7 +36,9 @@ angular.module('suiviApp')
                 ctrl.onglets = Object.keys(response).map((key) => {
                   return {
                     nom: key,
-                    ids: response[key].map((onglet) => { return onglet.id })
+                    ids: response[key].map((onglet) => { return onglet.id; }),
+                    writable: response[key].reduce((memo, onglet) => { return memo && onglet.writable; }, true),
+                    manageable: response[key].reduce((memo, onglet) => { return memo && onglet.manageable; }, true)
                   };
                 });
               });
@@ -44,9 +46,18 @@ angular.module('suiviApp')
         };
       }],
     template: `
+  <style>
+    .manage-onglet { margin-top: -20px; margin-right: -16px; border-radius: 0 0 0 12px; }
+  </style>
   <uib-tabset>
     <uib-tab ng:repeat="onglet in $ctrl.onglets">
-      <uib-tab-heading> {{onglet.nom}} </uib-tab-heading>
+      <uib-tab-heading> {{onglet.nom}}
+        <button class="btn btn-warning manage-onglet"
+                ng:if="onglet.manageable"
+                ng:click="$ctrl.popup_onglet( (ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
+          <span class="glyphicon glyphicon-cog"></span>
+        </button>
+      </uib-tab-heading>
 
       <onglet uid-eleve="$ctrl.uidEleve"
               uids-eleves="$ctrl.uidsEleves"
@@ -58,7 +69,7 @@ angular.module('suiviApp')
     <li>
       <a href
          class="bleu add-onglet"
-         ng:click="$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.onglets, $ctrl.callback_popup_onglet )">
+         ng:click="$ctrl.popup_onglet( (ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, null, $ctrl.onglets, $ctrl.callback_popup_onglet )">
         <span class="glyphicon glyphicon-plus">
         </span>
       </a>

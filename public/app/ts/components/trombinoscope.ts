@@ -204,19 +204,12 @@ template: `
 
         <div class="panel-body">
 
-          <div class="btn-group">
-            <button class="btn btn-success" ng:click="$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )">
-              <span class="glyphicon glyphicon-folder-close"></span> Nouvel onglet commun
-            </button>
+          <button class="btn btn-success" ng:click="$ctrl.popup_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )" ng:if="$ctrl.can_do_batch">
+            <span class="glyphicon glyphicon-folder-close"></span> Gestion des onglets communs
+          </button>
 
-            <button class="btn btn-success" ng:click="$ctrl.popup_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )">
-              <span class="glyphicon glyphicon-folder-close"></span> Gestion des onglets communs
-            </button>
+          <a ui:sref="carnet({uid_eleve: $ctrl.pluck_selected_uids().join(',')})">Gestion des onglets communs</a>
 
-            <button class="btn btn-primary" ng:click="$ctrl.popup_publish_batch( $ctrl.pluck_selected_uids() )">
-              <span class="glyphicon glyphicon-pencil"></span> Publier dans un onglet commun
-            </button>
-          </div>
         </div>
       </div>
 

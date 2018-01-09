@@ -123,15 +123,26 @@ angular.module('suiviApp')
             resolve: {
                 uidEleve: ['$transition$',
                     function ($transition$) {
-                        return $transition$.params().uid_eleve;
+                        if ($transition$.params().uid_eleve.split("%2C").length <= 1) {
+                            return $transition$.params().uid_eleve;
+                        }
+                    }],
+                uidsEleves: ['$transition$',
+                    function ($transition$) {
+                        if ($transition$.params().uid_eleve.split("%2C").length > 1) {
+                            return $transition$.params().uid_eleve.split("%2C");
+                        }
                     }]
             }
         });
     }]);
 angular.module('suiviApp')
     .component('carnet', {
-    bindings: { uidEleve: '<' },
-    template: "\n<div class=\"col-md-4 gris1-moins aside aside-carnet\">\n    <a class=\"col-md-12 btn btn-lg noir-moins go-back\" ui:sref=\"trombinoscope()\"> \u21B0 Retour au trombinoscope </a>\n\n    <user-details class=\"user-details eleve\"\n                  uid=\"$ctrl.uidEleve\"\n                  show-avatar=\"true\"\n                  show-emails=\"true\"\n                  show-classe=\"true\"\n                  show-birthdate=\"true\"\n                  show-address=\"true\"\n                  show-concerned-people=\"true\"></user-details>\n</div>\n\n<onglets class=\"col-md-8 carnet\"\n         uid-eleve=\"$ctrl.uidEleve\"></onglets>\n"
+    bindings: {
+        uidEleve: '<',
+        uidsEleves: '<'
+    },
+    template: "\n                     <div class=\"col-md-4 gris1-moins aside aside-carnet\">\n                       <a class=\"col-md-12 btn btn-lg noir-moins go-back\" ui:sref=\"trombinoscope()\"> \u21B0 Retour au trombinoscope </a>\n\n                       <user-details class=\"user-details eleve\"\n                                     uid=\"$ctrl.uidEleve\"\n                                     show-avatar=\"true\"\n                                     show-emails=\"true\"\n                                     show-classe=\"true\"\n                                     show-birthdate=\"true\"\n                                     show-address=\"true\"\n                                     show-concerned-people=\"true\"\n                                     ng:if=\"$ctrl.uidEleve\"></user-details>\n\n                       <ul ng:if=\"$ctrl.uidsEleves\">\n                         <li style=\"list-style-type: none;\"\n                             ng:repeat=\"uid in $ctrl.uidsEleves\">\n                           <user-details class=\"user-details eleve\"\n                                         uid=\"uid\"\n                                         small=\"true\"\n                                         show-avatar=\"true\"\n                                         show-classe=\"true\"></user-details>\n                         </li>\n                       </ul>\n                     </div>\n\n                     <onglets class=\"col-md-8 carnet\"\n                              uid-eleve=\"$ctrl.uidEleve\"\n                              ng:if=\"$ctrl.uidEleve\"></onglets>\n\n                     <onglets class=\"col-md-8 carnet\"\n                              uids-eleves=\"$ctrl.uidsEleves\"\n                              ng:if=\"$ctrl.uidsEleves\"></onglets>\n"
 });
 angular.module('suiviApp')
     .component('droits', {
@@ -217,7 +228,6 @@ angular.module('suiviApp')
                 }
             };
             ctrl.update_deletabilities = function () {
-                console.log(ctrl);
                 _(ctrl.droits).each(function (droit) {
                     droit.deletable = droit.uid != UID;
                     if (!_(ctrl.uidEleve).isUndefined()) {
@@ -257,10 +267,9 @@ angular.module('suiviApp')
         onglets: '<',
         onglet: '='
     },
-    controller: ['$uibModal', '$state', '$q', '$window', '$sce', '$location', 'Saisies', 'Popups',
-        function ($uibModal, $state, $q, $window, $sce, $location, Saisies, Popups) {
+    controller: ['$uibModal', '$state', '$q', '$window', '$sce', '$location', 'Saisies',
+        function ($uibModal, $state, $q, $window, $sce, $location, Saisies) {
             var ctrl = this;
-            ctrl.manage_onglet = Popups.onglet;
             ctrl.order_by = {
                 field: 'date',
                 reverse: true
@@ -321,7 +330,7 @@ angular.module('suiviApp')
                 }
             };
         }],
-    template: "\n                  <span class=\"hidden-xs hidden-sm floating-button toggle big off jaune\"\n                        ng:if=\"$ctrl.onglet.manageable\"\n                        ng:click=\"$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\"></span>\n\n                  <saisie class=\"col-md-12\" style=\"display: inline-block;\"\n                          ng:repeat=\"saisie in $ctrl.saisies | filter:$ctrl.filter_pinned() | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse\"\n                          onglet=\"$ctrl.onglet\"\n                          saisie=\"saisie\"\n                          callback=\"$ctrl.saisie_callback( saisie )\"></saisie>\n\n                  <saisie class=\"col-md-12\"\n                          style=\"display: inline-block;\"\n                          ng:if=\"$ctrl.new_saisie\"\n                          onglet=\"$ctrl.onglet\"\n                          saisie=\"$ctrl.new_saisie\"\n                          callback=\"$ctrl.saisie_callback( $ctrl.new_saisie )\"></saisie>\n\n                  <div class=\"col-md-12\" style=\"margin-bottom: 10px;\">\n                    <button class=\"btn btn-sm btn-primary pull-right\"\n                            ng:click=\"$ctrl.order_by.reverse = !$ctrl.order_by.reverse\"\n                            ng:if=\"$ctrl.saisies.length > 1\">\n                      <span class=\"glyphicon\"\n                            ng:class=\"{'glyphicon-sort-by-order': $ctrl.order_by.reverse, 'glyphicon-sort-by-order-alt': !$ctrl.order_by.reverse}\"></span>\n                      Trier par la date de publication la plus <span ng:if=\"$ctrl.order_by.reverse\">r\u00E9cente</span><span ng:if=\"!$ctrl.order_by.reverse\">ancienne</span>.\n                    </button>\n                  </div>\n\n                  <div class=\"col-md-12 saisies\" style=\"overflow-y: auto;\">\n\n                    <saisie class=\"col-md-12\" style=\"display: inline-block;\"\n                            ng:repeat=\"saisie in $ctrl.saisies | filter:$ctrl.filter_unpinned() | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse\"\n                            onglet=\"$ctrl.onglet\"\n                            saisie=\"saisie\"\n                            callback=\"$ctrl.saisie_callback( saisie )\"></saisie>\n                  </div>\n"
+    template: "\n                  <saisie class=\"col-md-12\" style=\"display: inline-block;\"\n                          ng:repeat=\"saisie in $ctrl.saisies | filter:$ctrl.filter_pinned() | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse\"\n                          onglet=\"$ctrl.onglet\"\n                          saisie=\"saisie\"\n                          callback=\"$ctrl.saisie_callback( saisie )\"></saisie>\n\n                  <saisie class=\"col-md-12\"\n                          style=\"display: inline-block;\"\n                          ng:if=\"$ctrl.new_saisie\"\n                          onglet=\"$ctrl.onglet\"\n                          saisie=\"$ctrl.new_saisie\"\n                          callback=\"$ctrl.saisie_callback( $ctrl.new_saisie )\"></saisie>\n\n                  <div class=\"col-md-12\" style=\"margin-bottom: 10px;\">\n                    <button class=\"btn btn-sm btn-primary pull-right\"\n                            ng:click=\"$ctrl.order_by.reverse = !$ctrl.order_by.reverse\"\n                            ng:if=\"$ctrl.saisies.length > 1\">\n                      <span class=\"glyphicon\"\n                            ng:class=\"{'glyphicon-sort-by-order': $ctrl.order_by.reverse, 'glyphicon-sort-by-order-alt': !$ctrl.order_by.reverse}\"></span>\n                      Trier par la date de publication la plus <span ng:if=\"$ctrl.order_by.reverse\">r\u00E9cente</span><span ng:if=\"!$ctrl.order_by.reverse\">ancienne</span>.\n                    </button>\n                  </div>\n\n                  <div class=\"col-md-12 saisies\" style=\"overflow-y: auto;\">\n\n                    <saisie class=\"col-md-12\" style=\"display: inline-block;\"\n                            ng:repeat=\"saisie in $ctrl.saisies | filter:$ctrl.filter_unpinned() | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse\"\n                            onglet=\"$ctrl.onglet\"\n                            saisie=\"saisie\"\n                            callback=\"$ctrl.saisie_callback( saisie )\"></saisie>\n                  </div>\n"
 });
 angular.module('suiviApp')
     .component('onglets', {
@@ -356,14 +365,16 @@ angular.module('suiviApp')
                         ctrl.onglets = Object.keys(response).map(function (key) {
                             return {
                                 nom: key,
-                                ids: response[key].map(function (onglet) { return onglet.id; })
+                                ids: response[key].map(function (onglet) { return onglet.id; }),
+                                writable: response[key].reduce(function (memo, onglet) { return memo && onglet.writable; }, true),
+                                manageable: response[key].reduce(function (memo, onglet) { return memo && onglet.manageable; }, true)
                             };
                         });
                     });
                 }
             };
         }],
-    template: "\n  <uib-tabset>\n    <uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n      <uib-tab-heading> {{onglet.nom}} </uib-tab-heading>\n\n      <onglet uid-eleve=\"$ctrl.uidEleve\"\n              uids-eleves=\"$ctrl.uidsEleves\"\n              onglets=\"$ctrl.onglets\"\n              onglet=\"onglet\">\n      </onglet>\n    </uib-tab>\n\n    <li>\n      <a href\n         class=\"bleu add-onglet\"\n         ng:click=\"$ctrl.popup_onglet( $ctrl.uidEleve, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n        <span class=\"glyphicon glyphicon-plus\">\n        </span>\n      </a>\n    </li>\n  </uib-tabset>\n"
+    template: "\n  <style>\n    .manage-onglet { margin-top: -20px; margin-right: -16px; border-radius: 0 0 0 12px; }\n  </style>\n  <uib-tabset>\n    <uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n      <uib-tab-heading> {{onglet.nom}}\n        <button class=\"btn btn-warning manage-onglet\"\n                ng:if=\"onglet.manageable\"\n                ng:click=\"$ctrl.popup_onglet( (ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n          <span class=\"glyphicon glyphicon-cog\"></span>\n        </button>\n      </uib-tab-heading>\n\n      <onglet uid-eleve=\"$ctrl.uidEleve\"\n              uids-eleves=\"$ctrl.uidsEleves\"\n              onglets=\"$ctrl.onglets\"\n              onglet=\"onglet\">\n      </onglet>\n    </uib-tab>\n\n    <li>\n      <a href\n         class=\"bleu add-onglet\"\n         ng:click=\"$ctrl.popup_onglet( (ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n        <span class=\"glyphicon glyphicon-plus\">\n        </span>\n      </a>\n    </li>\n  </uib-tabset>\n"
 });
 angular.module('suiviApp')
     .component('saisie', {
@@ -444,7 +455,6 @@ angular.module('suiviApp')
                 });
             };
             ctrl.$onChanges = function (changes) {
-                console.log(changes);
                 ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
             };
         }],
@@ -601,7 +611,7 @@ angular.module('suiviApp')
                 }
             });
         }],
-    template: "\n<style>\n  .trombinoscope .petite.case { border: 1px solid transparent; }\n</style>\n<div class=\"col-md-4 gris1-moins aside trombinoscope-aside\" style=\"padding: 0;\">\n  <div class=\"panel panel-default gris1-moins\">\n    <div class=\"panel-heading\" style=\"text-align: right; \">\n      <h3>\n        {{$ctrl.filtered.length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affich\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}}\n      </h3>\n    </div>\n    <div class=\"panel-body\">\n\n      <div class=\"panel panel-default\" ng:if=\"$ctrl.can_do_batch\">\n        <div class=\"panel-heading\">\n          <span class=\"glyphicon glyphicon-fullscreen\"></span> Actions group\u00E9es\n        </div>\n\n        <div class=\"panel-body\">\n\n          <div class=\"btn-group\">\n            <button class=\"btn btn-success\" ng:click=\"$ctrl.popup_onglet_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )\">\n              <span class=\"glyphicon glyphicon-folder-close\"></span> Nouvel onglet commun\n            </button>\n\n            <button class=\"btn btn-success\" ng:click=\"$ctrl.popup_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )\">\n              <span class=\"glyphicon glyphicon-folder-close\"></span> Gestion des onglets communs\n            </button>\n\n            <button class=\"btn btn-primary\" ng:click=\"$ctrl.popup_publish_batch( $ctrl.pluck_selected_uids() )\">\n              <span class=\"glyphicon glyphicon-pencil\"></span> Publier dans un onglet commun\n            </button>\n          </div>\n        </div>\n      </div>\n\n      <div class=\"panel panel-default\">\n        <div class=\"panel-heading\">\n          <span class=\"glyphicon glyphicon-filter\"></span> Filtrage\n        </div>\n\n        <div class=\"panel-body\">\n\n          <div class=\"row\">\n            <div class=\"col-md-12\">\n              <label>\n                <input type=\"checkbox\" ng:model=\"$ctrl.only_display_relevant_to\" />\n                <h4 style=\"display: inline;\"> N'afficher que le{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} au{{$ctrl.pluriel($ctrl.relevant_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} je contribue.</h4>\n              </label>\n            </div>\n          </div>\n\n          <div class=\"row\">\n            <div class=\"col-md-12\">\n              <input class=\"form-control input-lg\"\n                     style=\"display: inline; background-color: rgba(240, 240, 240, 0.66);\"\n                     type=\"text\" name=\"search\"\n                     ng:model=\"$ctrl.filters.text\" />\n              <button class=\"btn btn-xs\" style=\"color: green; margin-left: -44px; margin-top: -4px;\" ng:click=\"$ctrl.filters.text = ''\">\n                <span class=\"glyphicon glyphicon-remove\"></span>\n              </button>\n            </div>\n          </div>\n\n          <div class=\"row\" style=\"margin-top: 14px;\">\n            <div class=\"col-md-6\">\n              <div class=\"panel panel-default\">\n                <div class=\"panel-heading\">\n                  Filtrage par classe\n\n                  <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                          ng:click=\"$ctrl.clear_filters('groups')\">\n                    <span class=\"glyphicon glyphicon-remove\">\n                    </span>\n                  </button>\n                  <div class=\"clearfix\"></div>\n                </div>\n\n                <div class=\"panel-body\">\n                  <div class=\"btn-group\">\n                    <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                            ng:repeat=\"group in $ctrl.groups | orderBy:['name']\"\n                            ng:class=\"{'vert-moins': group.selected, 'vert-plus': !group.selected}\"\n                            ng:model=\"group.selected\"\n                            uib:btn-checkbox>\n                      {{group.name}}\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </div>\n\n            <div class=\"col-md-6\">\n              <div class=\"panel panel-default\">\n                <div class=\"panel-heading\">\n                  Filtrage par niveau\n\n                  <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                          ng:click=\"$ctrl.clear_filters('grades')\">\n                    <span class=\"glyphicon glyphicon-remove\">\n                    </span>\n                  </button>\n                  <div class=\"clearfix\"></div>\n                </div>\n\n                <div class=\"panel-body\">\n                  <div class=\"btn-group\">\n                    <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                            ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n                            ng:class=\"{'vert-moins': grade.selected, 'vert-plus': !grade.selected}\"\n                            ng:model=\"grade.selected\"\n                            uib:btn-checkbox>\n                      {{grade.name}}\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>\n\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'relevant': eleve.relevant}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <a class=\"eleve\"\n         ui:sref=\"carnet({uid_eleve: eleve.id})\">\n        <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n        <div class=\"full-name\" title=\"{{eleve.relevant ? 'Vous \u00EAtes contributeur de ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h4 class=\"last-name\">{{eleve.lastname}}</h4>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
+    template: "\n<style>\n  .trombinoscope .petite.case { border: 1px solid transparent; }\n</style>\n<div class=\"col-md-4 gris1-moins aside trombinoscope-aside\" style=\"padding: 0;\">\n  <div class=\"panel panel-default gris1-moins\">\n    <div class=\"panel-heading\" style=\"text-align: right; \">\n      <h3>\n        {{$ctrl.filtered.length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affich\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}}\n      </h3>\n    </div>\n    <div class=\"panel-body\">\n\n      <div class=\"panel panel-default\" ng:if=\"$ctrl.can_do_batch\">\n        <div class=\"panel-heading\">\n          <span class=\"glyphicon glyphicon-fullscreen\"></span> Actions group\u00E9es\n        </div>\n\n        <div class=\"panel-body\">\n\n          <button class=\"btn btn-success\" ng:click=\"$ctrl.popup_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )\" ng:if=\"$ctrl.can_do_batch\">\n            <span class=\"glyphicon glyphicon-folder-close\"></span> Gestion des onglets communs\n          </button>\n\n          <a ui:sref=\"carnet({uid_eleve: $ctrl.pluck_selected_uids().join(',')})\">Gestion des onglets communs</a>\n\n        </div>\n      </div>\n\n      <div class=\"panel panel-default\">\n        <div class=\"panel-heading\">\n          <span class=\"glyphicon glyphicon-filter\"></span> Filtrage\n        </div>\n\n        <div class=\"panel-body\">\n\n          <div class=\"row\">\n            <div class=\"col-md-12\">\n              <label>\n                <input type=\"checkbox\" ng:model=\"$ctrl.only_display_relevant_to\" />\n                <h4 style=\"display: inline;\"> N'afficher que le{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} au{{$ctrl.pluriel($ctrl.relevant_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} je contribue.</h4>\n              </label>\n            </div>\n          </div>\n\n          <div class=\"row\">\n            <div class=\"col-md-12\">\n              <input class=\"form-control input-lg\"\n                     style=\"display: inline; background-color: rgba(240, 240, 240, 0.66);\"\n                     type=\"text\" name=\"search\"\n                     ng:model=\"$ctrl.filters.text\" />\n              <button class=\"btn btn-xs\" style=\"color: green; margin-left: -44px; margin-top: -4px;\" ng:click=\"$ctrl.filters.text = ''\">\n                <span class=\"glyphicon glyphicon-remove\"></span>\n              </button>\n            </div>\n          </div>\n\n          <div class=\"row\" style=\"margin-top: 14px;\">\n            <div class=\"col-md-6\">\n              <div class=\"panel panel-default\">\n                <div class=\"panel-heading\">\n                  Filtrage par classe\n\n                  <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                          ng:click=\"$ctrl.clear_filters('groups')\">\n                    <span class=\"glyphicon glyphicon-remove\">\n                    </span>\n                  </button>\n                  <div class=\"clearfix\"></div>\n                </div>\n\n                <div class=\"panel-body\">\n                  <div class=\"btn-group\">\n                    <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                            ng:repeat=\"group in $ctrl.groups | orderBy:['name']\"\n                            ng:class=\"{'vert-moins': group.selected, 'vert-plus': !group.selected}\"\n                            ng:model=\"group.selected\"\n                            uib:btn-checkbox>\n                      {{group.name}}\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </div>\n\n            <div class=\"col-md-6\">\n              <div class=\"panel panel-default\">\n                <div class=\"panel-heading\">\n                  Filtrage par niveau\n\n                  <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                          ng:click=\"$ctrl.clear_filters('grades')\">\n                    <span class=\"glyphicon glyphicon-remove\">\n                    </span>\n                  </button>\n                  <div class=\"clearfix\"></div>\n                </div>\n\n                <div class=\"panel-body\">\n                  <div class=\"btn-group\">\n                    <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                            ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n                            ng:class=\"{'vert-moins': grade.selected, 'vert-plus': !grade.selected}\"\n                            ng:model=\"grade.selected\"\n                            uib:btn-checkbox>\n                      {{grade.name}}\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>\n\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'relevant': eleve.relevant}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <a class=\"eleve\"\n         ui:sref=\"carnet({uid_eleve: eleve.id})\">\n        <h5 class=\"regroupement\">{{eleve.regroupement.name}}</h5>\n\n        <div class=\"full-name\" title=\"{{eleve.relevant ? 'Vous \u00EAtes contributeur de ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h4 class=\"last-name\">{{eleve.lastname}}</h4>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
 });
 angular.module('suiviApp')
     .component('userDetails', {
@@ -646,7 +656,7 @@ angular.module('suiviApp')
                 }
             };
         }],
-    template: "\n      <div class=\"col-md-12\">\n        <div class=\"avatar-container gris4 pull-left\" ng:style=\"{'height': $ctrl.small ? '44px' : '175px', 'width': $ctrl.small ? '44px' : '175px'}\">\n          <img class=\"avatar noir-moins\"\n               ng:style=\"{'max-height': $ctrl.small ? '44px' : '175px', 'max-width': $ctrl.small ? '44px' : '175px'}\"\n               ng:src=\"{{$ctrl.URL_ENT + '/' + $ctrl.user.avatar}}\"\n               ng:if=\"$ctrl.showAvatar\" />\n        </div>\n        <div class=\"col-md-8 details\">\n          <div class=\"col-md-12\">\n            <span class=\"first-name\"\n                  ng:style=\"{'font-size': $ctrl.small ? '100%' : '150%'}\"> {{$ctrl.user.firstname}}\n            </span>\n            <span class=\"last-name\"\n                  ng:style=\"{'font-size': $ctrl.small ? '100%' : '175%'}\"> {{$ctrl.user.lastname}}\n            </span>\n          </div>\n\n          <span class=\"col-md-12 classe\" ng:if=\"$ctrl.showClasse\">\n            <span ng:repeat=\"group in $ctrl.user.actual_groups | filter:{type: 'CLS'}\">\n              {{group.name}} - {{group.structure.name}}\n            </span>\n          </span>\n\n          <span class=\"col-md-12 birthdate\" ng:if=\"$ctrl.showBirthdate\">\n            n\u00E9<span ng:if=\"$ctrl.user.gender === 'F'\">e</span> le {{$ctrl.user.birthdate | date}}\n          </span>\n          <div class=\"col-md-12 email\"\n               ng:repeat=\"email in $ctrl.user.emails\"\n               ng:if=\"$ctrl.showEmails\">\n            <span class=\"glyphicon glyphicon-envelope\">\n            </span>\n            <a href=\"mailto:{{email.address}}\">{{email.address}}</a>\n          </div>\n          <span class=\"col-md-12 address\"\n                ng:if=\"$ctrl.showAddress && $ctrl.user.adresse\">\n            <span class=\"glyphicon glyphicon-home\">\n            </span>\n            <span style=\"display: inline-table;\">\n              {{$ctrl.user.address}}\n              <br>\n                {{$ctrl.user.zipcode}} {{$ctrl.user.city}}\n              </span>\n            </span>\n            <div class=\"col-md-12 phone\"\n                 ng:repeat=\"phone in $ctrl.user.phones\"\n                 ng:if=\"$ctrl.showPhones\">\n              <span class=\"glyphicon\"\n                    ng:class=\"{'glyphicon-phone': phone.type === 'PORTABLE', 'glyphicon-phone-alt': phone.type !== 'PORTABLE'}\">\n                {{phone.type}}: {{phone.number}}\n              </span>\n            </div>\n          </div>\n        </div>\n\n        <fieldset class=\"pull-left col-md-12 parents\" ng:if=\"$ctrl.showConcernedPeople\">\n          <legend>Personnes concern\u00E9es</legend>\n          <uib-accordion>\n            <div uib-accordion-group\n            class=\"panel-default\"\n            ng:repeat=\"(type, peoples) in $ctrl.concerned_people\"\n            ng:if=\"type != 'Autre \u00E9l\u00E8ve suivi'\">\n            <uib-accordion-heading>\n              <span class=\"glyphicon\" ng:class=\"{'glyphicon-menu-down': type.is_open, 'glyphicon-menu-right': !type.is_open}\">\n                </span> {{type}}\n            </uib-accordion-heading>\n            <ul>\n              <li ng:repeat=\"people in peoples | orderBy:'lastname'\">\n                <span ng:if=\"!people.relevant_to\">{{people.firstname}} {{people.lastname}}</span>\n                <span ng:if=\"people.relevant_to\">\n                  <a ui:sref=\"carnet({uid_eleve: people.id})\">{{people.firstname}} {{people.lastname}}</a>\n                </span>\n                <span ng:if=\"people.prof_principal\"> (enseignant principal)</span>\n                <span ng:if=\"people.actual_subjects\">\n                  <br/>\n                  <em ng:repeat=\"subject in people.actual_subjects\">\n                    <span class=\"glyphicon glyphicon-briefcase\">\n                      </span> {{subject.name}}\n                  </em>\n                </span>\n                <span ng:if=\"people.emails.length > 0\">\n                  <br/>\n                  <span class=\"glyphicon glyphicon-envelope\">\n                  </span>\n                  <a href=\"mailto:{{people.emails[0].address}}\">{{people.emails[0].address}}</a>\n                </span>\n              </li>\n            </ul>\n          </div>\n        </uib-accordion>\n      </fieldset>\n"
+    template: "\n                        <div class=\"col-md-12\">\n                          <div class=\"avatar-container gris4 pull-left\" ng:style=\"{'height': $ctrl.small ? '44px' : '175px', 'width': $ctrl.small ? '44px' : '175px'}\">\n                            <img class=\"avatar noir-moins\"\n                                 ng:style=\"{'max-height': $ctrl.small ? '44px' : '175px', 'max-width': $ctrl.small ? '44px' : '175px'}\"\n                                 ng:src=\"{{$ctrl.URL_ENT + '/' + $ctrl.user.avatar}}\"\n                                 ng:if=\"$ctrl.showAvatar\" />\n                          </div>\n<div class=\"col-md-8 details\" ng:style=\"{'min-height': $ctrl.small ? '44px' : '175px'}\">\n<div class=\"col-md-12\">\n<span class=\"first-name\"\n                                    ng:style=\"{'font-size': $ctrl.small ? '100%' : '150%'}\"> {{$ctrl.user.firstname}}\n                              </span>\n                              <span class=\"last-name\"\n                                    ng:style=\"{'font-size': $ctrl.small ? '100%' : '175%'}\"> {{$ctrl.user.lastname}}\n                              </span>\n                            </div>\n\n                            <span class=\"col-md-12 classe\" ng:if=\"$ctrl.showClasse\">\n                              <span ng:repeat=\"group in $ctrl.user.actual_groups | filter:{type: 'CLS'}\">\n                                {{group.name}} - {{group.structure.name}}\n                              </span>\n                            </span>\n\n                            <span class=\"col-md-12 birthdate\" ng:if=\"$ctrl.showBirthdate\">\n                              n\u00E9<span ng:if=\"$ctrl.user.gender === 'F'\">e</span> le {{$ctrl.user.birthdate | date}}\n                            </span>\n                            <div class=\"col-md-12 email\"\n                                 ng:repeat=\"email in $ctrl.user.emails\"\n                                 ng:if=\"$ctrl.showEmails\">\n                              <span class=\"glyphicon glyphicon-envelope\">\n                              </span>\n                              <a href=\"mailto:{{email.address}}\">{{email.address}}</a>\n                            </div>\n                            <span class=\"col-md-12 address\"\n                                  ng:if=\"$ctrl.showAddress && $ctrl.user.adresse\">\n                              <span class=\"glyphicon glyphicon-home\">\n                              </span>\n                              <span style=\"display: inline-table;\">\n                                {{$ctrl.user.address}}\n                                <br>\n                                {{$ctrl.user.zipcode}} {{$ctrl.user.city}}\n                              </span>\n                            </span>\n                            <div class=\"col-md-12 phone\"\n                                 ng:repeat=\"phone in $ctrl.user.phones\"\n                                 ng:if=\"$ctrl.showPhones\">\n                              <span class=\"glyphicon\"\n                                    ng:class=\"{'glyphicon-phone': phone.type === 'PORTABLE', 'glyphicon-phone-alt': phone.type !== 'PORTABLE'}\">\n                                {{phone.type}}: {{phone.number}}\n                              </span>\n                            </div>\n                          </div>\n                        </div>\n\n                        <fieldset class=\"pull-left col-md-12 parents\" ng:if=\"$ctrl.showConcernedPeople\">\n                          <legend>Personnes concern\u00E9es</legend>\n                          <uib-accordion>\n                            <div uib-accordion-group\n                                 class=\"panel-default\"\n                                 ng:repeat=\"(type, peoples) in $ctrl.concerned_people\"\n                                 ng:if=\"type != 'Autre \u00E9l\u00E8ve suivi'\">\n                              <uib-accordion-heading>\n                                <span class=\"glyphicon\" ng:class=\"{'glyphicon-menu-down': type.is_open, 'glyphicon-menu-right': !type.is_open}\">\n                                </span> {{type}}\n                              </uib-accordion-heading>\n                              <ul>\n                                <li ng:repeat=\"people in peoples | orderBy:'lastname'\">\n                                  <span ng:if=\"!people.relevant_to\">{{people.firstname}} {{people.lastname}}</span>\n                                  <span ng:if=\"people.relevant_to\">\n                                    <a ui:sref=\"carnet({uid_eleve: people.id})\">{{people.firstname}} {{people.lastname}}</a>\n                                  </span>\n                                  <span ng:if=\"people.prof_principal\"> (enseignant principal)</span>\n                                  <span ng:if=\"people.actual_subjects\">\n                                    <br/>\n                                    <em ng:repeat=\"subject in people.actual_subjects\">\n                                      <span class=\"glyphicon glyphicon-briefcase\">\n                                      </span> {{subject.name}}\n                                    </em>\n                                  </span>\n                                  <span ng:if=\"people.emails.length > 0\">\n                                    <br/>\n                                    <span class=\"glyphicon glyphicon-envelope\">\n                                    </span>\n                                    <a href=\"mailto:{{people.emails[0].address}}\">{{people.emails[0].address}}</a>\n                                  </span>\n                                </li>\n                              </ul>\n                            </div>\n                          </uib-accordion>\n                        </fieldset>\n"
 });
 angular.module('suiviApp')
     .factory('Carnets', ['$resource', 'APP_PATH',
@@ -973,9 +983,9 @@ angular.module('suiviApp')
     .service('Popups', ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID',
     function ($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
         var service = this;
-        var template_onglet = "\n<div class=\"modal-header\">\n<h3 class=\"modal-title\">\nPropri\u00E9t\u00E9s de l'onglet\n</h3>\n</div>\n\n<div class=\"modal-body\">\n<label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n<span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n</label>\n\n<span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n<droits uid-eleve=\"$ctrl.uid_eleve\"\ndroits=\"$ctrl.droits\"\nconcerned-people=\"$ctrl.concerned_people\"\nng:if=\"$ctrl.droits\"></droits>\n\n<div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n<button class=\"btn btn-danger pull-left\"\nng:click=\"$ctrl.delete()\"\nng:if=\"$ctrl.onglet.id\">\n<span class=\"glyphicon glyphicon-trash\"></span>\n<span> Supprimer l'onglet</span>\n</button>\n<button class=\"btn btn-default\"\nng:click=\"$ctrl.cancel()\">\n<span class=\"glyphicon glyphicon-remove-sign\"></span>\n<span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n<span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n</button>\n<button class=\"btn btn-success\"\nng:click=\"$ctrl.ok()\"\nng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n<span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n</button>\n</div>\n";
         service.onglet = function (uid_eleve, onglet, all_onglets, callback) {
             $uibModal.open({
+                template: "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n  <droits uid-eleve=\"$ctrl.uid_eleve\"\n          droits=\"$ctrl.droits\"\n          concerned-people=\"$ctrl.concerned_people\"\n          ng:if=\"$ctrl.droits\"></droits>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id || $ctrl.onglet.ids\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n",
                 resolve: {
                     uid_eleve: function () { return uid_eleve; },
                     onglet: function () { return _(onglet).isNull() ? { nom: '' } : onglet; },
@@ -1053,8 +1063,7 @@ angular.module('suiviApp')
                         ctrl.cancel = function () {
                             $uibModalInstance.dismiss();
                         };
-                    }],
-                template: template_onglet
+                    }]
             })
                 .result.then(function success(response_popup) {
                 var promise = null;
@@ -1106,6 +1115,8 @@ angular.module('suiviApp')
         };
         service.batch = function (uids, callback) {
             $uibModal.open({
+                size: "lg",
+                template: "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Onglet(s) commun(s)\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <carnet uids-eleves=\"$ctrl.uids\"></carnet>\n  <div class=\"clearfix\"></div>\n</div>\n\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.close()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span> Fermer\n  </button>\n</div>\n",
                 resolve: {
                     uids: function () { return uids; }
                 },
@@ -1114,117 +1125,6 @@ angular.module('suiviApp')
                         var ctrl = $scope;
                         ctrl.$ctrl = ctrl;
                         ctrl.uids = uids;
-                    }],
-                template: "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Onglet(s) commun(s)\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <onglets uids-eleves=\"$ctrl.uids\"></onglets>\n  <div class=\"clearfix\"></div>\n</div>"
-            });
-        };
-        service.onglet_batch = function (uids, callback) {
-            $uibModal.open({
-                resolve: {
-                    uids: function () { return uids; }
-                },
-                controller: ['$scope', '$uibModalInstance', '$q', 'Droits', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uids',
-                    function PopupOngletCtrl($scope, $uibModalInstance, $q, Droits, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uids) {
-                        var ctrl = $scope;
-                        ctrl.$ctrl = ctrl;
-                        ctrl.uids = uids;
-                        ctrl.droits = [{ uid: UID, read: true, write: true, manage: true }];
-                        ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
-                            .map(function (droit) {
-                            var proper_droit = new Droits(droit);
-                            proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
-                            return proper_droit;
-                        }));
-                        APIs.query_common_onglets_of(ctrl.uids)
-                            .then(function (response) {
-                            ctrl.common_tabs = response;
-                        });
-                        var current_user = null;
-                        var profils = {};
-                        var personnels = new Array();
-                        APIs.get_current_user()
-                            .then(function success(response) {
-                            current_user = response;
-                            return APIs.query_profiles_types();
-                        })
-                            .then(function success(response) {
-                            profils = _(response.data).indexBy('id');
-                            return APIs.get_structure(current_user.profil_actif.structure_id);
-                        }, function error(response) { return $q.reject(response); })
-                            .then(function success(response) {
-                            if (_(response).has('data')) {
-                                personnels = _(response.data.profiles)
-                                    .reject(function (user) {
-                                    return _(['ELV', 'TUT']).contains(user.type);
-                                });
-                                return APIs.get_users(_(personnels).pluck('user_id'));
-                            }
-                        }, function error(response) { return $q.reject(response); })
-                            .then(function success(response) {
-                            if (_(response).has('data')) {
-                                personnels = _(personnels).indexBy('user_id');
-                                ctrl.concerned_people = _(response.data).map(function (people) {
-                                    people.type = profils[personnels[people.id].type].name;
-                                    return people;
-                                });
-                            }
-                        }, function error(response) { return $q.reject(response); });
-                        ctrl.valid_name = true;
-                        ctrl.name_validation = function () {
-                            var other_onglets_names = _(ctrl.common_tabs).keys();
-                            ctrl.valid_name = !_(other_onglets_names).includes(ctrl.onglet.nom);
-                            return ctrl.valid_name;
-                        };
-                        ctrl.ok = function () {
-                            $uibModalInstance.close({
-                                onglet: ctrl.onglet,
-                                droits: ctrl.droits
-                            });
-                        };
-                        ctrl.cancel = function () {
-                            $uibModalInstance.dismiss();
-                        };
-                    }],
-                template: template_onglet
-            })
-                .result.then(function success(response_popup) {
-                var promises = null;
-                var action = 'created';
-                new Onglets({
-                    uids: uids,
-                    nom: response_popup.onglet.nom
-                }).$save()
-                    .then(function success(response) {
-                    response.action = action;
-                    var onglets_ids = _(response.data).pluck('id');
-                    _.chain(response_popup.droits)
-                        .reject(function (droit) { return _(droit).has('uid') && droit.uid == UID; })
-                        .reject(function (droit) { return _(droit).has('to_delete') && droit.to_delete; })
-                        .each(function (droit) {
-                        droit.onglets_ids = onglets_ids;
-                        new Droits(droit).$save();
-                    });
-                    callback(response);
-                }, function error(response) { console.log(response); });
-            }, function error() { });
-        };
-        service.publish_batch = function (uids) {
-            $uibModal.open({
-                template: "\n      <div class=\"modal-header\">\n        <h3 class=\"modal-title\">\n          Pulication simultan\u00E9e vers un onglet commun \u00E0 plusieurs \u00E9l\u00E8ves\n        </h3>\n      </div>\n\n      <div class=\"modal-body\">\n        <div class=\"alert alert-warning\" role=\"alert\" ng:if=\"$ctrl.common_tabs && !$ctrl.has_common_tabs\">Aucun onglet commun n'a \u00E9t\u00E9 trouv\u00E9 pour cette s\u00E9lection d'\u00E9l\u00E8ves.</div>\n\n        <div ng:if=\"$ctrl.common_tabs && $ctrl.has_common_tabs\">\n          <label>Onglet(s) commun(s) existant(s) :</label>\n          <div class=\"btn-group\">\n            <label class=\"btn btn-primary\" ng-model=\"$ctrl.selected_onglets\" uib-btn-radio=\"tabs\"ng:repeat=\"(name, tabs) in $ctrl.common_tabs\">{{name}}</label>\n          </div>\n        </div>\n\n        <saisie class=\"col-md-12\"\n                style=\"display: inline-block;\"\n                passive=\"true\"\n                saisie=\"$ctrl.saisie\"\n                onglets=\"$ctrl.selected_onglets\"\n                ng:if=\"$ctrl.common_tabs && $ctrl.has_common_tabs\"></saisie>\n\n        <div class=\"clearfix\"></div>\n      </div>\n\n      <div class=\"modal-footer\">\n        <button class=\"btn btn-default\"\n                ng:click=\"$ctrl.close()\">\n          <span class=\"glyphicon glyphicon-remove-sign\"></span> Fermer\n        </button>\n      </div>\n",
-                resolve: {
-                    uids: function () { return uids; }
-                },
-                controller: ['$scope', '$uibModalInstance', '$q', 'Saisies', 'APIs', 'uids',
-                    function PopupOngletCtrl($scope, $uibModalInstance, $q, Saisies, APIs, uids) {
-                        var ctrl = $scope;
-                        ctrl.$ctrl = ctrl;
-                        ctrl.uids = uids;
-                        ctrl.saisie = { create_me: true };
-                        APIs.query_common_onglets_of(ctrl.uids)
-                            .then(function (response) {
-                            ctrl.common_tabs = response;
-                            ctrl.has_common_tabs = !_(ctrl.common_tabs).isEmpty();
-                        });
                         ctrl.close = function () {
                             $uibModalInstance.dismiss();
                         };

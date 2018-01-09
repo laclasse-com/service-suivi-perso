@@ -101,7 +101,6 @@ angular.module('suiviApp')
         };
 
         ctrl.update_deletabilities = function() {
-          console.log(ctrl);
           _(ctrl.droits).each(function(droit) {
             droit.deletable = droit.uid != UID;
             if (!_(ctrl.uidEleve).isUndefined()) {

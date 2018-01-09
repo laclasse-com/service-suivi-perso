@@ -11,11 +11,9 @@ angular.module('suiviApp')
       onglets: '<',
       onglet: '='
     },
-    controller: ['$uibModal', '$state', '$q', '$window', '$sce', '$location', 'Saisies', 'Popups',
-      function($uibModal, $state, $q, $window, $sce, $location, Saisies, Popups) {
+    controller: ['$uibModal', '$state', '$q', '$window', '$sce', '$location', 'Saisies',
+      function($uibModal, $state, $q, $window, $sce, $location, Saisies) {
         let ctrl = this;
-
-        ctrl.manage_onglet = Popups.onglet;
 
         ctrl.order_by = {
           field: 'date',
@@ -87,10 +85,6 @@ angular.module('suiviApp')
         };
       }],
     template: `
-                  <span class="hidden-xs hidden-sm floating-button toggle big off jaune"
-                        ng:if="$ctrl.onglet.manageable"
-                        ng:click="$ctrl.manage_onglet( $ctrl.uidEleve, $ctrl.onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )"></span>
-
                   <saisie class="col-md-12" style="display: inline-block;"
                           ng:repeat="saisie in $ctrl.saisies | filter:$ctrl.filter_pinned() | orderBy:$ctrl.order_by.field:$ctrl.order_by.reverse"
                           onglet="$ctrl.onglet"

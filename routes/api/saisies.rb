@@ -6,8 +6,6 @@ module Suivi
       module Saisies
         def self.registered( app )
           app.get '/api/saisies/?' do
-            p params
-
             single = params.key?( 'onglet_id')
 
             onglets_ids = single ? [ params['onglet_id'] ] : params['onglets_ids']
@@ -34,8 +32,6 @@ module Suivi
           end
 
           app.post '/api/saisies/?' do
-            # request.body.rewind
-            # body = JSON.parse( request.body.read )
             single = params.key?( 'onglet_id')
 
             onglets_ids = single ? [ params['onglet_id'] ] : params['onglets_ids']
