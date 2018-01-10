@@ -193,115 +193,89 @@ template: `
     <div class="panel-heading" style="text-align: right; ">
       <h3>
         {{$ctrl.filtered.length}} élève{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affiché{{$ctrl.pluriel($ctrl.filtered.length, 's')}}
+
+        <a class="btn btn-success"
+           title="Gestion des onglets communs"
+           ng:if="$ctrl.can_do_batch"
+           ui:sref="carnet({uid_eleve: $ctrl.pluck_selected_uids().join(',')})">
+          <span class="glyphicon glyphicon-fullscreen"></span>
+          <span class="glyphicon glyphicon-folder-close"></span>
+        </a>
       </h3>
     </div>
     <div class="panel-body">
 
-      <div class="panel panel-default" ng:if="$ctrl.can_do_batch">
-        <div class="panel-heading">
-          <span class="glyphicon glyphicon-fullscreen"></span> Actions groupées
-        </div>
-
-        <div class="panel-body">
-
-          <a  class="btn btn-success"
-              ng:if="$ctrl.can_do_batch"
-              ui:sref="carnet({uid_eleve: $ctrl.pluck_selected_uids().join(',')})">
-            <span class="glyphicon glyphicon-folder-close"></span> Gestion des onglets communs
-          </a>
-
+      <div class="row">
+        <div class="col-md-12">
+          <input class="form-control input-lg"
+                 style="display: inline; background-color: rgba(240, 240, 240, 0.66);"
+                 type="text" name="search"
+                 ng:model="$ctrl.filters.text" />
+          <button class="btn btn-xs" style="color: green; margin-left: -44px; margin-top: -4px;" ng:click="$ctrl.filters.text = ''">
+            <span class="glyphicon glyphicon-remove"></span>
+          </button>
         </div>
       </div>
 
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <span class="glyphicon glyphicon-filter"></span> Filtrage
+      <div class="row" style="margin-top: 14px;">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Filtrage par classe
+
+              <button class="btn btn-xs pull-right" style="color: green;"
+                      ng:click="$ctrl.clear_filters('groups')">
+                <span class="glyphicon glyphicon-remove">
+                </span>
+              </button>
+              <div class="clearfix"></div>
+            </div>
+
+            <div class="panel-body">
+              <div class="btn-group">
+                <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
+                        ng:repeat="group in $ctrl.groups | orderBy:['name']"
+                        ng:class="{'vert-moins': group.selected, 'vert-plus': !group.selected}"
+                        ng:model="group.selected"
+                        uib:btn-checkbox>
+                  {{group.name}}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="panel-body">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Filtrage par niveau
 
-          <div class="row">
-            <div class="col-md-12">
-              <label>
-                <input type="checkbox" ng:model="$ctrl.only_display_relevant_to" />
-                <h4 style="display: inline;"> N'afficher que le{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} carnet{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} au{{$ctrl.pluriel($ctrl.relevant_to.length, 'x')}}quel{{$ctrl.pluriel($ctrl.relevant_to.length, 's')}} je contribue.</h4>
-              </label>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-12">
-              <input class="form-control input-lg"
-                     style="display: inline; background-color: rgba(240, 240, 240, 0.66);"
-                     type="text" name="search"
-                     ng:model="$ctrl.filters.text" />
-              <button class="btn btn-xs" style="color: green; margin-left: -44px; margin-top: -4px;" ng:click="$ctrl.filters.text = ''">
-                <span class="glyphicon glyphicon-remove"></span>
+              <button class="btn btn-xs pull-right" style="color: green;"
+                      ng:click="$ctrl.clear_filters('grades')">
+                <span class="glyphicon glyphicon-remove">
+                </span>
               </button>
-            </div>
-          </div>
-
-          <div class="row" style="margin-top: 14px;">
-            <div class="col-md-6">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  Filtrage par classe
-
-                  <button class="btn btn-xs pull-right" style="color: green;"
-                          ng:click="$ctrl.clear_filters('groups')">
-                    <span class="glyphicon glyphicon-remove">
-                    </span>
-                  </button>
-                  <div class="clearfix"></div>
-                </div>
-
-                <div class="panel-body">
-                  <div class="btn-group">
-                    <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
-                            ng:repeat="group in $ctrl.groups | orderBy:['name']"
-                            ng:class="{'vert-moins': group.selected, 'vert-plus': !group.selected}"
-                            ng:model="group.selected"
-                            uib:btn-checkbox>
-                      {{group.name}}
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <div class="clearfix"></div>
             </div>
 
-            <div class="col-md-6">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  Filtrage par niveau
-
-                  <button class="btn btn-xs pull-right" style="color: green;"
-                          ng:click="$ctrl.clear_filters('grades')">
-                    <span class="glyphicon glyphicon-remove">
-                    </span>
-                  </button>
-                  <div class="clearfix"></div>
-                </div>
-
-                <div class="panel-body">
-                  <div class="btn-group">
-                    <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
-                            ng:repeat="grade in $ctrl.grades | orderBy:['name']"
-                            ng:class="{'vert-moins': grade.selected, 'vert-plus': !grade.selected}"
-                            ng:model="grade.selected"
-                            uib:btn-checkbox>
-                      {{grade.name}}
-                    </button>
-                  </div>
-                </div>
+            <div class="panel-body">
+              <div class="btn-group">
+                <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
+                        ng:repeat="grade in $ctrl.grades | orderBy:['name']"
+                        ng:class="{'vert-moins': grade.selected, 'vert-plus': !grade.selected}"
+                        ng:model="grade.selected"
+                        uib:btn-checkbox>
+                  {{grade.name}}
+                </button>
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
     </div>
   </div>
+
 </div>
 
 <div class="col-md-8 vert-moins damier trombinoscope">

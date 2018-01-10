@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 module Suivi
   module Routes
     module Status
@@ -12,7 +10,7 @@ module Suivi
 
           app_status = { app_id: ANNUAIRE[:app_id],
                          app_version: APP_VERSION,
-                         rack_env: ENV[ 'RACK_ENV' ] }
+                         rack_env: ENV['RACK_ENV'] }
 
           app_status[:status] = status
           app_status[:reason] = reason

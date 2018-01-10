@@ -1,14 +1,12 @@
-# coding: utf-8
-
 class Carnet < Sequel::Model(:carnets)
   one_to_many :onglets
 
   def self.of( uid_eleve )
-    carnet = Carnet[ uid_eleve: uid_eleve ]
+    carnet = Carnet[uid_eleve: uid_eleve]
     if carnet.nil?
       # FIXME: check that uid_eleve is actually an eleve
       carnet = Carnet.create( uid_eleve: uid_eleve,
-                              date_creation: DateTime.now )
+                              date_creation: Time.now )
     end
 
     carnet

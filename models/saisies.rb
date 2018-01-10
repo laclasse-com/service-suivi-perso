@@ -1,5 +1,3 @@
-# coding: utf-8
-
 class Saisie < Sequel::Model(:saisies)
   many_to_many :onglets, class: :Onglet, join_table: :saisies_onglets
   one_to_many :ressources

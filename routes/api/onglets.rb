@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 module Suivi
   module Routes
     module Api
@@ -8,7 +6,7 @@ module Suivi
           app.get '/api/onglets/?' do
             single = params.key?('uid')
 
-            uids = single ? [ params['uid'] ] : params['uids']
+            uids = single ? [params['uid']] : params['uids']
 
             onglets_hashes = uids.map do |uid_eleve|
               get_and_check_carnet( uid_eleve )
@@ -40,7 +38,7 @@ module Suivi
             body = JSON.parse( request.body.read )
             single = body.key?('uid')
 
-            uids = single ? [ body['uid'] ] : body['uids']
+            uids = single ? [body['uid']] : body['uids']
 
             onglets_hashes = uids.map do |uid_eleve|
               carnet = get_and_check_carnet( uid_eleve )
@@ -50,7 +48,7 @@ module Suivi
               if new_onglet
                 onglet = Onglet.create( carnet_id: carnet.id,
                                         nom: params['nom'],
-                                        date_creation: DateTime.now )
+                                        date_creation: Time.now )
 
                 onglet.init_droits( user )
               end

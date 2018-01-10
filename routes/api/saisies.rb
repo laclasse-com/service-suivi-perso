@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 module Suivi
   module Routes
     module Api
@@ -8,7 +6,7 @@ module Suivi
           app.get '/api/saisies/?' do
             single = params.key?( 'onglet_id')
 
-            onglets_ids = single ? [ params['onglet_id'] ] : params['onglets_ids']
+            onglets_ids = single ? [params['onglet_id']] : params['onglets_ids']
 
             if single
               onglet = get_and_check_onglet( params['onglet_id'], user, :read )
@@ -34,11 +32,11 @@ module Suivi
           app.post '/api/saisies/?' do
             single = params.key?( 'onglet_id')
 
-            onglets_ids = single ? [ params['onglet_id'] ] : params['onglets_ids']
+            onglets_ids = single ? [params['onglet_id']] : params['onglets_ids']
 
             saisie = Saisie.create( uid_author: user['id'],
-                                    date_creation: DateTime.now,
-                                    date_modification: DateTime.now,
+                                    date_creation: Time.now,
+                                    date_modification: Time.now,
                                     contenu: params['contenu'],
                                     pinned: params['pinned'] )
 
@@ -69,7 +67,7 @@ module Suivi
             if params.key?('contenu') || params.key?('pinned')
               saisie.contenu = params['contenu'] if params.key?('contenu')
               saisie.pinned = params['pinned'] if params.key?('pinned')
-              saisie.date_modification = DateTime.now
+              saisie.date_modification = Time.now
 
               saisie.save
             end

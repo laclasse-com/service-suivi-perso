@@ -1,5 +1,3 @@
-# coding: utf-8
-
 module LaClasse
   module Helpers
     module Auth
@@ -39,7 +37,7 @@ module LaClasse
           route += "?#{env['QUERY_STRING']}" unless env['QUERY_STRING'].empty?
           service = "#{protocol}://#{env['HTTP_HOST']}#{route}"
         end
-        redirect '/sso/login?ticket=false&service=' + URI.escape(service)
+        redirect '/sso/login?ticket=false&service=' + CGI.escape(service)
       end
     end
   end

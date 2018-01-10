@@ -1,5 +1,3 @@
-# coding: utf-8
-
 class Onglet < Sequel::Model(:onglets)
   many_to_one :carnets, class: :Carnet, key: :carnet_id
   many_to_many :saisies, class: :Saisie, join_table: :saisies_onglets, left_key: :onglet_id, right_key: :saisie_id
@@ -20,20 +18,20 @@ class Onglet < Sequel::Model(:onglets)
 
   def allow?( user, right )
     droit = droits_dataset[uid: user['id']]
-    return droit[ right ] unless droit.nil?
+    return droit[right] unless droit.nil?
 
     droit = droits_dataset[profil_id: LaClasse::User.active_profile( user )['type']]
-    return droit[ right ] unless droit.nil?
+    return droit[right] unless droit.nil?
 
     droit = droits_dataset[group_id: LaClasse::User.groups( user ).map { |group| group['group_id'] } ]
-    return droit[ right ] unless droit.nil?
+    return droit[right] unless droit.nil?
 
     droits_dataset.count > 1 && ( LaClasse::User.admin?( user ) || LaClasse::User.super_admin?( user ) )
   end
 
   def to_json( arg )
     h = to_hash
-    h[:date_creation] = DateTime.parse( h[:date_creation].to_s ) unless h[:date_creation].nil?
+    h[:date_creation] = Date.parse( h[:date_creation].to_s ) unless h[:date_creation].nil?
 
     h.to_json( arg )
   end

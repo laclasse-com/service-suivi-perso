@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 module Suivi
   module Routes
     module Api
@@ -19,7 +17,7 @@ module Suivi
               body = JSON.parse( request.body.read )
               single = body.key?('onglet_id')
 
-              onglets_ids = single ? [ body['onglet_id'] ] : body['onglets_ids']
+              onglets_ids = single ? [body['onglet_id']] : body['onglets_ids']
 
               droits_hashes = onglets_ids.map do |onglet_id|
                 onglet = get_and_check_onglet( onglet_id, user, :manage )
@@ -36,7 +34,7 @@ module Suivi
 
                 droit = {}
                 %w[uid profil_id group_id read write manage].each do |key|
-                  droit[ key ] = params[ key ] if params.key?( key )
+                  droit[ key ] = params[key] if params.key?( key )
                 end
                 droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
 
@@ -55,7 +53,7 @@ module Suivi
               get_and_check_onglet( droit.onglet_id, user, :manage )
 
               %w[uid profil_id group_id read write manage].each do |key|
-                droit.update( key => params[ key ] ) if params.key?( key )
+                droit.update( key => params[key] ) if params.key?( key )
               end
               droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].empty? ? params['sharable_id'] : nil
               droit.save

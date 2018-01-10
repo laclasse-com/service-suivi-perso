@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 module Suivi
   module Routes
     module Api
