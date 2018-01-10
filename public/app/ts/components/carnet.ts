@@ -22,11 +22,14 @@ angular.module('suiviApp')
                        <ul ng:if="$ctrl.uidsEleves">
                          <li style="list-style-type: none;"
                              ng:repeat="uid in $ctrl.uidsEleves">
-                           <user-details class="user-details eleve"
-                                         uid="uid"
-                                         small="true"
-                                         show-avatar="true"
-                                         show-classe="true"></user-details>
+                           <a class="eleve"
+                              ui:sref="carnet({uid_eleve: uid})">
+                             <user-details class="user-details eleve"
+                                           uid="uid"
+                                           small="true"
+                                           show-avatar="true"
+                                           show-classe="true"></user-details>
+                           </a>
                          </li>
                        </ul>
                      </div>

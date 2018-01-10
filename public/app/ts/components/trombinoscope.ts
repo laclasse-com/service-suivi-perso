@@ -204,11 +204,11 @@ template: `
 
         <div class="panel-body">
 
-          <button class="btn btn-success" ng:click="$ctrl.popup_batch( $ctrl.pluck_selected_uids(), $ctrl.popup_onglet_batch_callback )" ng:if="$ctrl.can_do_batch">
+          <a  class="btn btn-success"
+              ng:if="$ctrl.can_do_batch"
+              ui:sref="carnet({uid_eleve: $ctrl.pluck_selected_uids().join(',')})">
             <span class="glyphicon glyphicon-folder-close"></span> Gestion des onglets communs
-          </button>
-
-          <a ui:sref="carnet({uid_eleve: $ctrl.pluck_selected_uids().join(',')})">Gestion des onglets communs</a>
+          </a>
 
         </div>
       </div>
