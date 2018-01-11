@@ -54,7 +54,7 @@ angular.module('suiviApp')
       <uib-tab-heading> {{onglet.nom}}
         <button class="btn btn-warning manage-onglet"
                 ng:if="onglet.manageable"
-                ng:click="$ctrl.popup_onglet( (ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
+                ng:click="$ctrl.popup_onglet( ($ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
           <span class="glyphicon glyphicon-cog"></span>
         </button>
       </uib-tab-heading>
@@ -69,7 +69,7 @@ angular.module('suiviApp')
     <li>
       <a href
          class="bleu add-onglet"
-         ng:click="$ctrl.popup_onglet( (ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, null, $ctrl.onglets, $ctrl.callback_popup_onglet )">
+         ng:click="$ctrl.popup_onglet( ($ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, null, $ctrl.onglets, $ctrl.callback_popup_onglet )">
         <span class="glyphicon glyphicon-plus">
         </span>
       </a>
