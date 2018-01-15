@@ -4,7 +4,7 @@ angular.module('suiviApp')
     function($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
       let service = this;
 
-      service.onglet = function(uid_eleve, onglet, all_onglets, callback) {
+      service.onglet = function(uids, onglet, all_onglets, callback) {
         $uibModal.open({
           template: `
 <div class="modal-header">
@@ -19,7 +19,7 @@ angular.module('suiviApp')
   </label>
 
   <span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
-  <droits uid-eleve="$ctrl.uid_eleve"
+  <droits uid-eleve="$ctrl.uids"
           droits="$ctrl.droits"
           concerned-people="$ctrl.concerned_people"
           ng:if="$ctrl.droits"></droits>
@@ -48,16 +48,16 @@ angular.module('suiviApp')
 </div>
 `,
           resolve: {
-            uid_eleve: function() { return uid_eleve; },
+            uids: function() { return uids; },
             onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; },
             all_onglets: function() { return all_onglets; }
           },
-          controller: ['$scope', '$uibModalInstance', '$q', 'Droits', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uid_eleve', 'onglet', 'all_onglets',
-            function PopupOngletCtrl($scope, $uibModalInstance, $q, Droits, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uid_eleve, onglet, all_onglets) {
+          controller: ['$scope', '$uibModalInstance', '$q', 'Droits', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uids', 'onglet', 'all_onglets',
+            function PopupOngletCtrl($scope, $uibModalInstance, $q, Droits, APIs, URL_ENT, DEFAULT_RIGHTS_ONGLET, UID, uids, onglet, all_onglets) {
               let ctrl = $scope;
               ctrl.$ctrl = ctrl;
 
-              ctrl.uid_eleve = uid_eleve;
+              ctrl.uids = uids;
               ctrl.onglet = onglet;
               ctrl.all_onglets = all_onglets;
               ctrl.onglet.delete = false;
@@ -75,7 +75,7 @@ angular.module('suiviApp')
                   function error(response) { });
               } else {
                 ctrl.droits = [new Droits({ uid: UID, read: true, write: true, manage: true })];
-                ctrl.droits.push(new Droits({ uid: uid_eleve, read: true, write: true, manage: false }));
+                ctrl.droits.push(new Droits({ uid: uids, read: true, write: true, manage: false }));
                 ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
                   .map(function(droit) {
                     let proper_droit = new Droits(droit);
@@ -86,13 +86,13 @@ angular.module('suiviApp')
                   }));
               }
 
-              APIs.get_user(uid_eleve)
+              APIs.get_user(uids)
                 .then(function success(response) {
                   ctrl.eleve = response.data;
                 },
                 function error(response) { });
 
-              APIs.query_people_concerned_about(uid_eleve)
+              APIs.query_people_concerned_about(uids)
                 .then(function success(response) {
                   ctrl.concerned_people = response;
                 },
@@ -138,6 +138,8 @@ angular.module('suiviApp')
               ctrl.cancel = function() {
                 $uibModalInstance.dismiss();
               };
+
+              console.log(ctrl)
             }]
         })
           .result.then(function success(response_popup) {
@@ -148,7 +150,7 @@ angular.module('suiviApp')
               action = 'created';
 
               promise = new Onglets({
-                uid: uid_eleve,
+                uid: uids,
                 nom: response_popup.onglet.nom
               }).$save();
             } else {
@@ -169,7 +171,7 @@ angular.module('suiviApp')
               if (action != 'deleted') {
                 _.chain(response_popup.droits)
                   .reject(function(droit) {
-                    return action == 'created' && _(droit).has('uid') && (droit.uid == UID || droit.uid == uid_eleve);
+                    return action == 'created' && _(droit).has('uid') && (droit.uid == UID || droit.uid == uids);
                   })
                   .each(function(droit) {
                     if (droit.to_delete) {
