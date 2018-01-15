@@ -197,7 +197,7 @@ template: `
         <a class="btn btn-success"
            title="Gestion des onglets communs"
            ng:if="$ctrl.can_do_batch"
-           ui:sref="carnet({uid_eleve: $ctrl.pluck_selected_uids().join(',')})">
+           ui:sref="carnet({uids: $ctrl.pluck_selected_uids().join(',')})">
           <span class="glyphicon glyphicon-fullscreen"></span>
           <span class="glyphicon glyphicon-folder-close"></span>
         </a>
@@ -286,7 +286,7 @@ template: `
         ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
         ng:repeat="eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )">
       <a class="eleve"
-         ui:sref="carnet({uid_eleve: eleve.id})">
+         ui:sref="carnet({uids: [eleve.id]})">
         <h5 class="regroupement">{{eleve.regroupement.name}}</h5>
 
         <div class="full-name" title="{{eleve.relevant ? 'Vous êtes contributeur de ce carnet' : ''}}">

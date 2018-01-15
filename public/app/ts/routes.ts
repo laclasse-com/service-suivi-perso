@@ -11,20 +11,12 @@ angular.module('suiviApp')
         })
         .state('carnet',
         {
-          url: '/carnet/:uid_eleve',
+          url: '/carnet/:uids',
           component: 'carnet',
           resolve: {
-            uidEleve: ['$transition$',
+            uids: ['$transition$',
               function($transition$) {
-                if ($transition$.params().uid_eleve.split("%2C").length <= 1) {
-                  return $transition$.params().uid_eleve;
-                }
-              }],
-            uidsEleves: ['$transition$',
-              function($transition$) {
-                if ($transition$.params().uid_eleve.split("%2C").length > 1) {
-                  return $transition$.params().uid_eleve.split("%2C");
-                }
+                return $transition$.params().uids.split("%2C");
               }]
           }
         });
