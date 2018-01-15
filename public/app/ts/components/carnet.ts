@@ -4,7 +4,7 @@ angular.module('suiviApp')
     bindings: {
       uids: '<'
     },
-               template: `
+    template: `
                <div class="col-md-4 gris1-moins aside aside-carnet">
                  <a class="col-md-12 btn btn-lg noir-moins go-back" ui:sref="trombinoscope()"> ↰ Retour au trombinoscope </a>
 
@@ -34,11 +34,6 @@ angular.module('suiviApp')
                </div>
 
                <onglets class="col-md-8 carnet"
-                        uid-eleve="$ctrl.uids[0]"
-                        ng:if="$ctrl.uids.length == 1"></onglets>
-
-               <onglets class="col-md-8 carnet"
-                        uids-eleves="$ctrl.uids"
-                        ng:if="$ctrl.uids.length > 1"></onglets>
+                        uids="$ctrl.uids"></onglets>
 `
   });

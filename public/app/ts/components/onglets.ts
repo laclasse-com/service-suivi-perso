@@ -2,11 +2,10 @@ angular.module('suiviApp')
   .component('onglets',
   {
     bindings: {
-      uidEleve: '<',
-      uidsEleves: '<'
+      uids: '<'
     },
-    controller: ['$uibModal', 'Carnets', 'Onglets', 'Popups', 'APIs',
-      function($uibModal, Carnets, Onglets, Popups, APIs) {
+    controller: ['$uibModal', 'Onglets', 'Popups', 'APIs',
+                 function($uibModal, Onglets, Popups, APIs) {
         let ctrl = this;
         ctrl.popup_onglet = Popups.onglet;
 
@@ -17,21 +16,14 @@ angular.module('suiviApp')
         };
 
         ctrl.$onInit = function() {
-          console.log(ctrl)
-          if (ctrl.uidEleve != undefined) {
-            Carnets.get({ uid_eleve: ctrl.uidEleve }).$promise
+          if (ctrl.uids.length == 1) {
+            Onglets.query({ uid: ctrl.uids[0] }).$promise
               .then(function success(response) {
-                ctrl.carnet = response;
-
-                Onglets.query({ uid: ctrl.uidEleve }).$promise
-                  .then(function success(response) {
-                    ctrl.onglets = response;
-                  },
-                  function error(response) { });
+                ctrl.onglets = response;
               },
               function error(response) { });
-          } else if (ctrl.uidsEleves != undefined) {
-            APIs.query_common_onglets_of(ctrl.uidsEleves)
+          } else {
+            APIs.query_common_onglets_of(ctrl.uids)
               .then(function(response) {
                 ctrl.onglets = Object.keys(response).map((key) => {
                   return {
@@ -54,13 +46,13 @@ angular.module('suiviApp')
       <uib-tab-heading> {{onglet.nom}}
         <button class="btn btn-warning manage-onglet"
                 ng:if="onglet.manageable"
-                ng:click="$ctrl.popup_onglet( ($ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
+                ng:click="$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
           <span class="glyphicon glyphicon-cog"></span>
         </button>
       </uib-tab-heading>
 
-      <onglet uid-eleve="$ctrl.uidEleve"
-              uids-eleves="$ctrl.uidsEleves"
+      <onglet uid-eleve="$ctrl.uids[0]"
+              uids-eleves="$ctrl.uids"
               onglets="$ctrl.onglets"
               onglet="onglet">
       </onglet>
@@ -69,7 +61,7 @@ angular.module('suiviApp')
     <li>
       <a href
          class="bleu add-onglet"
-         ng:click="$ctrl.popup_onglet( ($ctrl.uidEleve != undefined) ? [$ctrl.uidEleve] : $ctrl.uidsEleves, null, $ctrl.onglets, $ctrl.callback_popup_onglet )">
+         ng:click="$ctrl.popup_onglet( $ctrl.uids, null, $ctrl.onglets, $ctrl.callback_popup_onglet )">
         <span class="glyphicon glyphicon-plus">
         </span>
       </a>
