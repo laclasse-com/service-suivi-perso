@@ -26,13 +26,16 @@ module Suivi
           end
 
           app.post '/api/saisies/?' do
+            request.body.rewind
+            body = JSON.parse( request.body.read )
+
             saisie = Saisie.create( uid_author: user['id'],
                                     date_creation: Time.now,
                                     date_modification: Time.now,
-                                    contenu: params['contenu'],
-                                    pinned: params['pinned'] )
+                                    contenu: body['contenu'],
+                                    pinned: body['pinned'] )
 
-            params['onglets_ids'].each do |onglet_id|
+            body['onglets_ids'].each do |onglet_id|
               onglet = get_and_check_onglet( onglet_id, user, :write )
 
               saisie = onglet.add_saisy( saisie )
@@ -51,14 +54,17 @@ module Suivi
           end
 
           app.put '/api/saisies/:id' do
+            request.body.rewind
+            body = JSON.parse( request.body.read )
+
             saisie = get_and_check_saisie( params['id'], user, :write )
             saisie.onglets.each do |onglet|
               get_and_check_onglet( onglet.id, user, :write )
             end
 
-            if params.key?('contenu') || params.key?('pinned')
-              saisie.contenu = params['contenu'] if params.key?('contenu')
-              saisie.pinned = params['pinned'] if params.key?('pinned')
+            if body.key?('contenu') || body.key?('pinned')
+              saisie.contenu = body['contenu'] if body.key?('contenu')
+              saisie.pinned = body['pinned'] if body.key?('pinned')
               saisie.date_modification = Time.now
 
               saisie.save
