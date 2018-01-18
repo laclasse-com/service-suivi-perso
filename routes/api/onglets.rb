@@ -58,8 +58,11 @@ module Suivi
           end
 
           app.put '/api/onglets/:onglet_id' do
+            request.body.rewind
+            body = JSON.parse( request.body.read )
+
             onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
-            onglet.nom = params['nom'] if params.key?( 'nom' )
+            onglet.nom = body['nom'] if body.key?( 'nom' )
             onglet.save
 
             onglet_hash = onglet.to_hash
