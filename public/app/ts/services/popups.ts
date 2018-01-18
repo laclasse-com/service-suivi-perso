@@ -182,7 +182,7 @@ angular.module('suiviApp')
                       && (droit.uid !== '...' && droit.profil_id !== '...' && droit.sharable_id !== '...')
                       && _(droit.dirty).reduce(function(memo, value) { return memo || value; }, false)
                       && droit.read) {
-                      droit.onglet_id = response.id;
+                      droit.onglets_ids = [response.id];
 
                       (_(droit).has('id') ? droit.$update() : droit.$save());
                     }
