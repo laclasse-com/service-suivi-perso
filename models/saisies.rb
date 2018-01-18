@@ -3,7 +3,8 @@ class Saisie < Sequel::Model(:saisies)
   one_to_many :ressources
 
   def before_destroy
-    Ressource.where(saisie_id: id).destroy
+    remove_all_onglets
+    remove_all_ressources
   end
 
   def allow?( user, right )
