@@ -79,6 +79,9 @@ module Suivi
               get_and_check_onglet( onglet.id, user, :write )
             end
 
+            saisie.remove_all_onglets
+            saisie.remove_all_ressources
+
             json( saisie.destroy )
           end
         end
