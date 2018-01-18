@@ -194,7 +194,7 @@ template: `
       <h3>
         {{$ctrl.filtered.length}} élève{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affiché{{$ctrl.pluriel($ctrl.filtered.length, 's')}}
 
-        <a class="btn btn-success"
+        <a class="btn btn-primary"
            title="Gestion des onglets communs"
            ng:if="$ctrl.can_do_batch"
            ui:sref="carnet({uids: $ctrl.pluck_selected_uids().join(',')})">
@@ -235,7 +235,7 @@ template: `
               <div class="btn-group">
                 <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
                         ng:repeat="group in $ctrl.groups | orderBy:['name']"
-                        ng:class="{'vert-moins': group.selected, 'vert-plus': !group.selected}"
+                        ng:class="{'vert-plus': group.selected, 'vert-moins': !group.selected}"
                         ng:model="group.selected"
                         uib:btn-checkbox>
                   {{group.name}}
@@ -262,7 +262,7 @@ template: `
               <div class="btn-group">
                 <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
                         ng:repeat="grade in $ctrl.grades | orderBy:['name']"
-                        ng:class="{'vert-moins': grade.selected, 'vert-plus': !grade.selected}"
+                        ng:class="{'vert-plus': grade.selected, 'vert-moins': !grade.selected}"
                         ng:model="grade.selected"
                         uib:btn-checkbox>
                   {{grade.name}}

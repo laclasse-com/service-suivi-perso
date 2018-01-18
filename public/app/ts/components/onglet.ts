@@ -6,8 +6,7 @@ angular.module('suiviApp')
   .component('onglet',
   {
     bindings: {
-      uidEleve: '<',
-      uidsEleves: '<',
+      uids: '<',
       onglets: '<',
       onglet: '='
     },
@@ -23,7 +22,7 @@ angular.module('suiviApp')
         ctrl.callback_popup_onglet = function(onglet) {
           if (onglet.action == 'deleted') {
             $state.go('carnet',
-              { uid_eleve: ctrl.uidEleve },
+              { uids: ctrl.uids },
               { reload: true });
           }
         };
@@ -64,24 +63,13 @@ angular.module('suiviApp')
         ctrl.$onInit = function() {
           init_new_saisie();
 
-          if (ctrl.uidEleve != undefined) {
-            Saisies.query({
-              onglet_id: ctrl.onglet.id
-            }).$promise
-              .then(function success(response) {
-                ctrl.saisies = response;
-              },
-              function error(response) { });
-          } else if (ctrl.uidsEleves != undefined) {
-            ctrl.only_common_saisies = true;
-            Saisies.query({
-              "onglets_ids[]": ctrl.onglet.ids
-            }).$promise
-              .then(function success(response) {
-                ctrl.saisies = response;
-              },
-              function error(response) { });
-          }
+          Saisies.query({
+            "onglets_ids[]": ctrl.onglet.ids
+          }).$promise
+            .then(function success(response) {
+              ctrl.saisies = response;
+            },
+            function error(response) { });
         };
       }],
     template: `

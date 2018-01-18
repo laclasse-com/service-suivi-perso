@@ -3,7 +3,6 @@ angular.module('suiviApp')
   {
     bindings: {
       onglet: '<',
-      onglets: '<',
       saisie: '=',
       callback: '&'
     },
@@ -26,11 +25,7 @@ angular.module('suiviApp')
         ctrl.save = function() {
           ctrl.saisie.pinned = ctrl.saisie.tmp_pinned || false;
           if (!_(ctrl.saisie).has('$save')) {
-            if (ctrl.onglet != undefined) {
-              ctrl.saisie.onglet_id = ctrl.onglet.id;
-            } else if (ctrl.onglets != undefined) {
-              ctrl.saisie.onglets_ids = ctrl.onglets.map((onglet) => { return onglet.id; });
-            }
+            ctrl.saisie.onglets_ids = ctrl.onglet.ids;
 
             ctrl.saisie = new Saisies(ctrl.saisie);
           }
@@ -138,7 +133,7 @@ angular.module('suiviApp')
                          </button>
 
                          <button class="btn btn-success pull-right"
-                                 ng:disabled="!$ctrl.dirty || (!$ctrl.onglet && !$ctrl.onglets)"
+                                 ng:disabled="!$ctrl.dirty || !$ctrl.onglet"
                                  ng:click="$ctrl.save()">
                            <span class="glyphicon glyphicon-save" ></span> Publier
                          </button>

@@ -4,11 +4,7 @@ module Suivi
       module Onglets
         def self.registered( app )
           app.get '/api/onglets/?' do
-            single = params.key?('uid')
-
-            uids = single ? [params['uid']] : params['uids']
-
-            onglets_hashes = uids.map do |uid_eleve|
+            onglets_hashes = params['uids'].map do |uid_eleve|
               get_and_check_carnet( uid_eleve )
                 .onglets
                 .select { |onglet| onglet.allow?( user, :read ) }
@@ -21,7 +17,7 @@ module Suivi
               end
             end
 
-            json( single ? onglets_hashes.first : onglets_hashes )
+            json( onglets_hashes )
           end
 
           app.get '/api/onglets/:onglet_id' do
@@ -36,11 +32,8 @@ module Suivi
           app.post '/api/onglets/?' do
             request.body.rewind
             body = JSON.parse( request.body.read )
-            single = body.key?('uid')
 
-            uids = single ? [body['uid']] : body['uids']
-
-            onglets_hashes = uids.map do |uid_eleve|
+            onglets_hashes = body['uids'].map do |uid_eleve|
               carnet = get_and_check_carnet( uid_eleve )
               onglet = carnet.onglets_dataset[nom: params['nom']]
 
@@ -61,7 +54,7 @@ module Suivi
               onglet_hash
             end
 
-            json( single ? onglets_hashes.first : { multiple: true, data: onglets_hashes } )
+            json( onglets_hashes )
           end
 
           app.put '/api/onglets/:onglet_id' do

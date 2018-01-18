@@ -4,16 +4,12 @@ module Suivi
       module Saisies
         def self.registered( app )
           app.get '/api/saisies/?' do
-            single = params.key?( 'onglet_id')
-
-            onglets_ids = single ? [params['onglet_id']] : params['onglets_ids']
-
-            if single
-              onglet = get_and_check_onglet( params['onglet_id'], user, :read )
+            if params['onglets_ids'].length == 1
+              onglet = get_and_check_onglet( params['onglets_ids'].first, user, :read )
 
               return json( onglet.saisies )
             else
-              result = onglets_ids.map do |oid|
+              result = params['onglets_ids'].map do |oid|
                 get_and_check_onglet( oid, user, :read )
 
                 Saisie.association_join(:onglets)
@@ -30,17 +26,13 @@ module Suivi
           end
 
           app.post '/api/saisies/?' do
-            single = params.key?( 'onglet_id')
-
-            onglets_ids = single ? [params['onglet_id']] : params['onglets_ids']
-
             saisie = Saisie.create( uid_author: user['id'],
                                     date_creation: Time.now,
                                     date_modification: Time.now,
                                     contenu: params['contenu'],
                                     pinned: params['pinned'] )
 
-            onglets_ids.each do |onglet_id|
+            params['onglets_ids'].each do |onglet_id|
               onglet = get_and_check_onglet( onglet_id, user, :write )
 
               saisie = onglet.add_saisy( saisie )

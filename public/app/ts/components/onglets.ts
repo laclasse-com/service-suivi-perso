@@ -5,7 +5,7 @@ angular.module('suiviApp')
       uids: '<'
     },
     controller: ['$uibModal', 'Onglets', 'Popups', 'APIs',
-                 function($uibModal, Onglets, Popups, APIs) {
+      function($uibModal, Onglets, Popups, APIs) {
         let ctrl = this;
         ctrl.popup_onglet = Popups.onglet;
 
@@ -17,9 +17,12 @@ angular.module('suiviApp')
 
         ctrl.$onInit = function() {
           if (ctrl.uids.length == 1) {
-            Onglets.query({ uid: ctrl.uids[0] }).$promise
+            Onglets.query({ "uids[]": ctrl.uids }).$promise
               .then(function success(response) {
-                ctrl.onglets = response;
+                ctrl.onglets = _(response[0]).map(function(onglet) {
+                  onglet.ids = [onglet.id];
+                  return onglet;
+                });
               },
               function error(response) { });
           } else {
@@ -38,12 +41,12 @@ angular.module('suiviApp')
         };
       }],
     template: `
-  <style>
-    .manage-onglet { margin-top: -20px; margin-right: -16px; border-radius: 0 0 0 12px; }
-  </style>
-  <uib-tabset>
-    <uib-tab ng:repeat="onglet in $ctrl.onglets">
-      <uib-tab-heading> {{onglet.nom}}
+<style>
+.manage-onglet { margin-top: -20px; margin-right: -16px; border-radius: 0 0 0 12px; }
+</style>
+<uib-tabset>
+<uib-tab ng:repeat="onglet in $ctrl.onglets">
+<uib-tab-heading> {{onglet.nom}}
         <button class="btn btn-warning manage-onglet"
                 ng:if="onglet.manageable"
                 ng:click="$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
@@ -51,8 +54,7 @@ angular.module('suiviApp')
         </button>
       </uib-tab-heading>
 
-      <onglet uid-eleve="$ctrl.uids[0]"
-              uids-eleves="$ctrl.uids"
+      <onglet uids="$ctrl.uids"
               onglets="$ctrl.onglets"
               onglet="onglet">
       </onglet>

@@ -4,11 +4,7 @@ angular.module('suiviApp')
     function($resource, APP_PATH) {
       return $resource(`${APP_PATH}/api/saisies/:id`,
         {
-          id: '@id',
-          onglet_id: '@onglet_id',
-          "onglets_ids[]": '@onglets_ids',
-          contenu: '@contenu',
-          pinned: '@pinned'
+          id: '@id'
         },
         {
           update: { method: 'PUT' }

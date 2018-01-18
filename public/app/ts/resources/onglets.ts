@@ -4,10 +4,7 @@ angular.module('suiviApp')
     function($resource, APP_PATH) {
       return $resource(`${APP_PATH}/api/onglets/:id`,
         {
-          uid: '@uid',
-          uids: '@uids',
-          id: '@id',
-          nom: '@nom'
+          id: '@id'
         },
         {
           update: { method: 'PUT' }

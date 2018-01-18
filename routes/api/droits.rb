@@ -15,11 +15,8 @@ module Suivi
 
               request.body.rewind
               body = JSON.parse( request.body.read )
-              single = body.key?('onglet_id')
 
-              onglets_ids = single ? [body['onglet_id']] : body['onglets_ids']
-
-              droits_hashes = onglets_ids.map do |onglet_id|
+              droits_hashes = body['onglets_ids'].map do |onglet_id|
                 onglet = get_and_check_onglet( onglet_id, user, :manage )
 
                 droit = Droit[ onglet_id: onglet_id,
@@ -41,7 +38,7 @@ module Suivi
                 onglet.add_droit( droit ).to_hash
               end
 
-              json( single ? droits_hashes.first : { multiple: true, data: droits_hashes } )
+              json( droits_hashes )
             end
 
             app.put '/api/droits/:droit_id' do

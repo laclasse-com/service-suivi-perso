@@ -108,7 +108,7 @@ angular.module('suiviApp')
       });
 
       APIs.query_common_onglets_of = function(uids) {
-        return Onglets.query({ 'uids[]': uids }).$promise
+        return Onglets.query({ "uids[]": uids }).$promise
           .then(function success(response) {
             return $q.resolve(_.chain(response)
               .reject(function(i) { return _(i).isEmpty(); })
