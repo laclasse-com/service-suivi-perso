@@ -8,12 +8,6 @@ module Suivi
         carnet
       end
 
-      def check_onglet( id, user, right )
-        onglet = Onglet[id: id]
-
-        !onglet.nil? && onglet.allow?( user, right )
-      end
-
       def get_and_check_onglet( id, user, right )
         onglet = Onglet[id: id]
         halt( 404, '404 Unknown onglet' ) if onglet.nil?
