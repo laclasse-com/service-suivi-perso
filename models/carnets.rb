@@ -18,7 +18,7 @@ class Carnet < Sequel::Model(:carnets)
 
   def to_json( arg )
     h = to_hash
-    h[:date_creation] = DateTime.parse( h[:date_creation].to_s ) unless h[:date_creation].nil?
+    h[:date_creation] = DateTime.parse( h[:date_creation].to_s ) unless h[:date_creation].nil? # rubocop:disable Style/DateTime
 
     h.to_json( arg )
   end
