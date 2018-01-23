@@ -9,9 +9,12 @@ angular.module('suiviApp')
         let ctrl = this;
         ctrl.popup_onglet = Popups.onglet;
 
-        ctrl.callback_popup_onglet = function(onglet) {
-          if (onglet.created) {
-            ctrl.onglets.push(onglet);
+        ctrl.callback_popup_onglet = function(onglets) {
+          if (onglets[0].created) {
+            let new_onglet = onglets[0];
+            new_onglet.ids = onglets.map((onglet) => { return onglet.id; });
+
+            ctrl.onglets.push(new_onglet);
           }
         };
 
@@ -41,7 +44,7 @@ angular.module('suiviApp')
         };
       }],
     template: `
-<style>
+  <style>
 .manage-onglet { margin-top: -20px; margin-right: -16px; border-radius: 0 0 0 12px; }
 </style>
 <uib-tabset>

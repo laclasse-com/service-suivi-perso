@@ -35,12 +35,12 @@ module Suivi
 
             onglets_hashes = body['uids'].map do |uid_eleve|
               carnet = get_and_check_carnet( uid_eleve )
-              onglet = carnet.onglets_dataset[nom: params['nom']]
+              onglet = carnet.onglets_dataset[nom: body['nom']]
 
               new_onglet = onglet.nil?
               if new_onglet
                 onglet = Onglet.create( carnet_id: carnet.id,
-                                        nom: params['nom'],
+                                        nom: body['nom'],
                                         date_creation: Time.now )
 
                 onglet.init_droits( user )
@@ -70,6 +70,20 @@ module Suivi
             onglet_hash[:manageable] = onglet.allow?( user, :manage )
 
             json( onglet_hash )
+          end
+
+          app.delete '/api/onglets/?' do
+            request.body.rewind
+            body = JSON.parse( request.body.read )
+
+            json( body['onglets_ids'].map do |onglet_id|
+                    onglet = get_and_check_onglet( onglet_id, user, :manage )
+
+                    onglet_hash = onglet.destroy
+                    onglet_hash[:deleted] = true
+
+                    onglet_hash
+             end )
           end
 
           app.delete '/api/onglets/:onglet_id' do

@@ -86,17 +86,31 @@ angular.module('suiviApp')
                   }));
               }
 
-              APIs.get_user(uids)
-                .then(function success(response) {
-                  ctrl.eleve = response.data;
-                },
-                function error(response) { });
+              if (uids.length == 1) {
+                // APIs.get_user(uids[0])
+                //   .then(function success(response) {
+                //     ctrl.eleve = response.data;
+                //   },
+                //   function error(response) { });
 
-              APIs.query_people_concerned_about(uids)
-                .then(function success(response) {
-                  ctrl.concerned_people = response;
-                },
-                function error(response) { });
+                APIs.query_people_concerned_about(uids[0])
+                  .then(function success(response) {
+                    ctrl.concerned_people = response;
+                  },
+                  function error(response) { });
+              } else {
+                APIs.get_current_user()
+                  .then(function success(response) {
+                    ctrl.concerned_people = [response];
+
+                    return APIs.get_users(uids);
+                  },
+                  function error(response) { })
+                  .then(function success(response) {
+                    ctrl.concerned_people = ctrl.concerned_people.concat(response.data);
+                  },
+                  function error(response) { });
+              }
 
               ctrl.name_validation = function() {
                 let other_onglets_names = _.chain(ctrl.all_onglets)
@@ -138,8 +152,6 @@ angular.module('suiviApp')
               ctrl.cancel = function() {
                 $uibModalInstance.dismiss();
               };
-
-              console.log(ctrl)
             }]
         })
           .result.then(function success(response_popup) {
@@ -149,23 +161,25 @@ angular.module('suiviApp')
             if (_(onglet).isNull()) {
               action = 'created';
 
-              promise = new Onglets({
-                uid: uids,
+              promise = Onglets.save({
+                uids: uids,
                 nom: response_popup.onglet.nom
-              }).$save();
+              }).$promise;
             } else {
               if (response_popup.onglet.delete) {
                 action = 'deleted';
 
-                promise = new Onglets(response_popup.onglet).$delete();
+                promise = Onglets.delete(response_popup.onglet).$promise;
               } else if (response_popup.onglet.dirty) {
-                promise = new Onglets(response_popup.onglet).$update();
+                promise = Onglets.update(response_popup.onglet).$promise;
               } else {
                 promise = $q.resolve(response_popup.onglet);
               }
             }
 
             promise.then(function success(response) {
+              let onglets_ids = response.map((onglet) => { return onglet.id; });
+
               response.action = action;
 
               if (action != 'deleted') {
@@ -176,15 +190,15 @@ angular.module('suiviApp')
                   .each(function(droit) {
                     if (droit.to_delete) {
                       if (_(droit).has('id')) {
-                        droit.$delete();
+                        Droits.delete(droit);
                       }
                     } else if (droit.dirty
                       && (droit.uid !== '...' && droit.profil_id !== '...' && droit.sharable_id !== '...')
                       && _(droit.dirty).reduce(function(memo, value) { return memo || value; }, false)
                       && droit.read) {
-                      droit.onglets_ids = [response.id];
+                      droit.onglets_ids = onglets_ids;
 
-                      (_(droit).has('id') ? droit.$update() : droit.$save());
+                      (_(droit).has('id') ? Droits.update(droit) : Droits.save(droit);
                     }
                   });
               }

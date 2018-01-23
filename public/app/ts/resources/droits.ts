@@ -7,6 +7,10 @@ angular.module('suiviApp')
           id: '@id'
         },
         {
+          save: {
+            method: 'POST',
+            isArray: true
+          },
           update: { method: 'PUT' }
         });
     }]);

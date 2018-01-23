@@ -320,9 +320,11 @@ angular.module('suiviApp')
         function ($uibModal, Onglets, Popups, APIs) {
             var ctrl = this;
             ctrl.popup_onglet = Popups.onglet;
-            ctrl.callback_popup_onglet = function (onglet) {
-                if (onglet.created) {
-                    ctrl.onglets.push(onglet);
+            ctrl.callback_popup_onglet = function (onglets) {
+                if (onglets[0].created) {
+                    var new_onglet = onglets[0];
+                    new_onglet.ids = onglets.map(function (onglet) { return onglet.id; });
+                    ctrl.onglets.push(new_onglet);
                 }
             };
             ctrl.$onInit = function () {
@@ -350,7 +352,7 @@ angular.module('suiviApp')
                 }
             };
         }],
-    template: "\n<style>\n.manage-onglet { margin-top: -20px; margin-right: -16px; border-radius: 0 0 0 12px; }\n</style>\n<uib-tabset>\n<uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n<uib-tab-heading> {{onglet.nom}}\n        <button class=\"btn btn-warning manage-onglet\"\n                ng:if=\"onglet.manageable\"\n                ng:click=\"$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n          <span class=\"glyphicon glyphicon-cog\"></span>\n        </button>\n      </uib-tab-heading>\n\n      <onglet uids=\"$ctrl.uids\"\n              onglets=\"$ctrl.onglets\"\n              onglet=\"onglet\">\n      </onglet>\n    </uib-tab>\n\n    <li>\n      <a href\n         class=\"bleu add-onglet\"\n         ng:click=\"$ctrl.popup_onglet( $ctrl.uids, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n        <span class=\"glyphicon glyphicon-plus\">\n        </span>\n      </a>\n    </li>\n  </uib-tabset>\n"
+    template: "\n  <style>\n.manage-onglet { margin-top: -20px; margin-right: -16px; border-radius: 0 0 0 12px; }\n</style>\n<uib-tabset>\n<uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n<uib-tab-heading> {{onglet.nom}}\n        <button class=\"btn btn-warning manage-onglet\"\n                ng:if=\"onglet.manageable\"\n                ng:click=\"$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n          <span class=\"glyphicon glyphicon-cog\"></span>\n        </button>\n      </uib-tab-heading>\n\n      <onglet uids=\"$ctrl.uids\"\n              onglets=\"$ctrl.onglets\"\n              onglet=\"onglet\">\n      </onglet>\n    </uib-tab>\n\n    <li>\n      <a href\n         class=\"bleu add-onglet\"\n         ng:click=\"$ctrl.popup_onglet( $ctrl.uids, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n        <span class=\"glyphicon glyphicon-plus\">\n        </span>\n      </a>\n    </li>\n  </uib-tabset>\n"
 });
 angular.module('suiviApp')
     .component('saisie', {
@@ -638,6 +640,10 @@ angular.module('suiviApp')
         return $resource(APP_PATH + "/api/droits/:id", {
             id: '@id'
         }, {
+            save: {
+                method: 'POST',
+                isArray: true
+            },
             update: { method: 'PUT' }
         });
     }]);
@@ -647,7 +653,14 @@ angular.module('suiviApp')
         return $resource(APP_PATH + "/api/onglets/:id", {
             id: '@id'
         }, {
-            update: { method: 'PUT' }
+            save: {
+                method: 'POST',
+                isArray: true
+            },
+            update: {
+                method: 'PUT',
+                isArray: true
+            }
         });
     }]);
 angular.module('suiviApp')
@@ -655,9 +668,7 @@ angular.module('suiviApp')
     function ($resource, APP_PATH) {
         return $resource(APP_PATH + "/api/saisies/:id", {
             id: '@id'
-        }, {
-            update: { method: 'PUT' }
-        });
+        }, { update: { method: 'PUT' } });
     }]);
 angular.module('suiviApp')
     .factory('User', ['$resource', '$rootScope', 'URL_ENT', 'UID',
@@ -973,14 +984,22 @@ angular.module('suiviApp')
                                 return proper_droit;
                             }));
                         }
-                        APIs.get_user(uids)
-                            .then(function success(response) {
-                            ctrl.eleve = response.data;
-                        }, function error(response) { });
-                        APIs.query_people_concerned_about(uids)
-                            .then(function success(response) {
-                            ctrl.concerned_people = response;
-                        }, function error(response) { });
+                        if (uids.length == 1) {
+                            APIs.query_people_concerned_about(uids[0])
+                                .then(function success(response) {
+                                ctrl.concerned_people = response;
+                            }, function error(response) { });
+                        }
+                        else {
+                            APIs.get_current_user()
+                                .then(function success(response) {
+                                ctrl.concerned_people = [response];
+                                return APIs.get_users(uids);
+                            }, function error(response) { })
+                                .then(function success(response) {
+                                ctrl.concerned_people = ctrl.concerned_people.concat(response.data);
+                            }, function error(response) { });
+                        }
                         ctrl.name_validation = function () {
                             var other_onglets_names = _.chain(ctrl.all_onglets)
                                 .reject(function (onglet) {
@@ -1016,7 +1035,6 @@ angular.module('suiviApp')
                         ctrl.cancel = function () {
                             $uibModalInstance.dismiss();
                         };
-                        console.log(ctrl);
                     }]
             })
                 .result.then(function success(response_popup) {
@@ -1024,24 +1042,25 @@ angular.module('suiviApp')
                 var action = 'rien';
                 if (_(onglet).isNull()) {
                     action = 'created';
-                    promise = new Onglets({
-                        uid: uids,
+                    promise = Onglets.save({
+                        uids: uids,
                         nom: response_popup.onglet.nom
-                    }).$save();
+                    }).$promise;
                 }
                 else {
                     if (response_popup.onglet.delete) {
                         action = 'deleted';
-                        promise = new Onglets(response_popup.onglet).$delete();
+                        promise = Onglets.delete(response_popup.onglet).$promise;
                     }
                     else if (response_popup.onglet.dirty) {
-                        promise = new Onglets(response_popup.onglet).$update();
+                        promise = Onglets.update(response_popup.onglet).$promise;
                     }
                     else {
                         promise = $q.resolve(response_popup.onglet);
                     }
                 }
                 promise.then(function success(response) {
+                    var onglets_ids = response.map(function (onglet) { return onglet.id; });
                     response.action = action;
                     if (action != 'deleted') {
                         _.chain(response_popup.droits)
@@ -1051,15 +1070,15 @@ angular.module('suiviApp')
                             .each(function (droit) {
                             if (droit.to_delete) {
                                 if (_(droit).has('id')) {
-                                    droit.$delete();
+                                    Droits.delete(droit);
                                 }
                             }
                             else if (droit.dirty
                                 && (droit.uid !== '...' && droit.profil_id !== '...' && droit.sharable_id !== '...')
                                 && _(droit.dirty).reduce(function (memo, value) { return memo || value; }, false)
                                 && droit.read) {
-                                droit.onglets_ids = [response.id];
-                                (_(droit).has('id') ? droit.$update() : droit.$save());
+                                droit.onglets_ids = onglets_ids;
+                                (_(droit).has('id') ? Droits.update(droit) : Droits.save(droit));
                             }
                         });
                     }
