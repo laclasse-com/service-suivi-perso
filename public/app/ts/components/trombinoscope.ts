@@ -5,6 +5,12 @@ angular.module('suiviApp')
       function($filter, $q, URL_ENT, APIs, Popups) {
         let ctrl = this;
 
+        ctrl.pretty_labels = {
+          "CLS": "classe",
+          "GRP": "groupe d'élèves",
+          "GPL": "groupe libre"
+        };
+
         ctrl.popup_onglet_batch = Popups.onglet_batch;
         ctrl.popup_batch = Popups.batch;
         ctrl.popup_onglet_batch_callback = function(feedback) { console.log(feedback); };
@@ -29,7 +35,7 @@ angular.module('suiviApp')
 
           return function(pupil) {
             return `${pupil.firstname}${pupil.lastname}`.toLocaleLowerCase().includes(ctrl.filters.text.toLocaleLowerCase())
-              && (selected_groups_ids.length == 0 || _(selected_groups_ids).contains(pupil.regroupement.id))
+              && (selected_groups_ids.length == 0 || _(selected_groups_ids).intersection(_(pupil.groups).pluck('group_id')).length > 0)
               && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(_(pupil.regroupement.grades).pluck('grade_id')).length > 0)
               && (!ctrl.only_display_relevant_to || pupil.relevant);
           };
@@ -140,7 +146,7 @@ angular.module('suiviApp')
                   });
               }
             } else {
-              APIs.get_groups(_.chain(classes)
+              APIs.get_groups(_.chain(groups)
                 .select(function(regroupement) {
                   return _(regroupement).has('structure_id') && regroupement.structure_id === ctrl.current_user.profil_actif.structure_id;
                 })
@@ -184,9 +190,10 @@ angular.module('suiviApp')
             }
           });
       }],
-template: `
+    template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
+  .filter .panel-body { max-height: 380px; overflow-y: auto; }
 </style>
 <div class="col-md-4 gris1-moins aside trombinoscope-aside" style="padding: 0;">
   <div class="panel panel-default gris1-moins">
@@ -218,10 +225,10 @@ template: `
       </div>
 
       <div class="row" style="margin-top: 14px;">
-        <div class="col-md-6">
+        <div class="col-md-6 filter" ng:repeat="grp_type in ['CLS', 'GRP', 'GPL']">
           <div class="panel panel-default">
             <div class="panel-heading">
-              Filtrage par classe
+              Filtrage par {{$ctrl.pretty_labels[grp_type]}}
 
               <button class="btn btn-xs pull-right" style="color: green;"
                       ng:click="$ctrl.clear_filters('groups')">
@@ -234,7 +241,7 @@ template: `
             <div class="panel-body">
               <div class="btn-group">
                 <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
-                        ng:repeat="group in $ctrl.groups | orderBy:['name']"
+                        ng:repeat="group in $ctrl.groups | filter:{type: grp_type} | orderBy:['name']"
                         ng:class="{'vert-plus': group.selected, 'vert-moins': !group.selected}"
                         ng:model="group.selected"
                         uib:btn-checkbox>
@@ -245,7 +252,7 @@ template: `
           </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 filter">
           <div class="panel panel-default">
             <div class="panel-heading">
               Filtrage par niveau
