@@ -73,17 +73,14 @@ module Suivi
           end
 
           app.delete '/api/onglets/?' do
-            request.body.rewind
-            body = JSON.parse( request.body.read )
-
-            json( body['onglets_ids'].map do |onglet_id|
-                    onglet = get_and_check_onglet( onglet_id, user, :manage )
+            json( params['ids'].map do |id|
+                    onglet = get_and_check_onglet( id, user, :manage )
 
                     onglet_hash = onglet.destroy
                     onglet_hash[:deleted] = true
 
                     onglet_hash
-             end )
+                  end )
           end
 
           app.delete '/api/onglets/:onglet_id' do

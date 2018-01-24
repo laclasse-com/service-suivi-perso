@@ -190,7 +190,7 @@ angular.module('suiviApp')
             }
           });
       }],
-    template: `
+template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
   .filter .panel-body { max-height: 380px; overflow-y: auto; }
@@ -204,7 +204,7 @@ angular.module('suiviApp')
         <a class="btn btn-primary"
            title="Gestion des onglets communs"
            ng:if="$ctrl.can_do_batch"
-           ui:sref="carnet({uids: $ctrl.pluck_selected_uids().join(',')})">
+           ui:sref="carnet({uids: $ctrl.pluck_selected_uids()})">
           <span class="glyphicon glyphicon-fullscreen"></span>
           <span class="glyphicon glyphicon-folder-close"></span>
         </a>

@@ -169,6 +169,9 @@ angular.module('suiviApp')
               if (response_popup.onglet.delete) {
                 action = 'deleted';
 
+                response_popup.onglet["ids[]"] = response_popup.onglet.ids;
+                delete response_popup.onglet.ids;
+
                 promise = Onglets.delete(response_popup.onglet).$promise;
               } else if (response_popup.onglet.dirty) {
                 promise = Onglets.update(response_popup.onglet).$promise;
@@ -178,6 +181,10 @@ angular.module('suiviApp')
             }
 
             promise.then(function success(response) {
+              if (response.id != undefined) {
+                response = [response];
+              }
+
               let onglets_ids = response.map((onglet) => { return onglet.id; });
 
               response.action = action;

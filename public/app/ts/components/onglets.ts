@@ -16,6 +16,10 @@ angular.module('suiviApp')
 
             ctrl.onglets.push(new_onglet);
           }
+
+          if (onglets[0].deleted) {
+            ctrl.onglets = ctrl.onglets.filter(onglet => onglet.nom != onglets[0].nom);
+          }
         };
 
         ctrl.$onInit = function() {
@@ -45,11 +49,11 @@ angular.module('suiviApp')
       }],
     template: `
   <style>
-.manage-onglet { margin-top: -20px; margin-right: -16px; border-radius: 0 0 0 12px; }
-</style>
-<uib-tabset>
-<uib-tab ng:repeat="onglet in $ctrl.onglets">
-<uib-tab-heading> {{onglet.nom}}
+    .manage-onglet { margin-top: -11px; margin-right: -16px; border-radius: 0 0 0 12px; }
+  </style>
+  <uib-tabset>
+    <uib-tab ng:repeat="onglet in $ctrl.onglets">
+      <uib-tab-heading> {{onglet.nom}}
         <button class="btn btn-warning manage-onglet"
                 ng:if="onglet.manageable"
                 ng:click="$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">

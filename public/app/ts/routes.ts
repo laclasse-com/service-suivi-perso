@@ -12,11 +12,12 @@ angular.module('suiviApp')
         .state('carnet',
         {
           url: '/carnet/:uids',
+          params: { uids: { array: true } },
           component: 'carnet',
           resolve: {
             uids: ['$transition$',
               function($transition$) {
-                return $transition$.params().uids.split("%2C");
+                return $transition$.params().uids;
               }]
           }
         });
