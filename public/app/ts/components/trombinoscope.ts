@@ -42,7 +42,11 @@ angular.module('suiviApp')
         };
 
         ctrl.clear_filters = function(type) {
-          _(ctrl[type]).each(function(item) { item.selected = false; });
+          if (_(['CLS', 'GRP', 'GPL']).contains(type)) {
+            _.chain(ctrl['groups']).select(function(item) { return item.selected && item.type == type; }).each(function(item) { item.selected = false; });
+          } else {
+            _(ctrl[type]).each(function(item) { item.selected = false; });
+          }
         };
 
         ctrl.pluck_selected_uids = function() {
@@ -231,7 +235,7 @@ template: `
               Filtrage par {{$ctrl.pretty_labels[grp_type]}}
 
               <button class="btn btn-xs pull-right" style="color: green;"
-                      ng:click="$ctrl.clear_filters('groups')">
+                      ng:click="$ctrl.clear_filters( grp_type )">
                 <span class="glyphicon glyphicon-remove">
                 </span>
               </button>
