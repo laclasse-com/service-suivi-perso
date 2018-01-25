@@ -91,9 +91,9 @@ angular.module('suiviApp')
           ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
         };
       }],
-    template: `
-<div class="panel panel-default saisie-display" ng:class="{'new-saisie': $ctrl.new_saisie}">
-<span style="position: absolute; top: 0; right: 15px;height: 0;width: 0;text-align: center; color: #fff; border-color: transparent #fa0 transparent transparent;border-style: solid;border-width: 0 50px 50px 0; z-index: 1;"
+                 template: `
+                 <div class="panel panel-default saisie-display" ng:class="{'new-saisie': $ctrl.new_saisie}">
+                   <span style="position: absolute; top: 0; right: 15px;height: 0;width: 0;text-align: center; color: #fff; border-color: transparent #fa0 transparent transparent;border-style: solid;border-width: 0 50px 50px 0; z-index: 1;"
                          ng:if="$ctrl.saisie.tmp_pinned">
                      <span class="glyphicon glyphicon-pushpin" style="margin-left: 25px;font-size: 22px;margin-top: 3px;"></span>
                    </span>
@@ -118,7 +118,7 @@ angular.module('suiviApp')
                      <div class="col-md-12"
                           ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit'}"
                           ng:if="$ctrl.edition">
-                       <text-angular ta:target-toolbars="main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}"
+                       <text-angular ta:target-toolbars="main-ta-toolbar-{{$ctrl.saisie.id}}"
                                      ng:model="$ctrl.saisie.contenu"
                                      ng:change="$ctrl.dirty = true"></text-angular>
                        <div class="suivi-ta-toolbar gris2-moins">
@@ -146,6 +146,12 @@ angular.module('suiviApp')
                                  ng:if="$ctrl.saisie.id">
                            <span class="glyphicon glyphicon-edit" ></span> Annuler
                          </button>
+
+                         <button class="btn btn-danger pull-right"
+                                 ng:click="$ctrl.delete()"
+                                 ng:if="$ctrl.saisie.id && ( $ctrl.editable || $ctrl.current_user.is_admin() )">
+                           <span class="glyphicon glyphicon-trash"></span> Supprimer
+                         </button>
                          <div class="clearfix"></div>
                        </div>
                      </div>
@@ -157,12 +163,6 @@ angular.module('suiviApp')
                                ng:click="$ctrl.toggle_edit()"
                                ng:if="$ctrl.editable">
                          <span class="glyphicon glyphicon-edit" ></span> Éditer
-                       </button>
-
-                       <button class="btn btn-danger"
-                               ng:click="$ctrl.delete()"
-                               ng:if="$ctrl.saisie.id && ( $ctrl.editable || $ctrl.current_user.is_admin() )">
-                         <span class="glyphicon glyphicon-trash"></span> Supprimer
                        </button>
                      </div>
                      <div class="clearfix"></div>
