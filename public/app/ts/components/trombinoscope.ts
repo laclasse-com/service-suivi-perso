@@ -67,7 +67,7 @@ angular.module('suiviApp')
             ctrl.current_user = response;
 
             ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
-            ctrl.can_do_batch = !_(['TUT', 'ELV']).contains(ctrl.current_user.profil_actif.type);
+            ctrl.can_do_batch = !_(['ELV']).contains(ctrl.current_user.profil_actif.type);
 
 
             return APIs.query_carnets_relevant_to(ctrl.current_user.id);
