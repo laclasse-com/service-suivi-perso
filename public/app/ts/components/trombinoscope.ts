@@ -194,7 +194,7 @@ angular.module('suiviApp')
             }
           });
       }],
-template: `
+    template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
   .filter .panel-body { max-height: 380px; overflow-y: auto; }
@@ -229,7 +229,7 @@ template: `
       </div>
 
       <div class="row" style="margin-top: 14px;">
-        <div class="col-md-6 filter" ng:repeat="grp_type in ['CLS', 'GRP', 'GPL']">
+        <div class="col-md-6 filter" ng:repeat="grp_type in ['CLS', 'GRP', 'GPL']" ng:if="ctrl.groups">
           <div class="panel panel-default">
             <div class="panel-heading">
               Filtrage par {{$ctrl.pretty_labels[grp_type]}}
@@ -256,7 +256,7 @@ template: `
           </div>
         </div>
 
-        <div class="col-md-6 filter">
+        <div class="col-md-6 filter" ng:if="ctrl.grades">
           <div class="panel panel-default">
             <div class="panel-heading">
               Filtrage par niveau
