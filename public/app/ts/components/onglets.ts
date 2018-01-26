@@ -45,9 +45,16 @@ angular.module('suiviApp')
                 });
               });
           }
+
+          APIs.get_current_user()
+            .then(function(response) {
+              ctrl.current_user = response;
+
+              ctrl.can_add_tab = !_(['ELV']).contains(ctrl.current_user.profil_actif.type) || ((ctrl.uids.length == 1) && ctrl.uids[0] == ctrl.current_user.id);
+            });
         };
       }],
-    template: `
+  template: `
   <style>
     .manage-onglet { margin-top: -11px; margin-right: -16px; border-radius: 0 0 0 12px; }
   </style>
@@ -70,7 +77,8 @@ angular.module('suiviApp')
     <li>
       <a href
          class="bleu add-onglet"
-         ng:click="$ctrl.popup_onglet( $ctrl.uids, null, $ctrl.onglets, $ctrl.callback_popup_onglet )">
+         ng:click="$ctrl.popup_onglet( $ctrl.uids, null, $ctrl.onglets, $ctrl.callback_popup_onglet )"
+         ng:if="$ctrl.can_add_tab">
         <span class="glyphicon glyphicon-plus">
         </span>
       </a>
