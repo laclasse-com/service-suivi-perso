@@ -194,7 +194,7 @@ angular.module('suiviApp')
             }
           });
       }],
-    template: `
+template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
   .filter .panel-body { max-height: 380px; overflow-y: auto; }
@@ -222,14 +222,16 @@ angular.module('suiviApp')
                  style="display: inline; background-color: rgba(240, 240, 240, 0.66);"
                  type="text" name="search"
                  ng:model="$ctrl.filters.text" />
-          <button class="btn btn-xs" style="color: green; margin-left: -44px; margin-top: -4px;" ng:click="$ctrl.filters.text = ''">
+          <button class="btn btn-xs" style="color: green; margin-left: -44px; margin-top: -4px;"
+                  ng:click="$ctrl.filters.text = ''"
+                  ng:disabled="$ctrl.filters.text.length == 0">
             <span class="glyphicon glyphicon-remove"></span>
           </button>
         </div>
       </div>
 
       <div class="row" style="margin-top: 14px;">
-        <div class="col-md-6 filter" ng:repeat="grp_type in ['CLS', 'GRP', 'GPL']" ng:if="ctrl.groups">
+        <div class="col-md-6 filter" ng:repeat="grp_type in ['CLS', 'GRP', 'GPL']" ng:if="$ctrl.groups.length > 0">
           <div class="panel panel-default">
             <div class="panel-heading">
               Filtrage par {{$ctrl.pretty_labels[grp_type]}}
@@ -256,7 +258,7 @@ angular.module('suiviApp')
           </div>
         </div>
 
-        <div class="col-md-6 filter" ng:if="ctrl.grades">
+        <div class="col-md-6 filter" ng:if="$ctrl.grades.length > 0">
           <div class="panel panel-default">
             <div class="panel-heading">
               Filtrage par niveau
