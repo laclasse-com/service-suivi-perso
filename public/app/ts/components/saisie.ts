@@ -85,6 +85,8 @@ angular.module('suiviApp')
                 (_(ctrl).has('onglet') && ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id) ||
                 ctrl.current_user.is_admin();
             });
+
+          ctrl.toolbar_id = ctrl.new_saisie ? (Math.random() * 2048) + "" : ctrl.saisie.id;
         };
 
         ctrl.$onChanges = function(changes) {
@@ -118,13 +120,13 @@ angular.module('suiviApp')
                      <div class="col-md-12"
                           ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit'}"
                           ng:if="$ctrl.edition">
-                       <text-angular ta:target-toolbars="main-ta-toolbar-{{$ctrl.saisie.id}}"
+                       <text-angular ta:target-toolbars="main-ta-toolbar-{{$ctrl.toolbar_id}}"
                                      ng:model="$ctrl.saisie.contenu"
                                      ng:change="$ctrl.dirty = true"></text-angular>
                        <div class="suivi-ta-toolbar gris2-moins">
                          <text-angular-toolbar class="pull-left"
                                                style="margin-left: 0;"
-                                               name="main-ta-toolbar-{{$ctrl.onglet.id}}-{{$ctrl.saisie.id}}"></text-angular-toolbar>
+                                               name="main-ta-toolbar-{{$ctrl.toolbar_id}}"></text-angular-toolbar>
 
                          <button class="btn" style="margin-left: 6px;"
                                  ng:model="$ctrl.saisie.tmp_pinned"
