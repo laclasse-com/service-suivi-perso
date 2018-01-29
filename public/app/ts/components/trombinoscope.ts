@@ -209,8 +209,9 @@ template: `
            title="Gestion des onglets communs"
            ng:if="$ctrl.can_do_batch"
            ui:sref="carnet({uids: $ctrl.pluck_selected_uids()})">
-          <span class="glyphicon glyphicon-fullscreen"></span>
-          <span class="glyphicon glyphicon-folder-close"></span>
+          <span class="glyphicon glyphicon-user"></span>
+          <span class="glyphicon glyphicon-user" style="font-size: 125%; margin-left: -11px; margin-right: -11px;"></span>
+          <span class="glyphicon glyphicon-user"></span>
         </a>
       </h3>
     </div>
