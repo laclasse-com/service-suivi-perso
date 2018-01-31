@@ -333,24 +333,28 @@ angular.module('suiviApp')
             };
             ctrl.$onInit = function () {
                 if (ctrl.uids.length == 1) {
-                    Onglets.query({ "uids[]": ctrl.uids }).$promise
-                        .then(function success(response) {
-                        ctrl.onglets = _(response[0]).map(function (onglet) {
-                            onglet.ids = [onglet.id];
-                            return onglet;
-                        });
-                    }, function error(response) { });
+                    Popups.loading_window("Chargement des onglets", "", function () {
+                        return Onglets.query({ "uids[]": ctrl.uids }).$promise
+                            .then(function success(response) {
+                            ctrl.onglets = _(response[0]).map(function (onglet) {
+                                onglet.ids = [onglet.id];
+                                return onglet;
+                            });
+                        }, function error(response) { });
+                    });
                 }
                 else {
-                    APIs.query_common_onglets_of(ctrl.uids)
-                        .then(function (response) {
-                        ctrl.onglets = Object.keys(response).map(function (key) {
-                            return {
-                                nom: key,
-                                ids: response[key].map(function (onglet) { return onglet.id; }),
-                                writable: response[key].reduce(function (memo, onglet) { return memo && onglet.writable; }, true),
-                                manageable: response[key].reduce(function (memo, onglet) { return memo && onglet.manageable; }, true)
-                            };
+                    Popups.loading_window("Chargement des onglets communs", "", function () {
+                        return APIs.query_common_onglets_of(ctrl.uids)
+                            .then(function (response) {
+                            ctrl.onglets = Object.keys(response).map(function (key) {
+                                return {
+                                    nom: key,
+                                    ids: response[key].map(function (onglet) { return onglet.id; }),
+                                    writable: response[key].reduce(function (memo, onglet) { return memo && onglet.writable; }, true),
+                                    manageable: response[key].reduce(function (memo, onglet) { return memo && onglet.manageable; }, true)
+                                };
+                            });
                         });
                     });
                 }
@@ -511,43 +515,17 @@ angular.module('suiviApp')
             }, function error(response) { })
                 .then(function (groups) {
                 var classes = _(groups).where({ type: 'CLS' });
-                if (ctrl.current_user.profil_actif.type === 'ELV') {
-                    ctrl.current_user.regroupement = { libelle: classes[0].name };
-                    ctrl.current_user.relevant = true;
-                    ctrl.eleves = [ctrl.current_user];
-                    ctrl.relevant_to = _(ctrl.relevant_to).reject(function (uid) { return uid == ctrl.current_user.id; });
-                    APIs.get_users(ctrl.relevant_to)
-                        .then(function (users) {
-                        ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function (eleve) {
-                            eleve.avatar = fix_avatar_url(eleve.avatar);
-                            eleve.relevant = true;
-                            var groups_ids = _(eleve.groups).pluck('group_id');
-                            if (!_(groups_ids).isEmpty()) {
-                                APIs.get_groups(groups_ids)
-                                    .then(function (response) {
-                                    var regroupement = _(response.data).findWhere({ type: 'CLS' });
-                                    if (!_(regroupement).isUndefined()) {
-                                        eleve.regroupement = {
-                                            id: regroupement.id,
-                                            name: regroupement.name,
-                                            type: regroupement.type
-                                        };
-                                        eleve.etablissement = regroupement.structure_id;
-                                        eleve.enseignants = regroupement.profs;
-                                    }
-                                });
-                            }
-                            return eleve;
-                        }));
-                    });
-                }
-                else if (ctrl.current_user.profil_actif.type === 'TUT') {
-                    var users_ids = _(ctrl.current_user.children).pluck('child_id');
-                    if (!_(users_ids).isEmpty()) {
-                        APIs.get_users(users_ids)
+                switch (ctrl.current_user.profil_actif.type) {
+                    case "ELV":
+                        ctrl.current_user.regroupement = { libelle: classes[0].name };
+                        ctrl.current_user.relevant = true;
+                        ctrl.eleves = [ctrl.current_user];
+                        ctrl.relevant_to = _(ctrl.relevant_to).reject(function (uid) { return uid == ctrl.current_user.id; });
+                        APIs.get_users(ctrl.relevant_to)
                             .then(function (users) {
                             ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function (eleve) {
                                 eleve.avatar = fix_avatar_url(eleve.avatar);
+                                eleve.relevant = true;
                                 var groups_ids = _(eleve.groups).pluck('group_id');
                                 if (!_(groups_ids).isEmpty()) {
                                     APIs.get_groups(groups_ids)
@@ -567,43 +545,70 @@ angular.module('suiviApp')
                                 return eleve;
                             }));
                         });
-                    }
-                }
-                else {
-                    APIs.get_groups(_.chain(groups)
-                        .select(function (regroupement) {
-                        return _(regroupement).has('structure_id') && regroupement.structure_id === ctrl.current_user.profil_actif.structure_id;
-                    })
-                        .pluck('id')
-                        .uniq()
-                        .value())
-                        .then(function success(response) {
-                        ctrl.groups = response.data;
-                        ctrl.eleves = [];
-                        APIs.get_grades(_.chain(response.data)
-                            .pluck('grades')
-                            .flatten()
-                            .pluck('grade_id')
-                            .value())
-                            .then(function success(response) {
-                            ctrl.grades = response.data;
-                        }, function error(response) { });
-                        _(response.data).each(function (regroupement) {
-                            regroupement.profs = _.chain(regroupement.users).select(function (user) { return user.type === 'ENS'; }).pluck('user_id').value();
-                            var users_ids = _.chain(regroupement.users).select(function (user) { return user.type === 'ELV'; }).pluck('user_id').value();
+                        break;
+                    case "TUT":
+                        var users_ids = _(ctrl.current_user.children).pluck('child_id');
+                        if (!_(users_ids).isEmpty()) {
                             APIs.get_users(users_ids)
                                 .then(function (users) {
                                 ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function (eleve) {
                                     eleve.avatar = fix_avatar_url(eleve.avatar);
-                                    eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
-                                    eleve.regroupement = regroupement;
-                                    eleve.etablissement = regroupement.structure_id;
-                                    eleve.enseignants = regroupement.profs;
+                                    var groups_ids = _(eleve.groups).pluck('group_id');
+                                    if (!_(groups_ids).isEmpty()) {
+                                        APIs.get_groups(groups_ids)
+                                            .then(function (response) {
+                                            var regroupement = _(response.data).findWhere({ type: 'CLS' });
+                                            if (!_(regroupement).isUndefined()) {
+                                                eleve.regroupement = {
+                                                    id: regroupement.id,
+                                                    name: regroupement.name,
+                                                    type: regroupement.type
+                                                };
+                                                eleve.etablissement = regroupement.structure_id;
+                                                eleve.enseignants = regroupement.profs;
+                                            }
+                                        });
+                                    }
                                     return eleve;
                                 }));
                             });
-                        });
-                    }, function error(response) { });
+                        }
+                        break;
+                    default:
+                        APIs.get_groups(_.chain(groups)
+                            .select(function (regroupement) {
+                            return _(regroupement).has('structure_id') && regroupement.structure_id === ctrl.current_user.profil_actif.structure_id;
+                        })
+                            .pluck('id')
+                            .uniq()
+                            .value())
+                            .then(function success(response) {
+                            ctrl.groups = response.data;
+                            ctrl.eleves = [];
+                            APIs.get_grades(_.chain(response.data)
+                                .pluck('grades')
+                                .flatten()
+                                .pluck('grade_id')
+                                .value())
+                                .then(function success(response) {
+                                ctrl.grades = response.data;
+                            }, function error(response) { });
+                            _(response.data).each(function (regroupement) {
+                                regroupement.profs = _.chain(regroupement.users).select(function (user) { return user.type === 'ENS'; }).pluck('user_id').value();
+                                var users_ids = _.chain(regroupement.users).select(function (user) { return user.type === 'ELV'; }).pluck('user_id').value();
+                                APIs.get_users(users_ids)
+                                    .then(function (users) {
+                                    ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function (eleve) {
+                                        eleve.avatar = fix_avatar_url(eleve.avatar);
+                                        eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
+                                        eleve.regroupement = regroupement;
+                                        eleve.etablissement = regroupement.structure_id;
+                                        eleve.enseignants = regroupement.profs;
+                                        return eleve;
+                                    }));
+                                });
+                            });
+                        }, function error(response) { });
                 }
             });
         }],
@@ -968,8 +973,36 @@ angular.module('suiviApp')
 angular.module('suiviApp')
     .service('Popups', ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID',
     function ($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
-        var service = this;
-        service.onglet = function (uids, onglet, all_onglets, callback) {
+        var Popups = this;
+        Popups.loading_window = function (title, text, action) {
+            return swal({
+                title: title,
+                text: text,
+                type: "info",
+                showLoaderOnConfirm: true,
+                onOpen: function () {
+                    return swal.clickConfirm();
+                },
+                preConfirm: function () {
+                    return new Promise(function (resolve) {
+                        action()
+                            .then(function success(response) {
+                            swal.closeModal();
+                        }, function error(response) {
+                            console.log(response);
+                            swal.closeModal();
+                            swal({
+                                title: 'Erreur :(',
+                                text: response.data.error,
+                                type: 'error'
+                            });
+                        });
+                    });
+                },
+                allowOutsideClick: false
+            });
+        };
+        Popups.onglet = function (uids, onglet, all_onglets, callback) {
             $uibModal.open({
                 template: "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n  <droits uid-eleve=\"$ctrl.uids\"\n          droits=\"$ctrl.droits\"\n          concerned-people=\"$ctrl.concerned_people\"\n          ng:if=\"$ctrl.droits\"></droits>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id || $ctrl.onglet.ids\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n",
                 resolve: {
@@ -1007,6 +1040,10 @@ angular.module('suiviApp')
                             }));
                         }
                         if (uids.length == 1) {
+                            APIs.get_user(uids[0])
+                                .then(function success(response) {
+                                ctrl.eleve = response.data;
+                            }, function error(response) { });
                             APIs.query_people_concerned_about(uids[0])
                                 .then(function success(response) {
                                 ctrl.concerned_people = response;

@@ -2,9 +2,41 @@ angular.module('suiviApp')
   .service('Popups',
   ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID',
     function($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
-      let service = this;
+      let Popups = this;
 
-      service.onglet = function(uids, onglet, all_onglets, callback) {
+      Popups.loading_window = function(title, text, action) {
+        return swal({
+          title: title,
+          text: text,
+          type: "info",
+          showLoaderOnConfirm: true,
+          onOpen: function() {
+            return swal.clickConfirm();
+          },
+          preConfirm: function() {
+            return new Promise(function(resolve) {
+              action()
+                .then(function success(response) {
+                  swal.closeModal();
+                },
+                function error(response) {
+                  console.log(response);
+                  swal.closeModal();
+                  swal({
+                    title: 'Erreur :(',
+                    text: response.data.error,
+                    type: 'error'
+                  });
+
+                }
+                );
+            });
+          },
+          allowOutsideClick: false
+        });
+      };
+
+      Popups.onglet = function(uids, onglet, all_onglets, callback) {
         $uibModal.open({
           template: `
 <div class="modal-header">
@@ -87,11 +119,11 @@ angular.module('suiviApp')
               }
 
               if (uids.length == 1) {
-                // APIs.get_user(uids[0])
-                //   .then(function success(response) {
-                //     ctrl.eleve = response.data;
-                //   },
-                //   function error(response) { });
+                APIs.get_user(uids[0])
+                  .then(function success(response) {
+                    ctrl.eleve = response.data;
+                  },
+                  function error(response) { });
 
                 APIs.query_people_concerned_about(uids[0])
                   .then(function success(response) {
@@ -161,10 +193,18 @@ angular.module('suiviApp')
             if (_(onglet).isNull()) {
               action = 'created';
 
+              // Popups.loading_window(
+              //   "Création de l'onglet",
+              //   "",
+              //   function() {
               promise = Onglets.save({
                 uids: uids,
                 nom: response_popup.onglet.nom
               }).$promise;
+
+              //     return $q.resolve(true);
+              //   }
+              // );
             } else {
               if (response_popup.onglet.delete) {
                 action = 'deleted';

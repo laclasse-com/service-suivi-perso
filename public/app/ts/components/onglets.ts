@@ -24,26 +24,38 @@ angular.module('suiviApp')
 
         ctrl.$onInit = function() {
           if (ctrl.uids.length == 1) {
-            Onglets.query({ "uids[]": ctrl.uids }).$promise
-              .then(function success(response) {
-                ctrl.onglets = _(response[0]).map(function(onglet) {
-                  onglet.ids = [onglet.id];
-                  return onglet;
-                });
-              },
-              function error(response) { });
+            Popups.loading_window(
+              "Chargement des onglets",
+              "",
+              function() {
+                return Onglets.query({ "uids[]": ctrl.uids }).$promise
+                  .then(function success(response) {
+                    ctrl.onglets = _(response[0]).map(function(onglet) {
+                      onglet.ids = [onglet.id];
+                      return onglet;
+                    });
+                  },
+                  function error(response) { });
+              }
+            );
           } else {
-            APIs.query_common_onglets_of(ctrl.uids)
-              .then(function(response) {
-                ctrl.onglets = Object.keys(response).map((key) => {
-                  return {
-                    nom: key,
-                    ids: response[key].map((onglet) => { return onglet.id; }),
-                    writable: response[key].reduce((memo, onglet) => { return memo && onglet.writable; }, true),
-                    manageable: response[key].reduce((memo, onglet) => { return memo && onglet.manageable; }, true)
-                  };
-                });
-              });
+            Popups.loading_window(
+              "Chargement des onglets communs",
+              "",
+              function() {
+                return APIs.query_common_onglets_of(ctrl.uids)
+                  .then(function(response) {
+                    ctrl.onglets = Object.keys(response).map((key) => {
+                      return {
+                        nom: key,
+                        ids: response[key].map((onglet) => { return onglet.id; }),
+                        writable: response[key].reduce((memo, onglet) => { return memo && onglet.writable; }, true),
+                        manageable: response[key].reduce((memo, onglet) => { return memo && onglet.manageable; }, true)
+                      };
+                    });
+                  })
+              }
+            );
           }
 
           APIs.get_current_user()
@@ -54,7 +66,7 @@ angular.module('suiviApp')
             });
         };
       }],
-  template: `
+    template: `
   <style>
     .manage-onglet { margin-top: -11px; margin-right: -16px; border-radius: 0 0 0 12px; }
   </style>
