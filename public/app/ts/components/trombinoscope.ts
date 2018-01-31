@@ -82,50 +82,20 @@ angular.module('suiviApp')
           .then(function(groups) {
             let classes = _(groups).where({ type: 'CLS' });
 
-            if (ctrl.current_user.profil_actif.type === 'ELV') {
-              ctrl.current_user.regroupement = { libelle: classes[0].name };
-              ctrl.current_user.relevant = true;
+            switch (ctrl.current_user.profil_actif.type) {
+              case "ELV":
+                ctrl.current_user.regroupement = { libelle: classes[0].name };
+                ctrl.current_user.relevant = true;
 
-              ctrl.eleves = [ctrl.current_user];
+                ctrl.eleves = [ctrl.current_user];
 
-              ctrl.relevant_to = _(ctrl.relevant_to).reject(function(uid) { return uid == ctrl.current_user.id; });
-              APIs.get_users(ctrl.relevant_to)
-                .then(function(users) {
-                  ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
-                    eleve.avatar = fix_avatar_url(eleve.avatar);
-                    eleve.relevant = true;
-
-                    let groups_ids = _(eleve.groups).pluck('group_id');
-
-                    if (!_(groups_ids).isEmpty()) {
-                      APIs.get_groups(groups_ids)
-                        .then(function(response) {
-                          let regroupement = _(response.data).findWhere({ type: 'CLS' });
-
-                          if (!_(regroupement).isUndefined()) {
-                            eleve.regroupement = {
-                              id: regroupement.id,
-                              name: regroupement.name,
-                              type: regroupement.type
-                            };
-                            eleve.etablissement = regroupement.structure_id;
-                            eleve.enseignants = regroupement.profs;
-                          }
-                        });
-                    }
-
-                    return eleve;
-                  }));
-                });
-
-            } else if (ctrl.current_user.profil_actif.type === 'TUT') {
-              let users_ids = _(ctrl.current_user.children).pluck('child_id');
-
-              if (!_(users_ids).isEmpty()) {
-                APIs.get_users(users_ids)
+                ctrl.relevant_to = _(ctrl.relevant_to).reject(function(uid) { return uid == ctrl.current_user.id; });
+                APIs.get_users(ctrl.relevant_to)
                   .then(function(users) {
                     ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
                       eleve.avatar = fix_avatar_url(eleve.avatar);
+                      eleve.relevant = true;
+
                       let groups_ids = _(eleve.groups).pluck('group_id');
 
                       if (!_(groups_ids).isEmpty()) {
@@ -148,53 +118,87 @@ angular.module('suiviApp')
                       return eleve;
                     }));
                   });
-              }
-            } else {
-              APIs.get_groups(_.chain(groups)
-                .select(function(regroupement) {
-                  return _(regroupement).has('structure_id') && regroupement.structure_id === ctrl.current_user.profil_actif.structure_id;
-                })
-                .pluck('id')
-                .uniq()
-                .value())
+                break;
+
+              case "TUT":
+                let users_ids = _(ctrl.current_user.children).pluck('child_id');
+
+                if (!_(users_ids).isEmpty()) {
+                  APIs.get_users(users_ids)
+                    .then(function(users) {
+                      ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
+                        eleve.avatar = fix_avatar_url(eleve.avatar);
+                        let groups_ids = _(eleve.groups).pluck('group_id');
+
+                        if (!_(groups_ids).isEmpty()) {
+                          APIs.get_groups(groups_ids)
+                            .then(function(response) {
+                              let regroupement = _(response.data).findWhere({ type: 'CLS' });
+
+                              if (!_(regroupement).isUndefined()) {
+                                eleve.regroupement = {
+                                  id: regroupement.id,
+                                  name: regroupement.name,
+                                  type: regroupement.type
+                                };
+                                eleve.etablissement = regroupement.structure_id;
+                                eleve.enseignants = regroupement.profs;
+                              }
+                            });
+                        }
+
+                        return eleve;
+                      }));
+                    });
+                }
+                break;
+
+              default:
+                APIs.get_groups(_.chain(groups)
+                                .select(function(regroupement) {
+                                  return _(regroupement).has('structure_id') && regroupement.structure_id === ctrl.current_user.profil_actif.structure_id;
+                                })
+                                .pluck('id')
+                                .uniq()
+                                .value())
                 .then(function success(response) {
                   ctrl.groups = response.data;
                   ctrl.eleves = [];
 
                   APIs.get_grades(_.chain(response.data)
-                    .pluck('grades')
-                    .flatten()
-                    .pluck('grade_id')
-                    .value())
-                    .then(function success(response) {
-                      ctrl.grades = response.data;
-                    },
-                    function error(response) { });
+                                  .pluck('grades')
+                                  .flatten()
+                                  .pluck('grade_id')
+                                  .value())
+                      .then(function success(response) {
+                        ctrl.grades = response.data;
+                      },
+                      function error(response) { });
 
-                  _(response.data).each(function(regroupement) {
-                    regroupement.profs = _.chain(regroupement.users).select(function(user) { return user.type === 'ENS'; }).pluck('user_id').value();
-                    let users_ids = _.chain(regroupement.users).select(function(user) { return user.type === 'ELV'; }).pluck('user_id').value();
+                    _(response.data).each(function(regroupement) {
+                      regroupement.profs = _.chain(regroupement.users).select(function(user) { return user.type === 'ENS'; }).pluck('user_id').value();
+                      let users_ids = _.chain(regroupement.users).select(function(user) { return user.type === 'ELV'; }).pluck('user_id').value();
 
-                    APIs.get_users(users_ids)
-                      .then(function(users) {
-                        ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
-                          eleve.avatar = fix_avatar_url(eleve.avatar);
+                      APIs.get_users(users_ids)
+                        .then(function(users) {
+                          ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
+                            eleve.avatar = fix_avatar_url(eleve.avatar);
 
-                          eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
-                          eleve.regroupement = regroupement;
-                          eleve.etablissement = regroupement.structure_id;
-                          eleve.enseignants = regroupement.profs;
+                            eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
+                            eleve.regroupement = regroupement;
+                            eleve.etablissement = regroupement.structure_id;
+                            eleve.enseignants = regroupement.profs;
 
-                          return eleve;
-                        }));
-                      });
-                  });
-                },
-                function error(response) { });
+                            return eleve;
+                          }));
+                        });
+                    });
+                  },
+                  function error(response) { });
             }
           });
       }],
-template: `
+    template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
   .filter .panel-body { max-height: 380px; overflow-y: auto; }
