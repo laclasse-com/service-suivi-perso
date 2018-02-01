@@ -75,11 +75,14 @@ module Suivi
 
           app.delete '/api/saisies/:id' do
             saisie = get_and_check_saisie( params['id'], user, :write )
-            saisie.onglets.each do |onglet|
-              get_and_check_onglet( onglet.id, user, :write )
+
+            params['onglets_ids'].each do |onglet_id|
+              onglet = get_and_check_onglet( onglet_id, user, :write )
+
+              onglet.remove_saisy( saisie )
             end
 
-            json( saisie.destroy )
+            saisie.destroy if saisie.onglets.empty?
           end
         end
       end

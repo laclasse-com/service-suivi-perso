@@ -56,7 +56,10 @@ angular.module('suiviApp')
             cancelButtonText: 'Annuler'
           })
             .then(function() {
-              ctrl.saisie.$delete()
+              Saisies.delete({
+                id: ctrl.saisie.id,
+                "onglets_ids[]": ctrl.onglet.ids
+              }).$promise
                 .then(function() {
                   ctrl.saisie.action = 'deleted';
                   ctrl.callback();
