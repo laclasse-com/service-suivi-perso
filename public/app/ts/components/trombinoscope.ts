@@ -117,6 +117,7 @@ angular.module('suiviApp')
 
                       return eleve;
                     }));
+                    ctrl.eleves = _(ctrl.eleves).uniq((eleve) => { return eleve.id; })
                   });
                 break;
 
@@ -149,27 +150,28 @@ angular.module('suiviApp')
 
                         return eleve;
                       }));
+                      ctrl.eleves = _(ctrl.eleves).uniq((eleve) => { return eleve.id; })
                     });
                 }
                 break;
 
               default:
                 APIs.get_groups(_.chain(groups)
-                                .select(function(regroupement) {
-                                  return _(regroupement).has('structure_id') && regroupement.structure_id === ctrl.current_user.profil_actif.structure_id;
-                                })
-                                .pluck('id')
-                                .uniq()
-                                .value())
-                .then(function success(response) {
-                  ctrl.groups = response.data;
-                  ctrl.eleves = [];
+                  .select(function(regroupement) {
+                    return _(regroupement).has('structure_id') && regroupement.structure_id === ctrl.current_user.profil_actif.structure_id;
+                  })
+                  .pluck('id')
+                  .uniq()
+                  .value())
+                  .then(function success(response) {
+                    ctrl.groups = response.data;
+                    ctrl.eleves = [];
 
-                  APIs.get_grades(_.chain(response.data)
-                                  .pluck('grades')
-                                  .flatten()
-                                  .pluck('grade_id')
-                                  .value())
+                    APIs.get_grades(_.chain(response.data)
+                      .pluck('grades')
+                      .flatten()
+                      .pluck('grade_id')
+                      .value())
                       .then(function success(response) {
                         ctrl.grades = response.data;
                       },
@@ -191,6 +193,7 @@ angular.module('suiviApp')
 
                             return eleve;
                           }));
+                          ctrl.eleves = _(ctrl.eleves).uniq((eleve) => { return eleve.id; })
                         });
                     });
                   },
@@ -198,7 +201,7 @@ angular.module('suiviApp')
             }
           });
       }],
-    template: `
+template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
   .filter .panel-body { max-height: 380px; overflow-y: auto; }
