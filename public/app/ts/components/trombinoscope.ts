@@ -34,10 +34,13 @@ angular.module('suiviApp')
           var selected_grades_ids = _.chain(ctrl.grades).where({ selected: true }).pluck('id').value();
 
           return function(pupil) {
+            // return ((pupil.lastname.toLocaleLowerCase().match(ctrl.filters.text.toLocaleLowerCase()) != null)
+            //         || (pupil.firstname.toLocaleLowerCase().match(ctrl.filters.text.toLocaleLowerCase()) != null))
             return `${pupil.firstname}${pupil.lastname}`.toLocaleLowerCase().includes(ctrl.filters.text.toLocaleLowerCase())
               && (selected_groups_ids.length == 0 || _(selected_groups_ids).intersection(_(pupil.groups).pluck('group_id')).length > 0)
               && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(_(pupil.regroupement.grades).pluck('grade_id')).length > 0)
-              && (!ctrl.only_display_relevant_to || pupil.relevant);
+              && (!ctrl.only_display_relevant_to || pupil.relevant)
+            // && !pupil.excluded;
           };
         };
 
@@ -54,6 +57,7 @@ angular.module('suiviApp')
 
           return _.chain(ctrl.eleves)
             .select(function(pupil) { return filter(pupil); })
+            .reject(function(pupil) { return pupil.excluded; })
             .pluck('id')
             .value();
         };
@@ -81,6 +85,13 @@ angular.module('suiviApp')
           function error(response) { })
           .then(function(groups) {
             let classes = _(groups).where({ type: 'CLS' });
+            let post_concat = () => {
+              ctrl.eleves = _.chain(ctrl.eleves)
+                .uniq((eleve) => { return eleve.id; })
+                .each((eleve) => { eleve.excluded = false; })
+                .value();
+
+            };
 
             switch (ctrl.current_user.profil_actif.type) {
               case "ELV":
@@ -116,9 +127,9 @@ angular.module('suiviApp')
                       }
 
                       return eleve;
-                    }));
-                    ctrl.eleves = _(ctrl.eleves).uniq((eleve) => { return eleve.id; })
-                  });
+                    }))
+                  })
+                  .then(post_concat);
                 break;
 
               case "TUT":
@@ -150,8 +161,8 @@ angular.module('suiviApp')
 
                         return eleve;
                       }));
-                      ctrl.eleves = _(ctrl.eleves).uniq((eleve) => { return eleve.id; })
-                    });
+                    })
+                    .then(post_concat);
                 }
                 break;
 
@@ -192,25 +203,28 @@ angular.module('suiviApp')
                             eleve.enseignants = regroupement.profs;
 
                             return eleve;
-                          }));
-                          ctrl.eleves = _(ctrl.eleves).uniq((eleve) => { return eleve.id; })
+                          }))
                         });
                     });
                   },
-                  function error(response) { });
+                  function error(response) { })
+                  .then(post_concat);
             }
           });
       }],
-template: `
+    template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
   .filter .panel-body { max-height: 380px; overflow-y: auto; }
+.trombinoscope .excluded .eleve { opacity: 0.8; }
+.regroupement {background-color: rgba(240, 240, 240, 0.66);}
+.trombinoscope .excluded .eleve .full-name { color: lightgray; text-decoration: double line-through; }
 </style>
 <div class="col-md-4 gris1-moins aside trombinoscope-aside" style="padding: 0;">
   <div class="panel panel-default gris1-moins">
     <div class="panel-heading" style="text-align: right; ">
       <h3>
-        {{$ctrl.filtered.length}} élève{{$ctrl.pluriel($ctrl.filtered.length, 's')}} affiché{{$ctrl.pluriel($ctrl.filtered.length, 's')}}
+        {{$ctrl.pluck_selected_uids().length}} élève{{$ctrl.pluriel($ctrl.pluck_selected_uids().length, 's')}} sélectionné{{$ctrl.pluriel($ctrl.filtered.length, 's')}}
 
         <a class="btn btn-primary"
            title="Gestion des onglets communs"
@@ -303,12 +317,18 @@ template: `
   <ul>
     <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins"
         style="background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;"
-        ng:class="{'relevant': eleve.relevant}"
+        ng:class="{'relevant': eleve.relevant, 'excluded': eleve.excluded}"
         ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
         ng:repeat="eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )">
-      <a class="eleve"
+      <button class="btn btn-danger pull-left" style="height: 10%;"
+              ng:style="{'opacity': eleve.excluded ? '1' : '0.5'}"
+              uib:btn-checkbox ng:model="eleve.excluded"
+              title="exclure de la sélection">
+        <span class="glyphicon glyphicon-ban-circle"></span>
+      </button>
+      <h5 class="regroupement pull-right" style="height: 10%;">{{eleve.regroupement.name}}</h5>
+      <a class="eleve" style="height: 90%; margin-top: 10%;"
          ui:sref="carnet({uids: [eleve.id]})">
-        <h5 class="regroupement">{{eleve.regroupement.name}}</h5>
 
         <div class="full-name" title="{{eleve.relevant ? 'Vous êtes contributeur de ce carnet' : ''}}">
           <h4 class="first-name">{{eleve.firstname}}</h4>
