@@ -1,7 +1,7 @@
 angular.module('suiviApp')
   .service('Popups',
-  ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID',
-    function($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
+  ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID', 'User',
+    function($uibModal, $q, Onglets, Droits, Saisies, APIs, UID, User) {
       let Popups = this;
 
       Popups.loading_window = function(title, text, action) {
@@ -131,7 +131,7 @@ angular.module('suiviApp')
                   },
                   function error(response) { });
               } else {
-                APIs.get_current_user()
+                User.get().$promise
                   .then(function success(response) {
                     ctrl.concerned_people = [response];
 

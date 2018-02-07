@@ -1,7 +1,7 @@
 angular.module('suiviApp')
   .service('APIs',
-  ['$http', '$q', 'User', 'Onglets', 'URL_ENT', 'APP_PATH',
-    function($http, $q, User, Onglets, URL_ENT, APP_PATH) {
+  ['$http', '$q', 'Onglets', 'URL_ENT', 'APP_PATH',
+    function($http, $q, Onglets, URL_ENT, APP_PATH) {
       let APIs = this;
 
       APIs.query_profiles_types = _.memoize(function() {
@@ -34,37 +34,12 @@ angular.module('suiviApp')
           });
       });
 
-      APIs.get_current_user = _.memoize(function() {
-        return User.get().$promise;
-      });
-
       APIs.get_users = _.memoize(function(users_ids) {
         if (_(users_ids).isEmpty()) {
           return $q.resolve({ data: [] });
         } else {
           return $http.get(`${URL_ENT}/api/users/`, { params: { 'id[]': users_ids } });
         }
-      });
-
-      APIs.get_current_user_groups = _.memoize(function() {
-        return APIs.get_current_user().then(function success(current_user) {
-          let groups_ids = _.chain(current_user.groups).pluck('group_id').uniq().value();
-          let promise = $q.resolve([]);
-          if (_(['EVS', 'DIR', 'ADM']).contains(current_user.profil_actif.type) || current_user.profil_actif.admin) {
-            promise = APIs.get_groups_of_structures([current_user.profil_actif.structure_id]);
-          } else {
-            promise = APIs.get_groups(groups_ids);
-          }
-
-          return promise
-            .then(function(groups) {
-              current_user.actual_groups = _(groups.data).select(function(group) {
-                return group.structure_id === current_user.profil_actif.structure_id;
-              });
-
-              return $q.resolve(current_user.actual_groups);
-            });
-        });
       });
 
       APIs.get_group = _.memoize(function(regroupement_id) {
@@ -138,17 +113,11 @@ angular.module('suiviApp')
         let teachers: Array<any> = new Array<any>();
         let main_teachers: Array<any> = new Array<any>();
 
-        return APIs.get_current_user()
-          .then(function success(response) {
-            current_user = response;
-
-            return APIs.query_profiles_types();
-          },
-          function error(response) { return $q.reject(response); })
+        return APIs.query_profiles_types()
           .then(function success(response) {
             profils = _(response.data).indexBy('id') as Array<any>;
 
-            return APIs.query_carnets_relevant_to(current_user.id);
+            return APIs.query_carnets_relevant_to(uid);
           },
           function error(response) { })
           .then(function success(response) {

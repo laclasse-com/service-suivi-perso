@@ -143,8 +143,8 @@ angular.module('suiviApp')
         droits: '=',
         concernedPeople: '<'
     },
-    controller: ['Droits', 'APIs', 'UID', 'URL_ENT',
-        function (Droits, APIs, UID, URL_ENT) {
+    controller: ['Droits', 'APIs', 'UID', 'URL_ENT', 'User',
+        function (Droits, APIs, UID, URL_ENT, User) {
             var ctrl = this;
             ctrl.sharing_enabled = false;
             var gen_pseudo_UUID = function () {
@@ -234,7 +234,10 @@ angular.module('suiviApp')
                     .then(function success(response) {
                     ctrl.profils = response.data;
                 }, function error(response) { });
-                APIs.get_current_user_groups()
+                User.get().$promise
+                    .then(function success(current_user) {
+                    return current_user.get_actuel_groups();
+                })
                     .then(function success(response) {
                     ctrl.groups = response.filter(function (group) { return group.type == "GPL"; })
                         .map(function (group) {
@@ -317,8 +320,8 @@ angular.module('suiviApp')
     bindings: {
         uids: '<'
     },
-    controller: ['$uibModal', 'Onglets', 'Popups', 'APIs',
-        function ($uibModal, Onglets, Popups, APIs) {
+    controller: ['$uibModal', 'Onglets', 'Popups', 'APIs', 'User',
+        function ($uibModal, Onglets, Popups, APIs, User) {
             var ctrl = this;
             ctrl.popup_onglet = Popups.onglet;
             ctrl.callback_popup_onglet = function (onglets) {
@@ -358,10 +361,10 @@ angular.module('suiviApp')
                         });
                     });
                 }
-                APIs.get_current_user()
+                User.get().$promise
                     .then(function (response) {
                     ctrl.current_user = response;
-                    ctrl.can_add_tab = !_(['ELV']).contains(ctrl.current_user.profil_actif.type) || ((ctrl.uids.length == 1) && ctrl.uids[0] == ctrl.current_user.id);
+                    ctrl.can_add_tab = ctrl.current_user.can_add_tab(ctrl.uids);
                 });
             };
         }],
@@ -374,8 +377,8 @@ angular.module('suiviApp')
         saisie: '=',
         callback: '&'
     },
-    controller: ['$sce', 'Saisies', 'APIs',
-        function ($sce, Saisies, APIs) {
+    controller: ['$sce', 'Saisies', 'APIs', 'User',
+        function ($sce, Saisies, APIs, User) {
             var ctrl = this;
             ctrl.toggle_edit = function () {
                 ctrl.edition = !ctrl.edition;
@@ -438,7 +441,7 @@ angular.module('suiviApp')
                     ctrl.saisie.tmp_pinned = ctrl.saisie.pinned;
                 }
                 ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
-                APIs.get_current_user()
+                User.get().$promise
                     .then(function (current_user) {
                     ctrl.current_user = current_user;
                     ctrl.editable = ctrl.new_saisie ||
@@ -455,8 +458,8 @@ angular.module('suiviApp')
 });
 angular.module('suiviApp')
     .component('trombinoscope', {
-    controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups',
-        function ($filter, $q, URL_ENT, APIs, Popups) {
+    controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups', 'User',
+        function ($filter, $q, URL_ENT, APIs, Popups, User) {
             var ctrl = this;
             ctrl.pretty_labels = {
                 "CLS": "classe",
@@ -506,16 +509,16 @@ angular.module('suiviApp')
             ctrl.pluriel = function (item_count, character) {
                 return item_count > 1 ? character : '';
             };
-            APIs.get_current_user()
+            User.get().$promise
                 .then(function (response) {
                 ctrl.current_user = response;
                 ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
-                ctrl.can_do_batch = !_(['ELV']).contains(ctrl.current_user.profil_actif.type);
+                ctrl.can_do_batch = ctrl.current_user.can_do_batch;
                 return APIs.query_carnets_relevant_to(ctrl.current_user.id);
             }, function error(response) { })
                 .then(function success(response) {
                 ctrl.relevant_to = _(response.data).pluck('uid_eleve');
-                return APIs.get_current_user_groups();
+                return ctrl.current_user.get_actual_groups();
             }, function error(response) { })
                 .then(function (groups) {
                 var classes = _(groups).where({ type: 'CLS' });
@@ -711,8 +714,8 @@ angular.module('suiviApp')
         });
     }]);
 angular.module('suiviApp')
-    .factory('User', ['$resource', '$rootScope', 'URL_ENT', 'UID',
-    function ($resource, $rootScope, URL_ENT, UID) {
+    .factory('User', ['$resource', '$rootScope', '$q', 'APIs', 'URL_ENT', 'UID',
+    function ($resource, $rootScope, $q, APIs, URL_ENT, UID) {
         return $resource(URL_ENT + "/api/users/" + UID, { expand: 'true' }, {
             get: {
                 cache: false,
@@ -727,14 +730,35 @@ angular.module('suiviApp')
                                 type: 'ADM'
                             }) != undefined;
                     };
+                    user.can_do_batch = !_(['ELV']).contains(user.profil_actif.type);
+                    user.can_add_tab = function (uids) {
+                        return !_(['ELV']).contains(user.profil_actif.type) || ((uids.length == 1) && uids[0] == user.id);
+                    };
+                    user.get_actual_groups = function () {
+                        var groups_ids = _.chain(user.groups).pluck('group_id').uniq().value();
+                        var promise = $q.resolve([]);
+                        if (_(['EVS', 'DIR', 'ADM']).contains(user.profil_actif.type) || user.profil_actif.admin) {
+                            promise = APIs.get_groups_of_structures([user.profil_actif.structure_id]);
+                        }
+                        else {
+                            promise = APIs.get_groups(groups_ids);
+                        }
+                        return promise
+                            .then(function (groups) {
+                            user.actual_groups = _(groups.data).select(function (group) {
+                                return group.structure_id == user.profil_actif.structure_id;
+                            });
+                            return $q.resolve(user.actual_groups);
+                        });
+                    };
                     return user;
                 }
             }
         });
     }]);
 angular.module('suiviApp')
-    .service('APIs', ['$http', '$q', 'User', 'Onglets', 'URL_ENT', 'APP_PATH',
-    function ($http, $q, User, Onglets, URL_ENT, APP_PATH) {
+    .service('APIs', ['$http', '$q', 'Onglets', 'URL_ENT', 'APP_PATH',
+    function ($http, $q, Onglets, URL_ENT, APP_PATH) {
         var APIs = this;
         APIs.query_profiles_types = _.memoize(function () {
             return $http.get(URL_ENT + "/api/profiles_types");
@@ -761,9 +785,6 @@ angular.module('suiviApp')
                 return response;
             });
         });
-        APIs.get_current_user = _.memoize(function () {
-            return User.get().$promise;
-        });
         APIs.get_users = _.memoize(function (users_ids) {
             if (_(users_ids).isEmpty()) {
                 return $q.resolve({ data: [] });
@@ -771,25 +792,6 @@ angular.module('suiviApp')
             else {
                 return $http.get(URL_ENT + "/api/users/", { params: { 'id[]': users_ids } });
             }
-        });
-        APIs.get_current_user_groups = _.memoize(function () {
-            return APIs.get_current_user().then(function success(current_user) {
-                var groups_ids = _.chain(current_user.groups).pluck('group_id').uniq().value();
-                var promise = $q.resolve([]);
-                if (_(['EVS', 'DIR', 'ADM']).contains(current_user.profil_actif.type) || current_user.profil_actif.admin) {
-                    promise = APIs.get_groups_of_structures([current_user.profil_actif.structure_id]);
-                }
-                else {
-                    promise = APIs.get_groups(groups_ids);
-                }
-                return promise
-                    .then(function (groups) {
-                    current_user.actual_groups = _(groups.data).select(function (group) {
-                        return group.structure_id === current_user.profil_actif.structure_id;
-                    });
-                    return $q.resolve(current_user.actual_groups);
-                });
-            });
         });
         APIs.get_group = _.memoize(function (regroupement_id) {
             return $http.get(URL_ENT + "/api/groups/" + regroupement_id);
@@ -855,14 +857,10 @@ angular.module('suiviApp')
             var pupils = new Array();
             var teachers = new Array();
             var main_teachers = new Array();
-            return APIs.get_current_user()
-                .then(function success(response) {
-                current_user = response;
-                return APIs.query_profiles_types();
-            }, function error(response) { return $q.reject(response); })
+            return APIs.query_profiles_types()
                 .then(function success(response) {
                 profils = _(response.data).indexBy('id');
-                return APIs.query_carnets_relevant_to(current_user.id);
+                return APIs.query_carnets_relevant_to(uid);
             }, function error(response) { })
                 .then(function success(response) {
                 relevant_to = _(response.data).pluck('uid_eleve');
@@ -984,8 +982,8 @@ angular.module('suiviApp')
         });
     }]);
 angular.module('suiviApp')
-    .service('Popups', ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID',
-    function ($uibModal, $q, Onglets, Droits, Saisies, APIs, UID) {
+    .service('Popups', ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID', 'User',
+    function ($uibModal, $q, Onglets, Droits, Saisies, APIs, UID, User) {
         var Popups = this;
         Popups.loading_window = function (title, text, action) {
             return swal({
@@ -1063,7 +1061,7 @@ angular.module('suiviApp')
                             }, function error(response) { });
                         }
                         else {
-                            APIs.get_current_user()
+                            User.get().$promise
                                 .then(function success(response) {
                                 ctrl.concerned_people = [response];
                                 return APIs.get_users(uids);

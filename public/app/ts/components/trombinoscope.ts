@@ -1,8 +1,8 @@
 angular.module('suiviApp')
   .component('trombinoscope',
   {
-    controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups',
-      function($filter, $q, URL_ENT, APIs, Popups) {
+    controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups', 'User',
+      function($filter, $q, URL_ENT, APIs, Popups, User) {
         let ctrl = this;
 
         ctrl.pretty_labels = {
@@ -66,12 +66,12 @@ angular.module('suiviApp')
           return item_count > 1 ? character : '';
         }
 
-        APIs.get_current_user()
+        User.get().$promise
           .then(function(response) {
             ctrl.current_user = response;
 
             ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
-            ctrl.can_do_batch = !_(['ELV']).contains(ctrl.current_user.profil_actif.type);
+            ctrl.can_do_batch = ctrl.current_user.can_do_batch;
 
 
             return APIs.query_carnets_relevant_to(ctrl.current_user.id);
@@ -80,7 +80,7 @@ angular.module('suiviApp')
           .then(function success(response) {
             ctrl.relevant_to = _(response.data).pluck('uid_eleve');
 
-            return APIs.get_current_user_groups();
+            return ctrl.current_user.get_actual_groups();
           },
           function error(response) { })
           .then(function(groups) {

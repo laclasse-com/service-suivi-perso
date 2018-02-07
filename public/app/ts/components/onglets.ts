@@ -4,8 +4,8 @@ angular.module('suiviApp')
     bindings: {
       uids: '<'
     },
-    controller: ['$uibModal', 'Onglets', 'Popups', 'APIs',
-      function($uibModal, Onglets, Popups, APIs) {
+    controller: ['$uibModal', 'Onglets', 'Popups', 'APIs', 'User',
+      function($uibModal, Onglets, Popups, APIs, User) {
         let ctrl = this;
         ctrl.popup_onglet = Popups.onglet;
 
@@ -58,11 +58,11 @@ angular.module('suiviApp')
             );
           }
 
-          APIs.get_current_user()
+          User.get().$promise
             .then(function(response) {
               ctrl.current_user = response;
 
-              ctrl.can_add_tab = !_(['ELV']).contains(ctrl.current_user.profil_actif.type) || ((ctrl.uids.length == 1) && ctrl.uids[0] == ctrl.current_user.id);
+              ctrl.can_add_tab = ctrl.current_user.can_add_tab(ctrl.uids);
             });
         };
       }],

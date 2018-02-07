@@ -6,8 +6,8 @@ angular.module('suiviApp')
       droits: '=',
       concernedPeople: '<'
     },
-    controller: ['Droits', 'APIs', 'UID', 'URL_ENT',
-      function(Droits, APIs, UID, URL_ENT) {
+    controller: ['Droits', 'APIs', 'UID', 'URL_ENT', 'User',
+      function(Droits, APIs, UID, URL_ENT, User) {
         let ctrl = this;
         ctrl.sharing_enabled = false;
 
@@ -120,7 +120,10 @@ angular.module('suiviApp')
             },
             function error(response) { });
 
-          APIs.get_current_user_groups()
+          User.get().$promise
+            .then(function success(current_user) {
+              return current_user.get_actuel_groups();
+            })
             .then(function success(response) {
               ctrl.groups = response.filter(function(group) { return group.type == "GPL"; })
                 .map(function(group) {
