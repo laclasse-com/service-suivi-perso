@@ -24,23 +24,40 @@ angular.module('suiviApp')
         };
         ctrl.only_display_relevant_to = false;
         ctrl.eleves = [];
+        ctrl.groups = [];
+        ctrl.structures = [];
 
         let fix_avatar_url = function(avatar_url) {
           return (_(avatar_url.match(/^(user|http)/)).isNull() ? `${URL_ENT}/` : '') + avatar_url;
         };
 
         ctrl.apply_filters = function() {
-          var selected_groups_ids = _.chain(ctrl.groups).where({ selected: true }).pluck('id').value();
-          var selected_grades_ids = _.chain(ctrl.grades).where({ selected: true }).pluck('id').value();
+          let selected_structures_ids = _.chain(ctrl.structures).where({ selected: true }).pluck('id').value();
+          let selected_groups_ids = _.chain(ctrl.groups).where({ selected: true }).pluck('id').value();
+          let selected_grades_ids = _.chain(ctrl.grades).where({ selected: true }).pluck('id').value();
+          let grades_ids_from_groups_ids = (groups_ids) => {
+            return _.chain(ctrl.groups)
+              .select((group) => { return _(groups_ids).contains(group.id) })
+              .pluck("grades")
+              .flatten()
+              .pluck("grade_id")
+              .uniq()
+              .value();
+          };
+          let structures_ids_from_groups_ids = (groups_ids) => {
+            return _.chain(ctrl.groups)
+              .select((group) => { return _(groups_ids).contains(group.id) })
+              .pluck("structure_id")
+              .uniq()
+              .value();
+          };
 
           return function(pupil) {
-            // return ((pupil.lastname.toLocaleLowerCase().match(ctrl.filters.text.toLocaleLowerCase()) != null)
-            //         || (pupil.firstname.toLocaleLowerCase().match(ctrl.filters.text.toLocaleLowerCase()) != null))
             return `${pupil.firstname}${pupil.lastname}`.toLocaleLowerCase().includes(ctrl.filters.text.toLocaleLowerCase())
+              && (selected_structures_ids.length == 0 || _(selected_structures_ids).intersection(structures_ids_from_groups_ids(_(pupil.groups).pluck('group_id'))).length > 0)
               && (selected_groups_ids.length == 0 || _(selected_groups_ids).intersection(_(pupil.groups).pluck('group_id')).length > 0)
-              && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(_(pupil.regroupement.grades).pluck('grade_id')).length > 0)
+              && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(grades_ids_from_groups_ids(_(pupil.groups).pluck('group_id'))).length > 0)
               && (!ctrl.only_display_relevant_to || pupil.relevant)
-            // && !pupil.excluded;
           };
         };
 
@@ -71,8 +88,6 @@ angular.module('suiviApp')
             ctrl.current_user = response;
 
             ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
-            ctrl.can_do_batch = ctrl.current_user.can_do_batch;
-
 
             return APIs.query_carnets_relevant_to(ctrl.current_user.id);
           },
@@ -84,132 +99,122 @@ angular.module('suiviApp')
           },
           function error(response) { })
           .then(function(groups) {
-            let classes = _(groups).where({ type: 'CLS' });
-            let post_concat = () => {
-              ctrl.eleves = _.chain(ctrl.eleves)
-                .uniq((eleve) => { return eleve.id; })
-                .each((eleve) => { eleve.excluded = false; })
-                .value();
+            let users_ids = [];
+            let promises = [];
+            let process_groups = (groups) => {
+              ctrl.groups = ctrl.groups.concat(
+                _(groups).select((group) => { return group.type == "GPL" || _(group.users).findWhere({ type: "ELV" }) != undefined; })
+              );
 
+              APIs.get_grades(_.chain(ctrl.groups)
+                .pluck('grades')
+                .flatten()
+                .pluck('grade_id')
+                .value())
+                .then(function success(response) {
+                  ctrl.grades = response.data;
+                },
+                function error(response) { });
+
+              users_ids = users_ids.concat(
+                _.chain(groups)
+                  .pluck("users")
+                  .flatten()
+                  .compact()
+                  .select((user) => user.type == "ELV")
+                  .pluck("user_id")
+                  .value()
+              );
             };
 
-            switch (ctrl.current_user.profil_actif.type) {
-              case "ELV":
-                ctrl.current_user.regroupement = { libelle: classes[0].name };
-                ctrl.current_user.relevant = true;
+            let process_structures_ids = (structures_ids) => {
+              if (structures_ids.length > 1) {
+                _(structures_ids).each((structure_id) => {
+                  APIs.get_structure(structure_id).then((response) => {
+                    ctrl.structures.push(response.data);
+                  });
+                });
+              }
+            };
 
-                ctrl.eleves = [ctrl.current_user];
+            // user is a student
+            if (_.chain(ctrl.current_user.profiles).pluck("type").contains("ELV").value()) {
+              users_ids.push(ctrl.current_user.id);
+            }
 
-                ctrl.relevant_to = _(ctrl.relevant_to).reject(function(uid) { return uid == ctrl.current_user.id; });
-                APIs.get_users(ctrl.relevant_to)
+            // user has children
+            users_ids = users_ids.concat(_(ctrl.current_user.children).pluck('child_id'));
+
+            // user has groups
+            let groups_ids = _.chain(ctrl.current_user.groups)
+              .reject((group) => { return _(["ELV"]).contains(group.type); })
+              .pluck("group_id")
+              .value();
+            if (groups_ids.length > 0) {
+              promises.push(
+                APIs.get_groups(groups_ids)
+                  .then((response) => {
+                    process_structures_ids(_.chain(response.data)
+                      .pluck("structure_id")
+                      .uniq()
+                      .value());
+
+                    process_groups(response.data);
+                  })
+              );
+            }
+
+            // user is able to see every student of given structure
+            let structures_ids = _.chain(ctrl.current_user.profiles)
+              .select((profile) => _(["ADM", "DIR", "DOC", "ETA", "EVS", "ORI"]).contains(profile.type))
+              .pluck("structure_id")
+              .uniq()
+              .value();
+
+            if (!_(structures_ids).isEmpty()) {
+              process_structures_ids(structures_ids);
+
+              promises.push(APIs.get_groups_of_structures(structures_ids)
+                .then(function(response) {
+                  process_groups(response.data);
+                }));
+            }
+
+            // process users_ids
+            $q.all(promises).then(() => {
+              users_ids = _(users_ids).uniq();
+
+              while (users_ids.length > 0) {
+                APIs.get_users(users_ids.splice(0, 200))
                   .then(function(users) {
                     ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
                       eleve.avatar = fix_avatar_url(eleve.avatar);
-                      eleve.relevant = true;
+                      eleve.excluded = false;
+                      eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
 
-                      let groups_ids = _(eleve.groups).pluck('group_id');
+                      let classe = _.chain(eleve.groups)
+                        .map((group) => {
+                          return _(ctrl.groups).findWhere({ id: group.group_id, type: "CLS" });
+                        })
+                        .compact()
+                        .first()
+                        .value();
 
-                      if (!_(groups_ids).isEmpty()) {
-                        APIs.get_groups(groups_ids)
-                          .then(function(response) {
-                            let regroupement = _(response.data).findWhere({ type: 'CLS' });
-
-                            if (!_(regroupement).isUndefined()) {
-                              eleve.regroupement = {
-                                id: regroupement.id,
-                                name: regroupement.name,
-                                type: regroupement.type
-                              };
-                              eleve.etablissement = regroupement.structure_id;
-                              eleve.enseignants = regroupement.profs;
-                            }
-                          });
+                      if (classe != undefined) {
+                        eleve.regroupement = {
+                          id: classe.id,
+                          name: classe.name,
+                          type: classe.type
+                        };
+                        eleve.etablissement = classe.structure_id;
+                        eleve.enseignants = classe.profs;
                       }
 
                       return eleve;
-                    }))
-                  })
-                  .then(post_concat);
-                break;
-
-              case "TUT":
-                let users_ids = _(ctrl.current_user.children).pluck('child_id');
-
-                if (!_(users_ids).isEmpty()) {
-                  APIs.get_users(users_ids)
-                    .then(function(users) {
-                      ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
-                        eleve.avatar = fix_avatar_url(eleve.avatar);
-                        let groups_ids = _(eleve.groups).pluck('group_id');
-
-                        if (!_(groups_ids).isEmpty()) {
-                          APIs.get_groups(groups_ids)
-                            .then(function(response) {
-                              let regroupement = _(response.data).findWhere({ type: 'CLS' });
-
-                              if (!_(regroupement).isUndefined()) {
-                                eleve.regroupement = {
-                                  id: regroupement.id,
-                                  name: regroupement.name,
-                                  type: regroupement.type
-                                };
-                                eleve.etablissement = regroupement.structure_id;
-                                eleve.enseignants = regroupement.profs;
-                              }
-                            });
-                        }
-
-                        return eleve;
-                      }));
-                    })
-                    .then(post_concat);
-                }
-                break;
-
-              default:
-                APIs.get_groups(_.chain(groups)
-                  .select(function(regroupement) {
-                    return _(regroupement).has('structure_id') && regroupement.structure_id === ctrl.current_user.profil_actif.structure_id;
-                  })
-                  .pluck('id')
-                  .uniq()
-                  .value())
-                  .then(function success(response) {
-                    ctrl.groups = response.data;
-                    ctrl.eleves = [];
-
-                    APIs.get_grades(_.chain(response.data)
-                      .pluck('grades')
-                      .flatten()
-                      .pluck('grade_id')
-                      .value())
-                      .then(function success(response) {
-                        ctrl.grades = response.data;
-                      },
-                      function error(response) { });
-
-                    _(response.data).each(function(regroupement) {
-                      regroupement.profs = _.chain(regroupement.users).select(function(user) { return user.type === 'ENS'; }).pluck('user_id').value();
-                      let users_ids = _.chain(regroupement.users).select(function(user) { return user.type === 'ELV'; }).pluck('user_id').value();
-
-                      APIs.get_users(users_ids)
-                        .then(function(users) {
-                          ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
-                            eleve.avatar = fix_avatar_url(eleve.avatar);
-
-                            eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
-                            eleve.regroupement = regroupement;
-                            eleve.etablissement = regroupement.structure_id;
-                            eleve.enseignants = regroupement.profs;
-
-                            return eleve;
-                          }))
-                        });
-                    });
-                  },
-                  function error(response) { })
-                  .then(post_concat);
-            }
+                    }));
+                  });
+              }
+            });
           });
       }],
 template: `
@@ -253,7 +258,9 @@ template: `
       </div>
 
       <div class="row" style="margin-top: 14px;">
-        <div class="col-md-6 filter" ng:repeat="grp_type in ['CLS', 'GRP', 'GPL']" ng:if="$ctrl.groups.length > 0">
+        <div class="col-md-6 filter"
+             ng:repeat="grp_type in ['CLS', 'GRP', 'GPL']"
+             ng:if="$ctrl.groups.length > 0">
           <div class="panel panel-default">
             <div class="panel-heading">
               Filtrage par {{$ctrl.pretty_labels[grp_type]}}
@@ -301,6 +308,33 @@ template: `
                         ng:model="grade.selected"
                         uib:btn-checkbox>
                   {{grade.name}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 filter" ng:if="$ctrl.structures.length > 1">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Filtrage par établissements
+
+              <button class="btn btn-xs pull-right" style="color: green;"
+                      ng:click="$ctrl.clear_filters('structures')">
+                <span class="glyphicon glyphicon-remove">
+                </span>
+              </button>
+              <div class="clearfix"></div>
+            </div>
+
+            <div class="panel-body">
+              <div class="btn-group">
+                <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
+                        ng:repeat="structure in $ctrl.structures | orderBy:['name']"
+                        ng:class="{'vert-plus': structure.selected, 'vert-moins': !structure.selected}"
+                        ng:model="structure.selected"
+                        uib:btn-checkbox>
+                  {{structure.name}}
                 </button>
               </div>
             </div>
