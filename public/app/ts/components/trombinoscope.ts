@@ -129,10 +129,8 @@ angular.module('suiviApp')
 
             let process_structures_ids = (structures_ids) => {
               if (structures_ids.length > 1) {
-                _(structures_ids).each((structure_id) => {
-                  APIs.get_structure(structure_id).then((response) => {
-                    ctrl.structures.push(response.data);
-                  });
+                APIs.get_structures(structures_ids).then((response) => {
+                  ctrl.structures = ctrl.structures.concat(response.data);
                 });
               }
             };

@@ -82,6 +82,10 @@ angular.module('suiviApp')
         return $http.get(`${URL_ENT}/api/structures/${uai}`);
       });
 
+      APIs.get_structures = _.memoize(function(uais) {
+        return $http.get(`${URL_ENT}/api/structures/`, { params: { 'id[]': uais } });
+      });
+
       APIs.query_common_onglets_of = function(uids) {
         return Onglets.query({ "uids[]": uids }).$promise
           .then(function success(response) {
