@@ -245,7 +245,7 @@ angular.module('suiviApp')
                       && droit.read) {
                       droit.onglets_ids = onglets_ids;
 
-                      (_(droit).has('id') ? Droits.update(droit) : Droits.save(droit);
+                      _(droit).has('id') ? Droits.update(droit) : Droits.save(droit);
                     }
                   });
               }
