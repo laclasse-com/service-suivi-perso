@@ -212,13 +212,13 @@ angular.module('suiviApp')
             }
           });
       }],
-    template: `
+template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
   .filter .panel-body { max-height: 380px; overflow-y: auto; }
-.trombinoscope .excluded .eleve { opacity: 0.8; }
-.regroupement {background-color: rgba(240, 240, 240, 0.66);}
-.trombinoscope .excluded .eleve .full-name { color: lightgray; text-decoration: double line-through; }
+  .trombinoscope .excluded .eleve { opacity: 0.8; }
+  .regroupement {background-color: rgba(240, 240, 240, 0.66);}
+  .trombinoscope .excluded .eleve .full-name { color: lightgray; text-decoration: double line-through; }
 </style>
 <div class="col-md-4 gris1-moins aside trombinoscope-aside" style="padding: 0;">
   <div class="panel panel-default gris1-moins">
@@ -228,7 +228,7 @@ angular.module('suiviApp')
 
         <a class="btn btn-primary"
            title="Gestion des onglets communs"
-           ng:if="$ctrl.can_do_batch"
+           ng:if="$ctrl.current_user.can_do_batch"
            ui:sref="carnet({uids: $ctrl.pluck_selected_uids()})">
           <span class="glyphicon glyphicon-user"></span>
           <span class="glyphicon glyphicon-user" style="font-size: 125%; margin-left: -11px; margin-right: -11px;"></span>
@@ -321,9 +321,10 @@ angular.module('suiviApp')
         ng:style="{'background-image': 'url( {{eleve.avatar}} )' }"
         ng:repeat="eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )">
       <button class="btn btn-danger pull-left" style="height: 10%;"
+              title="exclure de la sélection"
               ng:style="{'opacity': eleve.excluded ? '1' : '0.5'}"
               uib:btn-checkbox ng:model="eleve.excluded"
-              title="exclure de la sélection">
+              ng:if="$ctrl.current_user.can_do_batch">
         <span class="glyphicon glyphicon-ban-circle"></span>
       </button>
       <h5 class="regroupement pull-right" style="height: 10%;">{{eleve.regroupement.name}}</h5>

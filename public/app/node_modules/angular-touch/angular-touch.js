@@ -1,6 +1,6 @@
 /**
- * @license AngularJS v1.6.7
- * (c) 2010-2017 Google, Inc. http://angularjs.org
+ * @license AngularJS v1.6.9
+ * (c) 2010-2018 Google, Inc. http://angularjs.org
  * License: MIT
  */
 (function(window, angular) {'use strict';
@@ -24,7 +24,7 @@
 /* global -ngTouch */
 var ngTouch = angular.module('ngTouch', []);
 
-ngTouch.info({ angularVersion: '1.6.7' });
+ngTouch.info({ angularVersion: '1.6.9' });
 
 ngTouch.provider('$touch', $TouchProvider);
 
@@ -402,7 +402,7 @@ var ngTouchClickDirectiveFactory = ['$parse', '$timeout', '$rootElement',
   //
   // This is an ugly, terrible hack!
   // Yeah, tell me about it. The alternatives are using the slow click events, or making our users
-  // deal with the ghost clicks, so I consider this the least of evils. Fortunately Angular
+  // deal with the ghost clicks, so I consider this the least of evils. Fortunately AngularJS
   // encapsulates this ugly logic away from the user.
   //
   // Why not just put click handlers on the element?
