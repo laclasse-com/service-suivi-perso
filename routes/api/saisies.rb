@@ -82,7 +82,7 @@ module Suivi
               onglet.remove_saisy( saisie )
             end
 
-            saisie.destroy if saisie.onglets.empty?
+            json( saisie.destroy ) if saisie.onglets.empty?
           end
         end
       end
