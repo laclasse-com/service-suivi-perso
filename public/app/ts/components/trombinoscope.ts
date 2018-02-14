@@ -1,220 +1,222 @@
 angular.module('suiviApp')
   .component('trombinoscope',
-  {
-    controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups', 'User',
-      function($filter, $q, URL_ENT, APIs, Popups, User) {
-        let ctrl = this;
+    {
+      controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups', 'User',
+        function($filter, $q, URL_ENT, APIs, Popups, User) {
+          let ctrl = this;
 
-        ctrl.pretty_labels = {
-          "CLS": "classe",
-          "GRP": "groupe d'élèves",
-          "GPL": "groupe libre"
-        };
-
-        ctrl.popup_onglet_batch = Popups.onglet_batch;
-        ctrl.popup_batch = Popups.batch;
-        ctrl.popup_onglet_batch_callback = function(feedback) { console.log(feedback); };
-
-        ctrl.popup_publish_batch = Popups.publish_batch;
-
-        ctrl.filters = {
-          text: '',
-          groups: [],
-          grades: []
-        };
-        ctrl.only_display_relevant_to = false;
-        ctrl.eleves = [];
-        ctrl.groups = [];
-        ctrl.structures = [];
-
-        let fix_avatar_url = function(avatar_url) {
-          return (_(avatar_url.match(/^(user|http)/)).isNull() ? `${URL_ENT}/` : '') + avatar_url;
-        };
-
-        ctrl.apply_filters = function() {
-          let selected_structures_ids = _.chain(ctrl.structures).where({ selected: true }).pluck('id').value();
-          let selected_groups_ids = _.chain(ctrl.groups).where({ selected: true }).pluck('id').value();
-          let selected_grades_ids = _.chain(ctrl.grades).where({ selected: true }).pluck('id').value();
-          let grades_ids_from_groups_ids = (groups_ids) => {
-            return _.chain(ctrl.groups)
-              .select((group) => { return _(groups_ids).contains(group.id) })
-              .pluck("grades")
-              .flatten()
-              .pluck("grade_id")
-              .uniq()
-              .value();
-          };
-          let structures_ids_from_groups_ids = (groups_ids) => {
-            return _.chain(ctrl.groups)
-              .select((group) => { return _(groups_ids).contains(group.id) })
-              .pluck("structure_id")
-              .uniq()
-              .value();
+          ctrl.pretty_labels = {
+            "CLS": "classe",
+            "GRP": "groupe d'élèves",
+            "GPL": "groupe libre"
           };
 
-          return function(pupil) {
-            return `${pupil.firstname}${pupil.lastname}`.toLocaleLowerCase().includes(ctrl.filters.text.toLocaleLowerCase())
-              && (selected_structures_ids.length == 0 || _(selected_structures_ids).intersection(structures_ids_from_groups_ids(_(pupil.groups).pluck('group_id'))).length > 0)
-              && (selected_groups_ids.length == 0 || _(selected_groups_ids).intersection(_(pupil.groups).pluck('group_id')).length > 0)
-              && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(grades_ids_from_groups_ids(_(pupil.groups).pluck('group_id'))).length > 0)
-              && (!ctrl.only_display_relevant_to || pupil.relevant)
+          ctrl.popup_onglet_batch = Popups.onglet_batch;
+          ctrl.popup_batch = Popups.batch;
+          ctrl.popup_onglet_batch_callback = function(feedback) { console.log(feedback); };
+
+          ctrl.popup_publish_batch = Popups.publish_batch;
+
+          ctrl.filters = {
+            text: '',
+            groups: [],
+            grades: []
           };
-        };
+          ctrl.only_display_relevant_to = false;
+          ctrl.eleves = [];
+          ctrl.groups = [];
+          ctrl.structures = [];
 
-        ctrl.clear_filters = function(type) {
-          if (_(['CLS', 'GRP', 'GPL']).contains(type)) {
-            _.chain(ctrl['groups']).select(function(item) { return item.selected && item.type == type; }).each(function(item) { item.selected = false; });
-          } else {
-            _(ctrl[type]).each(function(item) { item.selected = false; });
-          }
-        };
+          let fix_avatar_url = function(avatar_url) {
+            return (_(avatar_url.match(/^(user|http)/)).isNull() ? `${URL_ENT}/` : '') + avatar_url;
+          };
 
-        ctrl.pluck_selected_uids = function() {
-          var filter = ctrl.apply_filters();
-
-          return _.chain(ctrl.eleves)
-            .select(function(pupil) { return filter(pupil); })
-            .reject(function(pupil) { return pupil.excluded; })
-            .pluck('id')
-            .value();
-        };
-
-        ctrl.pluriel = function(item_count, character) {
-          return item_count > 1 ? character : '';
-        }
-
-        User.get().$promise
-          .then(function(response) {
-            ctrl.current_user = response;
-
-            ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
-
-            return APIs.query_carnets_relevant_to(ctrl.current_user.id);
-          },
-          function error(response) { })
-          .then(function success(response) {
-            ctrl.relevant_to = _(response.data).pluck('uid_eleve');
-
-            return ctrl.current_user.get_actual_groups();
-          },
-          function error(response) { })
-          .then(function(groups) {
-            let users_ids = [];
-            let promises = [];
-            let process_groups = (groups) => {
-              ctrl.groups = ctrl.groups.concat(
-                _(groups).select((group) => { return group.type == "GPL" || _(group.users).findWhere({ type: "ELV" }) != undefined; })
-              );
-
-              APIs.get_grades(_.chain(ctrl.groups)
-                .pluck('grades')
+          ctrl.apply_filters = function() {
+            let selected_structures_ids = _.chain(ctrl.structures).where({ selected: true }).pluck('id').value();
+            let selected_groups_ids = _.chain(ctrl.groups).where({ selected: true }).pluck('id').value();
+            let selected_grades_ids = _.chain(ctrl.grades).where({ selected: true }).pluck('id').value();
+            let grades_ids_from_groups_ids = (groups_ids) => {
+              return _.chain(ctrl.groups)
+                .select((group) => { return _(groups_ids).contains(group.id) })
+                .pluck("grades")
                 .flatten()
-                .pluck('grade_id')
-                .value())
-                .then(function success(response) {
-                  ctrl.grades = response.data;
-                },
-                function error(response) { });
+                .pluck("grade_id")
+                .uniq()
+                .value();
+            };
+            let structures_ids_from_groups_ids = (groups_ids) => {
+              return _.chain(ctrl.groups)
+                .select((group) => { return _(groups_ids).contains(group.id) })
+                .pluck("structure_id")
+                .uniq()
+                .value();
+            };
 
-              users_ids = users_ids.concat(
-                _.chain(groups)
-                  .pluck("users")
+            return function(pupil) {
+              return `${pupil.firstname}${pupil.lastname}`.toLocaleLowerCase().includes(ctrl.filters.text.toLocaleLowerCase())
+                && (selected_structures_ids.length == 0 || _(selected_structures_ids).intersection(structures_ids_from_groups_ids(_(pupil.groups).pluck('group_id'))).length > 0)
+                && (selected_groups_ids.length == 0 || _(selected_groups_ids).intersection(_(pupil.groups).pluck('group_id')).length > 0)
+                && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(grades_ids_from_groups_ids(_(pupil.groups).pluck('group_id'))).length > 0)
+                && (!ctrl.only_display_relevant_to || pupil.relevant)
+            };
+          };
+
+          ctrl.clear_filters = function(type) {
+            if (_(['CLS', 'GRP', 'GPL']).contains(type)) {
+              _.chain(ctrl['groups']).select(function(item) { return item.selected && item.type == type; }).each(function(item) { item.selected = false; });
+            } else {
+              _(ctrl[type]).each(function(item) { item.selected = false; });
+            }
+          };
+
+          ctrl.pluck_selected_uids = function() {
+            var filter = ctrl.apply_filters();
+
+            return _.chain(ctrl.eleves)
+              .select(function(pupil) { return filter(pupil); })
+              .reject(function(pupil) { return pupil.excluded; })
+              .pluck('id')
+              .value();
+          };
+
+          ctrl.pluriel = function(item_count, character) {
+            return item_count > 1 ? character : '';
+          }
+
+          User.get().$promise
+            .then(function(response) {
+              ctrl.current_user = response;
+
+              ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
+
+              return APIs.query_carnets_relevant_to(ctrl.current_user.id);
+            },
+              function error(response) { })
+            .then(function success(response) {
+              ctrl.relevant_to = _(response.data).pluck('uid_eleve');
+
+              return ctrl.current_user.get_actual_groups();
+            },
+              function error(response) { })
+            .then(function(groups) {
+              let users_ids = [];
+              let promises = [];
+              let process_groups = (groups) => {
+                ctrl.groups = ctrl.groups.concat(
+                  _(groups).select((group) => { return group.type == "GPL" || _(group.users).findWhere({ type: "ELV" }) != undefined; })
+                );
+
+                APIs.get_grades(_.chain(ctrl.groups)
+                  .pluck('grades')
                   .flatten()
-                  .compact()
-                  .select((user) => user.type == "ELV")
-                  .pluck("user_id")
-                  .value()
-              );
-            };
+                  .pluck('grade_id')
+                  .value())
+                  .then(function success(response) {
+                    ctrl.grades = response.data;
+                  },
+                    function error(response) { });
 
-            let process_structures_ids = (structures_ids) => {
-              if (structures_ids.length > 1) {
-                APIs.get_structures(structures_ids).then((response) => {
-                  ctrl.structures = ctrl.structures.concat(response.data);
-                });
-              }
-            };
+                users_ids = users_ids.concat(
+                  _.chain(groups)
+                    .pluck("users")
+                    .flatten()
+                    .compact()
+                    .select((user) => user.type == "ELV")
+                    .pluck("user_id")
+                    .value()
+                );
+              };
 
-            // user is a student
-            if (_.chain(ctrl.current_user.profiles).pluck("type").contains("ELV").value()) {
-              users_ids.push(ctrl.current_user.id);
-            }
-
-            // user has children
-            users_ids = users_ids.concat(_(ctrl.current_user.children).pluck('child_id'));
-
-            // user has groups
-            let groups_ids = _.chain(ctrl.current_user.groups)
-              .reject((group) => { return _(["ELV"]).contains(group.type); })
-              .pluck("group_id")
-              .value();
-            if (groups_ids.length > 0) {
-              promises.push(
-                APIs.get_groups(groups_ids)
-                  .then((response) => {
-                    process_structures_ids(_.chain(response.data)
-                      .pluck("structure_id")
-                      .uniq()
-                      .value());
-
-                    process_groups(response.data);
-                  })
-              );
-            }
-
-            // user is able to see every student of given structure
-            let structures_ids = _.chain(ctrl.current_user.profiles)
-              .select((profile) => _(["ADM", "DIR", "DOC", "ETA", "EVS", "ORI"]).contains(profile.type))
-              .pluck("structure_id")
-              .uniq()
-              .value();
-
-            if (!_(structures_ids).isEmpty()) {
-              process_structures_ids(structures_ids);
-
-              promises.push(APIs.get_groups_of_structures(structures_ids)
-                .then(function(response) {
-                  process_groups(response.data);
-                }));
-            }
-
-            // process users_ids
-            $q.all(promises).then(() => {
-              users_ids = _(users_ids).uniq();
-
-              while (users_ids.length > 0) {
-                APIs.get_users(users_ids.splice(0, 200))
-                  .then(function(users) {
-                    ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
-                      eleve.avatar = fix_avatar_url(eleve.avatar);
-                      eleve.excluded = false;
-                      eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
-
-                      let classe = _.chain(eleve.groups)
-                        .map((group) => {
-                          return _(ctrl.groups).findWhere({ id: group.group_id, type: "CLS" });
-                        })
-                        .compact()
-                        .first()
-                        .value();
-
-                      if (classe != undefined) {
-                        eleve.regroupement = {
-                          id: classe.id,
-                          name: classe.name,
-                          type: classe.type
-                        };
-                        eleve.etablissement = classe.structure_id;
-                        eleve.enseignants = classe.profs;
-                      }
-
-                      return eleve;
-                    }));
+              let process_structures_ids = (structures_ids) => {
+                if (structures_ids.length > 1) {
+                  APIs.get_structures(structures_ids).then((response) => {
+                    ctrl.structures = ctrl.structures.concat(response.data);
                   });
+                }
+              };
+
+              // user is a student
+              if (_.chain(ctrl.current_user.profiles).pluck("type").contains("ELV").value()) {
+                users_ids.push(ctrl.current_user.id);
               }
+
+              // user has children
+              users_ids = users_ids.concat(_(ctrl.current_user.children).pluck('child_id'));
+
+              // user has groups
+              let groups_ids = _.chain(groups)
+                .reject((group) => { return _(["ELV"]).contains(group.type); })
+                .pluck("group_id")
+                .value();
+              if (groups_ids.length > 0) {
+                promises.push(
+                  APIs.get_groups(groups_ids)
+                    .then((response) => {
+                      process_structures_ids(_.chain(response.data)
+                        .pluck("structure_id")
+                        .uniq()
+                        .value());
+
+                      process_groups(response.data);
+                    })
+                );
+              }
+
+              // user is able to see every student of given structure
+              let structures_ids = _.chain(ctrl.current_user.profiles)
+                .select((profile) => _(["ADM", "DIR", "DOC", "ETA", "EVS", "ORI"]).contains(profile.type))
+                .pluck("structure_id")
+                .uniq()
+                .value();
+
+              if (!_(structures_ids).isEmpty()) {
+                process_structures_ids(structures_ids);
+
+                promises.push(APIs.get_groups_of_structures(structures_ids)
+                  .then(function(response) {
+                    process_groups(response.data);
+                  }));
+              }
+
+              // process users_ids
+              $q.all(promises).then(() => {
+                users_ids = _(users_ids).uniq();
+
+                while (users_ids.length > 0) {
+                  APIs.get_users(users_ids.splice(0, 200))
+                    .then(function(users) {
+                      ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function(eleve) {
+                        eleve.avatar = fix_avatar_url(eleve.avatar);
+                        eleve.excluded = false;
+                        eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
+
+                        let classe = _.chain(eleve.groups)
+                          .map((group) => {
+                            return _(ctrl.groups).findWhere({ id: group.group_id, type: "CLS" });
+                          })
+                          .compact()
+                          .first()
+                          .value();
+
+                        if (classe != undefined) {
+                          eleve.regroupement = {
+                            id: classe.id,
+                            name: classe.name,
+                            type: classe.type
+                          };
+                          eleve.etablissement = classe.structure_id;
+                          eleve.enseignants = classe.profs;
+                        }
+
+                        return eleve;
+                      }));
+
+                      ctrl.eleves = _(ctrl.eleves).uniq((eleve) => { return eleve.id; });
+                    });
+                }
+              });
             });
-          });
-      }],
+        }],
 template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
@@ -372,4 +374,4 @@ template: `
   </ul>
 </div>
 `
-  });
+    });

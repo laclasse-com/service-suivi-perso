@@ -220,9 +220,9 @@ angular.module('suiviApp')
                 }
             };
             ctrl.update_deletabilities = function () {
-                _(ctrl.droits).each(function (droit) {
+                ctrl.droits.forEach(function (droit) {
                     droit.deletable = droit.uid != UID;
-                    if (!_(ctrl.uidEleve).isUndefined()) {
+                    if (ctrl.uidEleve != undefined) {
                         droit.deletable = droit.deletable && droit.uid != ctrl.uidEleve;
                     }
                 });
@@ -236,7 +236,7 @@ angular.module('suiviApp')
                 }, function error(response) { });
                 User.get().$promise
                     .then(function success(current_user) {
-                    return current_user.get_actuel_groups();
+                    return current_user.get_actual_groups();
                 })
                     .then(function success(response) {
                     ctrl.groups = response.filter(function (group) { return group.type == "GPL"; })
@@ -248,7 +248,7 @@ angular.module('suiviApp')
                 }, function error(response) { });
             };
         }],
-    template: "\n                          <div>\n                            <label>Gestion des droits</label>\n                            <table style=\"width: 100%;\">\n                              <tr style=\"text-align: right;\"\n                                  ng:repeat=\"droit in $ctrl.droits\"\n                                  ng:if=\"ctrl.sharing_enabled || !droit.sharable_id\">\n                                <td>\n                                  <label ng:if=\"droit.uid\">Personne :\n                                    <select style=\"width: 250px;\"\n                                            ng:model=\"droit.uid\"\n                                            ng:change=\"droit.dirty.uid = true\"\n                                            ng:disabled=\"droit.to_delete\"\n                                            ng:options=\"people.id as people.firstname + ' ' + people.lastname group by people.type for people in $ctrl.concernedPeople\">\n                                    </select>\n                                  </label>\n\n                                  <label ng:if=\"droit.profil_id\">Profil :\n                                    <select style=\"width: 250px;\"\n                                            ng:model=\"droit.profil_id\"\n                                            ng:change=\"droit.dirty.profil_id = true\"\n                                            ng:disabled=\"droit.to_delete\">\n                                      <option ng:repeat=\"profil in $ctrl.profils track by profil.id\"\n                                              ng:value=\"profil.id\">{{profil.name}}</option>\n                                    </select>\n                                  </label>\n\n                                  <label ng:if=\"droit.group_id\">Groupe :\n                                    <select style=\"width: 250px;\"\n                                            ng:model=\"droit.group_id\"\n                                            ng:change=\"droit.dirty.group_id = true\"\n                                            ng:disabled=\"droit.to_delete\"\n                                            ng:options=\"group.id as group.name group by group.type for group in $ctrl.groups\">\n                                    </select>\n                                  </label>\n\n                                  <label ng:if=\"droit.sharable_id\">Partage :\n                                    <input style=\"width: 250px;\"\n                                           type=\"text\"\n                                           ng:model=\"droit.sharable_id\"\n                                           ng:change=\"droit.dirty.sharable_id = true\"\n                                           ng:disabled=\"droit.to_delete\" />\n                                  </label>\n                                </td>\n                                <td>\n                                  <button type=\"button\" class=\"btn\"\n                                          ng:class=\"{'btn-default': !droit.read, 'btn-success': droit.read}\"\n                                          ng:model=\"droit.read\"\n                                          ng:change=\"$ctrl.set_read( droit )\"\n                                          ng:disabled=\"droit.to_delete || droit.sharable_id\"\n                                          uib:btn-checkbox\n                                          btn-checkbox-true=\"true\"\n                                          btn-checkbox-false=\"false\"\n                                          uib:tooltip=\"droit de lecture\">\n                                    <span class=\"glyphicon glyphicon-eye-open\"></span>\n                                  </button>\n                                </td>\n                                <td>\n                                  <button type=\"button\" class=\"btn\"\n                                          ng:class=\"{'btn-default': !droit.write, 'btn-success': droit.write}\"\n                                          ng:model=\"droit.write\"\n                                          ng:change=\"$ctrl.set_write( droit )\"\n                                          ng:disabled=\"droit.to_delete || droit.sharable_id\"\n                                          uib:btn-checkbox\n                                          btn-checkbox-true=\"true\"\n                                          btn-checkbox-false=\"false\"\n                                          uib:tooltip=\"droit d'\u00E9criture\">\n                                    <span class=\"glyphicon glyphicon-edit\"></span>\n                                  </button>\n                                </td>\n                                <td>\n                                  <button type=\"button\" class=\"btn\"\n                                          ng:class=\"{'btn-default': !droit.manage, 'btn-success': droit.manage}\"\n                                          ng:model=\"droit.manage\"\n                                          ng:change=\"$ctrl.set_manage( droit )\"\n                                          ng:disabled=\"droit.to_delete || droit.sharable_id\"\n                                          uib:btn-checkbox\n                                          btn-checkbox-true=\"true\"\n                                          btn-checkbox-false=\"false\"\n                                          uib:tooltip=\"droit d'administration\">\n                                    <span class=\"glyphicon glyphicon-cog\"></span>\n                                  </button>\n                                </td>\n                                <td>\n                                  <button type=\"button\" class=\"btn\"\n                                          ng:class=\"{'btn-default': !droit.to_delete, 'btn-warning': droit.to_delete}\"\n                                          ng:disabled=\"!droit.deletable && !droit.to_delete\"\n                                          ng:model=\"droit.to_delete\"\n                                          ng:change=\"$ctrl.update_deletabilities()\"\n                                          uib:btn-checkbox\n                                          btn-checkbox-true=\"true\"\n                                          btn-checkbox-false=\"false\">\n                                    <span class=\"glyphicon glyphicon-trash\"></span>\n                                  </button>\n                                </td>\n                              </tr>\n                              <tfoot>\n                                <td colspan=\"3\">\n                                  <button class=\"btn btn-default\"\n                                          ng:click=\"$ctrl.add({ uid: '...', read: true, write: true })\">\n                                    <span class=\"glyphicon glyphicon-plus-sign\"></span> par personne\n                                  </button>\n\n                                  <button class=\"btn btn-default\"\n                                          ng:click=\"$ctrl.add({ profil_id: '...', read: true, write: false })\">\n                                    <span class=\"glyphicon glyphicon-plus-sign\"></span> par profil\n                                  </button>\n\n                                  <button class=\"btn btn-default\"\n                                          ng:click=\"$ctrl.add({ group_id: '...', read: true, write: false })\"\n                                          ng:if=\"$ctrl.groups.length > 0\">\n                                    <span class=\"glyphicon glyphicon-plus-sign\"></span> par groupe\n                                  </button>\n\n                                  <button class=\"btn btn-warning pull-right\"\n                                          ng:if=\"ctrl.sharing_enabled\"\n                                          ng:click=\"$ctrl.add_sharable({ read: true, write: false })\">\n                                    <span class=\"glyphicon glyphicon-plus-sign\"></span> partage\n                                  </button>\n                                </td>\n                              </tfoot>\n                            </table>\n                          </div>\n"
+    template: "\n                            <div>\n                              <label>Gestion des droits</label>\n                              <table style=\"width: 100%;\">\n                                <tr style=\"text-align: right;\"\n                                    ng:repeat=\"droit in $ctrl.droits\"\n                                    ng:if=\"ctrl.sharing_enabled || !droit.sharable_id\">\n                                  <td>\n                                    <label ng:if=\"droit.uid\">Personne :\n                                      <select style=\"width: 250px;\"\n                                              ng:model=\"droit.uid\"\n                                              ng:change=\"droit.dirty.uid = true\"\n                                              ng:disabled=\"droit.to_delete\"\n                                              ng:options=\"people.id as people.firstname + ' ' + people.lastname group by people.type for people in $ctrl.concernedPeople\">\n                                      </select>\n                                    </label>\n\n                                    <label ng:if=\"droit.profil_id\">Profil :\n                                      <select style=\"width: 250px;\"\n                                              ng:model=\"droit.profil_id\"\n                                              ng:change=\"droit.dirty.profil_id = true\"\n                                              ng:disabled=\"droit.to_delete\">\n                                        <option ng:repeat=\"profil in $ctrl.profils track by profil.id\"\n                                                ng:value=\"profil.id\">{{profil.name}}</option>\n                                      </select>\n                                    </label>\n\n                                    <label ng:if=\"droit.group_id\">Groupe :\n                                      <select style=\"width: 250px;\"\n                                              ng:model=\"droit.group_id\"\n                                              ng:change=\"droit.dirty.group_id = true\"\n                                              ng:disabled=\"droit.to_delete\"\n                                              ng:options=\"group.id as group.name group by group.type for group in $ctrl.groups\">\n                                      </select>\n                                    </label>\n\n                                    <label ng:if=\"droit.sharable_id\">Partage :\n                                      <input style=\"width: 250px;\"\n                                             type=\"text\"\n                                             ng:model=\"droit.sharable_id\"\n                                             ng:change=\"droit.dirty.sharable_id = true\"\n                                             ng:disabled=\"droit.to_delete\" />\n                                    </label>\n                                  </td>\n                                  <td>\n                                    <button type=\"button\" class=\"btn\"\n                                            ng:class=\"{'btn-default': !droit.read, 'btn-success': droit.read}\"\n                                            ng:model=\"droit.read\"\n                                            ng:change=\"$ctrl.set_read( droit )\"\n                                            ng:disabled=\"droit.to_delete || droit.sharable_id\"\n                                            uib:btn-checkbox\n                                            btn-checkbox-true=\"true\"\n                                            btn-checkbox-false=\"false\"\n                                            uib:tooltip=\"droit de lecture\">\n                                      <span class=\"glyphicon glyphicon-eye-open\"></span>\n                                    </button>\n                                  </td>\n                                  <td>\n                                    <button type=\"button\" class=\"btn\"\n                                            ng:class=\"{'btn-default': !droit.write, 'btn-success': droit.write}\"\n                                            ng:model=\"droit.write\"\n                                            ng:change=\"$ctrl.set_write( droit )\"\n                                            ng:disabled=\"droit.to_delete || droit.sharable_id\"\n                                            uib:btn-checkbox\n                                            btn-checkbox-true=\"true\"\n                                            btn-checkbox-false=\"false\"\n                                            uib:tooltip=\"droit d'\u00E9criture\">\n                                      <span class=\"glyphicon glyphicon-edit\"></span>\n                                    </button>\n                                  </td>\n                                  <td>\n                                    <button type=\"button\" class=\"btn\"\n                                            ng:class=\"{'btn-default': !droit.manage, 'btn-success': droit.manage}\"\n                                            ng:model=\"droit.manage\"\n                                            ng:change=\"$ctrl.set_manage( droit )\"\n                                            ng:disabled=\"droit.to_delete || droit.sharable_id\"\n                                            uib:btn-checkbox\n                                            btn-checkbox-true=\"true\"\n                                            btn-checkbox-false=\"false\"\n                                            uib:tooltip=\"droit d'administration\">\n                                      <span class=\"glyphicon glyphicon-cog\"></span>\n                                    </button>\n                                  </td>\n                                  <td>\n                                    <button type=\"button\" class=\"btn\"\n                                            ng:class=\"{'btn-default': !droit.to_delete, 'btn-warning': droit.to_delete}\"\n                                            ng:disabled=\"!droit.deletable && !droit.to_delete\"\n                                            ng:model=\"droit.to_delete\"\n                                            ng:change=\"$ctrl.update_deletabilities()\"\n                                            uib:btn-checkbox\n                                            btn-checkbox-true=\"true\"\n                                            btn-checkbox-false=\"false\">\n                                      <span class=\"glyphicon glyphicon-trash\"></span>\n                                    </button>\n                                  </td>\n                                </tr>\n                                <tfoot>\n                                  <td colspan=\"3\">\n                                    <button class=\"btn btn-default\"\n                                            ng:click=\"$ctrl.add({ uid: '...', read: true, write: true })\">\n                                      <span class=\"glyphicon glyphicon-plus-sign\"></span> par personne\n                                    </button>\n\n                                    <button class=\"btn btn-default\"\n                                            ng:click=\"$ctrl.add({ profil_id: '...', read: true, write: false })\">\n                                      <span class=\"glyphicon glyphicon-plus-sign\"></span> par profil\n                                    </button>\n\n                                    <button class=\"btn btn-default\"\n                                            ng:click=\"$ctrl.add({ group_id: '...', read: true, write: false })\"\n                                            ng:if=\"$ctrl.groups.length > 0\">\n                                      <span class=\"glyphicon glyphicon-plus-sign\"></span> par groupe\n                                    </button>\n\n                                    <button class=\"btn btn-warning pull-right\"\n                                            ng:if=\"ctrl.sharing_enabled\"\n                                            ng:click=\"$ctrl.add_sharable({ read: true, write: false })\">\n                                      <span class=\"glyphicon glyphicon-plus-sign\"></span> partage\n                                    </button>\n                                  </td>\n                                </tfoot>\n                              </table>\n                            </div>\n"
 });
 angular.module('suiviApp')
     .config(['$compileProvider',
@@ -368,7 +368,7 @@ angular.module('suiviApp')
                 });
             };
         }],
-    template: "\n  <style>\n    .manage-onglet { margin-top: -11px; margin-right: -16px; border-radius: 0 0 0 12px; }\n  </style>\n  <uib-tabset>\n    <uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n      <uib-tab-heading> {{onglet.nom}}\n        <button class=\"btn btn-warning manage-onglet\"\n                ng:if=\"onglet.manageable\"\n                ng:click=\"$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n          <span class=\"glyphicon glyphicon-cog\"></span>\n        </button>\n      </uib-tab-heading>\n\n      <onglet uids=\"$ctrl.uids\"\n              onglets=\"$ctrl.onglets\"\n              onglet=\"onglet\">\n      </onglet>\n    </uib-tab>\n\n    <li>\n      <a href\n         class=\"bleu add-onglet\"\n         ng:click=\"$ctrl.popup_onglet( $ctrl.uids, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\"\n         ng:if=\"$ctrl.can_add_tab\">\n        <span class=\"glyphicon glyphicon-plus\">\n        </span>\n      </a>\n    </li>\n  </uib-tabset>\n"
+    template: "\n<style>\n.manage-onglet { margin-top: -11px; margin-right: -16px; border-radius: 0 0 0 12px; }\n</style>\n<uib-tabset>\n<uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n<uib-tab-heading> {{onglet.nom}}\n        <button class=\"btn btn-warning manage-onglet\"\n                ng:if=\"onglet.manageable\"\n                ng:click=\"$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n          <span class=\"glyphicon glyphicon-cog\"></span>\n        </button>\n      </uib-tab-heading>\n\n      <onglet uids=\"$ctrl.uids\"\n              onglets=\"$ctrl.onglets\"\n              onglet=\"onglet\">\n      </onglet>\n    </uib-tab>\n\n    <li>\n      <a href\n         class=\"bleu add-onglet\"\n         ng:click=\"$ctrl.popup_onglet( $ctrl.uids, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\"\n         ng:if=\"$ctrl.can_add_tab\">\n        <span class=\"glyphicon glyphicon-plus\">\n        </span>\n      </a>\n    </li>\n  </uib-tabset>\n"
 });
 angular.module('suiviApp')
     .component('saisie', {
@@ -477,16 +477,36 @@ angular.module('suiviApp')
             };
             ctrl.only_display_relevant_to = false;
             ctrl.eleves = [];
+            ctrl.groups = [];
+            ctrl.structures = [];
             var fix_avatar_url = function (avatar_url) {
                 return (_(avatar_url.match(/^(user|http)/)).isNull() ? URL_ENT + "/" : '') + avatar_url;
             };
             ctrl.apply_filters = function () {
+                var selected_structures_ids = _.chain(ctrl.structures).where({ selected: true }).pluck('id').value();
                 var selected_groups_ids = _.chain(ctrl.groups).where({ selected: true }).pluck('id').value();
                 var selected_grades_ids = _.chain(ctrl.grades).where({ selected: true }).pluck('id').value();
+                var grades_ids_from_groups_ids = function (groups_ids) {
+                    return _.chain(ctrl.groups)
+                        .select(function (group) { return _(groups_ids).contains(group.id); })
+                        .pluck("grades")
+                        .flatten()
+                        .pluck("grade_id")
+                        .uniq()
+                        .value();
+                };
+                var structures_ids_from_groups_ids = function (groups_ids) {
+                    return _.chain(ctrl.groups)
+                        .select(function (group) { return _(groups_ids).contains(group.id); })
+                        .pluck("structure_id")
+                        .uniq()
+                        .value();
+                };
                 return function (pupil) {
                     return ("" + pupil.firstname + pupil.lastname).toLocaleLowerCase().includes(ctrl.filters.text.toLocaleLowerCase())
+                        && (selected_structures_ids.length == 0 || _(selected_structures_ids).intersection(structures_ids_from_groups_ids(_(pupil.groups).pluck('group_id'))).length > 0)
                         && (selected_groups_ids.length == 0 || _(selected_groups_ids).intersection(_(pupil.groups).pluck('group_id')).length > 0)
-                        && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(_(pupil.regroupement.grades).pluck('grade_id')).length > 0)
+                        && (selected_grades_ids.length == 0 || _(selected_grades_ids).intersection(grades_ids_from_groups_ids(_(pupil.groups).pluck('group_id'))).length > 0)
                         && (!ctrl.only_display_relevant_to || pupil.relevant);
                 };
             };
@@ -513,7 +533,6 @@ angular.module('suiviApp')
                 .then(function (response) {
                 ctrl.current_user = response;
                 ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
-                ctrl.can_do_batch = ctrl.current_user.can_do_batch;
                 return APIs.query_carnets_relevant_to(ctrl.current_user.id);
             }, function error(response) { })
                 .then(function success(response) {
@@ -521,114 +540,97 @@ angular.module('suiviApp')
                 return ctrl.current_user.get_actual_groups();
             }, function error(response) { })
                 .then(function (groups) {
-                var classes = _(groups).where({ type: 'CLS' });
-                var post_concat = function () {
-                    ctrl.eleves = _.chain(ctrl.eleves)
-                        .uniq(function (eleve) { return eleve.id; })
-                        .each(function (eleve) { eleve.excluded = false; })
-                        .value();
+                var users_ids = [];
+                var promises = [];
+                var process_groups = function (groups) {
+                    ctrl.groups = ctrl.groups.concat(_(groups).select(function (group) { return group.type == "GPL" || _(group.users).findWhere({ type: "ELV" }) != undefined; }));
+                    APIs.get_grades(_.chain(ctrl.groups)
+                        .pluck('grades')
+                        .flatten()
+                        .pluck('grade_id')
+                        .value())
+                        .then(function success(response) {
+                        ctrl.grades = response.data;
+                    }, function error(response) { });
+                    users_ids = users_ids.concat(_.chain(groups)
+                        .pluck("users")
+                        .flatten()
+                        .compact()
+                        .select(function (user) { return user.type == "ELV"; })
+                        .pluck("user_id")
+                        .value());
                 };
-                switch (ctrl.current_user.profil_actif.type) {
-                    case "ELV":
-                        ctrl.current_user.regroupement = { libelle: classes[0].name };
-                        ctrl.current_user.relevant = true;
-                        ctrl.eleves = [ctrl.current_user];
-                        ctrl.relevant_to = _(ctrl.relevant_to).reject(function (uid) { return uid == ctrl.current_user.id; });
-                        APIs.get_users(ctrl.relevant_to)
+                var process_structures_ids = function (structures_ids) {
+                    if (structures_ids.length > 1) {
+                        APIs.get_structures(structures_ids).then(function (response) {
+                            ctrl.structures = ctrl.structures.concat(response.data);
+                        });
+                    }
+                };
+                if (_.chain(ctrl.current_user.profiles).pluck("type").contains("ELV").value()) {
+                    users_ids.push(ctrl.current_user.id);
+                }
+                users_ids = users_ids.concat(_(ctrl.current_user.children).pluck('child_id'));
+                var groups_ids = _.chain(groups)
+                    .reject(function (group) { return _(["ELV"]).contains(group.type); })
+                    .pluck("group_id")
+                    .value();
+                if (groups_ids.length > 0) {
+                    promises.push(APIs.get_groups(groups_ids)
+                        .then(function (response) {
+                        process_structures_ids(_.chain(response.data)
+                            .pluck("structure_id")
+                            .uniq()
+                            .value());
+                        process_groups(response.data);
+                    }));
+                }
+                var structures_ids = _.chain(ctrl.current_user.profiles)
+                    .select(function (profile) { return _(["ADM", "DIR", "DOC", "ETA", "EVS", "ORI"]).contains(profile.type); })
+                    .pluck("structure_id")
+                    .uniq()
+                    .value();
+                if (!_(structures_ids).isEmpty()) {
+                    process_structures_ids(structures_ids);
+                    promises.push(APIs.get_groups_of_structures(structures_ids)
+                        .then(function (response) {
+                        process_groups(response.data);
+                    }));
+                }
+                $q.all(promises).then(function () {
+                    users_ids = _(users_ids).uniq();
+                    while (users_ids.length > 0) {
+                        APIs.get_users(users_ids.splice(0, 200))
                             .then(function (users) {
                             ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function (eleve) {
                                 eleve.avatar = fix_avatar_url(eleve.avatar);
-                                eleve.relevant = true;
-                                var groups_ids = _(eleve.groups).pluck('group_id');
-                                if (!_(groups_ids).isEmpty()) {
-                                    APIs.get_groups(groups_ids)
-                                        .then(function (response) {
-                                        var regroupement = _(response.data).findWhere({ type: 'CLS' });
-                                        if (!_(regroupement).isUndefined()) {
-                                            eleve.regroupement = {
-                                                id: regroupement.id,
-                                                name: regroupement.name,
-                                                type: regroupement.type
-                                            };
-                                            eleve.etablissement = regroupement.structure_id;
-                                            eleve.enseignants = regroupement.profs;
-                                        }
-                                    });
+                                eleve.excluded = false;
+                                eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
+                                var classe = _.chain(eleve.groups)
+                                    .map(function (group) {
+                                    return _(ctrl.groups).findWhere({ id: group.group_id, type: "CLS" });
+                                })
+                                    .compact()
+                                    .first()
+                                    .value();
+                                if (classe != undefined) {
+                                    eleve.regroupement = {
+                                        id: classe.id,
+                                        name: classe.name,
+                                        type: classe.type
+                                    };
+                                    eleve.etablissement = classe.structure_id;
+                                    eleve.enseignants = classe.profs;
                                 }
                                 return eleve;
                             }));
-                        })
-                            .then(post_concat);
-                        break;
-                    case "TUT":
-                        var users_ids = _(ctrl.current_user.children).pluck('child_id');
-                        if (!_(users_ids).isEmpty()) {
-                            APIs.get_users(users_ids)
-                                .then(function (users) {
-                                ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function (eleve) {
-                                    eleve.avatar = fix_avatar_url(eleve.avatar);
-                                    var groups_ids = _(eleve.groups).pluck('group_id');
-                                    if (!_(groups_ids).isEmpty()) {
-                                        APIs.get_groups(groups_ids)
-                                            .then(function (response) {
-                                            var regroupement = _(response.data).findWhere({ type: 'CLS' });
-                                            if (!_(regroupement).isUndefined()) {
-                                                eleve.regroupement = {
-                                                    id: regroupement.id,
-                                                    name: regroupement.name,
-                                                    type: regroupement.type
-                                                };
-                                                eleve.etablissement = regroupement.structure_id;
-                                                eleve.enseignants = regroupement.profs;
-                                            }
-                                        });
-                                    }
-                                    return eleve;
-                                }));
-                            })
-                                .then(post_concat);
-                        }
-                        break;
-                    default:
-                        APIs.get_groups(_.chain(groups)
-                            .select(function (regroupement) {
-                            return _(regroupement).has('structure_id') && regroupement.structure_id === ctrl.current_user.profil_actif.structure_id;
-                        })
-                            .pluck('id')
-                            .uniq()
-                            .value())
-                            .then(function success(response) {
-                            ctrl.groups = response.data;
-                            ctrl.eleves = [];
-                            APIs.get_grades(_.chain(response.data)
-                                .pluck('grades')
-                                .flatten()
-                                .pluck('grade_id')
-                                .value())
-                                .then(function success(response) {
-                                ctrl.grades = response.data;
-                            }, function error(response) { });
-                            _(response.data).each(function (regroupement) {
-                                regroupement.profs = _.chain(regroupement.users).select(function (user) { return user.type === 'ENS'; }).pluck('user_id').value();
-                                var users_ids = _.chain(regroupement.users).select(function (user) { return user.type === 'ELV'; }).pluck('user_id').value();
-                                APIs.get_users(users_ids)
-                                    .then(function (users) {
-                                    ctrl.eleves = ctrl.eleves.concat(_(users.data).map(function (eleve) {
-                                        eleve.avatar = fix_avatar_url(eleve.avatar);
-                                        eleve.relevant = _(ctrl.relevant_to).contains(eleve.id);
-                                        eleve.regroupement = regroupement;
-                                        eleve.etablissement = regroupement.structure_id;
-                                        eleve.enseignants = regroupement.profs;
-                                        return eleve;
-                                    }));
-                                });
-                            });
-                        }, function error(response) { })
-                            .then(post_concat);
-                }
+                            ctrl.eleves = _(ctrl.eleves).uniq(function (eleve) { return eleve.id; });
+                        });
+                    }
+                });
             });
         }],
-    template: "\n<style>\n  .trombinoscope .petite.case { border: 1px solid transparent; }\n  .filter .panel-body { max-height: 380px; overflow-y: auto; }\n.trombinoscope .excluded .eleve { opacity: 0.8; }\n.regroupement {background-color: rgba(240, 240, 240, 0.66);}\n.trombinoscope .excluded .eleve .full-name { color: lightgray; text-decoration: double line-through; }\n</style>\n<div class=\"col-md-4 gris1-moins aside trombinoscope-aside\" style=\"padding: 0;\">\n  <div class=\"panel panel-default gris1-moins\">\n    <div class=\"panel-heading\" style=\"text-align: right; \">\n      <h3>\n        {{$ctrl.pluck_selected_uids().length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.pluck_selected_uids().length, 's')}} s\u00E9lectionn\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}}\n\n        <a class=\"btn btn-primary\"\n           title=\"Gestion des onglets communs\"\n           ng:if=\"$ctrl.can_do_batch\"\n           ui:sref=\"carnet({uids: $ctrl.pluck_selected_uids()})\">\n          <span class=\"glyphicon glyphicon-user\"></span>\n          <span class=\"glyphicon glyphicon-user\" style=\"font-size: 125%; margin-left: -11px; margin-right: -11px;\"></span>\n          <span class=\"glyphicon glyphicon-user\"></span>\n        </a>\n      </h3>\n    </div>\n    <div class=\"panel-body\">\n\n      <div class=\"row\">\n        <div class=\"col-md-12\">\n          <input class=\"form-control input-lg\"\n                 style=\"display: inline; background-color: rgba(240, 240, 240, 0.66);\"\n                 type=\"text\" name=\"search\"\n                 ng:model=\"$ctrl.filters.text\" />\n          <button class=\"btn btn-xs\" style=\"color: green; margin-left: -44px; margin-top: -4px;\"\n                  ng:click=\"$ctrl.filters.text = ''\"\n                  ng:disabled=\"$ctrl.filters.text.length == 0\">\n            <span class=\"glyphicon glyphicon-remove\"></span>\n          </button>\n        </div>\n      </div>\n\n      <div class=\"row\" style=\"margin-top: 14px;\">\n        <div class=\"col-md-6 filter\" ng:repeat=\"grp_type in ['CLS', 'GRP', 'GPL']\" ng:if=\"$ctrl.groups.length > 0\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par {{$ctrl.pretty_labels[grp_type]}}\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters( grp_type )\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"group in $ctrl.groups | filter:{type: grp_type} | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': group.selected, 'vert-moins': !group.selected}\"\n                        ng:model=\"group.selected\"\n                        uib:btn-checkbox>\n                  {{group.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        <div class=\"col-md-6 filter\" ng:if=\"$ctrl.grades.length > 0\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par niveau\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters('grades')\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': grade.selected, 'vert-moins': !grade.selected}\"\n                        ng:model=\"grade.selected\"\n                        uib:btn-checkbox>\n                  {{grade.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'relevant': eleve.relevant, 'excluded': eleve.excluded}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <button class=\"btn btn-danger pull-left\" style=\"height: 10%;\"\n              ng:style=\"{'opacity': eleve.excluded ? '1' : '0.5'}\"\n              uib:btn-checkbox ng:model=\"eleve.excluded\"\n              title=\"exclure de la s\u00E9lection\">\n        <span class=\"glyphicon glyphicon-ban-circle\"></span>\n      </button>\n      <h5 class=\"regroupement pull-right\" style=\"height: 10%;\">{{eleve.regroupement.name}}</h5>\n      <a class=\"eleve\" style=\"height: 90%; margin-top: 10%;\"\n         ui:sref=\"carnet({uids: [eleve.id]})\">\n\n        <div class=\"full-name\" title=\"{{eleve.relevant ? 'Vous \u00EAtes contributeur de ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h4 class=\"last-name\">{{eleve.lastname}}</h4>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
+    template: "\n<style>\n  .trombinoscope .petite.case { border: 1px solid transparent; }\n  .filter .panel-body { max-height: 380px; overflow-y: auto; }\n  .trombinoscope .excluded .eleve { opacity: 0.8; }\n  .regroupement {background-color: rgba(240, 240, 240, 0.66);}\n  .trombinoscope .excluded .eleve .full-name { color: lightgray; text-decoration: double line-through; }\n</style>\n<div class=\"col-md-4 gris1-moins aside trombinoscope-aside\" style=\"padding: 0;\">\n  <div class=\"panel panel-default gris1-moins\">\n    <div class=\"panel-heading\" style=\"text-align: right; \">\n      <h3>\n        {{$ctrl.pluck_selected_uids().length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.pluck_selected_uids().length, 's')}} s\u00E9lectionn\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}}\n\n        <a class=\"btn btn-primary\"\n           title=\"Gestion des onglets communs\"\n           ng:if=\"$ctrl.current_user.can_do_batch\"\n           ui:sref=\"carnet({uids: $ctrl.pluck_selected_uids()})\">\n          <span class=\"glyphicon glyphicon-user\"></span>\n          <span class=\"glyphicon glyphicon-user\" style=\"font-size: 125%; margin-left: -11px; margin-right: -11px;\"></span>\n          <span class=\"glyphicon glyphicon-user\"></span>\n        </a>\n      </h3>\n    </div>\n    <div class=\"panel-body\">\n\n      <div class=\"row\">\n        <div class=\"col-md-12\">\n          <input class=\"form-control input-lg\"\n                 style=\"display: inline; background-color: rgba(240, 240, 240, 0.66);\"\n                 type=\"text\" name=\"search\"\n                 ng:model=\"$ctrl.filters.text\" />\n          <button class=\"btn btn-xs\" style=\"color: green; margin-left: -44px; margin-top: -4px;\"\n                  ng:click=\"$ctrl.filters.text = ''\"\n                  ng:disabled=\"$ctrl.filters.text.length == 0\">\n            <span class=\"glyphicon glyphicon-remove\"></span>\n          </button>\n        </div>\n      </div>\n\n      <div class=\"row\" style=\"margin-top: 14px;\">\n        <div class=\"col-md-6 filter\"\n             ng:repeat=\"grp_type in ['CLS', 'GRP', 'GPL']\"\n             ng:if=\"$ctrl.groups.length > 0\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par {{$ctrl.pretty_labels[grp_type]}}\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters( grp_type )\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"group in $ctrl.groups | filter:{type: grp_type} | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': group.selected, 'vert-moins': !group.selected}\"\n                        ng:model=\"group.selected\"\n                        uib:btn-checkbox>\n                  {{group.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        <div class=\"col-md-6 filter\" ng:if=\"$ctrl.grades.length > 0\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par niveau\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters('grades')\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': grade.selected, 'vert-moins': !grade.selected}\"\n                        ng:model=\"grade.selected\"\n                        uib:btn-checkbox>\n                  {{grade.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        <div class=\"col-md-6 filter\" ng:if=\"$ctrl.structures.length > 1\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par \u00E9tablissements\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters('structures')\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"structure in $ctrl.structures | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': structure.selected, 'vert-moins': !structure.selected}\"\n                        ng:model=\"structure.selected\"\n                        uib:btn-checkbox>\n                  {{structure.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'relevant': eleve.relevant, 'excluded': eleve.excluded}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <button class=\"btn btn-danger pull-left\" style=\"height: 10%;\"\n              title=\"exclure de la s\u00E9lection\"\n              ng:style=\"{'opacity': eleve.excluded ? '1' : '0.5'}\"\n              uib:btn-checkbox ng:model=\"eleve.excluded\"\n              ng:if=\"$ctrl.current_user.can_do_batch\">\n        <span class=\"glyphicon glyphicon-ban-circle\"></span>\n      </button>\n      <h5 class=\"regroupement pull-right\" style=\"height: 10%;\">{{eleve.regroupement.name}}</h5>\n      <a class=\"eleve\" style=\"height: 90%; margin-top: 10%;\"\n         ui:sref=\"carnet({uids: [eleve.id]})\">\n\n        <div class=\"full-name\" title=\"{{eleve.relevant ? 'Vous \u00EAtes contributeur de ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h4 class=\"last-name\">{{eleve.lastname}}</h4>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
 });
 angular.module('suiviApp')
     .component('userDetails', {
@@ -655,7 +657,7 @@ angular.module('suiviApp')
                         ctrl.user.get_actual_groups()
                             .then(function (response) {
                             ctrl.user.actual_groups = response;
-                            _(ctrl.user.actual_groups).each(function (group) {
+                            ctrl.user.actual_groups.forEach(function (group) {
                                 APIs.get_structure(group.structure_id)
                                     .then(function (response) {
                                     group.structure = response.data;
@@ -721,34 +723,26 @@ angular.module('suiviApp')
                 cache: false,
                 transformResponse: function (response) {
                     var user = angular.fromJson(response);
-                    user.profil_actif = _(user.profiles).findWhere({ active: true });
                     user.is_admin = function () {
-                        return !_(user.profil_actif).isUndefined()
-                            && _(user.profiles)
-                                .findWhere({
-                                structure_id: user.profil_actif.structure_id,
-                                type: 'ADM'
-                            }) != undefined;
+                        return user.profiles.length > 0
+                            && _(user.profiles).findWhere({ type: 'ADM' }) != undefined;
                     };
-                    user.can_do_batch = !_(['ELV']).contains(user.profil_actif.type);
+                    user.can_do_batch = _(["ADM", "DIR", "DOC", "ETA", "EVS", "ORI", "ENS"]).intersection(_(user.profiles).pluck("type")).length > 0;
                     user.can_add_tab = function (uids) {
-                        return !_(['ELV']).contains(user.profil_actif.type) || ((uids.length == 1) && uids[0] == user.id);
+                        return user.can_do_batch || ((uids.length == 1) && uids[0] == user.id);
                     };
                     user.get_actual_groups = function () {
-                        var groups_ids = _.chain(user.groups).pluck('group_id').uniq().value();
-                        var promise = $q.resolve([]);
-                        if (_(['EVS', 'DIR', 'ADM']).contains(user.profil_actif.type) || user.profil_actif.admin) {
-                            promise = APIs.get_groups_of_structures([user.profil_actif.structure_id]);
-                        }
-                        else {
-                            promise = APIs.get_groups(groups_ids);
-                        }
-                        return promise
-                            .then(function (groups) {
-                            user.actual_groups = _(groups.data).select(function (group) {
-                                return group.structure_id == user.profil_actif.structure_id;
-                            });
+                        return APIs.get_groups(_(user.groups).pluck('group_id'))
+                            .then(function (response) {
+                            user.actual_groups = response.data;
                             return $q.resolve(user.actual_groups);
+                        });
+                    };
+                    user.get_actual_subjects = function () {
+                        return APIs.get_subjects(_(user.groups).pluck('subject_id'))
+                            .then(function (response) {
+                            user.actual_subjects = response.data;
+                            return $q.resolve(user.actual_subjects);
                         });
                     };
                     return user;
@@ -766,10 +760,6 @@ angular.module('suiviApp')
         APIs.get_user = _.memoize(function (user_id) {
             return $http.get(URL_ENT + "/api/users/" + user_id)
                 .then(function (response) {
-                response.data.profil_actif = _(response.data.profiles).findWhere({ active: true });
-                if (_(response.data.profil_actif).isUndefined() && !_(response.data.profiles).isEmpty()) {
-                    response.data.profil_actif = _(response.data.profiles).first();
-                }
                 response.data.get_actual_groups = function () {
                     return APIs.get_groups(_(response.data.groups).pluck('group_id'))
                         .then(function (groups) {
@@ -829,6 +819,9 @@ angular.module('suiviApp')
         APIs.get_structure = _.memoize(function (uai) {
             return $http.get(URL_ENT + "/api/structures/" + uai);
         });
+        APIs.get_structures = _.memoize(function (uais) {
+            return $http.get(URL_ENT + "/api/structures/", { params: { 'id[]': uais } });
+        });
         APIs.query_common_onglets_of = function (uids) {
             return Onglets.query({ "uids[]": uids }).$promise
                 .then(function success(response) {
@@ -860,20 +853,6 @@ angular.module('suiviApp')
             return APIs.query_profiles_types()
                 .then(function success(response) {
                 profils = _(response.data).indexBy('id');
-                return APIs.query_carnets_relevant_to(uid);
-            }, function error(response) { })
-                .then(function success(response) {
-                relevant_to = _(response.data).pluck('uid_eleve');
-                if (!_(relevant_to).isEmpty()) {
-                    APIs.get_users(relevant_to)
-                        .then(function success(response) {
-                        concerned_people.push(_(response.data).map(function (people) {
-                            var pluriel = response.data.length > 1 ? 's' : '';
-                            people.type = "Autre" + pluriel + " \u00E9l\u00E8ve" + pluriel + " suivi" + pluriel;
-                            return people;
-                        }));
-                    }, function error(response) { return $q.reject(response); });
-                }
                 return APIs.get_user(uid);
             }, function error(response) { return $q.reject(response); })
                 .then(function success(response) {
@@ -895,8 +874,8 @@ angular.module('suiviApp')
                         return people;
                     }));
                 }
-                if (!_(eleve.profil_actif).isUndefined()) {
-                    return APIs.get_structure(eleve.profil_actif.structure_id);
+                if (eleve.profiles.length > 0) {
+                    return APIs.get_structures(_(eleve.profiles).pluck("structure_id"));
                 }
                 else {
                     return $q.resolve({ no_profile: true });
@@ -904,10 +883,14 @@ angular.module('suiviApp')
             }, function error(response) { return $q.reject(response); })
                 .then(function success(response) {
                 if (_(response).has('data')) {
-                    personnels = _(response.data.profiles)
+                    personnels = _.chain(response.data)
+                        .pluck("profiles")
+                        .flatten()
                         .reject(function (user) {
                         return _(['ELV', 'TUT', 'ENS']).contains(user.type);
-                    });
+                    })
+                        .uniq(function (user) { return user.id; })
+                        .value();
                     return APIs.get_users(_(personnels).pluck('user_id'));
                 }
                 else {
@@ -1153,7 +1136,7 @@ angular.module('suiviApp')
                                 && _(droit.dirty).reduce(function (memo, value) { return memo || value; }, false)
                                 && droit.read) {
                                 droit.onglets_ids = onglets_ids;
-                                (_(droit).has('id') ? Droits.update(droit) : Droits.save(droit));
+                                _(droit).has('id') ? Droits.update(droit) : Droits.save(droit);
                             }
                         });
                     }
