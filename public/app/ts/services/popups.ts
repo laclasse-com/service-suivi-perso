@@ -176,7 +176,7 @@ ng:disabled="!$ctrl.onglet.nom || !$ctrl.valid_name">
                     cancelButtonText: 'Annuler'
                   })
                     .then((result) => {
-                      ctrl.onglet.delete = true;
+                      ctrl.onglet.delete = result.dismiss != "cancel";
                       ctrl.ok();
                     });
                 };

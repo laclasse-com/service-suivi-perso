@@ -418,15 +418,17 @@ angular.module('suiviApp')
                     confirmButtonText: 'Oui, je confirme !',
                     cancelButtonText: 'Annuler'
                 })
-                    .then(function () {
-                    Saisies.delete({
-                        id: ctrl.saisie.id,
-                        "onglets_ids[]": ctrl.onglet.ids
-                    }).$promise
-                        .then(function () {
-                        ctrl.saisie.action = 'deleted';
-                        ctrl.callback();
-                    });
+                    .then(function (response) {
+                    if (response.dismiss != "cancel") {
+                        Saisies.delete({
+                            id: ctrl.saisie.id,
+                            "onglets_ids[]": ctrl.onglet.ids
+                        }).$promise
+                            .then(function () {
+                            ctrl.saisie.action = 'deleted';
+                            ctrl.callback();
+                        });
+                    }
                 });
             };
             ctrl.$onInit = function () {
@@ -454,7 +456,7 @@ angular.module('suiviApp')
                 ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
             };
         }],
-    template: "\n                 <div class=\"panel panel-default saisie-display\" ng:class=\"{'new-saisie': $ctrl.new_saisie}\">\n                   <span style=\"position: absolute; top: 0; right: 15px;height: 0;width: 0;text-align: center; color: #fff; border-color: transparent #fa0 transparent transparent;border-style: solid;border-width: 0 50px 50px 0; z-index: 1;\"\n                         ng:if=\"$ctrl.saisie.tmp_pinned\">\n                     <span class=\"glyphicon glyphicon-pushpin\" style=\"margin-left: 25px;font-size: 22px;margin-top: 3px;\"></span>\n                   </span>\n\n                   <div class=\"panel-heading\" ng:if=\"$ctrl.saisie.id && !$ctrl.saisie.tmp_pinned\">\n                     <user-details class=\"col-md-4\"\n                                   ng:if=\"!$ctrl.saisie.new_saisie\"\n                                   uid=\"$ctrl.saisie.uid_author\"\n                                   small=\"true\"\n                                   show-avatar=\"true\"></user-details>\n                     {{$ctrl.saisie.date_creation | date:'medium'}}\n                     <div class=\"clearfix\"></div>\n                   </div>\n\n                   <div class=\"panel-body\" ng:style=\"{'padding': $ctrl.new_saisie ? 0 : 'inherit', 'border': $ctrl.new_saisie ? 0 : 'inherit'}\">\n\n                     <div class=\"col-md-12\"\n                          ta-bind\n                          ng:model=\"$ctrl.saisie.trusted_contenu\"\n                          ng:if=\"!$ctrl.edition\"></div>\n\n                     <div class=\"col-md-12\"\n                          ng:style=\"{'padding': $ctrl.new_saisie ? 0 : 'inherit'}\"\n                          ng:if=\"$ctrl.edition\">\n                       <text-angular ta:target-toolbars=\"main-ta-toolbar-{{$ctrl.toolbar_id}}\"\n                                     ng:model=\"$ctrl.saisie.contenu\"\n                                     ng:change=\"$ctrl.dirty = true\"></text-angular>\n                       <div class=\"suivi-ta-toolbar gris2-moins\">\n                         <text-angular-toolbar class=\"pull-left\"\n                                               style=\"margin-left: 0;\"\n                                               name=\"main-ta-toolbar-{{$ctrl.toolbar_id}}\"></text-angular-toolbar>\n\n                         <button class=\"btn\" style=\"margin-left: 6px;\"\n                                 ng:model=\"$ctrl.saisie.tmp_pinned\"\n                                 ng:change=\"$ctrl.dirty = true\"\n                                 ng:class=\"{'btn-warning': $ctrl.saisie.tmp_pinned, 'btn-default': !$ctrl.saisie.tmp_pinned}\"\n                                 uib:btn-checkbox\n                                 btn:checkbox-true=\"true\"\n                                 btn:checkbox-false=\"false\">\n                           <span class=\"glyphicon glyphicon-pushpin\" ></span> \u00C9pingler\n                         </button>\n\n                         <button class=\"btn btn-success pull-right\"\n                                 ng:disabled=\"!$ctrl.dirty || !$ctrl.onglet\"\n                                 ng:click=\"$ctrl.save()\">\n                           <span class=\"glyphicon glyphicon-save\" ></span> Publier\n                         </button>\n                         <button class=\"btn btn-default pull-right\"\n                                 ng:click=\"$ctrl.cancel()\"\n                                 ng:if=\"$ctrl.saisie.id\">\n                           <span class=\"glyphicon glyphicon-edit\" ></span> Annuler\n                         </button>\n\n                         <button class=\"btn btn-danger pull-right\"\n                                 ng:click=\"$ctrl.delete()\"\n                                 ng:if=\"$ctrl.saisie.id && ( $ctrl.editable || $ctrl.current_user.is_admin() )\">\n                           <span class=\"glyphicon glyphicon-trash\"></span> Supprimer\n                         </button>\n                         <div class=\"clearfix\"></div>\n                       </div>\n                     </div>\n                   </div>\n\n                   <div class=\"panel-footer\" ng:if=\"!$ctrl.edition\">\n                     <div class=\"pull-right buttons\">\n                       <button class=\"btn btn-default\"\n                               ng:click=\"$ctrl.toggle_edit()\"\n                               ng:if=\"$ctrl.editable\">\n                         <span class=\"glyphicon glyphicon-edit\" ></span> \u00C9diter\n                       </button>\n                     </div>\n                     <div class=\"clearfix\"></div>\n                   </div>\n                 </div>\n\n"
+    template: "\n<div class=\"panel panel-default saisie-display\" ng:class=\"{'new-saisie': $ctrl.new_saisie}\">\n<span style=\"position: absolute; top: 0; right: 15px;height: 0;width: 0;text-align: center; color: #fff; border-color: transparent #fa0 transparent transparent;border-style: solid;border-width: 0 50px 50px 0; z-index: 1;\"\nng:if=\"$ctrl.saisie.tmp_pinned\">\n<span class=\"glyphicon glyphicon-pushpin\" style=\"margin-left: 25px;font-size: 22px;margin-top: 3px;\"></span>\n</span>\n\n<div class=\"panel-heading\" ng:if=\"$ctrl.saisie.id && !$ctrl.saisie.tmp_pinned\">\n<user-details class=\"col-md-4\"\nng:if=\"!$ctrl.saisie.new_saisie\"\nuid=\"$ctrl.saisie.uid_author\"\nsmall=\"true\"\nshow-avatar=\"true\"></user-details>\n{{$ctrl.saisie.date_creation | date:'medium'}}\n<div class=\"clearfix\"></div>\n</div>\n\n<div class=\"panel-body\" ng:style=\"{'padding': $ctrl.new_saisie ? 0 : 'inherit', 'border': $ctrl.new_saisie ? 0 : 'inherit'}\">\n\n<div class=\"col-md-12\"\nta-bind\nng:model=\"$ctrl.saisie.trusted_contenu\"\nng:if=\"!$ctrl.edition\"></div>\n\n<div class=\"col-md-12\"\nng:style=\"{'padding': $ctrl.new_saisie ? 0 : 'inherit'}\"\nng:if=\"$ctrl.edition\">\n<text-angular ta:target-toolbars=\"main-ta-toolbar-{{$ctrl.toolbar_id}}\"\nng:model=\"$ctrl.saisie.contenu\"\nng:change=\"$ctrl.dirty = true\"></text-angular>\n<div class=\"suivi-ta-toolbar gris2-moins\">\n<text-angular-toolbar class=\"pull-left\"\nstyle=\"margin-left: 0;\"\nname=\"main-ta-toolbar-{{$ctrl.toolbar_id}}\"></text-angular-toolbar>\n\n<button class=\"btn\" style=\"margin-left: 6px;\"\nng:model=\"$ctrl.saisie.tmp_pinned\"\nng:change=\"$ctrl.dirty = true\"\nng:class=\"{'btn-warning': $ctrl.saisie.tmp_pinned, 'btn-default': !$ctrl.saisie.tmp_pinned}\"\nuib:btn-checkbox\nbtn:checkbox-true=\"true\"\nbtn:checkbox-false=\"false\">\n<span class=\"glyphicon glyphicon-pushpin\" ></span> \u00C9pingler\n</button>\n\n<button class=\"btn btn-success pull-right\"\nng:disabled=\"!$ctrl.dirty || !$ctrl.onglet\"\nng:click=\"$ctrl.save()\">\n<span class=\"glyphicon glyphicon-save\" ></span> Publier\n</button>\n<button class=\"btn btn-default pull-right\"\nng:click=\"$ctrl.cancel()\"\nng:if=\"$ctrl.saisie.id\">\n<span class=\"glyphicon glyphicon-edit\" ></span> Annuler\n</button>\n\n<button class=\"btn btn-danger pull-right\"\nng:click=\"$ctrl.delete()\"\nng:if=\"$ctrl.saisie.id && ( $ctrl.editable || $ctrl.current_user.is_admin() )\">\n<span class=\"glyphicon glyphicon-trash\"></span> Supprimer\n</button>\n<div class=\"clearfix\"></div>\n</div>\n</div>\n</div>\n\n<div class=\"panel-footer\" ng:if=\"!$ctrl.edition\">\n<div class=\"pull-right buttons\">\n<button class=\"btn btn-default\"\nng:click=\"$ctrl.toggle_edit()\"\nng:if=\"$ctrl.editable\">\n<span class=\"glyphicon glyphicon-edit\" ></span> \u00C9diter\n</button>\n</div>\n<div class=\"clearfix\"></div>\n</div>\n</div>\n\n"
 });
 angular.module('suiviApp')
     .component('trombinoscope', {
@@ -540,7 +542,6 @@ angular.module('suiviApp')
                 return ctrl.current_user.get_actual_groups();
             }, function error(response) { })
                 .then(function (groups) {
-                console.log(groups);
                 var users_ids = [];
                 var promises = [];
                 var process_groups = function (groups) {
@@ -1060,7 +1061,7 @@ angular.module('suiviApp')
                                 cancelButtonText: 'Annuler'
                             })
                                 .then(function (result) {
-                                ctrl.onglet.delete = true;
+                                ctrl.onglet.delete = result.dismiss != "cancel";
                                 ctrl.ok();
                             });
                         };
