@@ -146,7 +146,7 @@ angular.module('suiviApp')
               // user has groups
               let groups_ids = _.chain(groups)
                 .reject((group) => { return _(["ELV"]).contains(group.type); })
-                .pluck("group_id")
+                .pluck("id")
                 .value();
               if (groups_ids.length > 0) {
                 promises.push(

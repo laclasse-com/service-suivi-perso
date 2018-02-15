@@ -540,6 +540,7 @@ angular.module('suiviApp')
                 return ctrl.current_user.get_actual_groups();
             }, function error(response) { })
                 .then(function (groups) {
+                console.log(groups);
                 var users_ids = [];
                 var promises = [];
                 var process_groups = function (groups) {
@@ -573,7 +574,7 @@ angular.module('suiviApp')
                 users_ids = users_ids.concat(_(ctrl.current_user.children).pluck('child_id'));
                 var groups_ids = _.chain(groups)
                     .reject(function (group) { return _(["ELV"]).contains(group.type); })
-                    .pluck("group_id")
+                    .pluck("id")
                     .value();
                 if (groups_ids.length > 0) {
                     promises.push(APIs.get_groups(groups_ids)
