@@ -4,8 +4,8 @@ angular.module('suiviApp')
       bindings: {
         uids: '<'
       },
-      controller: ['$uibModal', 'Onglets', 'Popups', 'APIs', 'User',
-        function($uibModal, Onglets, Popups, APIs, User) {
+      controller: ['$uibModal', 'Onglets', 'Popups', 'APIs', 'User', 'UID',
+        function($uibModal, Onglets, Popups, APIs, User, UID) {
           let ctrl = this;
           ctrl.popup_onglet = Popups.onglet;
 
@@ -58,7 +58,7 @@ angular.module('suiviApp')
               );
             }
 
-            User.get().$promise
+            User.get({ id: UID }).$promise
               .then(function(response) {
                 ctrl.current_user = response;
 
@@ -66,7 +66,7 @@ angular.module('suiviApp')
               });
           };
         }],
-  template: `
+      template: `
   <style>
     .manage-onglet { margin-top: -11px; margin-right: -16px; border-radius: 0 0 0 12px; }
   </style>

@@ -1,102 +1,102 @@
 angular.module('suiviApp')
   .component('saisie',
-  {
-    bindings: {
-      onglet: '<',
-      saisie: '=',
-      callback: '&'
-    },
-    controller: ['$sce', 'Saisies', 'APIs', 'User',
-      function($sce, Saisies, APIs, User) {
-        let ctrl = this;
+    {
+      bindings: {
+        onglet: '<',
+        saisie: '=',
+        callback: '&'
+      },
+      controller: ['$sce', 'Saisies', 'APIs', 'User', 'UID',
+        function($sce, Saisies, APIs, User, UID) {
+          let ctrl = this;
 
-        ctrl.toggle_edit = function() {
-          ctrl.edition = !ctrl.edition;
+          ctrl.toggle_edit = function() {
+            ctrl.edition = !ctrl.edition;
 
-          if (!ctrl.edition) {
-            ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
-          } else {
-            ctrl.previous_content = ctrl.saisie.contenu;
-          }
-        };
-
-        ctrl.cancel = function() {
-          ctrl.saisie.contenu = ctrl.previous_content;
-
-          ctrl.toggle_edit();
-        };
-
-        ctrl.save = function() {
-          ctrl.saisie.pinned = ctrl.saisie.tmp_pinned || false;
-          if (!_(ctrl.saisie).has('$save')) {
-            ctrl.saisie.onglets_ids = ctrl.onglet.ids;
-
-            ctrl.saisie = new Saisies(ctrl.saisie);
-          }
-          let promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
-
-          promise.then(function success(response) {
-            if (!ctrl.new_saisie) {
-              ctrl.toggle_edit();
+            if (!ctrl.edition) {
+              ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
+            } else {
+              ctrl.previous_content = ctrl.saisie.contenu;
             }
-            ctrl.saisie.action = ctrl.new_saisie ? 'created' : 'updated';
-            ctrl.callback();
-          },
-            function error(response) { console.log(response) });
-        };
+          };
 
-        ctrl.delete = function() {
-          swal({
-            title: 'Êtes-vous sur ?',
-            text: "La saisie sera définitivement supprimée !",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Oui, je confirme !',
-            cancelButtonText: 'Annuler'
-          })
-            .then(function() {
-              Saisies.delete({
-                id: ctrl.saisie.id,
-                "onglets_ids[]": ctrl.onglet.ids
-              }).$promise
-                .then(function() {
-                  ctrl.saisie.action = 'deleted';
-                  ctrl.callback();
-                });
-            });
-        };
+          ctrl.cancel = function() {
+            ctrl.saisie.contenu = ctrl.previous_content;
 
-        ctrl.$onInit = function() {
-          ctrl.edition = ctrl.saisie.create_me;
+            ctrl.toggle_edit();
+          };
 
-          if (ctrl.saisie.create_me) {
-            ctrl.new_saisie = true;
-            ctrl.saisie.contenu = '';
-            ctrl.saisie.tmp_pinned = false;
-          } else {
-            ctrl.saisie = new Saisies(ctrl.saisie);
-            ctrl.saisie.tmp_pinned = ctrl.saisie.pinned;
-          }
-          ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
+          ctrl.save = function() {
+            ctrl.saisie.pinned = ctrl.saisie.tmp_pinned || false;
+            if (!_(ctrl.saisie).has('$save')) {
+              ctrl.saisie.onglets_ids = ctrl.onglet.ids;
 
-          User.get().$promise
-            .then(function(current_user) {
-              ctrl.current_user = current_user;
+              ctrl.saisie = new Saisies(ctrl.saisie);
+            }
+            let promise = ctrl.new_saisie ? ctrl.saisie.$save() : ctrl.saisie.$update();
 
-              ctrl.editable = ctrl.new_saisie ||
-                (_(ctrl).has('onglet') && ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id) ||
-                ctrl.current_user.is_admin();
-            });
+            promise.then(function success(response) {
+              if (!ctrl.new_saisie) {
+                ctrl.toggle_edit();
+              }
+              ctrl.saisie.action = ctrl.new_saisie ? 'created' : 'updated';
+              ctrl.callback();
+            },
+              function error(response) { console.log(response) });
+          };
 
-          ctrl.toolbar_id = ctrl.new_saisie ? (Math.random() * 2048) + "" : ctrl.saisie.id;
-        };
+          ctrl.delete = function() {
+            swal({
+              title: 'Êtes-vous sur ?',
+              text: "La saisie sera définitivement supprimée !",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'Oui, je confirme !',
+              cancelButtonText: 'Annuler'
+            })
+              .then(function() {
+                Saisies.delete({
+                  id: ctrl.saisie.id,
+                  "onglets_ids[]": ctrl.onglet.ids
+                }).$promise
+                  .then(function() {
+                    ctrl.saisie.action = 'deleted';
+                    ctrl.callback();
+                  });
+              });
+          };
 
-        ctrl.$onChanges = function(changes) {
-          ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
-        };
-      }],
-    template: `
+          ctrl.$onInit = function() {
+            ctrl.edition = ctrl.saisie.create_me;
+
+            if (ctrl.saisie.create_me) {
+              ctrl.new_saisie = true;
+              ctrl.saisie.contenu = '';
+              ctrl.saisie.tmp_pinned = false;
+            } else {
+              ctrl.saisie = new Saisies(ctrl.saisie);
+              ctrl.saisie.tmp_pinned = ctrl.saisie.pinned;
+            }
+            ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
+
+            User.get({ id: UID }).$promise
+              .then(function(current_user) {
+                ctrl.current_user = current_user;
+
+                ctrl.editable = ctrl.new_saisie ||
+                  (_(ctrl).has('onglet') && ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id) ||
+                  ctrl.current_user.is_admin();
+              });
+
+            ctrl.toolbar_id = ctrl.new_saisie ? (Math.random() * 2048) + "" : ctrl.saisie.id;
+          };
+
+          ctrl.$onChanges = function(changes) {
+            ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
+          };
+        }],
+      template: `
                  <div class="panel panel-default saisie-display" ng:class="{'new-saisie': $ctrl.new_saisie}">
                    <span style="position: absolute; top: 0; right: 15px;height: 0;width: 0;text-align: center; color: #fff; border-color: transparent #fa0 transparent transparent;border-style: solid;border-width: 0 50px 50px 0; z-index: 1;"
                          ng:if="$ctrl.saisie.tmp_pinned">
@@ -175,4 +175,4 @@ angular.module('suiviApp')
                  </div>
 
 `
-  });
+    });

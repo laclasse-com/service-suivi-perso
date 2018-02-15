@@ -234,7 +234,7 @@ angular.module('suiviApp')
                     .then(function success(response) {
                     ctrl.profils = response.data;
                 }, function error(response) { });
-                User.get().$promise
+                User.get({ id: UID }).$promise
                     .then(function success(current_user) {
                     return current_user.get_actual_groups();
                 })
@@ -320,8 +320,8 @@ angular.module('suiviApp')
     bindings: {
         uids: '<'
     },
-    controller: ['$uibModal', 'Onglets', 'Popups', 'APIs', 'User',
-        function ($uibModal, Onglets, Popups, APIs, User) {
+    controller: ['$uibModal', 'Onglets', 'Popups', 'APIs', 'User', 'UID',
+        function ($uibModal, Onglets, Popups, APIs, User, UID) {
             var ctrl = this;
             ctrl.popup_onglet = Popups.onglet;
             ctrl.callback_popup_onglet = function (onglets) {
@@ -361,7 +361,7 @@ angular.module('suiviApp')
                         });
                     });
                 }
-                User.get().$promise
+                User.get({ id: UID }).$promise
                     .then(function (response) {
                     ctrl.current_user = response;
                     ctrl.can_add_tab = ctrl.current_user.can_add_tab(ctrl.uids);
@@ -377,8 +377,8 @@ angular.module('suiviApp')
         saisie: '=',
         callback: '&'
     },
-    controller: ['$sce', 'Saisies', 'APIs', 'User',
-        function ($sce, Saisies, APIs, User) {
+    controller: ['$sce', 'Saisies', 'APIs', 'User', 'UID',
+        function ($sce, Saisies, APIs, User, UID) {
             var ctrl = this;
             ctrl.toggle_edit = function () {
                 ctrl.edition = !ctrl.edition;
@@ -441,7 +441,7 @@ angular.module('suiviApp')
                     ctrl.saisie.tmp_pinned = ctrl.saisie.pinned;
                 }
                 ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
-                User.get().$promise
+                User.get({ id: UID }).$promise
                     .then(function (current_user) {
                     ctrl.current_user = current_user;
                     ctrl.editable = ctrl.new_saisie ||
@@ -458,8 +458,8 @@ angular.module('suiviApp')
 });
 angular.module('suiviApp')
     .component('trombinoscope', {
-    controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups', 'User',
-        function ($filter, $q, URL_ENT, APIs, Popups, User) {
+    controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups', 'User', 'UID',
+        function ($filter, $q, URL_ENT, APIs, Popups, User, UID) {
             var ctrl = this;
             ctrl.pretty_labels = {
                 "CLS": "classe",
@@ -529,7 +529,7 @@ angular.module('suiviApp')
             ctrl.pluriel = function (item_count, character) {
                 return item_count > 1 ? character : '';
             };
-            User.get().$promise
+            User.get({ id: UID }).$promise
                 .then(function (response) {
                 ctrl.current_user = response;
                 ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
@@ -630,7 +630,7 @@ angular.module('suiviApp')
                 });
             });
         }],
-    template: "\n<style>\n  .trombinoscope .petite.case { border: 1px solid transparent; }\n  .filter .panel-body { max-height: 380px; overflow-y: auto; }\n  .trombinoscope .excluded .eleve { opacity: 0.8; }\n  .regroupement {background-color: rgba(240, 240, 240, 0.66);}\n  .trombinoscope .excluded .eleve .full-name { color: lightgray; text-decoration: double line-through; }\n</style>\n<div class=\"col-md-4 gris1-moins aside trombinoscope-aside\" style=\"padding: 0;\">\n  <div class=\"panel panel-default gris1-moins\">\n    <div class=\"panel-heading\" style=\"text-align: right; \">\n      <h3>\n        {{$ctrl.pluck_selected_uids().length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.pluck_selected_uids().length, 's')}} s\u00E9lectionn\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}}\n\n        <a class=\"btn btn-primary\"\n           title=\"Gestion des onglets communs\"\n           ng:if=\"$ctrl.current_user.can_do_batch\"\n           ui:sref=\"carnet({uids: $ctrl.pluck_selected_uids()})\">\n          <span class=\"glyphicon glyphicon-user\"></span>\n          <span class=\"glyphicon glyphicon-user\" style=\"font-size: 125%; margin-left: -11px; margin-right: -11px;\"></span>\n          <span class=\"glyphicon glyphicon-user\"></span>\n        </a>\n      </h3>\n    </div>\n    <div class=\"panel-body\">\n\n      <div class=\"row\">\n        <div class=\"col-md-12\">\n          <input class=\"form-control input-lg\"\n                 style=\"display: inline; background-color: rgba(240, 240, 240, 0.66);\"\n                 type=\"text\" name=\"search\"\n                 ng:model=\"$ctrl.filters.text\" />\n          <button class=\"btn btn-xs\" style=\"color: green; margin-left: -44px; margin-top: -4px;\"\n                  ng:click=\"$ctrl.filters.text = ''\"\n                  ng:disabled=\"$ctrl.filters.text.length == 0\">\n            <span class=\"glyphicon glyphicon-remove\"></span>\n          </button>\n        </div>\n      </div>\n\n      <div class=\"row\" style=\"margin-top: 14px;\">\n        <div class=\"col-md-6 filter\"\n             ng:repeat=\"grp_type in ['CLS', 'GRP', 'GPL']\"\n             ng:if=\"$ctrl.groups.length > 0\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par {{$ctrl.pretty_labels[grp_type]}}\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters( grp_type )\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"group in $ctrl.groups | filter:{type: grp_type} | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': group.selected, 'vert-moins': !group.selected}\"\n                        ng:model=\"group.selected\"\n                        uib:btn-checkbox>\n                  {{group.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        <div class=\"col-md-6 filter\" ng:if=\"$ctrl.grades.length > 0\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par niveau\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters('grades')\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': grade.selected, 'vert-moins': !grade.selected}\"\n                        ng:model=\"grade.selected\"\n                        uib:btn-checkbox>\n                  {{grade.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        <div class=\"col-md-6 filter\" ng:if=\"$ctrl.structures.length > 1\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par \u00E9tablissements\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters('structures')\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"structure in $ctrl.structures | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': structure.selected, 'vert-moins': !structure.selected}\"\n                        ng:model=\"structure.selected\"\n                        uib:btn-checkbox>\n                  {{structure.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'relevant': eleve.relevant, 'excluded': eleve.excluded}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <button class=\"btn btn-danger pull-left\" style=\"height: 10%;\"\n              title=\"exclure de la s\u00E9lection\"\n              ng:style=\"{'opacity': eleve.excluded ? '1' : '0.5'}\"\n              uib:btn-checkbox ng:model=\"eleve.excluded\"\n              ng:if=\"$ctrl.current_user.can_do_batch\">\n        <span class=\"glyphicon glyphicon-ban-circle\"></span>\n      </button>\n      <h5 class=\"regroupement pull-right\" style=\"height: 10%;\">{{eleve.regroupement.name}}</h5>\n      <a class=\"eleve\" style=\"height: 90%; margin-top: 10%;\"\n         ui:sref=\"carnet({uids: [eleve.id]})\">\n\n        <div class=\"full-name\" title=\"{{eleve.relevant ? 'Vous \u00EAtes contributeur de ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h4 class=\"last-name\">{{eleve.lastname}}</h4>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
+    template: "\n<style>\n  .trombinoscope .petite.case { border: 1px solid transparent; }\n  .filter .panel-body { max-height: 380px; overflow-y: auto; }\n  .trombinoscope .excluded .eleve { opacity: 0.8; }\n  .regroupement {background-color: rgba(240, 240, 240, 0.66);}\n  .trombinoscope .excluded .eleve .full-name { color: lightgray; text-decoration: double line-through; }\n</style>\n<div class=\"col-md-4 gris1-moins aside trombinoscope-aside\" style=\"padding: 0;\">\n  <div class=\"panel panel-default gris1-moins\">\n    <div class=\"panel-heading\" style=\"text-align: right; \">\n      <h3>\n        {{$ctrl.pluck_selected_uids().length}} \u00E9l\u00E8ve{{$ctrl.pluriel($ctrl.pluck_selected_uids().length, 's')}}<span ng:if=\"$ctrl.current_user.can_do_batch\"> s\u00E9lectionn\u00E9{{$ctrl.pluriel($ctrl.filtered.length, 's')}}</span>\n\n        <a class=\"btn btn-primary\"\n           title=\"Gestion des onglets communs\"\n           ng:if=\"$ctrl.current_user.can_do_batch\"\n           ui:sref=\"carnet({uids: $ctrl.pluck_selected_uids()})\">\n          <span class=\"glyphicon glyphicon-user\"></span>\n          <span class=\"glyphicon glyphicon-user\" style=\"font-size: 125%; margin-left: -11px; margin-right: -11px;\"></span>\n          <span class=\"glyphicon glyphicon-user\"></span>\n        </a>\n      </h3>\n    </div>\n    <div class=\"panel-body\">\n\n      <div class=\"row\">\n        <div class=\"col-md-12\">\n          <input class=\"form-control input-lg\"\n                 style=\"display: inline; background-color: rgba(240, 240, 240, 0.66);\"\n                 type=\"text\" name=\"search\"\n                 ng:model=\"$ctrl.filters.text\" />\n          <button class=\"btn btn-xs\" style=\"color: green; margin-left: -44px; margin-top: -4px;\"\n                  ng:click=\"$ctrl.filters.text = ''\"\n                  ng:disabled=\"$ctrl.filters.text.length == 0\">\n            <span class=\"glyphicon glyphicon-remove\"></span>\n          </button>\n        </div>\n      </div>\n\n      <div class=\"row\" style=\"margin-top: 14px;\">\n        <div class=\"col-md-6 filter\"\n             ng:repeat=\"grp_type in ['CLS', 'GRP', 'GPL']\"\n             ng:if=\"$ctrl.groups.length > 0\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par {{$ctrl.pretty_labels[grp_type]}}\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters( grp_type )\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"group in $ctrl.groups | filter:{type: grp_type} | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': group.selected, 'vert-moins': !group.selected}\"\n                        ng:model=\"group.selected\"\n                        uib:btn-checkbox>\n                  {{group.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        <div class=\"col-md-6 filter\" ng:if=\"$ctrl.grades.length > 0\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par niveau\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters('grades')\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"grade in $ctrl.grades | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': grade.selected, 'vert-moins': !grade.selected}\"\n                        ng:model=\"grade.selected\"\n                        uib:btn-checkbox>\n                  {{grade.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        <div class=\"col-md-6 filter\" ng:if=\"$ctrl.structures.length > 1\">\n          <div class=\"panel panel-default\">\n            <div class=\"panel-heading\">\n              Filtrage par \u00E9tablissements\n\n              <button class=\"btn btn-xs pull-right\" style=\"color: green;\"\n                      ng:click=\"$ctrl.clear_filters('structures')\">\n                <span class=\"glyphicon glyphicon-remove\">\n                </span>\n              </button>\n              <div class=\"clearfix\"></div>\n            </div>\n\n            <div class=\"panel-body\">\n              <div class=\"btn-group\">\n                <button class=\"btn btn-sm\" style=\"margin: 2px; font-weight: bold; color: #fff;\"\n                        ng:repeat=\"structure in $ctrl.structures | orderBy:['name']\"\n                        ng:class=\"{'vert-plus': structure.selected, 'vert-moins': !structure.selected}\"\n                        ng:model=\"structure.selected\"\n                        uib:btn-checkbox>\n                  {{structure.name}}\n                </button>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n\n</div>\n\n<div class=\"col-md-8 vert-moins damier trombinoscope\">\n  <ul>\n    <li class=\"col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case vert-moins\"\n        style=\"background-repeat: no-repeat; background-attachment: scroll; background-clip: border-box; background-origin: padding-box; background-position-x: center; background-position-y: center; background-size: 100% auto;\"\n        ng:class=\"{'relevant': eleve.relevant, 'excluded': eleve.excluded}\"\n        ng:style=\"{'background-image': 'url( {{eleve.avatar}} )' }\"\n        ng:repeat=\"eleve in $ctrl.filtered = ( $ctrl.eleves | filter:$ctrl.apply_filters() | orderBy:['regroupement.name', 'lastname'] )\">\n      <button class=\"btn btn-danger pull-left\" style=\"height: 10%;\"\n              title=\"exclure de la s\u00E9lection\"\n              ng:style=\"{'opacity': eleve.excluded ? '1' : '0.5'}\"\n              uib:btn-checkbox ng:model=\"eleve.excluded\"\n              ng:if=\"$ctrl.current_user.can_do_batch\">\n        <span class=\"glyphicon glyphicon-ban-circle\"></span>\n      </button>\n      <h5 class=\"regroupement pull-right\" style=\"height: 10%;\">{{eleve.regroupement.name}}</h5>\n      <a class=\"eleve\" style=\"height: 90%; margin-top: 10%;\"\n         ui:sref=\"carnet({uids: [eleve.id]})\">\n\n        <div class=\"full-name\" title=\"{{eleve.relevant ? 'Vous \u00EAtes contributeur de ce carnet' : ''}}\">\n          <h4 class=\"first-name\">{{eleve.firstname}}</h4>\n          <h4 class=\"last-name\">{{eleve.lastname}}</h4>\n        </div>\n      </a>\n    </li>\n  </ul>\n</div>\n"
 });
 angular.module('suiviApp')
     .component('userDetails', {
@@ -645,14 +645,14 @@ angular.module('suiviApp')
         showAddress: '<',
         showBirthdate: '<'
     },
-    controller: ['APIs', 'URL_ENT',
-        function (APIs, URL_ENT) {
+    controller: ['APIs', 'URL_ENT', 'User',
+        function (APIs, URL_ENT, User) {
             var ctrl = this;
             ctrl.URL_ENT = URL_ENT;
             ctrl.$onInit = function () {
-                APIs.get_user(ctrl.uid)
+                User.get({ id: ctrl.uid }).$promise
                     .then(function success(response) {
-                    ctrl.user = response.data;
+                    ctrl.user = response;
                     if (ctrl.showClasse) {
                         ctrl.user.get_actual_groups()
                             .then(function (response) {
@@ -665,14 +665,14 @@ angular.module('suiviApp')
                             });
                         });
                     }
+                    if (ctrl.showConcernedPeople) {
+                        ctrl.user.query_people_concerned_about()
+                            .then(function success(response) {
+                            ctrl.concerned_people = _(response).groupBy('type');
+                            delete ctrl.concerned_people['Élève'];
+                        }, function error(response) { });
+                    }
                 }, function error(response) { });
-                if (ctrl.showConcernedPeople) {
-                    APIs.query_people_concerned_about(ctrl.uid)
-                        .then(function success(response) {
-                        ctrl.concerned_people = _(response).groupBy('type');
-                        delete ctrl.concerned_people['Élève'];
-                    }, function error(response) { });
-                }
             };
         }],
     template: "\n                          <div class=\"col-md-12\">\n                            <div class=\"avatar-container gris4 pull-left\" ng:style=\"{'height': $ctrl.small ? '44px' : '175px', 'width': $ctrl.small ? '44px' : '175px'}\">\n                              <img class=\"avatar noir-moins\"\n                                   ng:style=\"{'max-height': $ctrl.small ? '44px' : '175px', 'max-width': $ctrl.small ? '44px' : '175px'}\"\n                                   ng:src=\"{{$ctrl.URL_ENT + '/' + $ctrl.user.avatar}}\"\n                                   ng:if=\"$ctrl.showAvatar\" />\n                            </div>\n                            <div class=\"col-md-8 details\" ng:style=\"{'min-height': $ctrl.small ? '44px' : '175px'}\">\n                              <div class=\"col-md-12\">\n                                <span class=\"first-name\"\n                                      ng:style=\"{'font-size': $ctrl.small ? '100%' : '150%'}\"> {{$ctrl.user.firstname}}\n                                </span>\n                                <span class=\"last-name\"\n                                      ng:style=\"{'font-size': $ctrl.small ? '100%' : '175%'}\"> {{$ctrl.user.lastname}}\n                                </span>\n                              </div>\n\n                              <span class=\"col-md-12 classe\" ng:if=\"$ctrl.showClasse\">\n                                <span ng:repeat=\"group in $ctrl.user.actual_groups | filter:{type: 'CLS'}\">\n                                  {{group.name}} - {{group.structure.name}}\n                                </span>\n                              </span>\n\n                              <span class=\"col-md-12 birthdate\" ng:if=\"$ctrl.showBirthdate\">\n                                n\u00E9<span ng:if=\"$ctrl.user.gender === 'F'\">e</span> le {{$ctrl.user.birthdate | date}}\n                              </span>\n                              <div class=\"col-md-12 email\"\n                                   ng:repeat=\"email in $ctrl.user.emails\"\n                                   ng:if=\"$ctrl.showEmails\">\n                                <span class=\"glyphicon glyphicon-envelope\">\n                                </span>\n                                <a href=\"mailto:{{email.address}}\">{{email.address}}</a>\n                              </div>\n                              <span class=\"col-md-12 address\"\n                                    ng:if=\"$ctrl.showAddress && $ctrl.user.adresse\">\n                                <span class=\"glyphicon glyphicon-home\">\n                                </span>\n                                <span style=\"display: inline-table;\">\n                                  {{$ctrl.user.address}}\n                                  <br>\n                                  {{$ctrl.user.zipcode}} {{$ctrl.user.city}}\n                                </span>\n                              </span>\n                              <div class=\"col-md-12 phone\"\n                                   ng:repeat=\"phone in $ctrl.user.phones\"\n                                   ng:if=\"$ctrl.showPhones\">\n                                <span class=\"glyphicon\"\n                                      ng:class=\"{'glyphicon-phone': phone.type === 'PORTABLE', 'glyphicon-phone-alt': phone.type !== 'PORTABLE'}\">\n                                  {{phone.type}}: {{phone.number}}\n                                </span>\n                              </div>\n                            </div>\n                          </div>\n\n                          <fieldset class=\"pull-left col-md-12 parents\" ng:if=\"$ctrl.showConcernedPeople\">\n                            <legend>Personnes concern\u00E9es</legend>\n                            <uib-accordion>\n                              <div uib-accordion-group\n                                   class=\"panel-default\"\n                                   ng:repeat=\"(type, peoples) in $ctrl.concerned_people\"\n                                   ng:if=\"type != 'Autre \u00E9l\u00E8ve suivi'\">\n                                <uib-accordion-heading>\n                                  <span class=\"glyphicon\" ng:class=\"{'glyphicon-menu-down': type.is_open, 'glyphicon-menu-right': !type.is_open}\">\n                                  </span> {{type}}\n                                </uib-accordion-heading>\n                                <ul>\n                                  <li ng:repeat=\"people in peoples | orderBy:'lastname'\">\n                                    <span ng:if=\"!people.relevant_to\">{{people.firstname}} {{people.lastname}}</span>\n                                    <span ng:if=\"people.relevant_to\">\n                                      <a ui:sref=\"carnet({uid_eleve: people.id})\">{{people.firstname}} {{people.lastname}}</a>\n                                    </span>\n                                    <span ng:if=\"people.prof_principal\"> (enseignant principal)</span>\n                                    <span ng:if=\"people.actual_subjects\">\n                                      <br/>\n                                      <em ng:repeat=\"subject in people.actual_subjects\">\n                                        <span class=\"glyphicon glyphicon-briefcase\">\n                                        </span> {{subject.name}}\n                                      </em>\n                                    </span>\n                                    <span ng:if=\"people.emails.length > 0\">\n                                      <br/>\n                                      <span class=\"glyphicon glyphicon-envelope\">\n                                      </span>\n                                      <a href=\"mailto:{{people.emails[0].address}}\">{{people.emails[0].address}}</a>\n                                    </span>\n                                  </li>\n                                </ul>\n                              </div>\n                            </uib-accordion>\n                          </fieldset>\n"
@@ -716,9 +716,12 @@ angular.module('suiviApp')
         });
     }]);
 angular.module('suiviApp')
-    .factory('User', ['$resource', '$rootScope', '$q', 'APIs', 'URL_ENT', 'UID',
-    function ($resource, $rootScope, $q, APIs, URL_ENT, UID) {
-        return $resource(URL_ENT + "/api/users/" + UID, { expand: 'true' }, {
+    .factory('User', ['$resource', '$rootScope', '$q', 'APIs', 'URL_ENT',
+    function ($resource, $rootScope, $q, APIs, URL_ENT) {
+        return $resource(URL_ENT + "/api/users/:id", {
+            id: "@id",
+            expand: "@expand"
+        }, {
             get: {
                 cache: false,
                 transformResponse: function (response) {
@@ -727,7 +730,7 @@ angular.module('suiviApp')
                         return user.profiles.length > 0
                             && _(user.profiles).findWhere({ type: 'ADM' }) != undefined;
                     };
-                    user.can_do_batch = _(["ADM", "DIR", "DOC", "ETA", "EVS", "ORI", "ENS"]).intersection(_(user.profiles).pluck("type")).length > 0;
+                    user.can_do_batch = _(["ADM", "DIR", "DOC", "ENS", "ETA", "EVS", "ORI", "TUT"]).intersection(_(user.profiles).pluck("type")).length > 0;
                     user.can_add_tab = function (uids) {
                         return user.can_do_batch || ((uids.length == 1) && uids[0] == user.id);
                     };
@@ -745,6 +748,123 @@ angular.module('suiviApp')
                             return $q.resolve(user.actual_subjects);
                         });
                     };
+                    user.query_people_concerned_about = _.memoize(function () {
+                        var concerned_people = new Array();
+                        var profils = new Array();
+                        var relevant_to = new Array();
+                        var current_user = null;
+                        var users = new Array();
+                        var personnels = new Array();
+                        var pupils = new Array();
+                        var teachers = new Array();
+                        var main_teachers = new Array();
+                        return APIs.query_profiles_types()
+                            .then(function success(response) {
+                            profils = _(response.data).indexBy('id');
+                            if (!_(user.parents).isEmpty()) {
+                                return APIs.get_users(_(user.parents).pluck('parent_id'));
+                            }
+                            else {
+                                return $q.resolve({ no_parents: true });
+                            }
+                        }, function error(response) { return $q.reject(response); })
+                            .then(function success(response) {
+                            if (_(response).has('data')) {
+                                concerned_people.push(_(response.data).map(function (people) {
+                                    var pluriel = response.data.length > 1 ? 's' : '';
+                                    people.type = "Responsable" + pluriel + " de l'\u00E9l\u00E8ve";
+                                    return people;
+                                }));
+                            }
+                            if (user.profiles.length > 0) {
+                                return APIs.get_structures(_(user.profiles).pluck("structure_id"));
+                            }
+                            else {
+                                return $q.resolve({ no_profile: true });
+                            }
+                        }, function error(response) { return $q.reject(response); })
+                            .then(function success(response) {
+                            if (_(response).has('data')) {
+                                personnels = _.chain(response.data)
+                                    .pluck("profiles")
+                                    .flatten()
+                                    .reject(function (user) {
+                                    return _(['ELV', 'TUT', 'ENS']).contains(user.type);
+                                })
+                                    .uniq(function (user) { return user.id; })
+                                    .value();
+                                return APIs.get_users(_(personnels).pluck('user_id'));
+                            }
+                            else {
+                                return $q.resolve({ no_profile: true });
+                            }
+                        })
+                            .then(function success(response) {
+                            if (_(response).has('data')) {
+                                personnels = _(personnels).indexBy('user_id');
+                                concerned_people.push(_(response.data).map(function (people) {
+                                    people.type = profils[personnels[people.id].type].name + " de l'\u00E9l\u00E8ve";
+                                    return people;
+                                }));
+                                var groups_ids = _(user.groups).pluck('group_id');
+                                return APIs.get_groups(groups_ids);
+                            }
+                            else {
+                                return $q.resolve({ no_profile: true });
+                            }
+                        }, function error(response) { return $q.reject(response); })
+                            .then(function success(response) {
+                            if (_(response).has('data')) {
+                                users = _.chain(response.data).pluck('users').flatten().value();
+                                pupils = _(users).where({ type: 'ELV' });
+                                if (pupils.length > 0) {
+                                    return APIs.get_users(_(pupils).pluck('user_id'));
+                                }
+                                else {
+                                    return $q.resolve({ no_pupils: true });
+                                }
+                            }
+                            else {
+                                return $q.resolve({ no_profile: true });
+                            }
+                        }, function error(response) { return $q.reject(response); })
+                            .then(function success(response) {
+                            pupils = _(pupils).indexBy('user_id');
+                            concerned_people.push(_(response.data).map(function (people) {
+                                var pluriel = response.data.length > 1 ? 's' : '';
+                                people.type = "Autre" + pluriel + " \u00E9l\u00E8ve" + pluriel;
+                                return people;
+                            }));
+                            teachers = _(users).where({ type: 'ENS' });
+                            if (teachers.length > 0) {
+                                return APIs.get_users(_(teachers).pluck('user_id'));
+                            }
+                            else {
+                            }
+                            return $q.resolve();
+                        }, function error(response) { return $q.reject(response); })
+                            .then(function success(response) {
+                            teachers = _(teachers).indexBy('user_id');
+                            main_teachers = _(users).where({ type: 'PRI' });
+                            concerned_people.push(_(response.data).map(function (people) {
+                                people.type = profils[teachers[people.id].type].name + " de l'\u00E9l\u00E8ve";
+                                APIs.get_subjects(_(people.groups).pluck('subject_id'))
+                                    .then(function (response) {
+                                    people.actual_subjects = response.data;
+                                });
+                                return people;
+                            }));
+                            return $q.resolve();
+                        }, function error(response) { return $q.reject(response); })
+                            .then(function () {
+                            return $q.resolve(_.chain(concerned_people)
+                                .flatten()
+                                .uniq(function (people) {
+                                return people.id;
+                            })
+                                .value());
+                        });
+                    });
                     return user;
                 }
             }
@@ -756,24 +876,6 @@ angular.module('suiviApp')
         var APIs = this;
         APIs.query_profiles_types = _.memoize(function () {
             return $http.get(URL_ENT + "/api/profiles_types");
-        });
-        APIs.get_user = _.memoize(function (user_id) {
-            return $http.get(URL_ENT + "/api/users/" + user_id)
-                .then(function (response) {
-                response.data.get_actual_groups = function () {
-                    return APIs.get_groups(_(response.data.groups).pluck('group_id'))
-                        .then(function (groups) {
-                        return $q.resolve(groups.data);
-                    });
-                };
-                response.data.get_actual_subjects = function () {
-                    return APIs.get_subjects(_(response.data.groups).pluck('subject_id'))
-                        .then(function (subjects) {
-                        return $q.resolve(subjects.data);
-                    });
-                };
-                return response;
-            });
         });
         APIs.get_users = _.memoize(function (users_ids) {
             if (_(users_ids).isEmpty()) {
@@ -839,130 +941,6 @@ angular.module('suiviApp')
                     .value());
             }, function error(response) { return $q.resolve({}); });
         };
-        APIs.query_people_concerned_about = _.memoize(function (uid) {
-            var eleve = null;
-            var concerned_people = new Array();
-            var profils = new Array();
-            var relevant_to = new Array();
-            var current_user = null;
-            var users = new Array();
-            var personnels = new Array();
-            var pupils = new Array();
-            var teachers = new Array();
-            var main_teachers = new Array();
-            return APIs.query_profiles_types()
-                .then(function success(response) {
-                profils = _(response.data).indexBy('id');
-                return APIs.get_user(uid);
-            }, function error(response) { return $q.reject(response); })
-                .then(function success(response) {
-                eleve = response.data;
-                eleve.type = 'Élève';
-                concerned_people.push(eleve);
-                if (!_(eleve.parents).isEmpty()) {
-                    return APIs.get_users(_(eleve.parents).pluck('parent_id'));
-                }
-                else {
-                    return $q.resolve({ no_parents: true });
-                }
-            }, function error(response) { return $q.reject(response); })
-                .then(function success(response) {
-                if (_(response).has('data')) {
-                    concerned_people.push(_(response.data).map(function (people) {
-                        var pluriel = response.data.length > 1 ? 's' : '';
-                        people.type = "Responsable" + pluriel + " de l'\u00E9l\u00E8ve";
-                        return people;
-                    }));
-                }
-                if (eleve.profiles.length > 0) {
-                    return APIs.get_structures(_(eleve.profiles).pluck("structure_id"));
-                }
-                else {
-                    return $q.resolve({ no_profile: true });
-                }
-            }, function error(response) { return $q.reject(response); })
-                .then(function success(response) {
-                if (_(response).has('data')) {
-                    personnels = _.chain(response.data)
-                        .pluck("profiles")
-                        .flatten()
-                        .reject(function (user) {
-                        return _(['ELV', 'TUT', 'ENS']).contains(user.type);
-                    })
-                        .uniq(function (user) { return user.id; })
-                        .value();
-                    return APIs.get_users(_(personnels).pluck('user_id'));
-                }
-                else {
-                    return $q.resolve({ no_profile: true });
-                }
-            })
-                .then(function success(response) {
-                if (_(response).has('data')) {
-                    personnels = _(personnels).indexBy('user_id');
-                    concerned_people.push(_(response.data).map(function (people) {
-                        people.type = profils[personnels[people.id].type].name + " de l'\u00E9l\u00E8ve";
-                        return people;
-                    }));
-                    var groups_ids = _(eleve.groups).pluck('group_id');
-                    return APIs.get_groups(groups_ids);
-                }
-                else {
-                    return $q.resolve({ no_profile: true });
-                }
-            }, function error(response) { return $q.reject(response); })
-                .then(function success(response) {
-                if (_(response).has('data')) {
-                    users = _.chain(response.data).pluck('users').flatten().value();
-                    pupils = _(users).where({ type: 'ELV' });
-                    if (pupils.length > 0) {
-                        return APIs.get_users(_(pupils).pluck('user_id'));
-                    }
-                    else {
-                        return $q.resolve({ no_pupils: true });
-                    }
-                }
-                else {
-                    return $q.resolve({ no_profile: true });
-                }
-            }, function error(response) { return $q.reject(response); })
-                .then(function success(response) {
-                pupils = _(pupils).indexBy('user_id');
-                concerned_people.push(_(response.data).map(function (people) {
-                    var pluriel = response.data.length > 1 ? 's' : '';
-                    people.type = "Autre" + pluriel + " \u00E9l\u00E8ve" + pluriel;
-                    return people;
-                }));
-                teachers = _(users).where({ type: 'ENS' });
-                if (teachers.length > 0) {
-                    return APIs.get_users(_(teachers).pluck('user_id'));
-                }
-                else {
-                }
-                return $q.resolve();
-            }, function error(response) { return $q.reject(response); })
-                .then(function success(response) {
-                teachers = _(teachers).indexBy('user_id');
-                main_teachers = _(users).where({ type: 'PRI' });
-                concerned_people.push(_(response.data).map(function (people) {
-                    people.type = profils[teachers[people.id].type].name + " de l'\u00E9l\u00E8ve";
-                    APIs.get_subjects(_(people.groups).pluck('subject_id'))
-                        .then(function (response) {
-                        people.actual_subjects = response.data;
-                    });
-                    return people;
-                }));
-                return $q.resolve();
-            }, function error(response) { return $q.reject(response); })
-                .then(function () {
-                return $q.resolve(_.chain(concerned_people)
-                    .flatten()
-                    .uniq(function (people) {
-                    return people.id;
-                })
-                    .value());
-            });
-        });
     }]);
 angular.module('suiviApp')
     .service('Popups', ['$uibModal', '$q', 'Onglets', 'Droits', 'Saisies', 'APIs', 'UID', 'User',
@@ -998,7 +976,7 @@ angular.module('suiviApp')
         };
         Popups.onglet = function (uids, onglet, all_onglets, callback) {
             $uibModal.open({
-                template: "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n  <droits uid-eleve=\"$ctrl.uids\"\n          droits=\"$ctrl.droits\"\n          concerned-people=\"$ctrl.concerned_people\"\n          ng:if=\"$ctrl.droits\"></droits>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id || $ctrl.onglet.ids\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n",
+                template: "\n<div class=\"modal-header\">\n<h3 class=\"modal-title\">\nPropri\u00E9t\u00E9s de l'onglet\n</h3>\n</div>\n\n<div class=\"modal-body\">\n<label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.nom\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n<span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n</label>\n\n<span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n<droits uid-eleve=\"$ctrl.uids\"\ndroits=\"$ctrl.droits\"\nconcerned-people=\"$ctrl.concerned_people\"\nng:if=\"$ctrl.droits\"></droits>\n\n<div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n<button class=\"btn btn-danger pull-left\"\nng:click=\"$ctrl.delete()\"\nng:if=\"$ctrl.onglet.id || $ctrl.onglet.ids\">\n<span class=\"glyphicon glyphicon-trash\"></span>\n<span> Supprimer l'onglet</span>\n</button>\n<button class=\"btn btn-default\"\nng:click=\"$ctrl.cancel()\">\n<span class=\"glyphicon glyphicon-remove-sign\"></span>\n<span ng:if=\"$ctrl.onglet.nom\"> Annuler</span>\n<span ng:if=\"!$ctrl.onglet.nom\"> Fermer</span>\n</button>\n<button class=\"btn btn-success\"\nng:click=\"$ctrl.ok()\"\nng:disabled=\"!$ctrl.onglet.nom || !$ctrl.valid_name\">\n<span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n</button>\n</div>\n",
                 resolve: {
                     uids: function () { return uids; },
                     onglet: function () { return _(onglet).isNull() ? { nom: '' } : onglet; },
@@ -1034,17 +1012,17 @@ angular.module('suiviApp')
                             }));
                         }
                         if (uids.length == 1) {
-                            APIs.get_user(uids[0])
+                            User.get({ id: uids[0] }).$promise
                                 .then(function success(response) {
-                                ctrl.eleve = response.data;
-                            }, function error(response) { });
-                            APIs.query_people_concerned_about(uids[0])
-                                .then(function success(response) {
-                                ctrl.concerned_people = response;
+                                ctrl.eleve = response;
+                                ctrl.eleve.query_people_concerned_about(uids[0])
+                                    .then(function success(response) {
+                                    ctrl.concerned_people = response;
+                                }, function error(response) { });
                             }, function error(response) { });
                         }
                         else {
-                            User.get().$promise
+                            User.get({ id: UID }).$promise
                                 .then(function success(response) {
                                 ctrl.concerned_people = [response];
                                 return APIs.get_users(uids);

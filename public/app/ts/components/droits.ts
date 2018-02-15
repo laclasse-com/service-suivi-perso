@@ -120,7 +120,7 @@ angular.module('suiviApp')
               },
                 function error(response) { });
 
-            User.get().$promise
+            User.get({ id: UID }).$promise
               .then(function success(current_user) {
                 return current_user.get_actual_groups();
               })
@@ -136,7 +136,7 @@ angular.module('suiviApp')
                 function error(response) { });
           };
         }],
-                            template: `
+      template: `
                             <div>
                               <label>Gestion des droits</label>
                               <table style="width: 100%;">

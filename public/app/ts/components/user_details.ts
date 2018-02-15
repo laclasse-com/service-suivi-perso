@@ -12,16 +12,16 @@ angular.module('suiviApp')
         showAddress: '<',
         showBirthdate: '<'
       },
-      controller: ['APIs', 'URL_ENT',
-        function(APIs, URL_ENT) {
+      controller: ['APIs', 'URL_ENT', 'User',
+        function(APIs, URL_ENT, User) {
           let ctrl = this;
 
           ctrl.URL_ENT = URL_ENT;
 
           ctrl.$onInit = function() {
-            APIs.get_user(ctrl.uid)
+            User.get({ id: ctrl.uid }).$promise
               .then(function success(response) {
-                ctrl.user = response.data;
+                ctrl.user = response;
 
                 if (ctrl.showClasse) {
                   ctrl.user.get_actual_groups()
@@ -36,17 +36,17 @@ angular.module('suiviApp')
                       });
                     });
                 }
+
+                if (ctrl.showConcernedPeople) {
+                  ctrl.user.query_people_concerned_about()
+                    .then(function success(response) {
+                      ctrl.concerned_people = _(response).groupBy('type');
+                      delete ctrl.concerned_people['Élève'];
+                    },
+                      function error(response) { });
+                }
               },
                 function error(response) { });
-
-            if (ctrl.showConcernedPeople) {
-              APIs.query_people_concerned_about(ctrl.uid)
-                .then(function success(response) {
-                  ctrl.concerned_people = _(response).groupBy('type');
-                  delete ctrl.concerned_people['Élève'];
-                },
-                  function error(response) { });
-            }
           };
         }],
                           template: `

@@ -1,8 +1,8 @@
 angular.module('suiviApp')
   .component('trombinoscope',
     {
-      controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups', 'User',
-        function($filter, $q, URL_ENT, APIs, Popups, User) {
+      controller: ['$filter', '$q', 'URL_ENT', 'APIs', 'Popups', 'User', 'UID',
+        function($filter, $q, URL_ENT, APIs, Popups, User, UID) {
           let ctrl = this;
 
           ctrl.pretty_labels = {
@@ -83,7 +83,7 @@ angular.module('suiviApp')
             return item_count > 1 ? character : '';
           }
 
-          User.get().$promise
+          User.get({ id: UID }).$promise
             .then(function(response) {
               ctrl.current_user = response;
 
@@ -217,7 +217,7 @@ angular.module('suiviApp')
               });
             });
         }],
-template: `
+      template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
   .filter .panel-body { max-height: 380px; overflow-y: auto; }
@@ -229,7 +229,7 @@ template: `
   <div class="panel panel-default gris1-moins">
     <div class="panel-heading" style="text-align: right; ">
       <h3>
-        {{$ctrl.pluck_selected_uids().length}} élève{{$ctrl.pluriel($ctrl.pluck_selected_uids().length, 's')}} sélectionné{{$ctrl.pluriel($ctrl.filtered.length, 's')}}
+        {{$ctrl.pluck_selected_uids().length}} élève{{$ctrl.pluriel($ctrl.pluck_selected_uids().length, 's')}}<span ng:if="$ctrl.current_user.can_do_batch"> sélectionné{{$ctrl.pluriel($ctrl.filtered.length, 's')}}</span>
 
         <a class="btn btn-primary"
            title="Gestion des onglets communs"
