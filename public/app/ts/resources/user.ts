@@ -17,7 +17,7 @@ angular.module('suiviApp')
                     && _(user.profiles).findWhere({ type: 'ADM' }) != undefined;
                 };
 
-                user.can_do_batch = _(["ADM", "DIR", "DOC", "ETA", "EVS", "ORI", "ENS"]).intersection(_(user.profiles).pluck("type")).length > 0;
+                user.can_do_batch = _(["ADM", "DIR", "DOC", "ENS", "ETA", "EVS", "ORI", "TUT"]).intersection(_(user.profiles).pluck("type")).length > 0;
 
                 user.can_add_tab = function(uids) {
                   return user.can_do_batch || ((uids.length == 1) && uids[0] == user.id);
