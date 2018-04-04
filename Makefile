@@ -1,22 +1,22 @@
-all: public/app/js/app.min.js
+all: public/js/app.min.js
 
-# find public/app/ts -type f -exec echo -n {}\  \;
-public/app/js/app.js: public/app/ts/resources/onglets.ts public/app/ts/resources/user.ts public/app/ts/resources/saisies.ts public/app/ts/resources/droits.ts public/app/ts/routes.ts public/app/ts/services/popups.ts public/app/ts/services/apis.ts public/app/ts/app.ts public/app/ts/components/carnet.ts public/app/ts/components/onglets.ts public/app/ts/components/onglet.ts public/app/ts/components/user_details.ts public/app/ts/components/droits.ts public/app/ts/components/saisie.ts public/app/ts/components/trombinoscope.ts
-	-./public/app/node_modules/.bin/tsc --project ./public/app/tsconfig.json
+# find public/ts -type f -exec echo -n {}\  \;
+public/js/app.js: public/ts/resources/onglets.ts public/ts/resources/user.ts public/ts/resources/saisies.ts public/ts/resources/droits.ts public/ts/routes.ts public/ts/services/popups.ts public/ts/services/apis.ts public/ts/app.ts public/ts/components/carnet.ts public/ts/components/onglets.ts public/ts/components/onglet.ts public/ts/components/user_details.ts public/ts/components/droits.ts public/ts/components/saisie.ts public/ts/components/trombinoscope.ts
+	-./public/node_modules/.bin/tsc --project ./public/tsconfig.json
 
-public/app/js/app.min.js: public/app/js/app.js
-	./public/app/node_modules/.bin/google-closure-compiler-js $^ > $@
+public/js/app.min.js: public/js/app.js
+	./public/node_modules/.bin/google-closure-compiler-js $^ > $@
 
 pull-deps:
 	bundle install --path .bundle
 	cd public/app; npm install
 
 clean:
-	-rm public/app/js/app.min.js public/app/js/app.js
+	-rm public/js/app.min.js public/js/app.js
 
 clean-all: clean
 	-rm -fr .bundle/ruby/
-	-rm -fr public/app/node_modules
+	-rm -fr public/node_modules
 
 # DB
 
