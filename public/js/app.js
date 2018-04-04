@@ -546,6 +546,7 @@ angular.module('suiviApp')
                 var promises = [];
                 var process_groups = function (groups) {
                     ctrl.groups = ctrl.groups.concat(_(groups).select(function (group) { return group.type == "GPL" || _(group.users).findWhere({ type: "ELV" }) != undefined; }));
+                    ctrl.groups = _(ctrl.groups).uniq(function (structure) { return groups.id; });
                     APIs.get_grades(_.chain(ctrl.groups)
                         .pluck('grades')
                         .flatten()
@@ -566,6 +567,7 @@ angular.module('suiviApp')
                     if (structures_ids.length > 1) {
                         APIs.get_structures(structures_ids).then(function (response) {
                             ctrl.structures = ctrl.structures.concat(response.data);
+                            ctrl.structures = _(ctrl.structures).uniq(function (structure) { return structure.id; });
                         });
                     }
                 };
