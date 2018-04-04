@@ -103,7 +103,7 @@ angular.module('suiviApp')
               let promises = [];
               let process_groups = (groups) => {
                 ctrl.groups = ctrl.groups.concat(_(groups).select((group) => { return group.type == "GPL" || _(group.users).findWhere({ type: "ELV" }) != undefined; }));
-                ctrl.groups = _(ctrl.groups).uniq((structure) => groups.group_id)
+                //ctrl.groups = _(ctrl.groups).uniq((structure) => groups.group_id)
 
                 APIs.get_grades(_.chain(ctrl.groups)
                   .pluck('grades')
