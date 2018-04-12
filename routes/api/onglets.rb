@@ -41,7 +41,7 @@ module Suivi
               if new_onglet
                 onglet = Onglet.create( carnet_id: carnet.id,
                                         nom: body['nom'],
-                                        date_creation: Time.now )
+                                        ctime: Time.now )
 
                 onglet.init_droits( user )
               end

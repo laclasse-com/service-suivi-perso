@@ -30,8 +30,8 @@ module Suivi
             body = JSON.parse( request.body.read )
 
             saisie = Saisie.create( uid_author: user['id'],
-                                    date_creation: Time.now,
-                                    date_modification: Time.now,
+                                    ctime: Time.now,
+                                    mtime: Time.now,
                                     contenu: body['contenu'],
                                     pinned: body['pinned'] )
 
@@ -65,7 +65,7 @@ module Suivi
             if body.key?('contenu') || body.key?('pinned')
               saisie.contenu = body['contenu'] if body.key?('contenu')
               saisie.pinned = body['pinned'] if body.key?('pinned')
-              saisie.date_modification = Time.now
+              saisie.mtime = Time.now
 
               saisie.save
             end

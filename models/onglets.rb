@@ -31,7 +31,7 @@ class Onglet < Sequel::Model(:onglets)
 
   def to_json( arg )
     h = to_hash
-    h[:date_creation] = Date.parse( h[:date_creation].to_s ) unless h[:date_creation].nil?
+    h[:ctime] = Date.parse( h[:ctime].to_s ) unless h[:ctime].nil?
 
     h.to_json( arg )
   end
