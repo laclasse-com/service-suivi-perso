@@ -89,11 +89,11 @@ angular.module('suiviApp')
 
               ctrl.current_user.avatar = fix_avatar_url(ctrl.current_user.avatar);
 
-              return APIs.query_carnets_relevant_to(ctrl.current_user.id);
+              return APIs.query_relevant_students(ctrl.current_user.id);
             },
               function error(response) { })
             .then(function success(response) {
-              ctrl.relevant_to = _(response.data).pluck('uid_student');
+              ctrl.relevant_to = response.data;
 
               return ctrl.current_user.get_actual_groups();
             },
@@ -217,7 +217,7 @@ angular.module('suiviApp')
               });
             });
         }],
-      template: `
+template: `
 <style>
   .trombinoscope .petite.case { border: 1px solid transparent; }
   .filter .panel-body { max-height: 380px; overflow-y: auto; }
@@ -234,7 +234,7 @@ angular.module('suiviApp')
         <a class="btn btn-primary"
            title="Gestion des onglets communs"
            ng:if="$ctrl.current_user.can_do_batch"
-           ui:sref="carnet({uids: $ctrl.pluck_selected_uids()})">
+           ui:sref="student({uids: $ctrl.pluck_selected_uids()})">
           <span class="glyphicon glyphicon-user"></span>
           <span class="glyphicon glyphicon-user" style="font-size: 125%; margin-left: -11px; margin-right: -11px;"></span>
           <span class="glyphicon glyphicon-user"></span>
@@ -363,9 +363,9 @@ angular.module('suiviApp')
       </button>
       <h5 class="regroupement pull-right" style="height: 10%;">{{eleve.regroupement.name}}</h5>
       <a class="eleve" style="height: 90%; margin-top: 10%;"
-         ui:sref="carnet({uids: [eleve.id]})">
+         ui:sref="student({uids: [eleve.id]})">
 
-        <div class="full-name" title="{{eleve.relevant ? 'Vous êtes contributeur de ce carnet' : ''}}">
+        <div class="full-name" title="{{eleve.relevant ? 'Vous êtes contributeur de ce student' : ''}}">
           <h4 class="first-name">{{eleve.firstname}}</h4>
           <h4 class="last-name">{{eleve.lastname}}</h4>
         </div>

@@ -1,5 +1,4 @@
 class Onglet < Sequel::Model(:onglets)
-  many_to_one :carnets, class: :Carnet, key: :carnet_id
   many_to_many :saisies, class: :Saisie, join_table: :saisies_onglets, left_key: :onglet_id, right_key: :saisie_id
   one_to_many :droits
   one_to_many :ressources
@@ -13,7 +12,7 @@ class Onglet < Sequel::Model(:onglets)
 
   def init_droits( user_creator )
     add_droit( uid: user_creator['id'], profil_id: nil, sharable_id: nil, read: true, write: true, manage: true )
-    add_droit( uid: carnets.uid_student, profil_id: nil, sharable_id: nil, read: true, write: true, manage: false ) unless carnets.uid_student == user_creator['id']
+    add_droit( uid: uid_student, profil_id: nil, sharable_id: nil, read: true, write: true, manage: false ) unless uid_student == user_creator['id']
   end
 
   def allow?( user, right )

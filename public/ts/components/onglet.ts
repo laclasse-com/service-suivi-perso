@@ -21,8 +21,8 @@ angular.module('suiviApp')
 
         ctrl.callback_popup_onglet = function(onglet) {
           if (onglet.action == 'deleted') {
-            $state.go('carnet',
-              { uids: ctrl.uids },
+            $state.go('student',
+                      { uids: ctrl.uids },
               { reload: true });
           }
         };

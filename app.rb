@@ -17,7 +17,6 @@ Sequel::Model.plugin( :json_serializer )
 
 require_relative './lib/user'
 
-require_relative './models/carnets'
 require_relative './models/droits'
 require_relative './models/onglets'
 require_relative './models/saisies'
@@ -30,7 +29,7 @@ require_relative './lib/helpers/access_and_rights'
 require_relative './routes/index'
 require_relative './routes/status'
 
-require_relative './routes/api/carnets'
+require_relative './routes/api/students'
 require_relative './routes/api/onglets'
 require_relative './routes/api/droits'
 require_relative './routes/api/saisies'
@@ -67,7 +66,7 @@ class SinatraApp < Sinatra::Base
   register Suivi::Routes::Index
   register Suivi::Routes::Status
 
-  register Suivi::Routes::Api::Carnets
+  register Suivi::Routes::Api::Students
   register Suivi::Routes::Api::Onglets
   register Suivi::Routes::Api::Onglets::Droits
   register Suivi::Routes::Api::Saisies

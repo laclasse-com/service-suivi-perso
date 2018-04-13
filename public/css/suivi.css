@@ -9,8 +9,8 @@
 
 #main-ui-view .aside,
 #main-ui-view .damier,
-#main-ui-view .carnet { height: 100%;
-                        overflow: auto; }
+#main-ui-view .student { height: 100%;
+                         overflow: auto; }
 
 #main-ui-view .aside { padding: 20px; }
 
@@ -55,25 +55,25 @@
 .trombinoscope .eleve .full-name .first-name,
 .trombinoscope .eleve .full-name .last-name { font-weight: bold; }
 
-.carnet { padding: 0; }
-.carnet .nav-tabs { box-shadow: 0 0 3px #999; }
+.student { padding: 0; }
+.student .nav-tabs { box-shadow: 0 0 3px #999; }
 
-.carnet .nav-tabs > li > a { border-color: #ddd;
-                             border-radius: 0; }
+.student .nav-tabs > li > a { border-color: #ddd;
+                              border-radius: 0; }
 
-.carnet .nav-tabs > li > a.add-onglet,
-.carnet .nav-tabs > li > a.add-onglet:focus { color: #fff;
-                                              background-color: #1aa1cc;
+.student .nav-tabs > li > a.add-onglet,
+.student .nav-tabs > li > a.add-onglet:focus { color: #fff;
+                                               background-color: #1aa1cc;
                                               border-color: #66f; }
 
 
-.carnet .nav-tabs > li > a.add-onglet:hover { background-color: #0990bb; }
+.student .nav-tabs > li > a.add-onglet:hover { background-color: #0990bb; }
 
-.carnet .nav-tabs > li.active > a,
-.carnet .nav-tabs > li.active > a:focus,
-.carnet .nav-tabs > li.active > a:hover { background-color: #e1e1e1; }
+.student .nav-tabs > li.active > a,
+.student .nav-tabs > li.active > a:focus,
+.student .nav-tabs > li.active > a:hover { background-color: #e1e1e1; }
 
-.carnet .tab-content { padding: 15px; }
+.student .tab-content { padding: 15px; }
 
 .saisie-display .panel-footer { padding: 0; }
 

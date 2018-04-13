@@ -1,11 +1,11 @@
 angular.module('suiviApp')
-  .component('carnet',
-  {
+  .component('student',
+             {
     bindings: {
       uids: '<'
     },
-    template: `
-               <div class="col-md-4 gris1-moins aside aside-carnet">
+               template: `
+               <div class="col-md-4 gris1-moins aside aside-student">
                  <a class="col-md-12 btn btn-lg noir-moins go-back" ui:sref="trombinoscope()"> ↰ Retour au trombinoscope </a>
 
                  <user-details class="user-details eleve"
@@ -22,7 +22,7 @@ angular.module('suiviApp')
                    <li style="list-style-type: none;"
                        ng:repeat="uid in $ctrl.uids">
                      <a class="eleve"
-                        ui:sref="carnet({uids: [uid]})">
+                        ui:sref="student({uids: [uid]})">
                        <user-details class="user-details eleve"
                                      uid="uid"
                                      small="true"
@@ -33,7 +33,7 @@ angular.module('suiviApp')
                  </ul>
                </div>
 
-               <onglets class="col-md-8 carnet"
+               <onglets class="col-md-8 student"
                         uids="$ctrl.uids"></onglets>
 `
   });

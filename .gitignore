@@ -2,3 +2,4 @@
 /config/database.yml
 /config/options.rb
 /config/*.orig
+/*.sql

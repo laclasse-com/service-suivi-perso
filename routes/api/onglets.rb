@@ -5,9 +5,7 @@ module Suivi
         def self.registered( app )
           app.get '/api/onglets/?' do
             onglets_hashes = params['uids'].map do |uid_student|
-              get_and_check_carnet( uid_student )
-                .onglets
-                .select { |onglet| onglet.allow?( user, :read ) }
+              get_and_check_student_s_onglets( uid_student, user, :read )
                 .map do |onglet|
                 onglet_hash = onglet.to_hash
                 onglet_hash[:writable] = onglet.allow?( user, :write )
@@ -34,12 +32,12 @@ module Suivi
             body = JSON.parse( request.body.read )
 
             onglets_hashes = body['uids'].map do |uid_student|
-              carnet = get_and_check_carnet( uid_student )
-              onglet = carnet.onglets_dataset[name: body['name']]
+              onglet = Onglet[uid_student: uid_student,
+                              name: body['name']]
 
               new_onglet = onglet.nil?
               if new_onglet
-                onglet = Onglet.create( carnet_id: carnet.id,
+                onglet = Onglet.create( uid_student: uid_student,
                                         name: body['name'],
                                         ctime: Time.now )
 

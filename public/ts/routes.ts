@@ -9,11 +9,11 @@ angular.module('suiviApp')
           url: '/',
           component: 'trombinoscope'
         })
-        .state('carnet',
-        {
-          url: '/carnet/:uids',
+        .state('student',
+               {
+          url: '/student/:uids',
           params: { uids: { array: true } },
-          component: 'carnet',
+          component: 'student',
           resolve: {
             uids: ['$transition$',
               function($transition$) {

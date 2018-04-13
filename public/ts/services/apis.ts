@@ -48,8 +48,8 @@ angular.module('suiviApp')
                 }
               });
 
-              APIs.query_carnets_relevant_to = function(uid) {
-                return $http.get(`${APP_PATH}/api/carnets/relevant/${uid}`);
+              APIs.query_relevant_students = function(uid) {
+                return $http.get(`${APP_PATH}/api/students/relevant/${uid}`);
               };
 
               APIs.get_structure = _.memoize(function(uai) {
