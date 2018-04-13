@@ -35,12 +35,12 @@ module Suivi
 
             onglets_hashes = body['uids'].map do |uid_student|
               carnet = get_and_check_carnet( uid_student )
-              onglet = carnet.onglets_dataset[nom: body['nom']]
+              onglet = carnet.onglets_dataset[name: body['name']]
 
               new_onglet = onglet.nil?
               if new_onglet
                 onglet = Onglet.create( carnet_id: carnet.id,
-                                        nom: body['nom'],
+                                        name: body['name'],
                                         ctime: Time.now )
 
                 onglet.init_droits( user )
@@ -62,7 +62,7 @@ module Suivi
             body = JSON.parse( request.body.read )
 
             onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
-            onglet.nom = body['nom'] if body.key?( 'nom' )
+            onglet.name = body['name'] if body.key?( 'name' )
             onglet.save
 
             onglet_hash = onglet.to_hash

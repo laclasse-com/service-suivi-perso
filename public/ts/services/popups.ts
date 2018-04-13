@@ -46,42 +46,42 @@ template: `
 </div>
 
 <div class="modal-body">
-  <label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.nom" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
-    <span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
-  </label>
+<label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.name" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
+<span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
+</label>
 
-  <span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
-  <droits uid-eleve="$ctrl.uids"
-          droits="$ctrl.droits"
-          concerned-people="$ctrl.concerned_people"
-          ng:if="$ctrl.droits"></droits>
+<span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
+<droits uid-eleve="$ctrl.uids"
+droits="$ctrl.droits"
+concerned-people="$ctrl.concerned_people"
+ng:if="$ctrl.droits"></droits>
 
-  <div class="clearfix"></div>
+<div class="clearfix"></div>
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-danger pull-left"
-          ng:click="$ctrl.delete()"
-          ng:if="$ctrl.onglet.id || $ctrl.onglet.ids">
-    <span class="glyphicon glyphicon-trash"></span>
-    <span> Supprimer l'onglet</span>
-  </button>
-  <button class="btn btn-default"
+<button class="btn btn-danger pull-left"
+ng:click="$ctrl.delete()"
+ng:if="$ctrl.onglet.id || $ctrl.onglet.ids">
+<span class="glyphicon glyphicon-trash"></span>
+<span> Supprimer l'onglet</span>
+</button>
+<button class="btn btn-default"
           ng:click="$ctrl.cancel()">
     <span class="glyphicon glyphicon-remove-sign"></span>
-    <span ng:if="$ctrl.onglet.nom"> Annuler</span>
-    <span ng:if="!$ctrl.onglet.nom"> Fermer</span>
-  </button>
-  <button class="btn btn-success"
+<span ng:if="$ctrl.onglet.name"> Annuler</span>
+<span ng:if="!$ctrl.onglet.name"> Fermer</span>
+</button>
+<button class="btn btn-success"
           ng:click="$ctrl.ok()"
-          ng:disabled="!$ctrl.onglet.nom || !$ctrl.valid_name">
-    <span class="glyphicon glyphicon-ok-sign"></span> Valider
+ng:disabled="!$ctrl.onglet.name || !$ctrl.valid_name">
+<span class="glyphicon glyphicon-ok-sign"></span> Valider
   </button>
 </div>
 `,
             resolve: {
               uids: function() { return uids; },
-              onglet: function() { return _(onglet).isNull() ? { nom: '' } : onglet; },
+              onglet: function() { return _(onglet).isNull() ? { name: '' } : onglet; },
               all_onglets: function() { return all_onglets; }
             },
             controller: ['$scope', '$uibModalInstance', '$q', 'Droits', 'APIs', 'URL_ENT', 'DEFAULT_RIGHTS_ONGLET', 'UID', 'uids', 'onglet', 'all_onglets',
@@ -149,10 +149,10 @@ template: `
                     .reject(function(onglet) {
                       return !_(ctrl.onglet).isNull() && ctrl.onglet.id == onglet.id;
                     })
-                    .pluck('nom')
+                    .pluck('name')
                     .value();
 
-                  ctrl.valid_name = !_(other_onglets_names).includes(ctrl.onglet.nom);
+                  ctrl.valid_name = !_(other_onglets_names).includes(ctrl.onglet.name);
 
                   return ctrl.valid_name;
                 };
@@ -199,7 +199,7 @@ template: `
                 //   function() {
                 promise = Onglets.save({
                   uids: uids,
-                  nom: response_popup.onglet.nom
+                  name: response_popup.onglet.name
                 }).$promise;
 
                 //     return $q.resolve(true);
