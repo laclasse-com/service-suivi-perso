@@ -1,11 +1,11 @@
 class Carnet < Sequel::Model(:carnets)
   one_to_many :onglets
 
-  def self.of( uid_eleve )
-    carnet = Carnet[uid_eleve: uid_eleve]
+  def self.of( uid_student )
+    carnet = Carnet[uid_student: uid_student]
     if carnet.nil?
-      # FIXME: check that uid_eleve is actually an eleve
-      carnet = Carnet.create( uid_eleve: uid_eleve,
+      # FIXME: check that uid_student is actually an eleve
+      carnet = Carnet.create( uid_student: uid_student,
                               ctime: Time.now )
     end
 

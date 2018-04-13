@@ -1,8 +1,8 @@
 module Suivi
   module Helpers
     module AccessAndRights
-      def get_and_check_carnet( uid_eleve )
-        carnet = Carnet.of( uid_eleve )
+      def get_and_check_carnet( uid_student )
+        carnet = Carnet.of( uid_student )
         halt( 404, '404 Unknown carnet' ) if carnet.nil?
 
         carnet

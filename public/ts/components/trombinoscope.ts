@@ -93,7 +93,7 @@ angular.module('suiviApp')
             },
               function error(response) { })
             .then(function success(response) {
-              ctrl.relevant_to = _(response.data).pluck('uid_eleve');
+              ctrl.relevant_to = _(response.data).pluck('uid_student');
 
               return ctrl.current_user.get_actual_groups();
             },

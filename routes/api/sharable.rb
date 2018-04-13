@@ -13,7 +13,7 @@ module Suivi
                         .map do |onglet|
                     onglet_hash = onglet.to_hash
                     onglet_hash[:writable] = false
-                    onglet_hash[:uid_eleve] = onglet.carnets.uid_eleve
+                    onglet_hash[:uid_student] = onglet.carnets.uid_student
 
                     onglet_hash
                   end )
