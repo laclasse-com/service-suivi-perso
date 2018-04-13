@@ -22,7 +22,7 @@ angular.module('suiviApp')
             droit.new = true;
             droit.dirty = {
               uid: false,
-              profil_id: false,
+              profile_type: false,
               group_id: false,
               sharable_id: false,
               read: false,
@@ -42,7 +42,7 @@ angular.module('suiviApp')
             if (!_(droit).has('dirty')) {
               droit.dirty = {
                 uid: false,
-                profil_id: false,
+                profile_type: false,
                 group_id: false,
                 sharable_id: false,
                 read: false,
@@ -153,10 +153,10 @@ angular.module('suiviApp')
                                       </select>
                                     </label>
 
-                                    <label ng:if="droit.profil_id">Profil :
+                                    <label ng:if="droit.profile_type">Profil :
                                       <select style="width: 250px;"
-                                              ng:model="droit.profil_id"
-                                              ng:change="droit.dirty.profil_id = true"
+                                              ng:model="droit.profile_type"
+                                              ng:change="droit.dirty.profile_type = true"
                                               ng:disabled="droit.to_delete">
                                         <option ng:repeat="profil in $ctrl.profils track by profil.id"
                                                 ng:value="profil.id">{{profil.name}}</option>
@@ -240,7 +240,7 @@ angular.module('suiviApp')
                                     </button>
 
                                     <button class="btn btn-default"
-                                            ng:click="$ctrl.add({ profil_id: '...', read: true, write: false })">
+                                            ng:click="$ctrl.add({ profile_type: '...', read: true, write: false })">
                                       <span class="glyphicon glyphicon-plus-sign"></span> par profil
                                     </button>
 

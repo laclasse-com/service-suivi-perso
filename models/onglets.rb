@@ -11,15 +11,15 @@ class Onglet < Sequel::Model(:onglets)
   end
 
   def init_droits( user_creator )
-    add_droit( uid: user_creator['id'], profil_id: nil, sharable_id: nil, read: true, write: true, manage: true )
-    add_droit( uid: uid_student, profil_id: nil, sharable_id: nil, read: true, write: true, manage: false ) unless uid_student == user_creator['id']
+    add_droit( uid: user_creator['id'], profile_type: nil, sharable_id: nil, read: true, write: true, manage: true )
+    add_droit( uid: uid_student, profile_type: nil, sharable_id: nil, read: true, write: true, manage: false ) unless uid_student == user_creator['id']
   end
 
   def allow?( user, right )
     droit = droits_dataset[uid: user['id']]
     return droit[right] unless droit.nil?
 
-    droit = droits_dataset[profil_id: LaClasse::User.active_profile( user )['type']]
+    droit = droits_dataset[profile_type: LaClasse::User.active_profile( user )['type']]
     return droit[right] unless droit.nil?
 
     droit = droits_dataset[group_id: LaClasse::User.groups( user ).map { |group| group['group_id'] } ]

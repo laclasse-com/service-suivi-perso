@@ -112,7 +112,7 @@ ng:disabled="!$ctrl.onglet.name || !$ctrl.valid_name">
                     .map(function(droit) {
                       let proper_droit = new Droits(droit);
 
-                      proper_droit.dirty = { profil_id: true, read: true, write: true, manage: true };
+                      proper_droit.dirty = { profile_type: true, read: true, write: true, manage: true };
 
                       return proper_droit;
                     }));
@@ -240,7 +240,7 @@ ng:disabled="!$ctrl.onglet.name || !$ctrl.valid_name">
                           Droits.delete(droit);
                         }
                       } else if (droit.dirty
-                        && (droit.uid !== '...' && droit.profil_id !== '...' && droit.sharable_id !== '...')
+                        && (droit.uid !== '...' && droit.profile_type !== '...' && droit.sharable_id !== '...')
                         && _(droit.dirty).reduce(function(memo, value) { return memo || value; }, false)
                         && droit.read) {
                         droit.onglets_ids = onglets_ids;

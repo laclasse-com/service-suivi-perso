@@ -9,10 +9,10 @@ angular.module('suiviApp',
     'ui.bootstrap',
     'ui.router'])
   .constant('DEFAULT_RIGHTS_ONGLET', [
-    { "profil_id": "ENS", "read": true, "write": true, "manage": true },
-    { "profil_id": "EVS", "read": true, "write": true, "manage": true },
-    { "profil_id": "DOC", "read": true, "write": true, "manage": true },
-    { "profil_id": "DIR", "read": true, "write": true, "manage": true }
+    { "profile_type": "ENS", "read": true, "write": true, "manage": true },
+    { "profile_type": "EVS", "read": true, "write": true, "manage": true },
+    { "profile_type": "DOC", "read": true, "write": true, "manage": true },
+    { "profile_type": "DIR", "read": true, "write": true, "manage": true }
   ])
   .config(['$httpProvider',
     function($httpProvider) {
