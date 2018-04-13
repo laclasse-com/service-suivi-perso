@@ -32,7 +32,7 @@ module Suivi
             saisie = Saisie.create( uid_author: user['id'],
                                     ctime: Time.now,
                                     mtime: Time.now,
-                                    contenu: body['contenu'],
+                                    content: body['content'],
                                     pinned: body['pinned'] )
 
             body['onglets_ids'].each do |onglet_id|
@@ -62,8 +62,8 @@ module Suivi
               get_and_check_onglet( onglet.id, user, :write )
             end
 
-            if body.key?('contenu') || body.key?('pinned')
-              saisie.contenu = body['contenu'] if body.key?('contenu')
+            if body.key?('content') || body.key?('pinned')
+              saisie.content = body['content'] if body.key?('content')
               saisie.pinned = body['pinned'] if body.key?('pinned')
               saisie.mtime = Time.now
 

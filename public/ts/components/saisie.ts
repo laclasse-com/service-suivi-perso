@@ -14,14 +14,14 @@ angular.module('suiviApp')
             ctrl.edition = !ctrl.edition;
 
             if (!ctrl.edition) {
-              ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
+              ctrl.saisie.trusted_content = $sce.trustAsHtml(ctrl.saisie.content);
             } else {
-              ctrl.previous_content = ctrl.saisie.contenu;
+              ctrl.previous_content = ctrl.saisie.content;
             }
           };
 
           ctrl.cancel = function() {
-            ctrl.saisie.contenu = ctrl.previous_content;
+            ctrl.saisie.content = ctrl.previous_content;
 
             ctrl.toggle_edit();
           };
@@ -74,13 +74,13 @@ angular.module('suiviApp')
 
             if (ctrl.saisie.create_me) {
               ctrl.new_saisie = true;
-              ctrl.saisie.contenu = '';
+              ctrl.saisie.content = '';
               ctrl.saisie.tmp_pinned = false;
             } else {
               ctrl.saisie = new Saisies(ctrl.saisie);
               ctrl.saisie.tmp_pinned = ctrl.saisie.pinned;
             }
-            ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
+            ctrl.saisie.trusted_content = $sce.trustAsHtml(ctrl.saisie.content);
 
             User.get({ id: UID }).$promise
               .then(function(current_user) {
@@ -95,7 +95,7 @@ angular.module('suiviApp')
           };
 
           ctrl.$onChanges = function(changes) {
-            ctrl.saisie.trusted_contenu = $sce.trustAsHtml(ctrl.saisie.contenu);
+            ctrl.saisie.trusted_content = $sce.trustAsHtml(ctrl.saisie.content);
           };
         }],
                    template: `
@@ -119,14 +119,14 @@ angular.module('suiviApp')
 
                        <div class="col-md-12"
                             ta-bind
-                            ng:model="$ctrl.saisie.trusted_contenu"
+                            ng:model="$ctrl.saisie.trusted_content"
                             ng:if="!$ctrl.edition"></div>
 
                        <div class="col-md-12"
                             ng:style="{'padding': $ctrl.new_saisie ? 0 : 'inherit'}"
                             ng:if="$ctrl.edition">
                          <text-angular ta:target-toolbars="main-ta-toolbar-{{$ctrl.toolbar_id}}"
-                                       ng:model="$ctrl.saisie.contenu"
+                                       ng:model="$ctrl.saisie.content"
                                        ng:change="$ctrl.dirty = true"></text-angular>
                          <div class="suivi-ta-toolbar gris2-moins">
                            <text-angular-toolbar class="pull-left"
