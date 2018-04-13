@@ -19,11 +19,11 @@ class Onglet < Sequel::Model(:onglets)
     droit = droits_dataset[uid: user['id']]
     return droit[right] unless droit.nil?
 
-    droit = droits_dataset[profile_type: LaClasse::User.active_profile( user )['type']]
-    return droit[right] unless droit.nil?
+    droits = droits_dataset.where( profile_type: user['profiles'].map { |d| d['type'] } ).all
+    return droits.reduce( true ) { |memo, d| memo && d[right] } unless droits.empty?
 
-    droit = droits_dataset[group_id: LaClasse::User.groups( user ).map { |group| group['group_id'] } ]
-    return droit[right] unless droit.nil?
+    droits = droits_dataset.where( group_id: user['groups'].map { |group| group['group_id'] } ).all
+    return droits.reduce( true ) { |memo, d| memo && d[right] } unless droits.empty?
 
     droits_dataset.count > 1 && ( LaClasse::User.admin?( user ) || LaClasse::User.super_admin?( user ) )
   end

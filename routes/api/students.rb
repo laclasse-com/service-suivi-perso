@@ -12,7 +12,7 @@ module Suivi
                                           .all
                                           .map { |s| s[:onglet_id] }
                                           .concat( Droit.where( uid: params['uid'] )
-                                                        .or( group_id: LaClasse::User.groups(user).map { |group| group['group_id'] } )
+                                                        .or( group_id: user['groups'].map { |group| group['group_id'] } )
                                                         .select( :onglet_id )
                                                         .all
                                                         .map( &:onglet_id ) ) )
