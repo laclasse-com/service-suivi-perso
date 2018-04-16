@@ -260,7 +260,7 @@ template: `
       <div class="row" style="margin-top: 14px;">
         <div class="col-md-6 filter"
              ng:repeat="grp_type in ['CLS', 'GRP', 'GPL']"
-             ng:if="$ctrl.groups.length > 0 && $ctrl.list_groups[grp_type].length > 1">
+             ng:if="$ctrl.groups.length > 0">
           <div class="panel panel-default">
             <div class="panel-heading">
               Filtrage par {{$ctrl.pretty_labels[grp_type]}}
@@ -276,7 +276,7 @@ template: `
             <div class="panel-body">
               <div class="btn-group">
                 <button class="btn btn-sm" style="margin: 2px; font-weight: bold; color: #fff;"
-                        ng:repeat="group in $ctrl.list_groups[grp_type] = $ctrl.groups | filter:{type: grp_type} | orderBy:['name']"
+                        ng:repeat="group in $ctrl.groups | filter:{type: grp_type} | orderBy:['name']"
                         ng:class="{'vert-plus': group.selected, 'vert-moins': !group.selected}"
                         ng:model="group.selected"
                         uib:btn-checkbox>

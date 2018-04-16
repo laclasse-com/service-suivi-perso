@@ -9,16 +9,13 @@ angular.module('suiviApp')
           let ctrl = this;
           ctrl.popup_onglet = Popups.onglet;
 
-          ctrl.callback_popup_onglet = function(onglets) {
-            if (onglets[0].created) {
-              let new_onglet = onglets[0];
-              new_onglet.ids = onglets.map((onglet) => { return onglet.id; });
-
-              ctrl.onglets.push(new_onglet);
+          ctrl.callback_popup_onglet = function(treated_onglet) {
+            if (treated_onglet.action == "created") {
+              ctrl.onglets.push(treated_onglet);
             }
 
-            if (onglets[0].deleted) {
-              ctrl.onglets = ctrl.onglets.filter(onglet => onglet.name != onglets[0].name);
+            if (treated_onglet.delete) {
+              ctrl.onglets = ctrl.onglets.filter(onglet => onglet.name != treated_onglet.name);
             }
           };
 
@@ -48,9 +45,9 @@ angular.module('suiviApp')
                       ctrl.onglets = Object.keys(response).map((key) => {
                         return {
                           name: key,
-                          ids: response[key].map((onglet) => { return onglet.id; }),
-                          writable: response[key].reduce((memo, onglet) => { return memo && onglet.writable; }, true),
-                          manageable: response[key].reduce((memo, onglet) => { return memo && onglet.manageable; }, true)
+                          ids: response[key].map((onglet) => onglet.id),
+                          writable: response[key].reduce((memo, onglet) => memo && onglet.writable, true),
+                          manageable: response[key].reduce((memo, onglet) => memo && onglet.manageable, true)
                         };
                       });
                     })
@@ -68,7 +65,7 @@ angular.module('suiviApp')
         }],
   template: `
   <style>
-    .manage-onglet { margin-top: -11px; margin-right: -16px; border-radius: 0 0 0 12px; }
+    .manage-onglet { margin-top: -16px; margin-right: -16px; height: 28px; border-radius: 0 0 0 12px; }
   </style>
   <uib-tabset>
     <uib-tab ng:repeat="onglet in $ctrl.onglets">
