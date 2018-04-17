@@ -321,8 +321,6 @@ angular.module('suiviApp')
             var ctrl = this;
             ctrl.popup_onglet = Popups.onglet;
             ctrl.callback_popup_onglet = function (treated_onglets) {
-                console.log("callback_popup_onglet");
-                console.log(treated_onglets);
                 if (treated_onglets.action == "created") {
                     treated_onglets = _(treated_onglets).groupBy('name');
                     ctrl.onglets = ctrl.onglets.concat(Object.keys(treated_onglets)
@@ -1128,7 +1126,6 @@ angular.module('suiviApp')
                 }
                 promise.then(function success(response) {
                     var onglets = response;
-                    console.log(response);
                     onglets.action = action;
                     if (action != 'deleted') {
                         _.chain(response_popup.droits)
