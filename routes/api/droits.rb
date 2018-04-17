@@ -112,8 +112,6 @@ module Suivi
             end
 
             app.delete '/api/droits/?' do
-              p params
-
               droits = Droit.where(id: params['ids']).all
               halt( 404, '404 Unknown droit' ) if droits.length != params['ids'].length
 
