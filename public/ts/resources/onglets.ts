@@ -14,6 +14,10 @@ angular.module('suiviApp')
           update: {
             method: 'PUT',
             isArray: true
+          },
+          delete: {
+            method: 'DELETE',
+            isArray: true
           }
         });
     }]);

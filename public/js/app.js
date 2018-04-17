@@ -320,12 +320,26 @@ angular.module('suiviApp')
         function ($uibModal, Onglets, Popups, APIs, User, UID) {
             var ctrl = this;
             ctrl.popup_onglet = Popups.onglet;
-            ctrl.callback_popup_onglet = function (treated_onglet) {
-                if (treated_onglet.action == "created") {
-                    ctrl.onglets.push(treated_onglet);
+            ctrl.callback_popup_onglet = function (treated_onglets) {
+                console.log("callback_popup_onglet");
+                console.log(treated_onglets);
+                if (treated_onglets.action == "created") {
+                    treated_onglets = _(treated_onglets).groupBy('name');
+                    ctrl.onglets = ctrl.onglets.concat(Object.keys(treated_onglets)
+                        .map(function (key) {
+                        return {
+                            name: key,
+                            ids: treated_onglets[key].map(function (onglet) { return onglet.id; }),
+                            writable: treated_onglets[key].reduce(function (memo, onglet) { return memo && onglet.writable; }, true),
+                            manageable: treated_onglets[key].reduce(function (memo, onglet) { return memo && onglet.manageable; }, true)
+                        };
+                    }));
                 }
-                if (treated_onglet.delete) {
-                    ctrl.onglets = ctrl.onglets.filter(function (onglet) { return onglet.name != treated_onglet.name; });
+                if (treated_onglets.deleted) {
+                    ctrl.onglets = ctrl.onglets.filter(function (onglet) { return onglet.name != treated_onglets.name; });
+                }
+                if (Array.isArray(treated_onglets) && treated_onglets[0].deleted) {
+                    ctrl.onglets = ctrl.onglets.filter(function (onglet) { return onglet.name != treated_onglets[0].name; });
                 }
             };
             ctrl.$onInit = function () {
@@ -362,7 +376,7 @@ angular.module('suiviApp')
                 });
             };
         }],
-    template: "\n  <style>\n    .manage-onglet { margin-top: -16px; margin-right: -16px; height: 28px; border-radius: 0 0 0 12px; }\n  </style>\n  <uib-tabset>\n    <uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n      <uib-tab-heading> {{onglet.name}}\n        <button class=\"btn btn-warning manage-onglet\"\n                ng:if=\"onglet.manageable\"\n                ng:click=\"$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n          <span class=\"glyphicon glyphicon-cog\"></span>\n        </button>\n      </uib-tab-heading>\n\n      <onglet uids=\"$ctrl.uids\"\n              onglets=\"$ctrl.onglets\"\n              onglet=\"onglet\">\n      </onglet>\n    </uib-tab>\n\n    <li>\n      <a href\n         class=\"bleu add-onglet\"\n         ng:click=\"$ctrl.popup_onglet( $ctrl.uids, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\"\n         ng:if=\"$ctrl.can_add_tab\">\n        <span class=\"glyphicon glyphicon-plus\">\n        </span>\n      </a>\n    </li>\n  </uib-tabset>\n"
+    template: "\n<style>\n.manage-onglet { margin-top: -16px; margin-right: -16px; height: 28px; border-radius: 0 0 0 12px; }\n</style>\n<uib-tabset>\n<uib-tab ng:repeat=\"onglet in $ctrl.onglets\">\n<uib-tab-heading> {{onglet.name}}\n<button class=\"btn btn-warning manage-onglet\"\nng:if=\"onglet.manageable\"\nng:click=\"$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )\">\n<span class=\"glyphicon glyphicon-cog\"></span>\n</button>\n</uib-tab-heading>\n\n<onglet uids=\"$ctrl.uids\"\n              onglets=\"$ctrl.onglets\"\n              onglet=\"onglet\">\n      </onglet>\n    </uib-tab>\n\n    <li>\n      <a href\n         class=\"bleu add-onglet\"\n         ng:click=\"$ctrl.popup_onglet( $ctrl.uids, null, $ctrl.onglets, $ctrl.callback_popup_onglet )\"\n         ng:if=\"$ctrl.can_add_tab\">\n        <span class=\"glyphicon glyphicon-plus\">\n        </span>\n      </a>\n    </li>\n  </uib-tabset>\n"
 });
 angular.module('suiviApp')
     .component('saisie', {
@@ -708,6 +722,10 @@ angular.module('suiviApp')
             update: {
                 method: 'PUT',
                 isArray: true
+            },
+            delete: {
+                method: 'DELETE',
+                isArray: true
             }
         });
     }]);
@@ -978,8 +996,14 @@ angular.module('suiviApp')
             });
         };
         Popups.onglet = function (uids, onglet, all_onglets, callback) {
+            var parcours_educatifs = [
+                "Parcours avenir",
+                "Parcours d'éducation artistique et culturelle",
+                "Parcours santé",
+                "Parcours citoyen"
+            ];
             $uibModal.open({
-                template: "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre : <input type=\"text\" maxlength=\"45\" ng:model=\"$ctrl.onglet.name\" ng:maxlength=\"45\" ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n  </label>\n\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">L'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.</span>\n  <droits uid-eleve=\"$ctrl.uids\"\n          droits=\"$ctrl.droits\"\n          concerned-people=\"$ctrl.concerned_people\"\n          ng:if=\"$ctrl.droits\"></droits>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id || $ctrl.onglet.ids\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.name\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.name\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.name || !$ctrl.valid_name\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n",
+                template: "\n<div class=\"modal-header\">\n  <h3 class=\"modal-title\">\n    Propri\u00E9t\u00E9s de l'onglet\n  </h3>\n</div>\n\n<div class=\"modal-body\">\n  <label>Titre<span ng:if=\"$ctrl.onglet.names\">s</span> :\n    <input\n      type=\"text\"\n      placeholder=\"onglet personnalis\u00E9\"\n      maxlength=\"45\"\n      ng:disabled=\"$ctrl.onglet.names\"\n      ng:model=\"$ctrl.onglet.name\"\n      ng:maxlength=\"45\"\n      ng:change=\"$ctrl.onglet.dirty = true; $ctrl.name_validation()\"\n      ng:if=\"!$ctrl.onglet.names\" />\n    <span class=\"label label-danger\" ng:if=\"!$ctrl.onglet.names && !$ctrl.valid_name\">Un onglet existant porte d\u00E9j\u00E0 ce nom !</span>\n\n    <ul ng:if=\"$ctrl.onglet.names\">\n      <li ng:repeat=\"name in $ctrl.onglet.names\">{{name}}</li>\n    </ul>\n  </label>\n  <button class=\"btn btn-primary\"\n          ng:click=\"$ctrl.parcours();\"\n          ng:if=\"!$ctrl.already_has_parcours && !$ctrl.onglet.names\">Parcours \u00E9ducatifs</button>\n\n  <droits uid-eleve=\"$ctrl.uids\"\n          droits=\"$ctrl.droits\"\n          concerned-people=\"$ctrl.concerned_people\"\n          ng:if=\"$ctrl.droits\"></droits>\n  <span class=\"label label-info\" ng:if=\"$ctrl.uids\">(Par d\u00E9faut l'\u00E9l\u00E8ve aura un acc\u00E8s en lecture/\u00E9criture \u00E0 cet onglet.)</span>\n\n  <div class=\"clearfix\"></div>\n</div>\n\n<div class=\"modal-footer\">\n  <button class=\"btn btn-danger pull-left\"\n          ng:click=\"$ctrl.delete()\"\n          ng:if=\"$ctrl.onglet.id || $ctrl.onglet.ids\">\n    <span class=\"glyphicon glyphicon-trash\"></span>\n    <span> Supprimer l'onglet</span>\n  </button>\n  <button class=\"btn btn-default\"\n          ng:click=\"$ctrl.cancel()\">\n    <span class=\"glyphicon glyphicon-remove-sign\"></span>\n    <span ng:if=\"$ctrl.onglet.name\"> Annuler</span>\n    <span ng:if=\"!$ctrl.onglet.name\"> Fermer</span>\n  </button>\n  <button class=\"btn btn-success\"\n          ng:click=\"$ctrl.ok()\"\n          ng:disabled=\"!$ctrl.onglet.names && (!$ctrl.onglet.name || !$ctrl.valid_name)\">\n    <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n  </button>\n</div>\n",
                 resolve: {
                     uids: function () { return uids; },
                     onglet: function () { return _(onglet).isNull() ? { name: '' } : onglet; },
@@ -992,8 +1016,9 @@ angular.module('suiviApp')
                         ctrl.uids = uids;
                         ctrl.onglet = onglet;
                         ctrl.all_onglets = all_onglets;
-                        ctrl.onglet.delete = false;
+                        ctrl.onglet.deleted = false;
                         ctrl.valid_name = true;
+                        ctrl.already_has_parcours = _(parcours_educatifs).intersection(ctrl.all_onglets.map(function (onglet) { return onglet.name; })).length == parcours_educatifs.length;
                         if (_(ctrl.onglet).has('id') || _(ctrl.onglet).has('ids')) {
                             Droits.query({
                                 onglet_id: ctrl.onglet.id,
@@ -1007,7 +1032,9 @@ angular.module('suiviApp')
                         }
                         else {
                             ctrl.droits = [new Droits({ uid: UID, read: true, write: true, manage: true })];
-                            ctrl.droits.push(new Droits({ uid: uids, read: true, write: true, manage: false }));
+                            if (uids.length == 1) {
+                                ctrl.droits.push(new Droits({ uid: uids[0], read: true, write: true, manage: false }));
+                            }
                             ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
                                 .map(function (droit) {
                                 var proper_droit = new Droits(droit);
@@ -1045,6 +1072,10 @@ angular.module('suiviApp')
                             ctrl.valid_name = !_(other_onglets_names).includes(ctrl.onglet.name);
                             return ctrl.valid_name;
                         };
+                        ctrl.parcours = function () {
+                            ctrl.onglet.name = undefined;
+                            ctrl.onglet.names = _(parcours_educatifs).difference(ctrl.all_onglets.map(function (onglet) { return onglet.name; }));
+                        };
                         ctrl.ok = function () {
                             $uibModalInstance.close({
                                 onglet: ctrl.onglet,
@@ -1063,7 +1094,7 @@ angular.module('suiviApp')
                                 cancelButtonText: 'Annuler'
                             })
                                 .then(function (result) {
-                                ctrl.onglet.delete = result.dismiss != "cancel";
+                                ctrl.onglet.deleted = result.dismiss != "cancel";
                                 ctrl.ok();
                             });
                         };
@@ -1075,40 +1106,29 @@ angular.module('suiviApp')
                 .result.then(function success(response_popup) {
                 var promise = null;
                 var action = 'rien';
-                if (_(onglet).isNull()) {
+                if (onglet == null) {
                     action = 'created';
                     promise = Onglets.save({
                         uids: uids,
-                        name: response_popup.onglet.name
+                        names: response_popup.onglet.names == undefined ? [response_popup.onglet.name] : response_popup.onglet.names
                     }).$promise;
                 }
+                else if (response_popup.onglet.deleted) {
+                    action = 'deleted';
+                    response_popup.onglet["ids[]"] = response_popup.onglet.ids;
+                    delete response_popup.onglet.ids;
+                    delete response_popup.onglet.id;
+                    promise = Onglets.delete(response_popup.onglet).$promise;
+                }
+                else if (response_popup.onglet.dirty) {
+                    promise = Onglets.update(response_popup.onglet).$promise;
+                }
                 else {
-                    if (response_popup.onglet.delete) {
-                        action = 'deleted';
-                        response_popup.onglet["ids[]"] = response_popup.onglet.ids;
-                        delete response_popup.onglet.ids;
-                        promise = Onglets.delete(response_popup.onglet).$promise;
-                    }
-                    else if (response_popup.onglet.dirty) {
-                        promise = Onglets.update(response_popup.onglet).$promise;
-                    }
-                    else {
-                        promise = $q.resolve(response_popup.onglet);
-                    }
+                    promise = $q.resolve([response_popup.onglet]);
                 }
                 promise.then(function success(response) {
                     var onglets = response;
-                    if (response.ids == undefined) {
-                        if (response.id == undefined) {
-                            onglets = angular.copy(response[0]);
-                            delete onglets.id;
-                            delete onglets.uid_student;
-                            onglets.ids = response.map(function (onglet) { return onglet.id; });
-                        }
-                        else {
-                            onglets.ids = [response.id];
-                        }
-                    }
+                    console.log(response);
                     onglets.action = action;
                     if (action != 'deleted') {
                         _.chain(response_popup.droits)
@@ -1121,7 +1141,7 @@ angular.module('suiviApp')
                                 && droit.dirty
                                 && (droit.uid != '...' && droit.profile_type != '...' && droit.sharable_id != '...')
                                 && _(droit.dirty).reduce(function (memo, value) { return memo || value; }, false)) {
-                                droit.onglets_ids = onglets.ids;
+                                droit.onglets_ids = response.map(function (onglet) { return onglet.id; });
                                 var promise_1 = ((_(droit).has('id') || _(droit).has('ids')) ? Droits.update(droit) : Droits.save(droit)).$promise;
                                 promise_1.then(function (response) { return true; }, function (response) { return false; });
                             }

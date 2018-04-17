@@ -9,13 +9,27 @@ angular.module('suiviApp')
           let ctrl = this;
           ctrl.popup_onglet = Popups.onglet;
 
-          ctrl.callback_popup_onglet = function(treated_onglet) {
-            if (treated_onglet.action == "created") {
-              ctrl.onglets.push(treated_onglet);
+          ctrl.callback_popup_onglet = function(treated_onglets) {
+            if (treated_onglets.action == "created") {
+              treated_onglets = _(treated_onglets).groupBy( 'name' );
+              ctrl.onglets = ctrl.onglets.concat( Object.keys( treated_onglets )
+                                                  .map((key) => {
+                                                    return {
+                                                      name: key,
+                                                      ids: treated_onglets[key].map((onglet) => onglet.id),
+                                                      writable: treated_onglets[key].reduce((memo, onglet) => memo && onglet.writable, true),
+                                                      manageable: treated_onglets[key].reduce((memo, onglet) => memo && onglet.manageable, true)
+                                                    };
+                                                  }) );
+
             }
 
-            if (treated_onglet.delete) {
-              ctrl.onglets = ctrl.onglets.filter(onglet => onglet.name != treated_onglet.name);
+            if (treated_onglets.deleted) {
+              ctrl.onglets = ctrl.onglets.filter(onglet => onglet.name != treated_onglets.name);
+            }
+
+            if (Array.isArray(treated_onglets) && treated_onglets[0].deleted) {
+              ctrl.onglets = ctrl.onglets.filter(onglet => onglet.name != treated_onglets[0].name);
             }
           };
 
@@ -32,7 +46,7 @@ angular.module('suiviApp')
                         return onglet;
                       });
                     },
-                      function error(response) { });
+                          function error(response) { });
                 }
               );
             } else {
@@ -63,21 +77,21 @@ angular.module('suiviApp')
               });
           };
         }],
-  template: `
-  <style>
-    .manage-onglet { margin-top: -16px; margin-right: -16px; height: 28px; border-radius: 0 0 0 12px; }
-  </style>
-  <uib-tabset>
-    <uib-tab ng:repeat="onglet in $ctrl.onglets">
-      <uib-tab-heading> {{onglet.name}}
-        <button class="btn btn-warning manage-onglet"
-                ng:if="onglet.manageable"
-                ng:click="$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
-          <span class="glyphicon glyphicon-cog"></span>
-        </button>
-      </uib-tab-heading>
+    template: `
+<style>
+.manage-onglet { margin-top: -16px; margin-right: -16px; height: 28px; border-radius: 0 0 0 12px; }
+</style>
+<uib-tabset>
+<uib-tab ng:repeat="onglet in $ctrl.onglets">
+<uib-tab-heading> {{onglet.name}}
+<button class="btn btn-warning manage-onglet"
+ng:if="onglet.manageable"
+ng:click="$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
+<span class="glyphicon glyphicon-cog"></span>
+</button>
+</uib-tab-heading>
 
-      <onglet uids="$ctrl.uids"
+<onglet uids="$ctrl.uids"
               onglets="$ctrl.onglets"
               onglet="onglet">
       </onglet>
