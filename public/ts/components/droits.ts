@@ -19,28 +19,8 @@ angular.module('suiviApp')
             });
           };
 
-          ctrl.add = function(droit) {
-            droit.new = true;
-            droit.dirty = {
-              uid: false,
-              profile_type: false,
-              group_id: false,
-              sharable_id: false,
-              read: false,
-              write: false,
-              manage: false
-            };
-
-            ctrl.droits.push(new Droits(droit));
-          };
-
-          ctrl.add_sharable = function(droit) {
-            droit.sharable_id = gen_pseudo_UUID();
-            ctrl.add(droit);
-          };
-
           let maybe_init_dirtiness = function(droit) {
-            if (!_(droit).has('dirty')) {
+            if (droit.dirty == undefined) {
               droit.dirty = {
                 uid: false,
                 profile_type: false,
@@ -51,6 +31,19 @@ angular.module('suiviApp')
                 manage: false
               };
             }
+          };
+
+          ctrl.add = function(droit) {
+            droit.new = true;
+
+            maybe_init_dirtiness( droit );
+
+            ctrl.droits.push(new Droits(droit));
+          };
+
+          ctrl.add_sharable = function(droit) {
+            droit.sharable_id = gen_pseudo_UUID();
+            ctrl.add(droit);
           };
 
           ctrl.set_read = function(droit) {
@@ -134,6 +127,19 @@ angular.module('suiviApp')
                   });
               },
                     function error(response) { });
+
+            if ( ctrl.concernedPeople == undefined ) {
+              ctrl.concernedPeople = [];
+            }
+
+            let concernedPeople_ids = ctrl.concernedPeople.map((people) => people.id);
+
+            APIs.get_users( ctrl.droits
+                            .filter((droit) => droit.uid != undefined && !concernedPeople_ids.includes( droit.uid ) )
+                            .map((droit) => droit.uid) )
+              .then((response) => {
+                ctrl.concernedPeople = ctrl.concernedPeople.concat( response.data );
+              })
           };
         }],
                      template: `
