@@ -31,26 +31,29 @@ module Suivi
             request.body.rewind
             body = JSON.parse( request.body.read )
 
-            onglets_hashes = body['uids'].map do |uid_student|
-              onglet = Onglet[uid_student: uid_student,
-                              name: body['name']]
+            onglets_hashes = body['names'].map do |name|
+              body['uids'].map do |uid_student|
+                onglet = Onglet[uid_student: uid_student,
+                                name: body['name']]
 
-              new_onglet = onglet.nil?
-              if new_onglet
-                onglet = Onglet.create( uid_student: uid_student,
-                                        name: body['name'],
-                                        ctime: Time.now )
+                new_onglet = onglet.nil?
+                if new_onglet
+                  onglet = Onglet.create( uid_student: uid_student,
+                                          name: name,
+                                          ctime: Time.now )
 
-                onglet.init_droits( user )
+                  onglet.init_droits( user )
+                end
+
+                onglet_hash = onglet.to_hash
+                onglet_hash[:writable] = onglet.allow?( user, :write )
+                onglet_hash[:manageable] = onglet.allow?( user, :manage )
+                onglet_hash[:created] = new_onglet
+
+                onglet_hash
               end
-
-              onglet_hash = onglet.to_hash
-              onglet_hash[:writable] = onglet.allow?( user, :write )
-              onglet_hash[:manageable] = onglet.allow?( user, :manage )
-              onglet_hash[:created] = new_onglet
-
-              onglet_hash
             end
+                                          .flatten
 
             json( onglets_hashes )
           end

@@ -37,6 +37,13 @@ angular.module('suiviApp')
               };
 
               Popups.onglet = function(uids, onglet, all_onglets, callback) {
+                let parcours_educatifs = [
+                  "Parcours avenir",
+                  "Parcours d'éducation artistique et culturelle",
+                  "Parcours santé",
+                  "Parcours citoyen"
+                ];
+
                 $uibModal.open({
 template: `
 <div class="modal-header">
@@ -46,15 +53,31 @@ template: `
 </div>
 
 <div class="modal-body">
-  <label>Titre : <input type="text" maxlength="45" ng:model="$ctrl.onglet.name" ng:maxlength="45" ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()" />
-    <span class="label label-danger" ng:if="!$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
-  </label>
+  <label>Titre<span ng:if="$ctrl.onglet.names">s</span> :
+    <input
+      type="text"
+      placeholder="onglet personnalisé"
+      maxlength="45"
+      ng:disabled="$ctrl.onglet.names"
+      ng:model="$ctrl.onglet.name"
+      ng:maxlength="45"
+      ng:change="$ctrl.onglet.dirty = true; $ctrl.name_validation()"
+      ng:if="!$ctrl.onglet.names" />
+    <span class="label label-danger" ng:if="!$ctrl.onglet.names && !$ctrl.valid_name">Un onglet existant porte déjà ce nom !</span>
 
-  <span class="label label-info" ng:if="$ctrl.uids">L'élève aura un accès en lecture/écriture à cet onglet.</span>
+    <ul ng:if="$ctrl.onglet.names">
+      <li ng:repeat="name in $ctrl.onglet.names">{{name}}</li>
+    </ul>
+  </label>
+  <button class="btn btn-primary"
+          ng:click="$ctrl.parcours();"
+          ng:if="!$ctrl.already_has_parcours && !$ctrl.onglet.names">Parcours éducatifs</button>
+
   <droits uid-eleve="$ctrl.uids"
           droits="$ctrl.droits"
           concerned-people="$ctrl.concerned_people"
           ng:if="$ctrl.droits"></droits>
+  <span class="label label-info" ng:if="$ctrl.uids">(Par défaut l'élève aura un accès en lecture/écriture à cet onglet.)</span>
 
   <div class="clearfix"></div>
 </div>
@@ -74,7 +97,7 @@ template: `
   </button>
   <button class="btn btn-success"
           ng:click="$ctrl.ok()"
-          ng:disabled="!$ctrl.onglet.name || !$ctrl.valid_name">
+          ng:disabled="!$ctrl.onglet.names && (!$ctrl.onglet.name || !$ctrl.valid_name)">
     <span class="glyphicon glyphicon-ok-sign"></span> Valider
   </button>
 </div>
@@ -92,8 +115,10 @@ template: `
                                  ctrl.uids = uids;
                                  ctrl.onglet = onglet;
                                  ctrl.all_onglets = all_onglets;
-                                 ctrl.onglet.delete = false;
+                                 ctrl.onglet.deleted = false;
                                  ctrl.valid_name = true;
+                                 ctrl.already_has_parcours = _(parcours_educatifs).intersection(ctrl.all_onglets.map((onglet) => onglet.name)).length == parcours_educatifs.length;
+
 
                                  if (_(ctrl.onglet).has('id') || _(ctrl.onglet).has('ids')) {
                                    Droits.query({
@@ -102,22 +127,24 @@ template: `
                                    }).$promise
                                      .then(function success(response) {
                                        ctrl.droits = _(response).map(function(droit) {
-                                         return new Droits(droit);
-                                       });
-                                     },
-                                           function error(response) { });
-                                 } else {
-                                   ctrl.droits = [new Droits({ uid: UID, read: true, write: true, manage: true })];
-                                   ctrl.droits.push(new Droits({ uid: uids, read: true, write: true, manage: false }));
-                                   ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
-                                                                    .map(function(droit) {
-                                                                      let proper_droit = new Droits(droit);
+                                           return new Droits(droit);
+                                         });
+                                       },
+                                             function error(response) { });
+                                   } else {
+                                     ctrl.droits = [ new Droits({ uid: UID, read: true, write: true, manage: true }) ];
+                                     if ( uids.length == 1 ) {
+                                       ctrl.droits.push(new Droits({ uid: uids[0], read: true, write: true, manage: false }));
+                                     }
+                                     ctrl.droits = ctrl.droits.concat(_(DEFAULT_RIGHTS_ONGLET)
+                                                                      .map(function(droit) {
+                                                                        let proper_droit = new Droits(droit);
 
-                                                                      proper_droit.dirty = { profile_type: true, read: true, write: true, manage: true };
+                                                                        proper_droit.dirty = { profile_type: true, read: true, write: true, manage: true };
 
-                                                                      return proper_droit;
-                                                                    }));
-                                 }
+                                                                        return proper_droit;
+                                                                      }));
+                                   }
 
                                  if (uids.length == 1) {
                                    User.get({ id: uids[0] }).$promise
@@ -129,23 +156,23 @@ template: `
                                            ctrl.concerned_people = response;
                                          },
                                                function error(response) { });
-                                       },
-                                             function error(response) { });
-                                   } else {
-                                     User.get({ id: UID }).$promise
-                                       .then(function success(response) {
-                                         ctrl.concerned_people = [response];
+                                     },
+                                           function error(response) { });
+                                 } else {
+                                   User.get({ id: UID }).$promise
+                                     .then(function success(response) {
+                                       ctrl.concerned_people = [response];
 
-                                         return APIs.get_users(uids);
-                                       },
-                                             function error(response) { })
-                                       .then(function success(response) {
-                                         ctrl.concerned_people = ctrl.concerned_people.concat(response.data);
-                                       },
-                                             function error(response) { });
-                                   }
+                                       return APIs.get_users(uids);
+                                     },
+                                           function error(response) { })
+                                     .then(function success(response) {
+                                       ctrl.concerned_people = ctrl.concerned_people.concat(response.data);
+                                     },
+                                           function error(response) { });
+                                 }
 
-                                   ctrl.name_validation = function() {
+                                 ctrl.name_validation = function() {
                                    let other_onglets_names = _.chain(ctrl.all_onglets)
                                      .reject(function(onglet) {
                                        return !_(ctrl.onglet).isNull() && ctrl.onglet.id == onglet.id;
@@ -157,6 +184,11 @@ template: `
 
                                    return ctrl.valid_name;
                                  };
+
+                                 ctrl.parcours = function() {
+                                   ctrl.onglet.name = undefined;
+                                   ctrl.onglet.names = _(parcours_educatifs).difference(ctrl.all_onglets.map((onglet) => onglet.name));
+                                 }
 
                                  ctrl.ok = function() {
                                    $uibModalInstance.close({
@@ -177,7 +209,7 @@ template: `
                                      cancelButtonText: 'Annuler'
                                    })
                                      .then((result) => {
-                                       ctrl.onglet.delete = result.dismiss != "cancel";
+                                       ctrl.onglet.deleted = result.dismiss != "cancel";
                                        ctrl.ok();
                                      });
                                  };
@@ -191,43 +223,28 @@ template: `
                     let promise = null;
                     let action = 'rien';
 
-                    if (_(onglet).isNull()) {
+                    if ( onglet == null ) {
                       action = 'created';
 
                       promise = Onglets.save({
                         uids: uids,
-                        name: response_popup.onglet.name
+                        names: response_popup.onglet.names == undefined ? [ response_popup.onglet.name ] : response_popup.onglet.names
                       }).$promise;
+                    } else if (response_popup.onglet.deleted) {
+                      action = 'deleted';
+
+                      response_popup.onglet["ids[]"] = response_popup.onglet.ids;
+                      delete response_popup.onglet.ids;
+                      delete response_popup.onglet.id;
+
+                      promise = Onglets.delete(response_popup.onglet).$promise;
+                    } else if (response_popup.onglet.dirty) {
+                      promise = Onglets.update(response_popup.onglet).$promise;
                     } else {
-                      if (response_popup.onglet.delete) {
-                        action = 'deleted';
-
-                        response_popup.onglet["ids[]"] = response_popup.onglet.ids;
-                        delete response_popup.onglet.ids;
-
-                        promise = Onglets.delete(response_popup.onglet).$promise;
-                      } else if (response_popup.onglet.dirty) {
-                        promise = Onglets.update(response_popup.onglet).$promise;
-                      } else {
-                        promise = $q.resolve(response_popup.onglet);
-                      }
+                      promise = $q.resolve( [ response_popup.onglet ] );
                     }
-
                     promise.then(function success(response) {
                       let onglets = response
-
-                      if (response.ids == undefined) {
-                        if (response.id == undefined) {
-                          onglets = angular.copy( response[0] );
-                          delete onglets.id;
-                          delete onglets.uid_student;
-
-                          onglets.ids = response.map((onglet) => onglet.id);
-                        } else {
-                          onglets.ids = [ response.id ];
-                        }
-                      }
-
                       onglets.action = action;
 
                       if (action != 'deleted') {
@@ -241,7 +258,7 @@ template: `
                                   && droit.dirty
                                   && (droit.uid != '...' && droit.profile_type != '...' && droit.sharable_id != '...')
                                   && _(droit.dirty).reduce((memo, value) => { return memo || value; }, false) ) {
-                                droit.onglets_ids = onglets.ids;
+                                droit.onglets_ids = response.map((onglet) => onglet.id);
 
                                 let promise = ( ( _(droit).has('id') || _(droit).has('ids') ) ? Droits.update(droit) : Droits.save(droit) ).$promise;
 
