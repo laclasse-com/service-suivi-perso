@@ -12,8 +12,8 @@ class Saisie < Sequel::Model(:saisies)
 
     return true if user['id'] == uid_author
 
-    # if user can manage then she can edit onglet's pinned saisie(s)
-    return true if pinned && onglets.reduce( true ) do |memo, onglet|
+    # if user can manage then she can edit onglet's saisie(s)
+    return true if onglets.reduce( true ) do |memo, onglet|
       memo && Onglet[id: onglet.id].allow?( user, :manage )
     end
 

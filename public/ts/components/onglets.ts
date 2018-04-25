@@ -77,21 +77,21 @@ angular.module('suiviApp')
               });
           };
         }],
-    template: `
-<style>
-.manage-onglet { margin-top: -16px; margin-right: -16px; height: 28px; border-radius: 0 0 0 12px; }
-</style>
-<uib-tabset>
-<uib-tab ng:repeat="onglet in $ctrl.onglets">
-<uib-tab-heading> {{onglet.name}}
-<button class="btn btn-warning manage-onglet"
-ng:if="onglet.manageable"
-ng:click="$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
-<span class="glyphicon glyphicon-cog"></span>
-</button>
-</uib-tab-heading>
+  template: `
+  <style>
+    .manage-onglet { margin-top: -16px; margin-right: -16px; height: 28px; border-radius: 0 0 0 12px; }
+  </style>
+  <uib-tabset>
+    <uib-tab ng:repeat="onglet in $ctrl.onglets">
+      <uib-tab-heading> {{onglet.name}}
+        <button class="btn btn-warning manage-onglet"
+                ng:if="onglet.manageable"
+                ng:click="$ctrl.popup_onglet( $ctrl.uids, onglet, $ctrl.onglets, $ctrl.callback_popup_onglet )">
+          <span class="glyphicon glyphicon-cog"></span>
+        </button>
+      </uib-tab-heading>
 
-<onglet uids="$ctrl.uids"
+      <onglet uids="$ctrl.uids"
               onglets="$ctrl.onglets"
               onglet="onglet">
       </onglet>

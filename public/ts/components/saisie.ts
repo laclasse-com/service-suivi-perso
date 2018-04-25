@@ -87,7 +87,7 @@ angular.module('suiviApp')
                 ctrl.current_user = current_user;
 
                 ctrl.editable = ctrl.new_saisie ||
-                  (_(ctrl).has('onglet') && ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id) ||
+                  (_(ctrl).has('onglet') && (ctrl.onglet.manageable || (ctrl.onglet.writable && ctrl.saisie.uid_author == ctrl.current_user.id))) ||
                   ctrl.current_user.is_admin();
               });
 
@@ -156,7 +156,7 @@ angular.module('suiviApp')
 
                            <button class="btn btn-danger pull-right"
                                    ng:click="$ctrl.delete()"
-                                   ng:if="$ctrl.saisie.id && ( $ctrl.editable || $ctrl.current_user.is_admin() )">
+                                   ng:if="$ctrl.saisie.id && ( $ctrl.editable || $ctrl.onglet.manageable || $ctrl.current_user.is_admin() )">
                              <span class="glyphicon glyphicon-trash"></span> Supprimer
                            </button>
                            <div class="clearfix"></div>
