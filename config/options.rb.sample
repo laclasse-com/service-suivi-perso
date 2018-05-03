@@ -18,10 +18,10 @@ APP_VERSION = `git describe --tags`.chomp
 LANG = 'fr'.freeze
 
 # Url de l'ENT
-URL_ENT = 'http://localhost/annuaire'.freeze
+URL_ENT = 'http://localhost'.freeze
 
 CACHE_BUSTER = Time.now.to_i.to_s
 
-ANNUAIRE = { url: 'http://localhost/annuaire/api',
+ANNUAIRE = { url: 'http://localhost/api',
              api_key: 'Ed0c27VjZc5PQMs079eLQ+aId3/xSlWWILLLP4LYTf0=',
              app_id: 'SUIVIELV' }.freeze
