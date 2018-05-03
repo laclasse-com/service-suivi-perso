@@ -6,18 +6,11 @@ angular.module('suiviApp')
         droits: '=',
         concernedPeople: '<'
       },
-      controller: ['Droits', 'APIs', 'UID', 'URL_ENT', 'User',
-        function(Droits, APIs, UID, URL_ENT, User) {
-          let ctrl = this;
+    controller: ['Droits', 'APIs', 'Utils', 'UID', 'URL_ENT', 'User',
+                 function(Droits, APIs, Utils, UID, URL_ENT, User) {
+                   let ctrl = this;
           ctrl.sharing_enabled = false;
           ctrl.groups = [];
-
-          let gen_pseudo_UUID = function() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-              let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-              return v.toString(16);
-            });
-          };
 
           let maybe_init_dirtiness = function(droit) {
             if (droit.dirty == undefined) {
@@ -42,7 +35,7 @@ angular.module('suiviApp')
           };
 
           ctrl.add_sharable = function(droit) {
-            droit.sharable_id = gen_pseudo_UUID();
+            droit.sharable_id = Utils.gen_pseudo_UUID();
             ctrl.add(droit);
           };
 
