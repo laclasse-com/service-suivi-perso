@@ -4,18 +4,14 @@ module Suivi
       module Onglets
         def self.registered( app )
           app.get '/api/onglets/?' do
-            onglets_hashes = params['uids'].map do |uid_student|
-              get_and_check_student_s_onglets( uid_student, user, :read )
-                .map do |onglet|
-                onglet_hash = onglet.to_hash
-                onglet_hash[:writable] = onglet.allow?( user, :write )
-                onglet_hash[:manageable] = onglet.allow?( user, :manage )
+            json( get_and_check_students_onglets( params['uids'], user, :read )
+                    .map do |onglet|
+                    onglet_hash = onglet.to_hash
+                    onglet_hash[:writable] = onglet.allow?( user, :write )
+                    onglet_hash[:manageable] = onglet.allow?( user, :manage )
 
-                onglet_hash
-              end
-            end
-
-            json( onglets_hashes )
+                    onglet_hash
+                  end )
           end
 
           app.get '/api/onglets/:onglet_id' do

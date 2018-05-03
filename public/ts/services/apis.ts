@@ -64,9 +64,6 @@ angular.module('suiviApp')
                 return Onglets.query({ "uids[]": uids }).$promise
                   .then(function success(response) {
                     return $q.resolve(_.chain(response)
-                                      .reject((i) => _(i).isEmpty())
-                                      .map((i) => _(i).toArray())
-                                      .flatten()
                                       .groupBy('name')
                                       .toArray()
                                       .select((tabgroup) => tabgroup.length == uids.length)

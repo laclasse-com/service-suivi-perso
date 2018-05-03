@@ -9,7 +9,7 @@ module Suivi
         onglet
       end
 
-      def get_and_check_student_s_onglets( uid_student, user, right )
+      def get_and_check_students_onglets( uid_student, user, right )
         Onglet.where(uid_student: uid_student)
               .all
               .select { |onglet| onglet.allow?( user, right ) }
