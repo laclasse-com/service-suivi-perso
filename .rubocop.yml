@@ -26,6 +26,9 @@ Style/AsciiComments:
 Style/SymbolArray:
   Enabled: false
 
+Metrics/ModuleLength:
+  Enabled: false
+
 Metrics/ClassLength:
   Enabled: false
 
