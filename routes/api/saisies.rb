@@ -20,11 +20,11 @@ module Suivi
                       .all
               end
 
-                                           first_onglet_saisies = result.shift
-                                           result = result.reduce( first_onglet_saisies ) { |memo, onglet_saisies| memo & onglet_saisies }
+              first_onglet_saisies = result.shift
+              result = result.reduce( first_onglet_saisies ) { |memo, onglet_saisies| memo & onglet_saisies }
 
-                                           return json( result )
-                                         end
+              return json( result )
+            end
           end
 
           app.post '/api/saisies/?' do
@@ -60,21 +60,20 @@ module Suivi
 
           app.put '/api/saisies/:id' do
             param :id, Integer, required: true
-            param :content, String, required: false
-            param :pinned, :boolean, required: false
+            param :content, String
+            param :pinned, :boolean
+            any_of :content, :pinned
 
-            if params.key?('content') || params.key?('pinned')
-              saisie = get_and_check_saisie( params['id'], user, :write )
-              saisie.onglets.each do |onglet|
-                get_and_check_onglet( onglet.id, user, :write )
-              end
-
-              saisie.content = params['content'] if params.key?('content')
-              saisie.pinned = params['pinned'] if params.key?('pinned')
-              saisie.mtime = Time.now
-
-              saisie.save
+            saisie = get_and_check_saisie( params['id'], user, :write )
+            saisie.onglets.each do |onglet|
+              get_and_check_onglet( onglet.id, user, :write )
             end
+
+            saisie.content = params['content'] if params.key?('content')
+            saisie.pinned = params['pinned'] if params.key?('pinned')
+            saisie.mtime = Time.now
+
+            saisie.save
 
             json( saisie )
           end

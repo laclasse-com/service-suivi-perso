@@ -60,13 +60,12 @@ module Suivi
 
           app.put '/api/onglets/:onglet_id' do
             param :onglet_id, Integer, required: true
-            param :name, String, required: false
+            param :name, String, required: true
 
             onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
-            if params.key?( 'name' )
-              onglet.name = params['name']
-              onglet.save
-            end
+
+            onglet.name = params['name']
+            onglet.save
 
             onglet_hash = onglet.to_hash
             onglet_hash[:writable] = onglet.allow?( user, :write )
