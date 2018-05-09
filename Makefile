@@ -1,7 +1,7 @@
 all: public/js/app.min.js
 
 # find public/ts -type f -exec echo -n {}\  \;
-public/js/app.js: public/app.ts public/lib/apis.ts
+public/js/app.js: public/ts/app.ts public/ts/lib/apis.ts
 	-./public/node_modules/.bin/tsc --project ./public/tsconfig.json
 
 public/js/app.min.js: public/js/app.js
