@@ -27,6 +27,8 @@ GEM
       method_source (~> 0.9.0)
     puma (3.11.4)
     rack (2.0.5)
+    rack-contrib (2.0.1)
+      rack (~> 2.0)
     rack-protection (2.0.1)
       rack
     rainbow (3.0.0)
@@ -68,6 +70,8 @@ GEM
       rack-protection (= 2.0.1)
       sinatra (= 2.0.1)
       tilt (>= 1.3, < 3)
+    sinatra-param (1.5.0)
+      sinatra (>= 1.3)
     tilt (2.0.8)
     unf (0.1.4)
       unf_ext
@@ -83,12 +87,14 @@ DEPENDENCIES
   pry
   puma
   rack
+  rack-contrib
   rest-client
   rspec
   rubocop
   sequel
   sinatra
   sinatra-contrib
+  sinatra-param
 
 BUNDLED WITH
    1.16.1

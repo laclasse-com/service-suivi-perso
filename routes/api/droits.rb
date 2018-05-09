@@ -5,6 +5,10 @@ module Suivi
         module Droits
           def self.registered( app )
             app.get '/api/droits/?' do
+              param :onglet_id, Integer
+              param :onglets_ids, Array
+              one_of :onglet_id, :onglets_ids
+
               if params.key?( 'onglet_id' )
                 onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
 
@@ -29,29 +33,35 @@ module Suivi
             end
 
             app.post '/api/droits/?' do
-              request.body.rewind
-              body = JSON.parse( request.body.read )
+              param :onglets_ids, Array, required: true
+              param :read, :boolean, required: true
+              param :write, :boolean, required: true
+              param :manage, :boolean, required: true
 
-              halt( 400, '400 missing parameter' ) unless ( body.key?('uid') || body.key?('profile_type') || body.key?('group_id') || body.key?('sharable_id') ) && ( body.key?('read') || body.key?('write') )
+              param :uid, String
+              param :profile_type, String
+              param :group_id, String
+              param :sharable_id, String
+              one_of :uid, :profile_type, :group_id, :sharable_id
 
-              droits_hashes = body['onglets_ids'].map do |onglet_id|
+              droits_hashes = params['onglets_ids'].map do |onglet_id|
                 onglet = get_and_check_onglet( onglet_id, user, :manage )
 
                 droit = Droit[ onglet_id: onglet_id,
-                               uid: body['uid'],
-                               profile_type: body['profile_type'],
-                               group_id: body['group_id'],
-                               sharable_id: body['sharable_id'],
-                               read: body['read'],
-                               write: body['write'],
-                               manage: body['manage'] ]
+                               uid: params['uid'],
+                               profile_type: params['profile_type'],
+                               group_id: params['group_id'],
+                               sharable_id: params['sharable_id'],
+                               read: params['read'],
+                               write: params['write'],
+                               manage: params['manage'] ]
                 return droit.to_hash unless droit.nil?
 
                 droit = {}
                 %w[uid profile_type group_id read write manage].each do |key|
-                  droit[ key ] = body[key] if body.key?( key )
+                  droit[ key ] = params[key] if params.key?( key )
                 end
-                droit['sharable_id'] = body.key?( 'sharable_id' ) && !body['sharable_id'].nil? && !body['sharable_id'].empty? ? body['sharable_id'] : nil
+                droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].nil? && !params['sharable_id'].empty? ? params['sharable_id'] : nil
 
                 onglet.add_droit( droit ).to_hash
               end
@@ -60,10 +70,16 @@ module Suivi
             end
 
             app.put '/api/droits/:droit_id' do
-              request.body.rewind
-              body = JSON.parse( request.body.read )
+              param :droit_id, Integer, required: true
+              param :read, :boolean, required: true
+              param :write, :boolean, required: true
+              param :manage, :boolean, required: true
 
-              halt( 400, '400 missing parameter' ) unless ( body.key?('uid') || body.key?('profile_type') || body.key?('group_id') || body.key?('sharable_id') ) && ( body.key?('read') || body.key?('write') )
+              param :uid, String
+              param :profile_type, String
+              param :group_id, String
+              param :sharable_id, String
+              one_of :uid, :profile_type, :group_id, :sharable_id
 
               droit = Droit[params['droit_id']]
               halt( 404, '404 Unknown droit' ) if droit.nil?
@@ -71,30 +87,36 @@ module Suivi
               get_and_check_onglet( droit.onglet_id, user, :manage )
 
               %w[uid profile_type group_id read write manage].each do |key|
-                droit.update( key => body[key] ) if body.key?( key )
+                droit.update( key => params[key] ) if params.key?( key )
               end
-              droit['sharable_id'] = body.key?( 'sharable_id' ) && !body['sharable_id'].nil? && !body['sharable_id'].empty? ? body['sharable_id'] : nil
+              droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].nil? && !params['sharable_id'].empty? ? params['sharable_id'] : nil
               droit.save
 
               json( droit.to_hash )
             end
 
             app.put '/api/droits/?' do
-              request.body.rewind
-              body = JSON.parse( request.body.read )
+              param :ids, Array, required: true
+              param :read, :boolean, required: true
+              param :write, :boolean, required: true
+              param :manage, :boolean, required: true
 
-              halt( 400, '400 missing parameter' ) unless body.key?('ids') && ( body.key?('uid') || body.key?('profile_type') || body.key?('group_id') || body.key?('sharable_id') ) && ( body.key?('read') || body.key?('write') )
+              param :uid, String
+              param :profile_type, String
+              param :group_id, String
+              param :sharable_id, String
+              one_of :uid, :profile_type, :group_id, :sharable_id
 
-              droits = Droit.where(id: body['ids']).all
-              halt( 404, '404 Unknown droit' ) if droits.length != body['ids'].length
+              droits = Droit.where(id: params['ids']).all
+              halt( 404, '404 Unknown droit' ) if droits.length != params['ids'].length
 
               droits.map do |droit|
                 get_and_check_onglet( droit.onglet_id, user, :manage )
 
                 %w[uid profile_type group_id read write manage].each do |key|
-                  droit.update( key => body[key] ) if body.key?( key )
+                  droit.update( key => params[key] ) if params.key?( key )
                 end
-                droit['sharable_id'] = body.key?( 'sharable_id' ) && !body['sharable_id'].nil? && !body['sharable_id'].empty? ? body['sharable_id'] : nil
+                droit['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].nil? && !params['sharable_id'].empty? ? params['sharable_id'] : nil
 
                 droit.save
               end
@@ -103,6 +125,8 @@ module Suivi
             end
 
             app.delete '/api/droits/:droit_id' do
+              param :droit_id, Integer, required: true
+
               droit = Droit[id: params['droit_id']]
               halt( 404, '404 Unknown droit' ) if droit.nil?
 
@@ -112,6 +136,8 @@ module Suivi
             end
 
             app.delete '/api/droits/?' do
+              param :ids, Array, required: true
+
               droits = Droit.where(id: params['ids']).all
               halt( 404, '404 Unknown droit' ) if droits.length != params['ids'].length
 

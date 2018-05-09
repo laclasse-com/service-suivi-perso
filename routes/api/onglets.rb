@@ -4,6 +4,8 @@ module Suivi
       module Onglets
         def self.registered( app )
           app.get '/api/onglets/?' do
+            param :uids, Array, required: true
+
             json( get_and_check_students_onglets( params['uids'], user, :read )
                     .map do |onglet|
                     onglet_hash = onglet.to_hash
@@ -15,6 +17,8 @@ module Suivi
           end
 
           app.get '/api/onglets/:onglet_id' do
+            param :onglet_id, Integer, required: true
+
             onglet = get_and_check_onglet( params['onglet_id'], user, :read )
             onglet_hash = onglet.to_hash
             onglet_hash[:writable] = onglet.allow?( user, :write )
@@ -24,13 +28,13 @@ module Suivi
           end
 
           app.post '/api/onglets/?' do
-            request.body.rewind
-            body = JSON.parse( request.body.read )
+            param :names, Array, required: true
+            param :uids, Array, required: true
 
-            onglets_hashes = body['names'].map do |name|
-              body['uids'].map do |uid_student|
+            onglets_hashes = params['names'].map do |name|
+              params['uids'].map do |uid_student|
                 onglet = Onglet[uid_student: uid_student,
-                                name: body['name']]
+                                name: name]
 
                 new_onglet = onglet.nil?
                 if new_onglet
@@ -49,18 +53,20 @@ module Suivi
                 onglet_hash
               end
             end
-                                          .flatten
+                                            .flatten
 
             json( onglets_hashes )
           end
 
           app.put '/api/onglets/:onglet_id' do
-            request.body.rewind
-            body = JSON.parse( request.body.read )
+            param :onglet_id, Integer, required: true
+            param :name, String, required: false
 
             onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
-            onglet.name = body['name'] if body.key?( 'name' )
-            onglet.save
+            if params.key?( 'name' )
+              onglet.name = params['name']
+              onglet.save
+            end
 
             onglet_hash = onglet.to_hash
             onglet_hash[:writable] = onglet.allow?( user, :write )
@@ -70,6 +76,8 @@ module Suivi
           end
 
           app.delete '/api/onglets/?' do
+            param :ids, Array, required: true
+
             json( params['ids'].map do |id|
                     onglet = get_and_check_onglet( id, user, :manage )
 
@@ -81,6 +89,8 @@ module Suivi
           end
 
           app.delete '/api/onglets/:onglet_id' do
+            param :onglet_id, Integer, required: true
+
             onglet = get_and_check_onglet( params['onglet_id'], user, :manage )
 
             onglet_hash = onglet.destroy

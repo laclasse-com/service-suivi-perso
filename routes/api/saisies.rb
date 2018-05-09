@@ -4,6 +4,8 @@ module Suivi
       module Saisies
         def self.registered( app )
           app.get '/api/saisies/?' do
+            param :onglets_ids, Array, required: true
+
             if params['onglets_ids'].length == 1
               onglet = get_and_check_onglet( params['onglets_ids'].first, user, :read )
 
@@ -18,24 +20,25 @@ module Suivi
                       .all
               end
 
-              first_onglet_saisies = result.shift
-              result = result.reduce( first_onglet_saisies ) { |memo, onglet_saisies| memo & onglet_saisies }
+                                           first_onglet_saisies = result.shift
+                                           result = result.reduce( first_onglet_saisies ) { |memo, onglet_saisies| memo & onglet_saisies }
 
-              return json( result )
-            end
+                                           return json( result )
+                                         end
           end
 
           app.post '/api/saisies/?' do
-            request.body.rewind
-            body = JSON.parse( request.body.read )
+            param :onglets_ids, Array, required: true
+            param :content, String, required: true
+            param :pinned, :boolean, required: true
 
             saisie = Saisie.create( uid_author: user['id'],
                                     ctime: Time.now,
                                     mtime: Time.now,
-                                    content: body['content'],
-                                    pinned: body['pinned'] )
+                                    content: params['content'],
+                                    pinned: params['pinned'] )
 
-            body['onglets_ids'].each do |onglet_id|
+            params['onglets_ids'].each do |onglet_id|
               onglet = get_and_check_onglet( onglet_id, user, :write )
 
               saisie = onglet.add_saisy( saisie )
@@ -45,6 +48,8 @@ module Suivi
           end
 
           app.get '/api/saisies/:id' do
+            param :id, Integer, required: true
+
             saisie = get_and_check_saisie( params['id'], user, :read )
             saisie.onglets.reduce( false ) do |memo, onglet|
               memo || check_onglet( onglet.id, user, :read )
@@ -54,17 +59,18 @@ module Suivi
           end
 
           app.put '/api/saisies/:id' do
-            request.body.rewind
-            body = JSON.parse( request.body.read )
+            param :id, Integer, required: true
+            param :content, String, required: false
+            param :pinned, :boolean, required: false
 
-            saisie = get_and_check_saisie( params['id'], user, :write )
-            saisie.onglets.each do |onglet|
-              get_and_check_onglet( onglet.id, user, :write )
-            end
+            if params.key?('content') || params.key?('pinned')
+              saisie = get_and_check_saisie( params['id'], user, :write )
+              saisie.onglets.each do |onglet|
+                get_and_check_onglet( onglet.id, user, :write )
+              end
 
-            if body.key?('content') || body.key?('pinned')
-              saisie.content = body['content'] if body.key?('content')
-              saisie.pinned = body['pinned'] if body.key?('pinned')
+              saisie.content = params['content'] if params.key?('content')
+              saisie.pinned = params['pinned'] if params.key?('pinned')
               saisie.mtime = Time.now
 
               saisie.save
@@ -74,6 +80,9 @@ module Suivi
           end
 
           app.delete '/api/saisies/:id' do
+            param :id, Integer, required: true
+            param :onglets_ids, Array, required: true
+
             saisie = get_and_check_saisie( params['id'], user, :write )
 
             params['onglets_ids'].each do |onglet_id|

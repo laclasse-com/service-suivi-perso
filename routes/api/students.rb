@@ -4,6 +4,8 @@ module Suivi
       module Students
         def self.registered( app )
           app.get '/api/students/relevant/:uid' do
+            param :uid, String, required: true
+
             halt( 401, '401' ) if params['uid'] != user['id']
 
             json( Onglet.where( id: Saisie.where( uid_author: params['uid'] )

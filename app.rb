@@ -39,6 +39,7 @@ require_relative './routes/api/sharable'
 class SinatraApp < Sinatra::Base
   helpers Sinatra::Helpers
   helpers Sinatra::Cookies
+  helpers Sinatra::Param
 
   helpers LaClasse::Helpers::Auth
   helpers LaClasse::Helpers::User
