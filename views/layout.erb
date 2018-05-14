@@ -29,12 +29,7 @@
         <!-- Bootstrap core JavaScript
              ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
+        <script src='<%=APP_PATH%>/erats/era/era.js'></script>
         <script src="<%=APP_PATH%>/js/app.min.js?v=<%=CACHE_BUSTER%>"></script>
-        <script>
-         angular.module('suiviApp')
-                .constant( 'URL_ENT', '<%=URL_ENT%>' )
-                .constant( 'APP_PATH', '<%=APP_PATH%>' )
-                .constant( 'UID', '<%=session['user']%>' );
-        </script>
     </body>
 </html>

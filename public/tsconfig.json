@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "target": "es5",
+        "module": "none",
         "declaration": false,
         "removeComments": true,
         "sourceMap": false,
@@ -12,7 +13,8 @@
         ],
     },
     "include": [
-        "ts/app.ts",
-        "ts/lib/*.ts"
+        "ts/config.ts",
+        "ts/lib/*.ts",
+        "ts/app.ts"
     ],
 }
