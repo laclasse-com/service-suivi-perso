@@ -27,6 +27,17 @@ module Suivi
             end
           end
 
+          app.get '/api/saisies/:id' do
+            param :id, Integer, required: true
+
+            saisie = get_and_check_saisie( params['id'], user, :read )
+            saisie.onglets.reduce( false ) do |memo, onglet|
+              memo || check_onglet( onglet.id, user, :read )
+            end
+
+            json( saisie )
+          end
+
           app.post '/api/saisies/?' do
             param :onglets_ids, Array, required: true
             param :content, String, required: true
@@ -42,17 +53,6 @@ module Suivi
               onglet = get_and_check_onglet( onglet_id, user, :write )
 
               saisie = onglet.add_saisy( saisie )
-            end
-
-            json( saisie )
-          end
-
-          app.get '/api/saisies/:id' do
-            param :id, Integer, required: true
-
-            saisie = get_and_check_saisie( params['id'], user, :read )
-            saisie.onglets.reduce( false ) do |memo, onglet|
-              memo || check_onglet( onglet.id, user, :read )
             end
 
             json( saisie )
