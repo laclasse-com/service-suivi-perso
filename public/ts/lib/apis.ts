@@ -25,10 +25,12 @@ namespace Suivi.APIs {
   export namespace Tab {
     const TABS_API = `${APIS_ROOT}/onglets`;
 
-    export type tab = { id? : number,
-                        name : string,
-                        ctime? : string,
-                        uid_student? : string };
+    export type tab = {
+      id? : number,
+      name : string,
+      ctime? : string,
+      uid_student? : string
+    };
 
     export async function get( id : number ) : Promise<tab> {
       return JSON.parse( await send_async_request({ url: `${TABS_API}/${id}` }) );
@@ -52,12 +54,16 @@ namespace Suivi.APIs {
     }
 
     export async function drop( id? : number, ids? : Array<number> ) {
+      if ( id == null && ids == null ) {
+        return;
+      }
+
       let params: Core.HttpRequestInit;
 
       if ( id != null ) {
         params = { url: `${TABS_API}/${id}`,
                    method: 'DELETE' };
-      } else if ( ids != null ) {
+      } else {
         params = { url: `${TABS_API}/`,
                    method: 'DELETE',
                    arguments: { ids: ids } };
@@ -73,12 +79,14 @@ namespace Suivi.APIs {
   export namespace Message {
     const MESSAGES_API = `${APIS_ROOT}/saisies`;
 
-    export type message = { id? : number,
-                            uid_author : string,
-                            content : string,
-                            pinned : boolean,
-                            ctime? : string,
-                            mtime? : string };
+    export type message = {
+      id? : number,
+      uid_author : string,
+      content : string,
+      pinned : boolean,
+      ctime? : string,
+      mtime? : string
+    };
 
     export async function get( id : number ) : Promise<message> {
       return JSON.parse( await send_async_request({ url: `${MESSAGES_API}/${id}` }) );
@@ -115,16 +123,18 @@ namespace Suivi.APIs {
   export namespace Right {
     const RIGHTS_API = `${APIS_ROOT}/droits`;
 
-    export type right = { id? : number,
-                          ids? : Array<number>,
-                          onglet_ids? : Array<number>,
-                          read : boolean,
-                          write : boolean,
-                          manage : boolean,
-                          uid? : string,
-                          profile_type? : string,
-                          group_id? : string,
-                          sharable_id? : string };
+    export type right = {
+      id? : number,
+      ids? : Array<number>,
+      onglet_ids? : Array<number>,
+      read : boolean,
+      write : boolean,
+      manage : boolean,
+      uid? : string,
+      profile_type? : string,
+      group_id? : string,
+      sharable_id? : string
+    };
 
     export async function get( tab_id : number ) : Promise<Array<right>> {
       return JSON.parse( await send_async_request({ url: `${RIGHTS_API}/${tab_id}` }) );
@@ -149,7 +159,7 @@ namespace Suivi.APIs {
         params = { url: `${RIGHTS_API}/${id}`,
                    method: 'PUT',
                    arguments: payload };
-      } else if ( ids != null ) {
+      } else {
         payload.ids = ids;
         params = { url: `${RIGHTS_API}/`,
                    method: 'PUT',
@@ -160,12 +170,16 @@ namespace Suivi.APIs {
     }
 
     export async function drop( id? : number, ids? : Array<number> ) {
+      if ( id == null && ids == null ) {
+        return;
+      }
+
       let params: Core.HttpRequestInit;
 
       if ( id != null ) {
         params = { url: `${RIGHTS_API}/${id}`,
                    method: 'DELETE' };
-      } else if ( ids != null ) {
+      } else {
         params = { url: `${RIGHTS_API}/`,
                    method: 'DELETE',
                    arguments: { ids: ids } };
@@ -190,9 +204,11 @@ namespace Suivi.APIs {
     export namespace ProfilesTypes {
       const PROFILES_TYPES_API = `${BASE_SERVICE_URL}/profiles_types/`;
 
-      export type profile_type = { id: string,
-                                   name: string,
-                                   code_national: string };
+      export type profile_type = {
+        id: string,
+        name: string,
+        code_national: string
+      };
 
       export async function query() : Promise<Array<profile_type>> {
         return JSON.parse( await send_async_request({ url: PROFILES_TYPES_API }) );
@@ -202,7 +218,39 @@ namespace Suivi.APIs {
     export namespace Users {
       const USERS_API = `${BASE_SERVICE_URL}/users`;
 
-      export type user = { id: string };
+      export type user = {
+        id : string,
+        login : string,
+        firstname : string,
+        lastname : string,
+        birthdate? : string,
+        gender : string,
+        address? : string,
+        zip_code : string
+        city? : string,
+        country? : string,
+        aaf_jointure_id? : string,
+        aaf_struct_rattach_id? : string,
+        atime? : string,
+        avatar? : string,
+        children? : Array<any>,
+        children_groups? : Array<any>,
+        ctime? : string,
+        email_backend_id? : number,
+        emails? : Array<any>,
+        groups? : Array<any>,
+        last_idp? : string,
+        oidc_sso_id? : string,
+        parents? : Array<any>,
+        phones? : Array<any>,
+        profiles? : Array<any>,
+        student_grade_id? : string,
+        super_admin? : boolean
+      };
+
+      export async function current() : Promise<user> {
+        return JSON.parse( await send_async_request({ url: `${USERS_API}/current` }) );
+      }
 
       export async function query( uids : Array<string> ) : Promise<Array<user>> {
         return JSON.parse( await send_async_request({ url: `${USERS_API}/?${serialize_params( uids, 'id[]' )}` }) );
@@ -212,16 +260,18 @@ namespace Suivi.APIs {
     export namespace Groups {
       const GROUPS_API = `${BASE_SERVICE_URL}/groups`;
 
-      export type group = { id: number,
-                            name: string,
-                            description? : string,
-                            aaf_mtime? : string,
-                            aaf_name? : string,
-                            type : string,
-                            ctime : string,
-                            structure_id? : string,
-                            grades? : Array<Suivi.APIs.LaClasse.Grades.grade>,
-                            users? : Array<Suivi.APIs.LaClasse.Users.user> }
+      export type group = {
+        id: number,
+        name: string,
+        description? : string,
+        aaf_mtime? : string,
+        aaf_name? : string,
+        type : string,
+        ctime : string,
+        structure_id? : string,
+        grades? : Array<Suivi.APIs.LaClasse.Grades.grade>,
+        users? : Array<Suivi.APIs.LaClasse.Users.user>
+      }
 
       export async function get( id : number ) : Promise<group> {
         return JSON.parse( await send_async_request({ url: `${GROUPS_API}/${id}` }) );
@@ -239,10 +289,12 @@ namespace Suivi.APIs {
     export namespace Grades {
       const GRADES_API = `${BASE_SERVICE_URL}/grades`;
 
-      export type grade = { id: string,
-                            name: string,
-                            rattach: string,
-                            stat: string };
+      export type grade = {
+        id: string,
+        name: string,
+        rattach: string,
+        stat: string
+      };
 
       export async function query( ids : Array<string> ) : Promise<Array<grade>> {
         return JSON.parse( await send_async_request({ url: `${GRADES_API}/?${serialize_params( ids, 'id[]' )}` }) );
@@ -252,8 +304,10 @@ namespace Suivi.APIs {
     export namespace Subjects {
       const SUBJECTS_API = `${BASE_SERVICE_URL}/subjects`;
 
-      export type subject = { id: string,
-                              name: string };
+      export type subject = {
+        id: string,
+        name: string
+      };
 
       export async function query( ids : Array<string> ) : Promise<Array<subject>> {
         return JSON.parse( await send_async_request({ url: `${SUBJECTS_API}/?${serialize_params( ids, 'id[]' )}` }) );
@@ -263,29 +317,31 @@ namespace Suivi.APIs {
     export namespace Structures {
       const STRUCTURES_API = `${BASE_SERVICE_URL}/structures`;
 
-      export type structure = { id? : string,
-                                name? : string,
-                                siren? : string,
-                                address? : string,
-                                zip_code? : string,
-                                city? : string,
-                                phone? : string,
-                                fax? : string,
-                                longitude? : number,
-                                latitude? : number,
-                                aaf_mtime? : string,
-                                domain? : string,
-                                public_ip? : string,
-                                type? : number,
-                                private_ip? : string,
-                                educnat_marking_id? : string,
-                                aaf_sync_activated : boolean,
-                                aaf_jointure_id? : number,
-                                groups: Array<Suivi.APIs.LaClasse.Groups.group>,
-                                // FIXME
-                                resources: Array<any>
-                                // FIXME
-                                profiles: Array<any> };
+      export type structure = {
+        id? : string,
+        name? : string,
+        siren? : string,
+        address? : string,
+        zip_code? : string,
+        city? : string,
+        phone? : string,
+        fax? : string,
+        longitude? : number,
+        latitude? : number,
+        aaf_mtime? : string,
+        domain? : string,
+        public_ip? : string,
+        type? : number,
+        private_ip? : string,
+        educnat_marking_id? : string,
+        aaf_sync_activated : boolean,
+        aaf_jointure_id? : number,
+        groups: Array<Suivi.APIs.LaClasse.Groups.group>,
+        // FIXME
+        resources: Array<any>,
+        // FIXME
+        profiles: Array<any>
+      };
 
       export async function get( uai : string ) : Promise<structure> {
         return JSON.parse( await send_async_request({ url: `${STRUCTURES_API}/${uai}` }) );

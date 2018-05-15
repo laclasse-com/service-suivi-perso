@@ -1,3 +1,4 @@
+"use strict";
 var BASE_SERVICE_URL = '/api';
 var APPLICATION_PREFIX = location.pathname;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -144,11 +145,14 @@ var Suivi;
                 return __awaiter(this, void 0, void 0, function () {
                     var params, request;
                     return __generator(this, function (_a) {
+                        if (id == null && ids == null) {
+                            return [2];
+                        }
                         if (id != null) {
                             params = { url: TABS_API + "/" + id,
                                 method: 'DELETE' };
                         }
-                        else if (ids != null) {
+                        else {
                             params = { url: TABS_API + "/",
                                 method: 'DELETE',
                                 arguments: { ids: ids } };
@@ -303,7 +307,7 @@ var Suivi;
                                         method: 'PUT',
                                         arguments: payload };
                                 }
-                                else if (ids != null) {
+                                else {
                                     payload.ids = ids;
                                     params = { url: RIGHTS_API + "/",
                                         method: 'PUT',
@@ -321,11 +325,14 @@ var Suivi;
                 return __awaiter(this, void 0, void 0, function () {
                     var params, request;
                     return __generator(this, function (_a) {
+                        if (id == null && ids == null) {
+                            return [2];
+                        }
                         if (id != null) {
                             params = { url: RIGHTS_API + "/" + id,
                                 method: 'DELETE' };
                         }
-                        else if (ids != null) {
+                        else {
                             params = { url: RIGHTS_API + "/",
                                 method: 'DELETE',
                                 arguments: { ids: ids } };
@@ -381,6 +388,20 @@ var Suivi;
             var Users;
             (function (Users) {
                 var USERS_API = BASE_SERVICE_URL + "/users";
+                function current() {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var _a, _b;
+                        return __generator(this, function (_c) {
+                            switch (_c.label) {
+                                case 0:
+                                    _b = (_a = JSON).parse;
+                                    return [4, send_async_request({ url: USERS_API + "/current" })];
+                                case 1: return [2, _b.apply(_a, [_c.sent()])];
+                            }
+                        });
+                    });
+                }
+                Users.current = current;
                 function query(uids) {
                     return __awaiter(this, void 0, void 0, function () {
                         var _a, _b;
@@ -513,10 +534,24 @@ var Suivi;
         })(LaClasse = APIs.LaClasse || (APIs.LaClasse = {}));
     })(APIs = Suivi.APIs || (Suivi.APIs = {}));
 })(Suivi || (Suivi = {}));
+var Suivi;
+(function (Suivi) {
+    var Utils;
+    (function (Utils) {
+        function gen_pseudo_UUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+        Utils.gen_pseudo_UUID = gen_pseudo_UUID;
+        ;
+    })(Utils = Suivi.Utils || (Suivi.Utils = {}));
+})(Suivi || (Suivi = {}));
+console.log(Suivi.Utils.gen_pseudo_UUID());
 var uids;
-Suivi.APIs.Student.get_relevant_users("VBM69696")
+Suivi.APIs.LaClasse.Users.current()
     .then(function (response) {
-    uids = response;
-    Suivi.APIs.Tab.query(uids)
-        .then(function (response) { return console.log(response); });
+    console.log(response);
 });
+//# sourceMappingURL=app.js.map
