@@ -8,7 +8,7 @@ module Suivi
                     app.get '/api/notebooks/?' do
                         param :owner, String, required: true
 
-                        halt( 403, '403 Forbidden') unless params[:owner] == user.id
+                        halt( 403, '403 Forbidden') unless params[:owner] == user["id"]
 
                         json( Notebook.where(owner: params[:owner]).all )
                     end
@@ -28,7 +28,7 @@ module Suivi
                                               name: params[:name],
                                               targets: params[:targets] )
 
-                        nb
+                        json( nb )
                     end
 
                     app.put '/api/notebooks/:id' do
@@ -41,7 +41,7 @@ module Suivi
                         nb&.update(name: params[:name]) if params.key?( :name )
                         nb&.update(targets: params[:targets]) if params.key?( :targets )
 
-                        nb
+                        json( nb )
                     end
 
                     app.delete '/api/notebooks/:id' do
