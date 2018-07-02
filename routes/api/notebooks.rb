@@ -14,7 +14,7 @@ module Suivi
                     app.get '/api/notebooks/:id?' do
                         param :id, Integer, required: true
 
-                        json( Notebook[id: params[:id] ] )
+                        json( get_notebook( params[:id], user ) )
                     end
 
                     app.post '/api/notebooks/?' do
@@ -34,7 +34,7 @@ module Suivi
                         param :name, String, required: false
                         param :targets, String, required: false
 
-                        nb = Notebook[id: params[:id]]
+                        nb = get_notebook( params[:id], user )
 
                         nb&.update(name: params[:name]) if params.key?( :name )
                         nb&.update(targets: params[:targets]) if params.key?( :targets )
@@ -45,7 +45,7 @@ module Suivi
                     app.delete '/api/notebooks/:id' do
                         param :id, Integer, required: true
 
-                        nb = Notebook[id: params[:id]]
+                        nb = get_notebook( params[:id], user )
 
                         nb&.destroy
                     end

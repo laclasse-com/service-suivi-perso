@@ -24,6 +24,14 @@ module Suivi
 
                 message
             end
+
+            def get_notebook( id, user )
+                notebook = Notebook[id: id]
+                halt( 404, '404 Unknown notebook' ) if notebook.nil?
+                halt( 403, '403 Forbidden' ) unless notebook.owner == user.id
+
+                notebook
+            end
         end
     end
 end
