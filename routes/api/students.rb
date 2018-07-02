@@ -8,16 +8,16 @@ module Suivi
 
             halt( 401, '401' ) if params['uid'] != user['id']
 
-            json( Onglet.where( id: Saisie.where( uid_author: params['uid'] )
-                                          .association_join( :onglets )
-                                          .select( :onglet_id )
+            json( Page.where( id: Message.where( uid_author: params['uid'] )
+                                          .association_join( :pages )
+                                          .select( :page_id )
                                           .all
-                                          .map { |s| s[:onglet_id] }
+                                          .map { |s| s[:page_id] }
                                           .concat( Right.where( uid: params['uid'] )
                                                         .or( group_id: user['groups'].map { |group| group['group_id'] } )
-                                                        .select( :onglet_id )
+                                                        .select( :page_id )
                                                         .all
-                                                        .map( &:onglet_id ) ) )
+                                                        .map( &:page_id ) ) )
                         .select( :uid_student )
                         .all
                         .map( &:uid_student ) )

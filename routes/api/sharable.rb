@@ -6,18 +6,18 @@ module Suivi
           app.get '/api/sharable/:sharable_id/?' do
             param :sharable_id, String, required: true
 
-            json( Onglet.where(id: Right.where(sharable_id: params[:sharable_id] )
-                                        .select(:onglet_id)
+            json( Page.where(id: Right.where(sharable_id: params[:sharable_id] )
+                                        .select(:page_id)
                                         .all
-                                        .map(&:onglet_id)
+                                        .map(&:page_id)
                                         .compact )
                         .all
-                        .map do |onglet|
-                    onglet_hash = onglet.to_hash
-                    onglet_hash[:writable] = false
-                    onglet_hash[:uid_student] = onglet.uid_student
+                        .map do |page|
+                    page_hash = page.to_hash
+                    page_hash[:writable] = false
+                    page_hash[:uid_student] = page.uid_student
 
-                    onglet_hash
+                    page_hash
                   end )
           end
         end

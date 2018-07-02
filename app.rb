@@ -18,21 +18,20 @@ Sequel::Model.plugin( :json_serializer )
 require_relative './lib/user'
 
 require_relative './models/rights'
-require_relative './models/onglets'
-require_relative './models/saisies'
-require_relative './models/ressources'
+require_relative './models/pages'
+require_relative './models/messages'
+require_relative './models/resources'
 
 require_relative './lib/helpers/auth'
 require_relative './lib/helpers/user'
 require_relative './lib/helpers/access_and_rights'
 
-require_relative './routes/index'
 require_relative './routes/status'
 
 require_relative './routes/api/students'
-require_relative './routes/api/onglets'
+require_relative './routes/api/pages'
 require_relative './routes/api/rights'
-require_relative './routes/api/saisies'
+require_relative './routes/api/messages'
 require_relative './routes/api/sharable'
 
 # Application Sinatra servant de base
@@ -64,12 +63,11 @@ class SinatraApp < Sinatra::Base
     login!( request.path ) unless logged?
   end
 
-  register Suivi::Routes::Index
   register Suivi::Routes::Status
 
   register Suivi::Routes::Api::Students
-  register Suivi::Routes::Api::Onglets
-  register Suivi::Routes::Api::Onglets::Rights
-  register Suivi::Routes::Api::Saisies
+  register Suivi::Routes::Api::Pages
+  register Suivi::Routes::Api::Rights
+  register Suivi::Routes::Api::Messages
   register Suivi::Routes::Api::Sharable
 end

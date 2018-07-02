@@ -1,13 +1,13 @@
-class Onglet < Sequel::Model(:onglets)
-  many_to_many :saisies, class: :Saisie, join_table: :saisies_onglets, left_key: :onglet_id, right_key: :saisie_id
+class Page < Sequel::Model(:pages)
+  many_to_many :messages, class: :Message, join_table: :messages_pages, left_key: :page_id, right_key: :message_id
   one_to_many :rights
-  one_to_many :ressources
+  one_to_many :resources
 
   def before_destroy
-    Right.where(onglet_id: id).destroy
-    saisies = remove_all_saisies
-    saisies.each(&:destroy) unless saisies.nil?
-    Ressource.where(onglet_id: id).destroy
+    Right.where(page_id: id).destroy
+    messages = remove_all_messages
+    messages.each(&:destroy) unless messages.nil?
+    Resource.where(page_id: id).destroy
   end
 
   def init_rights( user_creator )
