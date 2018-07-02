@@ -8,6 +8,8 @@ module Suivi
                     app.get '/api/notebooks/?' do
                         param :owner, String, required: true
 
+                        halt( 403, '403 Forbidden') unless params[:owner] == user.id
+
                         json( Notebook.where(owner: params[:owner]).all )
                     end
 
