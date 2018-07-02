@@ -6,9 +6,9 @@ module Suivi
             module Notebooks
                 def self.registered( app )
                     app.get '/api/notebooks/?' do
-                        param :uid, String, required: true
+                        param :owner, String, required: true
 
-                        json( Notebook.where(owner: params[:uid]).all )
+                        json( Notebook.where(owner: params[:owner]).all )
                     end
 
                     app.get '/api/notebooks/:id?' do

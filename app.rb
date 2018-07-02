@@ -22,6 +22,7 @@ require_relative './lib/user'
 require_relative './models/rights'
 require_relative './models/pages'
 require_relative './models/messages'
+require_relative './models/notebooks'
 require_relative './models/resources'
 
 require_relative './lib/helpers/auth'
