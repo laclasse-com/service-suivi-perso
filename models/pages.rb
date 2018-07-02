@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Page < Sequel::Model(:pages)
     many_to_many :messages, class: :Message, join_table: :messages_pages, left_key: :page_id, right_key: :message_id
     one_to_many :rights

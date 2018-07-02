@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Message < Sequel::Model(:messages)
     many_to_many :pages, class: :Page, join_table: :messages_pages
     one_to_many :resources

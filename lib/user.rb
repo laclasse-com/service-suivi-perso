@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LaClasse
     module User
         module_function

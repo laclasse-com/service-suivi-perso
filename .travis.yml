@@ -3,28 +3,18 @@ language: ruby
 sudo: false
 
 rvm:
-  - "2.2.5"
+  - "2.2.9"
 
 before_install:
   - gem update --system
   - gem --version
   - gem install rspec
 
-# before_script:
-#   - cp ./config/options.rb.sample ./config/options.rb
-#   - cp ./config/database.yml.sample ./config/database.yml
-
 script:
   - "bundle exec rubocop -D"
-  # - mysql -e 'create database suivi;'
-  # - mysql -e 'use suivi; source migrations/current_db_schema_migration.sql;'
-  # - make db-migrate
 
 gemfile:
   - gems.rb
-
-# services:
-#   - mysql
 
 branches:
   only:

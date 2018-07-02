@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative './app'
 
 # vv merge POST/... body into params
