@@ -13,6 +13,6 @@ gem 'sinatra-contrib'
 gem 'sinatra-param', require: 'sinatra/param'
 
 group :development do
-  gem 'rspec'
-  gem 'rubocop'
+    gem 'rspec'
+    gem 'rubocop'
 end

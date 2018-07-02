@@ -32,42 +32,44 @@ require_relative './routes/api/students'
 require_relative './routes/api/pages'
 require_relative './routes/api/rights'
 require_relative './routes/api/messages'
+require_relative './routes/api/notebooks'
 require_relative './routes/api/sharable'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
-  helpers Sinatra::Helpers
-  helpers Sinatra::Cookies
-  helpers Sinatra::Param
+    helpers Sinatra::Helpers
+    helpers Sinatra::Cookies
+    helpers Sinatra::Param
 
-  helpers LaClasse::Helpers::Auth
-  helpers LaClasse::Helpers::User
+    helpers LaClasse::Helpers::Auth
+    helpers LaClasse::Helpers::User
 
-  helpers Suivi::Helpers::AccessAndRights
+    helpers Suivi::Helpers::AccessAndRights
 
-  configure do
-    set :app_file, __FILE__
-    set :root, APP_ROOT
-    set :public_folder, ( proc { File.join( root, 'public' ) } )
-    set :inline_templates, true
-    set :protection, true
-    set :lock, true
-    set :raise_errors, false
-  end
-
-  before do
-    request.path.match( %r{#{APP_PATH}/(status|__sinatra__)[/]?.*} ) do
-      pass
+    configure do
+        set :app_file, __FILE__
+        set :root, APP_ROOT
+        set :public_folder, ( proc { File.join( root, 'public' ) } )
+        set :inline_templates, true
+        set :protection, true
+        set :lock, true
+        set :raise_errors, false
     end
 
-    login!( request.path ) unless logged?
-  end
+    before do
+        request.path.match( %r{#{APP_PATH}/(status|__sinatra__)[/]?.*} ) do
+            pass
+        end
 
-  register Suivi::Routes::Status
+        login!( request.path ) unless logged?
+    end
 
-  register Suivi::Routes::Api::Students
-  register Suivi::Routes::Api::Pages
-  register Suivi::Routes::Api::Rights
-  register Suivi::Routes::Api::Messages
-  register Suivi::Routes::Api::Sharable
+    register Suivi::Routes::Status
+
+    register Suivi::Routes::Api::Students
+    register Suivi::Routes::Api::Pages
+    register Suivi::Routes::Api::Rights
+    register Suivi::Routes::Api::Messages
+    register Suivi::Routes::Api::Notebooks
+    register Suivi::Routes::Api::Sharable
 end

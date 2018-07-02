@@ -5,5 +5,5 @@ use Rack::NestedParams
 use Rack::PostBodyContentTypeParser
 
 map "#{APP_PATH}/" do
-  run SinatraApp
+    run SinatraApp
 end
