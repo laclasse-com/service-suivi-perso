@@ -8,6 +8,9 @@ AllCops:
     - 'spec/fixtures/**/*'
     - Guardfile
 
+Layout/IndentationWidth:
+  Width: 4
+
 Layout/SpaceInsideBrackets:
   Enabled: false
 

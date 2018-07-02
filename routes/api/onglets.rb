@@ -42,7 +42,7 @@ module Suivi
                                           name: name,
                                           ctime: Time.now )
 
-                  onglet.init_droits( user )
+                  onglet.init_rights( user )
                 end
 
                 onglet_hash = onglet.to_hash

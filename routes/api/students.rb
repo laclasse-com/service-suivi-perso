@@ -13,7 +13,7 @@ module Suivi
                                           .select( :onglet_id )
                                           .all
                                           .map { |s| s[:onglet_id] }
-                                          .concat( Droit.where( uid: params['uid'] )
+                                          .concat( Right.where( uid: params['uid'] )
                                                         .or( group_id: user['groups'].map { |group| group['group_id'] } )
                                                         .select( :onglet_id )
                                                         .all

@@ -6,7 +6,7 @@ module Suivi
           app.get '/api/sharable/:sharable_id/?' do
             param :sharable_id, String, required: true
 
-            json( Onglet.where(id: Droit.where(sharable_id: params[:sharable_id] )
+            json( Onglet.where(id: Right.where(sharable_id: params[:sharable_id] )
                                         .select(:onglet_id)
                                         .all
                                         .map(&:onglet_id)

@@ -7,8 +7,8 @@ class Saisie < Sequel::Model(:saisies)
     remove_all_ressources
   end
 
-  def allow?( user, right )
-    return true if right == :read
+  def allow?( user, asked_right )
+    return true if asked_right == :read
 
     return true if user['id'] == uid_author
 
