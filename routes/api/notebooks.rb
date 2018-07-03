@@ -49,7 +49,7 @@ module Suivi
 
                         nb = get_notebook( params[:id], user )
 
-                        nb&.destroy
+                        json( nb&.destroy )
                     end
                 end
             end
