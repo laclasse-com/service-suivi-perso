@@ -43,7 +43,7 @@ module Suivi
                         params['pages_ids'].each do |page_id|
                             page = get_and_check_page( page_id, user, :write )
 
-                            message = page.add_saisy( message )
+                            message = page.add_message( message )
                         end
 
                         json( message )
@@ -89,7 +89,7 @@ module Suivi
                         params['pages_ids'].each do |page_id|
                             page = get_and_check_page( page_id, user, :write )
 
-                            page.remove_saisy( message )
+                            page.remove_message( message )
                         end
 
                         json( message.destroy ) if message.pages.empty?
