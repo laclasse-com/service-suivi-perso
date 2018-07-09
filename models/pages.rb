@@ -8,7 +8,7 @@ class Page < Sequel::Model(:pages)
     def before_destroy
         Right.where(page_id: id).destroy
         messages = remove_all_messages
-        messages.each { |m| m&.destroy }
+        messages&.each { |m| m&.destroy }
         Resource.where(page_id: id).destroy
     end
 
