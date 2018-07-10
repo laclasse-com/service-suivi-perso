@@ -56,15 +56,18 @@ module Suivi
                                            read: params['read'],
                                            write: params['write'],
                                            manage: params['manage'] ]
-                            return right.to_hash unless right.nil?
 
-                            right = {}
-                            %w[uid profile_type group_id read write manage].each do |key|
-                                right[ key ] = params[key] if params.key?( key )
+                            if right.nil?
+                                new_right = {}
+                                %w[uid profile_type group_id read write manage].each do |key|
+                                    new_right[ key ] = params[key] if params.key?( key )
+                                end
+                                new_right['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].nil? && !params['sharable_id'].empty? ? params['sharable_id'] : nil
+
+                                right = page.add_right( new_right )
                             end
-                            right['sharable_id'] = params.key?( 'sharable_id' ) && !params['sharable_id'].nil? && !params['sharable_id'].empty? ? params['sharable_id'] : nil
 
-                            page.add_right( right ).to_hash
+                            right.to_hash
                         end
 
                         json( rights_hashes )
