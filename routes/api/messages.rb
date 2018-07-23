@@ -13,11 +13,11 @@ module Suivi
 
                             return json( page.messages )
                         else
-                            result = params['pages_ids'].map do |oid|
-                                get_and_check_page( oid, user, :read )
+                            result = params['pages_ids'].map do |page_id|
+                                get_and_check_page( page_id, user, :read )
 
                                 Message.association_join(:pages)
-                                       .where(page_id: oid)
+                                       .where(page_id: page_id)
                                        .select_all(:messages)
                                        .all
                             end
