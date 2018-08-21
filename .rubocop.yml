@@ -1,6 +1,7 @@
 inherit_from: .rubocop_todo.yml
 
 AllCops:
+  TargetRubyVersion: 2.5
   Exclude:
     - 'vendor/**/*'
     - 'config/**/*'
@@ -11,7 +12,7 @@ AllCops:
 Layout/IndentationWidth:
   Width: 4
 
-Layout/SpaceInsideBrackets:
+Layout/SpaceInsideReferenceBrackets:
   Enabled: false
 
 Layout/SpaceInsideHashLiteralBraces:
@@ -24,6 +25,9 @@ Layout/SpaceInsideRangeLiteral:
   Enabled: false
 
 Style/AsciiComments:
+  Enabled: false
+
+Style/Encoding:
   Enabled: false
 
 Style/SymbolArray:
