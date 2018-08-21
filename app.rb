@@ -31,7 +31,6 @@ require_relative './lib/helpers/access_and_rights'
 
 require_relative './routes/status'
 
-require_relative './routes/api/students'
 require_relative './routes/api/pages'
 require_relative './routes/api/rights'
 require_relative './routes/api/messages'
@@ -69,7 +68,6 @@ class SinatraApp < Sinatra::Base
 
     register Suivi::Routes::Status
 
-    register Suivi::Routes::Api::Students
     register Suivi::Routes::Api::Pages
     register Suivi::Routes::Api::Rights
     register Suivi::Routes::Api::Messages
