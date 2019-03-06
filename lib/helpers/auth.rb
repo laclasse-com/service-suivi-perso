@@ -5,6 +5,7 @@ module LaClasse
         module Auth
             def session
                 return env[:session] unless env[:session].nil?
+
                 session = nil
                 unless cookies[:LACLASSE_AUTH].nil?
                     RestClient::Request.execute( method: :get,

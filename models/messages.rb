@@ -25,8 +25,8 @@ class Message < Sequel::Model(:messages)
 
     def to_json( arg )
         h = to_hash
-        h[:ctime] = DateTime.parse( h[:ctime].to_s ) unless h[:ctime].nil? # rubocop:disable Style/DateTime
-        h[:mtime] = DateTime.parse( h[:mtime].to_s ) unless h[:mtime].nil? # rubocop:disable Style/DateTime
+        h[:ctime] = DateTime.parse( h[:ctime].to_s ) unless h[:ctime].nil?
+        h[:mtime] = DateTime.parse( h[:mtime].to_s ) unless h[:mtime].nil?
 
         h.to_json( arg )
     end
