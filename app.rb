@@ -29,8 +29,6 @@ require_relative './lib/helpers/auth'
 require_relative './lib/helpers/user'
 require_relative './lib/helpers/access_and_rights'
 
-require_relative './routes/status'
-
 require_relative './routes/api/pages'
 require_relative './routes/api/rights'
 require_relative './routes/api/messages'
@@ -65,8 +63,6 @@ class SinatraApp < Sinatra::Base
 
         login!( request.path ) unless logged?
     end
-
-    register Suivi::Routes::Status
 
     register Suivi::Routes::Api::Pages
     register Suivi::Routes::Api::Rights
